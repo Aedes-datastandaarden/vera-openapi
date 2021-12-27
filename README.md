@@ -2,7 +2,7 @@
 
 
 
-Het gegevensmodel van VERA kent verticale modellen en een horizontaal model. Het horizontale model is de meest rijke verzameling aan klassen en velden per klasse (klassen worden binnen Novius aangeduid met: entiteitstypes en attribuuttypes, dat nemen we hier over). De verticale modellen richten zich op specifieke ketenprocessen en bevatten alleen die klassen en velden die relevant zijn binnen een proces. Ze bevatten een selectie van entiteiten uit de horizontale verzameling, en per klasse vaak weer een selectie aan attributen. ​
+Het gegevensmodel van VERA kent verticale modellen en een horizontaal model. Het horizontale model is de meest rijke verzameling aan klassen en velden per klasse (klassen en velden worden binnen Novius aangeduid met: entiteitstypes en attribuuttypes, dat nemen we hier over). De verticale modellen richten zich op specifieke ketenprocessen en bevatten alleen die klassen en velden die relevant zijn binnen een proces. Ze bevatten een selectie van entiteiten uit de horizontale verzameling, en per klasse vaak weer een selectie aan attributen. ​
 
 De entiteiten uit alle modellen (zowel de verticale als horizontale) zijn verdeeld in Informatiedomeinen. Een Informatiedomein is een clustering op basis van een bedrijfsfunctie. Een bedrijfsfunctie heeft een 1 op 1 relatie met een Afdeling waarbinnen deze bedrijfsfuncie valt en daarmee met een Informatiemodel. Een Informatiemodel bevat dus functies met een sterk onderlinge cohesie.​
 
@@ -27,7 +27,7 @@ We leveren OpenAPI-specificaties voor zowel de Informatiedomeinen als voor de ke
 - Ook Informatiedomein Algemeen heeft een eigen API-specificatie.​
 
 - Enumaraties: de wens is om referentiedata voor soorten van afgeleide klassen als enumeratie op te nemen (bijvoorbeeld: relatie.soort overeenkomst.soort)
-- Metadata (limiet aantal entiteiten, verzendende organisatie, tijdstip bericht, etc.) zit niet in de 'payload' maar wordt in de header meegestuurd.
+- Metadata (limiet aantal entiteiten in response, verzendende organisatie, tijdstip bericht, etc.) zit niet in de 'payload' maar wordt in de header meegestuurd.
 
 
 ## Definities
