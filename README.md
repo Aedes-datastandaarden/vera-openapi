@@ -43,6 +43,6 @@ We leveren OpenAPI-specificaties op voor zowel de Informatiedomeinen als voor de
 
 Binnen Informatiedomeinen bevinden zich applicaties/systemen met functies die sterk onderling verwand zijn. Dit worden ook wel kernpakketten genoemd. Bijvoorbeeld een relatiebeheerpakket. Voor deze kernpakketten zijn er de horizontale API's.
 
-Voor (sub)systemen die een procesketen implementeren en (eventueel) zijn er de verticale API's. Deze subsystemen agregeren (mogelijk) informatie uit kernpakketten via de horizontale API's.
+De verticale API's zijn voor (sub)systemen die een procesketen implementeren. Deze subsystemen agregeren (mogelijk) informatie uit kernpakketten via horizontale API's.
 
 ![alt text](matrix-apis.png)
