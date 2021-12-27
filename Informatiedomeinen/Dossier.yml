@@ -1,0 +1,2422 @@
+openapi: '3.0.0'
+info:
+  title: 'VERA'
+  description: 'API-specificatie van het horizontale gegevensmodel'
+  termsOfService: 'https://www.stichting-vera.nl/voorwaarden/'
+  contact:
+    name: 'VERA'
+    url: 'https://www.stichting-vera.nl/'
+    email: 'info@stichting-vera.nl'
+  license:
+    name: 'General Public License (GPL)'
+    url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+  version: '4.0.3'
+servers:
+  - url: https://vera.vera.io:{port}/{basePath}
+    description: 'Productieserver'
+    variables:
+       port:
+         enum:
+           - '8443'
+           - '443'
+         default: '443'
+       basePath:
+         default: v4
+tags:
+- name: 'Resources'
+  description: 'Operaties met betrekking tot entiteiten in dit informatiedomein'
+paths:
+  /dossiers:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van dossiers'
+      operationId: 'readDossier'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Dossier'
+      responses:
+        '200':
+          description: 'Dossier response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Dossier'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Dossier toe.'
+      operationId: 'createDossier'
+      requestBody:
+        description: 'Dossier om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dossier'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Dossier'
+      operationId: 'replaceDossier'
+      requestBody:
+        description: 'Dossier om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dossier'
+      responses:
+        '200':
+          description: 'Dossier succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Dossier'
+      operationId: 'modifyDossier'
+      requestBody:
+        description: 'Dossier om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dossier'
+      responses:
+        '200':
+          description: 'Dossier succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /dossiers/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Dossier met de gegeven identifier'
+      operationId: 'findDossierById'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Dossier om op te halen'
+        required: true
+        schema:
+          type: 'integer'
+          format: 'int64'
+      responses:
+        '200':
+          description: 'Dossier response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /informatieobjecten:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van informatieobjecten'
+      operationId: 'readInformatieobject'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Informatieobject'
+      responses:
+        '200':
+          description: 'Informatieobject response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Informatieobject'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Informatieobject toe.'
+      operationId: 'createInformatieobject'
+      requestBody:
+        description: 'Informatieobject om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Informatieobject'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Informatieobject'
+      operationId: 'replaceInformatieobject'
+      requestBody:
+        description: 'Informatieobject om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Informatieobject'
+      responses:
+        '200':
+          description: 'Informatieobject succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Informatieobject'
+      operationId: 'modifyInformatieobject'
+      requestBody:
+        description: 'Informatieobject om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Informatieobject'
+      responses:
+        '200':
+          description: 'Informatieobject succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /informatieobjecten/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Informatieobject met de gegeven identifier'
+      operationId: 'findInformatieobjectById'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Informatieobject om op te halen'
+        required: true
+        schema:
+          type: 'integer'
+          format: 'int64'
+      responses:
+        '200':
+          description: 'Informatieobject response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Informatieobject'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /informatieobjectkenmerken:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van informatieobjectkenmerken'
+      operationId: 'readInformatieobjectkenmerk'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Informatieobjectkenmerk'
+      responses:
+        '200':
+          description: 'Informatieobjectkenmerk response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Informatieobjectkenmerk'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Informatieobjectkenmerk toe.'
+      operationId: 'createInformatieobjectkenmerk'
+      requestBody:
+        description: 'Informatieobjectkenmerk om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Informatieobjectkenmerk'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Informatieobjectkenmerk'
+      operationId: 'replaceInformatieobjectkenmerk'
+      requestBody:
+        description: 'Informatieobjectkenmerk om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Informatieobjectkenmerk'
+      responses:
+        '200':
+          description: 'Informatieobjectkenmerk succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Informatieobjectkenmerk'
+      operationId: 'modifyInformatieobjectkenmerk'
+      requestBody:
+        description: 'Informatieobjectkenmerk om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Informatieobjectkenmerk'
+      responses:
+        '200':
+          description: 'Informatieobjectkenmerk succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /informatieobjectkenmerken/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Informatieobjectkenmerk met de gegeven identifier'
+      operationId: 'findInformatieobjectkenmerkById'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Informatieobjectkenmerk om op te halen'
+        required: true
+        schema:
+          type: 'integer'
+          format: 'int64'
+      responses:
+        '200':
+          description: 'Informatieobjectkenmerk response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Informatieobjectkenmerk'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /processen:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van processen'
+      operationId: 'readProces'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Proces'
+      responses:
+        '200':
+          description: 'Proces response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Proces'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Proces toe.'
+      operationId: 'createProces'
+      requestBody:
+        description: 'Proces om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Proces'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Proces'
+      operationId: 'replaceProces'
+      requestBody:
+        description: 'Proces om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Proces'
+      responses:
+        '200':
+          description: 'Proces succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Proces'
+      operationId: 'modifyProces'
+      requestBody:
+        description: 'Proces om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Proces'
+      responses:
+        '200':
+          description: 'Proces succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /processen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Proces met de gegeven identifier'
+      operationId: 'findProcesById'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Proces om op te halen'
+        required: true
+        schema:
+          type: 'integer'
+          format: 'int64'
+      responses:
+        '200':
+          description: 'Proces response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Proces'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /procesrollen:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van procesrollen'
+      operationId: 'readProcesrol'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Procesrol'
+      responses:
+        '200':
+          description: 'Procesrol response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Procesrol'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Procesrol toe.'
+      operationId: 'createProcesrol'
+      requestBody:
+        description: 'Procesrol om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Procesrol'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Procesrol'
+      operationId: 'replaceProcesrol'
+      requestBody:
+        description: 'Procesrol om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Procesrol'
+      responses:
+        '200':
+          description: 'Procesrol succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Procesrol'
+      operationId: 'modifyProcesrol'
+      requestBody:
+        description: 'Procesrol om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Procesrol'
+      responses:
+        '200':
+          description: 'Procesrol succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /procesrollen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Procesrol met de gegeven identifier'
+      operationId: 'findProcesrolById'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Procesrol om op te halen'
+        required: true
+        schema:
+          type: 'integer'
+          format: 'int64'
+      responses:
+        '200':
+          description: 'Procesrol response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Procesrol'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /processtappen:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van processtappen'
+      operationId: 'readProcesstap'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Processtap'
+      responses:
+        '200':
+          description: 'Processtap response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Processtap'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Processtap toe.'
+      operationId: 'createProcesstap'
+      requestBody:
+        description: 'Processtap om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Processtap'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Processtap'
+      operationId: 'replaceProcesstap'
+      requestBody:
+        description: 'Processtap om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Processtap'
+      responses:
+        '200':
+          description: 'Processtap succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Processtap'
+      operationId: 'modifyProcesstap'
+      requestBody:
+        description: 'Processtap om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Processtap'
+      responses:
+        '200':
+          description: 'Processtap succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /processtappen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Processtap met de gegeven identifier'
+      operationId: 'findProcesstapById'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Processtap om op te halen'
+        required: true
+        schema:
+          type: 'integer'
+          format: 'int64'
+      responses:
+        '200':
+          description: 'Processtap response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Processtap'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /zaken:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van zaken'
+      operationId: 'readZaak'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Zaak'
+      responses:
+        '200':
+          description: 'Zaak response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Zaak'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Zaak toe.'
+      operationId: 'createZaak'
+      requestBody:
+        description: 'Zaak om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Zaak'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Zaak'
+      operationId: 'replaceZaak'
+      requestBody:
+        description: 'Zaak om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Zaak'
+      responses:
+        '200':
+          description: 'Zaak succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Zaak'
+      operationId: 'modifyZaak'
+      requestBody:
+        description: 'Zaak om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Zaak'
+      responses:
+        '200':
+          description: 'Zaak succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /zaken/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Zaak met de gegeven identifier'
+      operationId: 'findZaakById'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Zaak om op te halen'
+        required: true
+        schema:
+          type: 'integer'
+          format: 'int64'
+      responses:
+        '200':
+          description: 'Zaak response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zaak'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /zaakkenmerken:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van zaakkenmerken'
+      operationId: 'readZaakkenmerk'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Zaakkenmerk'
+      responses:
+        '200':
+          description: 'Zaakkenmerk response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Zaakkenmerk'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Zaakkenmerk toe.'
+      operationId: 'createZaakkenmerk'
+      requestBody:
+        description: 'Zaakkenmerk om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Zaakkenmerk'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Zaakkenmerk'
+      operationId: 'replaceZaakkenmerk'
+      requestBody:
+        description: 'Zaakkenmerk om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Zaakkenmerk'
+      responses:
+        '200':
+          description: 'Zaakkenmerk succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Zaakkenmerk'
+      operationId: 'modifyZaakkenmerk'
+      requestBody:
+        description: 'Zaakkenmerk om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Zaakkenmerk'
+      responses:
+        '200':
+          description: 'Zaakkenmerk succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /zaakkenmerken/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Zaakkenmerk met de gegeven identifier'
+      operationId: 'findZaakkenmerkById'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Zaakkenmerk om op te halen'
+        required: true
+        schema:
+          type: 'integer'
+          format: 'int64'
+      responses:
+        '200':
+          description: 'Zaakkenmerk response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zaakkenmerk'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /zaak-rollen:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van zaakrollen'
+      operationId: 'readZaakRol'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/ZaakRol'
+      responses:
+        '200':
+          description: 'ZaakRol response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/ZaakRol'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) ZaakRol toe.'
+      operationId: 'createZaakRol'
+      requestBody:
+        description: 'ZaakRol om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ZaakRol'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een ZaakRol'
+      operationId: 'replaceZaakRol'
+      requestBody:
+        description: 'ZaakRol om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ZaakRol'
+      responses:
+        '200':
+          description: 'ZaakRol succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een ZaakRol'
+      operationId: 'modifyZaakRol'
+      requestBody:
+        description: 'ZaakRol om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ZaakRol'
+      responses:
+        '200':
+          description: 'ZaakRol succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /zaak-rollen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een ZaakRol met de gegeven identifier'
+      operationId: 'findZaakRolById'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van ZaakRol om op te halen'
+        required: true
+        schema:
+          type: 'integer'
+          format: 'int64'
+      responses:
+        '200':
+          description: 'ZaakRol response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZaakRol'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /zaakstatussen:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van zaakstatussen'
+      operationId: 'readZaakstatus'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Zaakstatus'
+      responses:
+        '200':
+          description: 'Zaakstatus response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Zaakstatus'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Zaakstatus toe.'
+      operationId: 'createZaakstatus'
+      requestBody:
+        description: 'Zaakstatus om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Zaakstatus'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Zaakstatus'
+      operationId: 'replaceZaakstatus'
+      requestBody:
+        description: 'Zaakstatus om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Zaakstatus'
+      responses:
+        '200':
+          description: 'Zaakstatus succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Zaakstatus'
+      operationId: 'modifyZaakstatus'
+      requestBody:
+        description: 'Zaakstatus om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Zaakstatus'
+      responses:
+        '200':
+          description: 'Zaakstatus succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /zaakstatussen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Zaakstatus met de gegeven identifier'
+      operationId: 'findZaakstatusById'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Zaakstatus om op te halen'
+        required: true
+        schema:
+          type: 'integer'
+          format: 'int64'
+      responses:
+        '200':
+          description: 'Zaakstatus response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zaakstatus'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /zaaktypen:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van zaaktypen'
+      operationId: 'readZaaktype'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Zaaktype'
+      responses:
+        '200':
+          description: 'Zaaktype response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Zaaktype'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Zaaktype toe.'
+      operationId: 'createZaaktype'
+      requestBody:
+        description: 'Zaaktype om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Zaaktype'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Zaaktype'
+      operationId: 'replaceZaaktype'
+      requestBody:
+        description: 'Zaaktype om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Zaaktype'
+      responses:
+        '200':
+          description: 'Zaaktype succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Zaaktype'
+      operationId: 'modifyZaaktype'
+      requestBody:
+        description: 'Zaaktype om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Zaaktype'
+      responses:
+        '200':
+          description: 'Zaaktype succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /zaaktypen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Zaaktype met de gegeven identifier'
+      operationId: 'findZaaktypeById'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Zaaktype om op te halen'
+        required: true
+        schema:
+          type: 'integer'
+          format: 'int64'
+      responses:
+        '200':
+          description: 'Zaaktype response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zaaktype'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+security:
+  - basicAuth: []
+components:
+  headers:
+    X_Pagination_Page:
+      schema:
+        type: integer
+        description: Huidige pagina.
+        example: 3
+    X_Pagination_Limit:
+      schema:
+        type: integer
+        description: Aantal resultaten per pagina.
+        example: 20
+    X_Stuurgegevens_TijdstipBericht:
+      schema:
+        type: string
+        format: data-time
+        description: Tijdstip waarop het bericht verzonden is
+    X_Stuurgegevens_Referentienummer:
+      schema:
+        type: string
+        format: any
+        description: Een unieke code voor correlatie
+    X_Stuurgegevens_Zender:
+      schema:
+        type: string
+        format: any
+        description: Identificatie van de verzendende organisatie
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+  responses:
+    NietGeautoriseerd:
+      description: Authenticatie-informatie ontbreekt of is ongeldig
+      headers:
+        WWW_Authenticate:
+          schema:
+            type: string
+  schemas:
+    Dossier:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Geeft het dossier type aan. Bijvoorbeeld mutatiedossier.'
+        detailSoort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Geeft het dossier detail type aan.'
+        omschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'Beknopte omschrijving van het dossier.'
+        omvattendDossier:
+          $ref: '#/components/schemas/Dossier'
+          description: 'Het dossier waarin dit dossier is opgenomen.'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De fase waarin het dossier zich vanuit het perspectief van afhandeling en archivering bevindt (Bijvoorbeeld "Gearchiveerd").'
+        begindatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum waarop het dossier gevormd is.'
+        einddatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum waarop het dossier afgesloten is.'
+        archiefnominatie:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Aanduiding of de informatieobjecten binnen het dossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden.'
+        archiefActiedatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum waarop het dossier vernietigd moet worden dan wel overgebracht moet worden naar een archiefbewaarplaats.'
+        detailStatus:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Detaillering van de fase waarin het dossier zich vanuit het perspectief van afhandeling en archivering bevindt.'
+        relaties:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+        clusters:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Cluster in de vorm: vera/v4/clusters/12345'
+        collectiefObjecten:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar CollectiefObject in de vorm: vera/v4/collectiefobjecten/12345'
+        eenheden:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Eenheid in de vorm: vera/v4/eenheden/12345'
+        overeenkomsten:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Overeenkomst in de vorm: vera/v4/overeenkomsten/12345'
+        inkoopfacturen:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Inkoopfactuur in de vorm: vera/v4/inkoopfacturen/12345'
+        inkoopopdrachten:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Inkoopopdracht in de vorm: vera/v4/inkoopopdrachten/12345'
+        deelDossiers:
+          description: 'Het dossier bevat onderliggende dossier(s).'
+          type: array
+          items:
+            $ref: '#/components/schemas/Dossier'
+        processen:
+          description: 'Het dossier is gekoppeld aan/heeft betrekking op proces(sen).'
+          type: array
+          items:
+            $ref: '#/components/schemas/Proces'
+        contactmomenten:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Contactmoment in de vorm: vera/v4/contactmomenten/12345'
+        onderhoudsverzoeken:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Onderhoudsverzoek in de vorm: vera/v4/onderhoudsverzoeken/12345'
+        zaken:
+          description: 'Zaken die gekoppeld zijn aan dit dossier.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaak'
+        relatieRollen:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatierol in de vorm: vera/v4/relatierollen/12345'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Referentiedata:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van de referentiedata of klasse'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De soort van het referentiedata item. Bijvoorbeeld nationaliteit.'
+        naam:
+          type: 'string'
+          format: 'any'
+          description: 'De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.'
+        omschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'De omschrijving van de referentiedata. Bijvoorbeeld De Nederlandse nationaliteit.'
+        parent:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De bovenliggende referentiedata in het geval er sprake is van een hierarchische relatie tussen referentiedata.'
+        begindatum:
+          type: 'string'
+          format: 'date'
+          description: 'De begindatum van het klasse item.'
+        einddatum:
+          type: 'string'
+          format: 'date'
+          description: 'De einddatum van het klasse item.'
+        sortering:
+          type: 'string'
+          format: 'any'
+          description: 'De sorteervolgorde van de referentiedata anders dan alfabetisch.'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Proces:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De omschrijving en definitie van het proces (bijvoorbeeld aanbieden woning).'
+        bovenliggendProces:
+          $ref: '#/components/schemas/Proces'
+          description: 'Specificeert het bijbehorende hoofdproces.'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van de proces. Bijvoorbeeld;In behandeling, Afgesloten. '
+        begindatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'Datum en tijd waarop het proces gestart is.'
+        einddatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'Datum en tijd waarop het proces afgesloten is.'
+        verloopdatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'Datum en tijd waarop het proces afgerond zou moeten zijn.'
+        prioriteit:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Prioriteit van het proces. Bijvoorbeeld;Hoog, Middel, Laag. '
+        niveau:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Specificeert het niveau van het proces. Bijvoorbeeld ketenproces, bedrijfsproces en werkproces.'
+        processtappen:
+          description: 'De taken/stappen die behoren bij het proces.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Processtap'
+        rollen:
+          description: 'De rol(len) die een relatie uitoefent ten opzichte van het proces.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Procesrol'
+        deelprocessen:
+          description: 'Specificeert de bijbehorende deelprocessen.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Proces'
+        relaties:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+        clusters:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Cluster in de vorm: vera/v4/clusters/12345'
+        collectiefObjecten:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar CollectiefObject in de vorm: vera/v4/collectiefobjecten/12345'
+        eenheden:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Eenheid in de vorm: vera/v4/eenheden/12345'
+        overeenkomsten:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Overeenkomst in de vorm: vera/v4/overeenkomsten/12345'
+        inkoopfacturen:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Inkoopfactuur in de vorm: vera/v4/inkoopfacturen/12345'
+        inkoopopdrachten:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Inkoopopdracht in de vorm: vera/v4/inkoopopdrachten/12345'
+        dossiers:
+          description: 'Het proces is gekoppeld aan/heeft betrekking op dossier(s).'
+          type: array
+          items:
+            $ref: '#/components/schemas/Dossier'
+        zaken:
+          description: 'Het proces is gekoppeld aan/heeft betrekking op zaak(-en).'
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaak'
+        onderhoudsverzoeken:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Onderhoudsverzoek in de vorm: vera/v4/onderhoudsverzoeken/12345'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Processtap:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De omschrijving en definitie van de processtap. Bijvoorbeeld keur inkoopfactuur goed of controleer huuropzegging.'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Status van de processtap. Bijvoorbeeld;In behandeling, Wachtstand, Afgerond. '
+        begindatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'Datum en tijd waarop de processtap gestart is.'
+        einddatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'Datum en tijd waarop de processtap afgesloten is.'
+        verloopdatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'Datum en tijd waarop de processtap afgerond zou moeten zijn.'
+        proces:
+          $ref: '#/components/schemas/Proces'
+          description: 'Het proces waar de processtap onderdeel van is.'
+        prioriteit:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Prioriteit van de processtap Bijvoorbeeld;Hoog, Middel, Laag. '
+        actie:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Actie die is uitgevoerd. Bijvoorbeeld;Doorsturen, Toewijzen, Stoppen. '
+        rollen:
+          description: 'De rol(-len) die een relatie uitoefent ten opzichte van de processtap.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Procesrol'
+        positie:
+          type: 'integer'
+          format: 'int32'
+          description: 'De positie van de processtap binnen het proces ten opzichte van andere processtappen.'
+        vorigeProcesstappen:
+          description: 'De processtap(-en) die deze processtap geïnitieerd heeft.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Processtap'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Procesrol:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        omschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'Een beknopte omschrijving van de aard van de rol.'
+        begindatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'Geeft de startdatum van de geldigheid van de rol aan.'
+        einddatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'Geeft de einddatum van de geldigheid van de rol aan.'
+        toelichtingRol:
+          type: 'string'
+          format: 'any'
+          description: 'Schriftelijke toelichting bij de rol.'
+        relatie:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+        processen:
+          description: 'De proces(-sen) waar de rol betrekking op heeft.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Proces'
+        processtappen:
+          description: 'De processtap(-pen) waar de rol betrekking op heeft.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Processtap'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Zaak:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        omschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'Een beknopte omschrijving van de zaak.'
+        toelichting:
+          type: 'string'
+          format: 'any'
+          description: 'Een beknopte toelichting op de zaak.'
+        bovenliggendeZaak:
+          $ref: '#/components/schemas/Zaak'
+          description: 'Specificeert de bijbehorende hoofdzaak.'
+        begindatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum waarop met de uitvoering van de zaak gestart is.'
+        einddatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum waarop de uitvoering van de zaak afgerond is.'
+        registratiedatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum waarop de zaakbehandelende organisatie de zaak heeft geregistreerd.'
+        publicatiedatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'Datum waarop (het starten van) de zaak gepubliceerd is.'
+        geplandeEinddatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum waarop volgens de planning verwacht wordt dat de zaak afgerond wordt.'
+        uiterlijkeEinddatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum waarop de zaak uiterlijk dient afgehandeld te zijn.'
+        archiefstatus:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De fase waarin het zaakdossier zich vanuit het perspectief van archivering bevindt.'
+        archiefActiedatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum waarop het gearchiveerde zaakdossier vernietigd dient te worden dan wel overgebracht moet worden naar een archiefbewaarplaats.'
+        resultaatOmschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'Een beknopte omschrijving van het resultaat van de zaak.'
+        resultaatToelichting:
+          type: 'string'
+          format: 'any'
+          description: 'Een beknopte toelichting op het resultaat van de zaak.'
+        verantwoordelijkeOrganisatie:
+          type: 'string'
+          format: 'any'
+          description: 'Het RSIN (Rechtspersonen en Samenwerkingsverbanden Informatienummer) van de organisatie die verantwoordelijk is voor de behandeling van de gerelateerde zaak.'
+        archiefnominatie:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden.'
+        kenmerken:
+          description: 'Dit zijn eigenschappen behorend bij de zaak.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaakkenmerk'
+        zaaktype:
+          $ref: '#/components/schemas/Zaaktype'
+          description: 'Zaaktype duidt de aard van de zaak aan en definieert daarmee de zaak.'
+        zaakstatussen:
+          description: 'De statussen die bereikt zijn gedurende de behandeling van de zaak.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaakstatus'
+        gerelateerdeZaken:
+          description: 'Heeft één of meerdere gerelateerde interne of externe zaken.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaak'
+        deelzaken:
+          description: 'Specificeert de bijbehorende deelzaken.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaak'
+        relaties:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+        clusters:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Cluster in de vorm: vera/v4/clusters/12345'
+        collectiefObjecten:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar CollectiefObject in de vorm: vera/v4/collectiefobjecten/12345'
+        eenheden:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Eenheid in de vorm: vera/v4/eenheden/12345'
+        overeenkomsten:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Overeenkomst in de vorm: vera/v4/overeenkomsten/12345'
+        inkoopfacturen:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Inkoopfactuur in de vorm: vera/v4/inkoopfacturen/12345'
+        inkoopopdrachten:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Inkoopopdracht in de vorm: vera/v4/inkoopopdrachten/12345'
+        processen:
+          description: 'De zaak is gekoppeld aan/heeft betrekking op proces(sen).'
+          type: array
+          items:
+            $ref: '#/components/schemas/Proces'
+        contactmomenten:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Contactmoment in de vorm: vera/v4/contactmomenten/12345'
+        onderhoudsverzoeken:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Onderhoudsverzoek in de vorm: vera/v4/onderhoudsverzoeken/12345'
+        rollen:
+          description: 'De rollen op basis waarvan relaties betrokken zijn bij de zaak.'
+          type: array
+          items:
+            $ref: '#/components/schemas/ZaakRol'
+        dossier:
+          $ref: '#/components/schemas/Dossier'
+          description: 'Het dossier dat aan de zaak gekoppeld is.'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Zaakkenmerk:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        omschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'De omschrijving van het zaakkenmerk.'
+        waarde:
+          type: 'string'
+          format: 'any'
+          description: 'De waarde van het zaakkenmerk.'
+        datatype:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het datatype van de waarde. Bijvoorbeeld: string, decimal, integer.'
+        groep:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De groep van kenmerken behorend bij het zaakkenmerk.'
+        zaken:
+          description: 'De zaken behorende bij het zaakkenmerk.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaak'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Zaaktype:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Categorisering van de aard van een zaak van dit zaaktype.'
+        detailSoort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Specificatie van de categorie ten aanzien van de aard van zaak van het zaaktype.'
+        generiekeOmschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'Een beknopte generieke omschrijving van de aard van de zaak en van het zaaktype gerelateerd aan een sectorale ZTC.'
+        omschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'Een beknopte omschrijving van de aard van de zaak en van het zaaktype.'
+        begindatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'Met deze datum wordt aangegeven vanaf wanneer het zaaktype bestaat en toegepast kan worden.'
+        einddatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'Met deze datum wordt aangegeven vanaf wanneer het zaaktype niet meer bestaat en niet meer toegepast kan worden.'
+        domein:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het domein waarbinnen het zaaktype is uitgewerkt.'
+        trefwoord:
+          type: 'string'
+          format: 'any'
+          description: 'Een trefwoord waarmee een zaak van dit zaaktype kan worden gekarakteriseerd.'
+        aanleiding:
+          type: 'string'
+          format: 'any'
+          description: 'Een omschrijving van de aanleiding die leidt tot het starten van een zaak van dit zaaktype.'
+        doel:
+          type: 'string'
+          format: 'any'
+          description: 'Een omschrijving van het doel'
+        doorlooptijd:
+          type: 'integer'
+          format: 'int32'
+          description: 'De periode waarbinnen een zaak van dit zaaktype afgerond dient te zijn.'
+        servicenorm:
+          type: 'integer'
+          format: 'int32'
+          description: 'De periode waarbinnen verwacht wordt dat een zaak van dit zaaktype afgerond wordt conform de geldende servicenormen van de zaakbehandelende organisatie.'
+        archiefcode:
+          type: 'string'
+          format: 'any'
+          description: 'De systematische identificatie van zaakdossiers van dit zaaktype overeenkomstig logisch gestructureerde conventies, methoden en procedureregels.'
+        vertrouwelijkheid:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Aanduiding van de mate waarin zaakdossiers van een zaak van dit zaaktype voor de openbaarheid bestemd zijn.'
+        externePublicatie:
+          type: 'boolean'
+          format: 'true-or-false'
+          description: 'Aanduiding of (het starten van) een zaak van dit zaaktype gepubliceerd moet worden.'
+        externePublicatietekst:
+          type: 'string'
+          format: 'any'
+          description: 'De generieke tekst ten behoeve van de publicatie van een zaak van dit zaaktype.'
+        verantwoordelijke:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+        zaken:
+          description: 'De aanwezige/betreffende zaken van dit zaaktype.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaak'
+        zaakstatussen:
+          description: 'De statussen die bereikt kunnen worden bij behandeling van een zaak van dit zaaktype. '
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaakstatus'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Zaakstatus:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De aanduiding van de status middels een statustype.'
+        begindatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'Het moment waarop de status is bereikt.'
+        einddatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'Het moment waarop de status verlopen is.'
+        toelichting:
+          type: 'string'
+          format: 'any'
+          description: 'Toelichting over de status.'
+        zaak:
+          $ref: '#/components/schemas/Zaak'
+          description: 'De zaak waar de status betrekking op heeft.'
+        zaakRol:
+          $ref: '#/components/schemas/ZaakRol'
+          description: 'De rol van de bijbehorende relatie die de zaakstatus gezet heeft.'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    ZaakRol:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Algemeen gehanteerde benaming van de aard van de rol.'
+        omschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'Een beknopte omschrijving van de aard van de rol.'
+        begindatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'Geeft de startdatum van de geldigheid van de rol aan.'
+        einddatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'Geeft de einddatum van de geldigheid van de rol aan.'
+        toelichtingRol:
+          type: 'string'
+          format: 'any'
+          description: 'Schriftelijke toelichting bij de rol.'
+        indicatieGemachtigde:
+          type: 'boolean'
+          format: 'true-or-false'
+          description: 'Indicatie of de betrokkene in de rol bij de zaak optreedt als gemachtigde van een andere betrokkene bij die zaak.'
+        afwijkendContactgegegeven:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Contactgegeven in de vorm: vera/v4/contactgegevens/12345'
+        relatie:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+        zaak:
+          description: 'De zaak(-en) waarop de rol betrekking heeft.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaak'
+        zaakstatussen:
+          description: 'De zaak(-en) statussen waarop de rol betrekking heeft.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaakstatus'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Informatieobject:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Specificatie van het documenttype. Bijvoorbeeld verslag, rapport etc.'
+        detailSoort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Detail specificatie van het documenttype. Bijvoorbeeld notulen, adviesrapport etc.'
+        onderwerp:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Onderwerp van het informatieobject.'
+        subonderwerp:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Subonderwerp van het informatieobject.'
+        titel:
+          type: 'string'
+          format: 'any'
+          description: 'Titel van het informatieobject.'
+        beschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'Beschrijving van het informatieobject.'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De fase waarin het informatieobject zich vanuit het perspectief van archivering bevindt.'
+        detailStatus:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Detaillering van de fase waarin het informatieobject zich vanuit het perspectief van archivering bevindt.'
+        registratiedatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'Registratiedatum van het informatieobject.'
+        ontvangstdatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'Ontvangstdatum van het informatieobject.'
+        publicatiedatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'Publicatiedatum of verzenddatum van het informatieobject.'
+        auteur:
+          type: 'string'
+          format: 'any'
+          description: 'De persoon of organisatie die in de eerste plaats verantwoordelijk is voor het creëren van de inhoud van het informatieobject.'
+        formaat:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het digitale formaat (IANA media type) van het informatieobject.'
+        bestandsnaam:
+          type: 'string'
+          format: 'any'
+          description: 'De naam van het fysieke bestand waarin de inhoud van het informatieobject is vastgelegd.'
+        bestandsgrootte:
+          type: 'integer'
+          format: 'int32'
+          description: 'Omvang van het bestand in bytes.'
+        versie:
+          type: 'number'
+          format: 'float'
+          description: 'Het versienummer van het informatieobject.'
+        bestand:
+          type: 'string'
+          format: 'byte'
+          description: 'De binaire representatie van het informatieobject.'
+        bestandslocatie:
+          type: 'string'
+          format: 'uri'
+          description: 'Een link (URI) naar de binaire representatie van het informatieobject.'
+        taal:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De taal waarin het informatieobject is opgesteld.'
+        vertrouwelijkheid:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De classificatie van het vertrouwelijkheidsniveau van het informatieobject.'
+        gebruiksrechten:
+          type: 'string'
+          format: 'any'
+          description: 'Informatie omtrent rechten die geassocieerd zijn met het informatieobject zoals intellectueel eigendom.'
+        externePublicatie:
+          type: 'boolean'
+          format: 'true-or-false'
+          description: 'Aanduiding of dit informatieobject extern gepubliceerd dient te worden.'
+        externePublicatietekst:
+          type: 'string'
+          format: 'any'
+          description: 'Tekstuele omschrijving ten behoeve van externe publicatie van dit informatieobject.'
+        verantwoordelijkeOrganisatie:
+          type: 'string'
+          format: 'any'
+          description: 'Het RSIN (Rechtspersonen en Samenwerkingsverbanden Informatienummer) van de organisatie die verantwoordelijk is voor het informatieobject.'
+        archiefnominatie:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Aanduiding of het informatieobject blijvend bewaard of na een bepaalde termijn vernietigd moet worden.'
+        archiefActiedatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum waarop het gearchiveerde informatieobject vernietigd moet worden dan wel overgebracht moet worden naar een archiefbewaarplaats.'
+        isBijlageVan:
+          $ref: '#/components/schemas/Informatieobject'
+          description: 'Geeft aan dat het informatieobject een bijlage is van een ander informatieobject.'
+        bijlagen:
+          description: 'De bijlagen behorend bij het informatieobject.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
+        relaties:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+        clusters:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Cluster in de vorm: vera/v4/clusters/12345'
+        collectiefObjecten:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar CollectiefObject in de vorm: vera/v4/collectiefobjecten/12345'
+        eenheden:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Eenheid in de vorm: vera/v4/eenheden/12345'
+        overeenkomsten:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Overeenkomst in de vorm: vera/v4/overeenkomsten/12345'
+        inkoopfacturen:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Inkoopfactuur in de vorm: vera/v4/inkoopfacturen/12345'
+        inkoopopdrachten:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Inkoopopdracht in de vorm: vera/v4/inkoopopdrachten/12345'
+        dossiers:
+          description: 'Het informatieobject is gekoppeld aan/heeft betrekking op dossier(s).'
+          type: array
+          items:
+            $ref: '#/components/schemas/Dossier'
+        processen:
+          description: 'Het informatieobject is gekoppeld aan/heeft betrekking op proces(sen).'
+          type: array
+          items:
+            $ref: '#/components/schemas/Proces'
+        zaken:
+          description: 'Het informatieobject is gekoppeld aan/heeft betrekking op zaak(-en).'
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaak'
+        onderhoudsverzoeken:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Onderhoudsverzoek in de vorm: vera/v4/onderhoudsverzoeken/12345'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Informatieobjectkenmerk:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        omschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'De omschrijving van het informatieobject kenmerk.'
+        waarde:
+          type: 'string'
+          format: 'any'
+          description: 'De waarde van het informatieobject kenmerk.'
+        datatype:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het datatype van de waarde. Bijvoorbeeld: string, decimal, integer.'
+        groep:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De groep van kenmerken behorend bij het informatieobject kenmerk.'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Dossier-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Informatieobject-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Informatieobjectkenmerk-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Proces-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Procesrol-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Processtap-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Zaak-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Zaakkenmerk-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    ZaakRol-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Zaakstatus-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Zaaktype-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Foutbericht:
+      type: 'object'
+      properties:
+        code:
+          type: 'string'
+        omschrijving:
+          type: 'string'
+    ExtraAttributen:
+      type: 'object'
+      properties:
+        sleutel:
+          type: 'string'
+        waarde:
+          type: 'string'
