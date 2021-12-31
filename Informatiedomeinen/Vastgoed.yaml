@@ -1,15 +1,15 @@
 openapi: '3.0.0'
 info:
   title: 'VERA'
-  description: 'API-specificatie van het horizontale gegevensmodel'
+  description: API-specificatie van informatiedomein Vastgoed
   termsOfService: 'https://www.stichting-vera.nl/voorwaarden/'
   contact:
     name: 'VERA'
-    url: 'https://www.stichting-vera.nl/'
+    url: 'https://cora.wikixl.nl/index.php/VERA_Standaard'
     email: 'info@stichting-vera.nl'
   license:
-    name: 'General Public License (GPL)'
-    url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+    name: European Union Public License, version 1.2 (EUPL-1.2)
+    url: https://eupl.eu/1.2/nl/
   version: '4.0.3'
 servers:
   - url: https://vastgoed.vera.io:{port}/{basePath}
@@ -31,18 +31,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Ophalen van Adressen'
-      operationId: 'readAdressen'
+      operationId: 'listAdressen'
       parameters:
       - name: 'params'
         in: 'query'
         style: 'form'
         explode: true
         schema:
-          oneOf:
-                - $ref: '#/components/schemas/BuitenlandsAdres'
-                - $ref: '#/components/schemas/Eenheidadres'
-                - $ref: '#/components/schemas/Postadres'
-      responses:
+                responses:
         '200':
           description: 'Adres response'
           content:
@@ -50,11 +46,7 @@ paths:
               schema:
                 type: 'array'
                 items:
-                  oneOf:
-                    - $ref: '#/components/schemas/BuitenlandsAdres'
-                    - $ref: '#/components/schemas/Eenheidadres'
-                    - $ref: '#/components/schemas/Postadres'
-        '401':
+                          '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         default:
           description: 'Onverwachte fout'
@@ -72,15 +64,38 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/BuitenlandsAdres'
-                - $ref: '#/components/schemas/Eenheidadres'
-                - $ref: '#/components/schemas/Postadres'
-      responses:
+                    responses:
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /adressen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Adres met de gegeven identifier'
+      operationId: 'readAdres'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Adres om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Adres response'
+          content:
+            application/json:
+              schema:
+                        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -91,11 +106,7 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/BuitenlandsAdres'
-                - $ref: '#/components/schemas/Eenheidadres'
-                - $ref: '#/components/schemas/Postadres'
-      responses:
+                    responses:
         '200':
           description: 'Adres succesvol vervangen'
         '401':
@@ -110,51 +121,22 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Adres'
-      operationId: 'modifyAdres'
+      operationId: 'updateAdres'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Adres om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Adres om te wijzigen'
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/BuitenlandsAdres'
-                - $ref: '#/components/schemas/Eenheidadres'
-                - $ref: '#/components/schemas/Postadres'
-      responses:
+                    responses:
         '200':
           description: 'Adres succesvol gewijzigd'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
-  /adressen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Adres met de gegeven identifier'
-      operationId: 'findAdresById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Adres om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Adres response'
-          content:
-            application/json:
-              schema:
-                oneOf:
-                  - $ref: '#/components/schemas/BuitenlandsAdres'
-                  - $ref: '#/components/schemas/Eenheidadres'
-                  - $ref: '#/components/schemas/Postadres'
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -168,7 +150,7 @@ paths:
       tags:
       - 'Resources'
       description: 'Ophalen van AdresseerbareObjectenBasisregistratie'
-      operationId: 'readAdresseerbareObjectenBasisregistratie'
+      operationId: 'listAdresseerbareObjectenBasisregistratie'
       parameters:
       - name: 'params'
         in: 'query'
@@ -209,6 +191,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /adresseerbare-objecten-basisregistratie/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een AdresseerbaarObjectBasisregistratie met de gegeven identifier'
+      operationId: 'readAdresseerbaarObjectBasisregistratie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van AdresseerbaarObjectBasisregistratie om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'AdresseerbaarObjectBasisregistratie response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdresseerbaarObjectBasisregistratie'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -235,7 +245,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een AdresseerbaarObjectBasisregistratie'
-      operationId: 'modifyAdresseerbaarObjectBasisregistratie'
+      operationId: 'updateAdresseerbaarObjectBasisregistratie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van AdresseerbaarObjectBasisregistratie om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'AdresseerbaarObjectBasisregistratie om te wijzigen'
         content:
@@ -253,41 +270,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /adresseerbare-objecten-basisregistratie/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een AdresseerbaarObjectBasisregistratie met de gegeven identifier'
-      operationId: 'findAdresseerbaarObjectBasisregistratieById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van AdresseerbaarObjectBasisregistratie om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'AdresseerbaarObjectBasisregistratie response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AdresseerbaarObjectBasisregistratie'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /bag-adressen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van BagAdressen'
-      operationId: 'readBagAdressen'
+      operationId: 'listBagAdressen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -328,6 +316,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /bag-adressen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een BagAdres met de gegeven identifier'
+      operationId: 'readBagAdres'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van BagAdres om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'BagAdres response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BagAdres'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -354,7 +370,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een BagAdres'
-      operationId: 'modifyBagAdres'
+      operationId: 'updateBagAdres'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van BagAdres om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'BagAdres om te wijzigen'
         content:
@@ -372,41 +395,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /bag-adressen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een BagAdres met de gegeven identifier'
-      operationId: 'findBagAdresById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van BagAdres om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'BagAdres response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BagAdres'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /bag-panden:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van BagPanden'
-      operationId: 'readBagPanden'
+      operationId: 'listBagPanden'
       parameters:
       - name: 'params'
         in: 'query'
@@ -447,6 +441,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /bag-panden/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een BagPand met de gegeven identifier'
+      operationId: 'readBagPand'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van BagPand om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'BagPand response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BagPand'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -473,7 +495,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een BagPand'
-      operationId: 'modifyBagPand'
+      operationId: 'updateBagPand'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van BagPand om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'BagPand om te wijzigen'
         content:
@@ -491,41 +520,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /bag-panden/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een BagPand met de gegeven identifier'
-      operationId: 'findBagPandById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van BagPand om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'BagPand response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BagPand'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /bag-woonplaatsen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van BagWoonplaatsen'
-      operationId: 'readBagWoonplaatsen'
+      operationId: 'listBagWoonplaatsen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -566,6 +566,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /bag-woonplaatsen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een BagWoonplaats met de gegeven identifier'
+      operationId: 'readBagWoonplaats'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van BagWoonplaats om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'BagWoonplaats response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BagWoonplaats'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -592,7 +620,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een BagWoonplaats'
-      operationId: 'modifyBagWoonplaats'
+      operationId: 'updateBagWoonplaats'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van BagWoonplaats om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'BagWoonplaats om te wijzigen'
         content:
@@ -610,41 +645,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /bag-woonplaatsen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een BagWoonplaats met de gegeven identifier'
-      operationId: 'findBagWoonplaatsById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van BagWoonplaats om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'BagWoonplaats response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BagWoonplaats'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /beleidswaarden:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Beleidswaarden'
-      operationId: 'readBeleidswaarden'
+      operationId: 'listBeleidswaarden'
       parameters:
       - name: 'params'
         in: 'query'
@@ -685,6 +691,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /beleidswaarden/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Beleidswaarde met de gegeven identifier'
+      operationId: 'readBeleidswaarde'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Beleidswaarde om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Beleidswaarde response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Beleidswaarde'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -711,7 +745,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Beleidswaarde'
-      operationId: 'modifyBeleidswaarde'
+      operationId: 'updateBeleidswaarde'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Beleidswaarde om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Beleidswaarde om te wijzigen'
         content:
@@ -729,41 +770,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /beleidswaarden/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Beleidswaarde met de gegeven identifier'
-      operationId: 'findBeleidswaardeById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Beleidswaarde om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Beleidswaarde response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Beleidswaarde'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /bouwdelen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Bouwdelen'
-      operationId: 'readBouwdelen'
+      operationId: 'listBouwdelen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -804,6 +816,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /bouwdelen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Bouwdeel met de gegeven identifier'
+      operationId: 'readBouwdeel'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Bouwdeel om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Bouwdeel response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bouwdeel'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -830,7 +870,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Bouwdeel'
-      operationId: 'modifyBouwdeel'
+      operationId: 'updateBouwdeel'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Bouwdeel om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Bouwdeel om te wijzigen'
         content:
@@ -848,41 +895,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /bouwdelen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Bouwdeel met de gegeven identifier'
-      operationId: 'findBouwdeelById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Bouwdeel om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Bouwdeel response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Bouwdeel'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /bouwkundig-elementen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van BouwkundigElementen'
-      operationId: 'readBouwkundigElementen'
+      operationId: 'listBouwkundigElementen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -923,6 +941,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /bouwkundig-elementen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een BouwkundigElement met de gegeven identifier'
+      operationId: 'readBouwkundigElement'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van BouwkundigElement om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'BouwkundigElement response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BouwkundigElement'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -949,7 +995,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een BouwkundigElement'
-      operationId: 'modifyBouwkundigElement'
+      operationId: 'updateBouwkundigElement'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van BouwkundigElement om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'BouwkundigElement om te wijzigen'
         content:
@@ -967,41 +1020,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /bouwkundig-elementen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een BouwkundigElement met de gegeven identifier'
-      operationId: 'findBouwkundigElementById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van BouwkundigElement om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'BouwkundigElement response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BouwkundigElement'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /buitenlands-adressen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van BuitenlandsAdressen'
-      operationId: 'readBuitenlandsAdressen'
+      operationId: 'listBuitenlandsAdressen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -1042,6 +1066,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /buitenlands-adressen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een BuitenlandsAdres met de gegeven identifier'
+      operationId: 'readBuitenlandsAdres'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van BuitenlandsAdres om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'BuitenlandsAdres response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuitenlandsAdres'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -1068,7 +1120,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een BuitenlandsAdres'
-      operationId: 'modifyBuitenlandsAdres'
+      operationId: 'updateBuitenlandsAdres'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van BuitenlandsAdres om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'BuitenlandsAdres om te wijzigen'
         content:
@@ -1086,41 +1145,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /buitenlands-adressen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een BuitenlandsAdres met de gegeven identifier'
-      operationId: 'findBuitenlandsAdresById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van BuitenlandsAdres om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'BuitenlandsAdres response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BuitenlandsAdres'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /buurten:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Buurten'
-      operationId: 'readBuurten'
+      operationId: 'listBuurten'
       parameters:
       - name: 'params'
         in: 'query'
@@ -1161,6 +1191,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /buurten/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Buurt met de gegeven identifier'
+      operationId: 'readBuurt'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Buurt om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Buurt response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Buurt'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -1187,7 +1245,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Buurt'
-      operationId: 'modifyBuurt'
+      operationId: 'updateBuurt'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Buurt om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Buurt om te wijzigen'
         content:
@@ -1205,41 +1270,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /buurten/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Buurt met de gegeven identifier'
-      operationId: 'findBuurtById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Buurt om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Buurt response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Buurt'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /clusters:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Clusters'
-      operationId: 'readClusters'
+      operationId: 'listClusters'
       parameters:
       - name: 'params'
         in: 'query'
@@ -1280,6 +1316,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /clusters/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Cluster met de gegeven identifier'
+      operationId: 'readCluster'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Cluster om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Cluster response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cluster'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -1306,7 +1370,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Cluster'
-      operationId: 'modifyCluster'
+      operationId: 'updateCluster'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Cluster om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Cluster om te wijzigen'
         content:
@@ -1324,41 +1395,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /clusters/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Cluster met de gegeven identifier'
-      operationId: 'findClusterById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Cluster om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Cluster response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Cluster'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /collectief-objecten:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van CollectiefObjecten'
-      operationId: 'readCollectiefObjecten'
+      operationId: 'listCollectiefObjecten'
       parameters:
       - name: 'params'
         in: 'query'
@@ -1399,6 +1441,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /collectief-objecten/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een CollectiefObject met de gegeven identifier'
+      operationId: 'readCollectiefObject'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van CollectiefObject om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'CollectiefObject response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectiefObject'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -1425,7 +1495,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een CollectiefObject'
-      operationId: 'modifyCollectiefObject'
+      operationId: 'updateCollectiefObject'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van CollectiefObject om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'CollectiefObject om te wijzigen'
         content:
@@ -1443,41 +1520,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /collectief-objecten/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een CollectiefObject met de gegeven identifier'
-      operationId: 'findCollectiefObjectById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van CollectiefObject om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'CollectiefObject response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CollectiefObject'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /conditiemetingen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Conditiemetingen'
-      operationId: 'readConditiemetingen'
+      operationId: 'listConditiemetingen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -1518,6 +1566,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /conditiemetingen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Conditiemeting met de gegeven identifier'
+      operationId: 'readConditiemeting'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Conditiemeting om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Conditiemeting response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conditiemeting'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -1544,7 +1620,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Conditiemeting'
-      operationId: 'modifyConditiemeting'
+      operationId: 'updateConditiemeting'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Conditiemeting om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Conditiemeting om te wijzigen'
         content:
@@ -1562,41 +1645,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /conditiemetingen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Conditiemeting met de gegeven identifier'
-      operationId: 'findConditiemetingById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Conditiemeting om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Conditiemeting response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Conditiemeting'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /eenheden:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Eenheden'
-      operationId: 'readEenheden'
+      operationId: 'listEenheden'
       parameters:
       - name: 'params'
         in: 'query'
@@ -1637,6 +1691,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /eenheden/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Eenheid met de gegeven identifier'
+      operationId: 'readEenheid'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Eenheid om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Eenheid response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Eenheid'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -1663,7 +1745,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Eenheid'
-      operationId: 'modifyEenheid'
+      operationId: 'updateEenheid'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Eenheid om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Eenheid om te wijzigen'
         content:
@@ -1681,41 +1770,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /eenheden/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Eenheid met de gegeven identifier'
-      operationId: 'findEenheidById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Eenheid om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Eenheid response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Eenheid'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /eenheidadressen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Eenheidadressen'
-      operationId: 'readEenheidadressen'
+      operationId: 'listEenheidadressen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -1756,6 +1816,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /eenheidadressen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Eenheidadres met de gegeven identifier'
+      operationId: 'readEenheidadres'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Eenheidadres om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Eenheidadres response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Eenheidadres'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -1782,7 +1870,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Eenheidadres'
-      operationId: 'modifyEenheidadres'
+      operationId: 'updateEenheidadres'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Eenheidadres om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Eenheidadres om te wijzigen'
         content:
@@ -1800,41 +1895,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /eenheidadressen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Eenheidadres met de gegeven identifier'
-      operationId: 'findEenheidadresById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Eenheidadres om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Eenheidadres response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Eenheidadres'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /eenheid-toestanden:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van EenheidToestanden'
-      operationId: 'readEenheidToestanden'
+      operationId: 'listEenheidToestanden'
       parameters:
       - name: 'params'
         in: 'query'
@@ -1875,6 +1941,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /eenheid-toestanden/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een EenheidToestand met de gegeven identifier'
+      operationId: 'readEenheidToestand'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van EenheidToestand om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'EenheidToestand response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EenheidToestand'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -1901,7 +1995,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een EenheidToestand'
-      operationId: 'modifyEenheidToestand'
+      operationId: 'updateEenheidToestand'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van EenheidToestand om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'EenheidToestand om te wijzigen'
         content:
@@ -1919,41 +2020,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /eenheid-toestanden/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een EenheidToestand met de gegeven identifier'
-      operationId: 'findEenheidToestandById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van EenheidToestand om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'EenheidToestand response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EenheidToestand'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /eenheid-voorwaardes:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van EenheidVoorwaardes'
-      operationId: 'readEenheidVoorwaardes'
+      operationId: 'listEenheidVoorwaardes'
       parameters:
       - name: 'params'
         in: 'query'
@@ -1994,6 +2066,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /eenheid-voorwaardes/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een EenheidVoorwaarden met de gegeven identifier'
+      operationId: 'readEenheidVoorwaarden'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van EenheidVoorwaarden om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'EenheidVoorwaarden response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EenheidVoorwaarden'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -2020,7 +2120,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een EenheidVoorwaarden'
-      operationId: 'modifyEenheidVoorwaarden'
+      operationId: 'updateEenheidVoorwaarden'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van EenheidVoorwaarden om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'EenheidVoorwaarden om te wijzigen'
         content:
@@ -2038,41 +2145,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /eenheid-voorwaardes/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een EenheidVoorwaarden met de gegeven identifier'
-      operationId: 'findEenheidVoorwaardenById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van EenheidVoorwaarden om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'EenheidVoorwaarden response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EenheidVoorwaarden'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /energieprestaties:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Energieprestaties'
-      operationId: 'readEnergieprestaties'
+      operationId: 'listEnergieprestaties'
       parameters:
       - name: 'params'
         in: 'query'
@@ -2113,6 +2191,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /energieprestaties/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Energieprestatie met de gegeven identifier'
+      operationId: 'readEnergieprestatie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Energieprestatie om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Energieprestatie response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Energieprestatie'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -2139,7 +2245,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Energieprestatie'
-      operationId: 'modifyEnergieprestatie'
+      operationId: 'updateEnergieprestatie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Energieprestatie om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Energieprestatie om te wijzigen'
         content:
@@ -2157,41 +2270,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /energieprestaties/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Energieprestatie met de gegeven identifier'
-      operationId: 'findEnergieprestatieById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Energieprestatie om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Energieprestatie response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Energieprestatie'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /garanties:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Garanties'
-      operationId: 'readGaranties'
+      operationId: 'listGaranties'
       parameters:
       - name: 'params'
         in: 'query'
@@ -2232,6 +2316,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /garanties/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Garantie met de gegeven identifier'
+      operationId: 'readGarantie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Garantie om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Garantie response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Garantie'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -2258,7 +2370,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Garantie'
-      operationId: 'modifyGarantie'
+      operationId: 'updateGarantie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Garantie om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Garantie om te wijzigen'
         content:
@@ -2276,41 +2395,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /garanties/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Garantie met de gegeven identifier'
-      operationId: 'findGarantieById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Garantie om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Garantie response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Garantie'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /gebouwen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Gebouwen'
-      operationId: 'readGebouwen'
+      operationId: 'listGebouwen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -2351,6 +2441,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /gebouwen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Gebouw met de gegeven identifier'
+      operationId: 'readGebouw'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Gebouw om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Gebouw response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Gebouw'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -2377,7 +2495,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Gebouw'
-      operationId: 'modifyGebouw'
+      operationId: 'updateGebouw'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Gebouw om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Gebouw om te wijzigen'
         content:
@@ -2395,41 +2520,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /gebouwen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Gebouw met de gegeven identifier'
-      operationId: 'findGebouwById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Gebouw om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Gebouw response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Gebouw'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /gemeenten:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Gemeenten'
-      operationId: 'readGemeenten'
+      operationId: 'listGemeenten'
       parameters:
       - name: 'params'
         in: 'query'
@@ -2470,6 +2566,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /gemeenten/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Gemeente met de gegeven identifier'
+      operationId: 'readGemeente'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Gemeente om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Gemeente response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Gemeente'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -2496,7 +2620,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Gemeente'
-      operationId: 'modifyGemeente'
+      operationId: 'updateGemeente'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Gemeente om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Gemeente om te wijzigen'
         content:
@@ -2514,50 +2645,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /gemeenten/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Gemeente met de gegeven identifier'
-      operationId: 'findGemeenteById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Gemeente om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Gemeente response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Gemeente'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /geometrieën:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Geometrieën'
-      operationId: 'readGeometrieën'
+      operationId: 'listGeometrieën'
       parameters:
       - name: 'params'
         in: 'query'
         style: 'form'
         explode: true
         schema:
-          oneOf:
-                - $ref: '#/components/schemas/Punt'
-      responses:
+                responses:
         '200':
           description: 'Geometrie response'
           content:
@@ -2565,9 +2665,7 @@ paths:
               schema:
                 type: 'array'
                 items:
-                  oneOf:
-                    - $ref: '#/components/schemas/Punt'
-        '401':
+                          '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         default:
           description: 'Onverwachte fout'
@@ -2585,13 +2683,38 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/Punt'
-      responses:
+                    responses:
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /geometrieën/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Geometrie met de gegeven identifier'
+      operationId: 'readGeometrie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Geometrie om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Geometrie response'
+          content:
+            application/json:
+              schema:
+                        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -2602,9 +2725,7 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/Punt'
-      responses:
+                    responses:
         '200':
           description: 'Geometrie succesvol vervangen'
         '401':
@@ -2619,47 +2740,22 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Geometrie'
-      operationId: 'modifyGeometrie'
+      operationId: 'updateGeometrie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Geometrie om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Geometrie om te wijzigen'
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/Punt'
-      responses:
+                    responses:
         '200':
           description: 'Geometrie succesvol gewijzigd'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
-  /geometrieën/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Geometrie met de gegeven identifier'
-      operationId: 'findGeometrieById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Geometrie om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Geometrie response'
-          content:
-            application/json:
-              schema:
-                oneOf:
-                  - $ref: '#/components/schemas/Punt'
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -2673,7 +2769,7 @@ paths:
       tags:
       - 'Resources'
       description: 'Ophalen van KadasterPercelen'
-      operationId: 'readKadasterPercelen'
+      operationId: 'listKadasterPercelen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -2714,6 +2810,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /kadaster-percelen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een KadasterPerceel met de gegeven identifier'
+      operationId: 'readKadasterPerceel'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van KadasterPerceel om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'KadasterPerceel response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KadasterPerceel'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -2740,7 +2864,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een KadasterPerceel'
-      operationId: 'modifyKadasterPerceel'
+      operationId: 'updateKadasterPerceel'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van KadasterPerceel om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'KadasterPerceel om te wijzigen'
         content:
@@ -2758,41 +2889,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /kadaster-percelen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een KadasterPerceel met de gegeven identifier'
-      operationId: 'findKadasterPerceelById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van KadasterPerceel om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'KadasterPerceel response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/KadasterPerceel'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /marktwaarden:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Marktwaarden'
-      operationId: 'readMarktwaarden'
+      operationId: 'listMarktwaarden'
       parameters:
       - name: 'params'
         in: 'query'
@@ -2833,6 +2935,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /marktwaarden/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Marktwaarde met de gegeven identifier'
+      operationId: 'readMarktwaarde'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Marktwaarde om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Marktwaarde response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Marktwaarde'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -2859,7 +2989,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Marktwaarde'
-      operationId: 'modifyMarktwaarde'
+      operationId: 'updateMarktwaarde'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Marktwaarde om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Marktwaarde om te wijzigen'
         content:
@@ -2877,41 +3014,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /marktwaarden/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Marktwaarde met de gegeven identifier'
-      operationId: 'findMarktwaardeById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Marktwaarde om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Marktwaarde response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Marktwaarde'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /panden:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Panden'
-      operationId: 'readPanden'
+      operationId: 'listPanden'
       parameters:
       - name: 'params'
         in: 'query'
@@ -2952,6 +3060,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /panden/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Pand met de gegeven identifier'
+      operationId: 'readPand'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Pand om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Pand response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pand'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -2978,7 +3114,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Pand'
-      operationId: 'modifyPand'
+      operationId: 'updatePand'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Pand om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Pand om te wijzigen'
         content:
@@ -2996,41 +3139,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /panden/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Pand met de gegeven identifier'
-      operationId: 'findPandById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Pand om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Pand response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Pand'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /postadressen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Postadressen'
-      operationId: 'readPostadressen'
+      operationId: 'listPostadressen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -3071,6 +3185,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /postadressen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Postadres met de gegeven identifier'
+      operationId: 'readPostadres'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Postadres om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Postadres response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Postadres'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -3097,7 +3239,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Postadres'
-      operationId: 'modifyPostadres'
+      operationId: 'updatePostadres'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Postadres om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Postadres om te wijzigen'
         content:
@@ -3115,41 +3264,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /postadressen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Postadres met de gegeven identifier'
-      operationId: 'findPostadresById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Postadres om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Postadres response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Postadres'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /punten:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Punten'
-      operationId: 'readPunten'
+      operationId: 'listPunten'
       parameters:
       - name: 'params'
         in: 'query'
@@ -3190,6 +3310,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /punten/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Punt met de gegeven identifier'
+      operationId: 'readPunt'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Punt om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Punt response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Punt'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -3216,7 +3364,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Punt'
-      operationId: 'modifyPunt'
+      operationId: 'updatePunt'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Punt om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Punt om te wijzigen'
         content:
@@ -3234,41 +3389,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /punten/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Punt met de gegeven identifier'
-      operationId: 'findPuntById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Punt om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Punt response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Punt'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /renovaties:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Renovaties'
-      operationId: 'readRenovaties'
+      operationId: 'listRenovaties'
       parameters:
       - name: 'params'
         in: 'query'
@@ -3309,6 +3435,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /renovaties/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Renovatie met de gegeven identifier'
+      operationId: 'readRenovatie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Renovatie om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Renovatie response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Renovatie'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -3335,7 +3489,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Renovatie'
-      operationId: 'modifyRenovatie'
+      operationId: 'updateRenovatie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Renovatie om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Renovatie om te wijzigen'
         content:
@@ -3353,41 +3514,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /renovaties/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Renovatie met de gegeven identifier'
-      operationId: 'findRenovatieById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Renovatie om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Renovatie response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Renovatie'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /stadsdelen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Stadsdelen'
-      operationId: 'readStadsdelen'
+      operationId: 'listStadsdelen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -3428,6 +3560,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /stadsdelen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Stadsdeel met de gegeven identifier'
+      operationId: 'readStadsdeel'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Stadsdeel om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Stadsdeel response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stadsdeel'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -3454,7 +3614,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Stadsdeel'
-      operationId: 'modifyStadsdeel'
+      operationId: 'updateStadsdeel'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Stadsdeel om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Stadsdeel om te wijzigen'
         content:
@@ -3472,41 +3639,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /stadsdelen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Stadsdeel met de gegeven identifier'
-      operationId: 'findStadsdeelById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Stadsdeel om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Stadsdeel response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Stadsdeel'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /taxaties:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Taxaties'
-      operationId: 'readTaxaties'
+      operationId: 'listTaxaties'
       parameters:
       - name: 'params'
         in: 'query'
@@ -3547,6 +3685,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /taxaties/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Taxatie met de gegeven identifier'
+      operationId: 'readTaxatie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Taxatie om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Taxatie response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Taxatie'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -3573,7 +3739,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Taxatie'
-      operationId: 'modifyTaxatie'
+      operationId: 'updateTaxatie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Taxatie om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Taxatie om te wijzigen'
         content:
@@ -3591,41 +3764,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /taxaties/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Taxatie met de gegeven identifier'
-      operationId: 'findTaxatieById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Taxatie om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Taxatie response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Taxatie'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /vertrekken:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Vertrekken'
-      operationId: 'readVertrekken'
+      operationId: 'listVertrekken'
       parameters:
       - name: 'params'
         in: 'query'
@@ -3666,6 +3810,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /vertrekken/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Vertrek met de gegeven identifier'
+      operationId: 'readVertrek'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Vertrek om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Vertrek response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vertrek'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -3692,7 +3864,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Vertrek'
-      operationId: 'modifyVertrek'
+      operationId: 'updateVertrek'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Vertrek om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Vertrek om te wijzigen'
         content:
@@ -3710,41 +3889,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /vertrekken/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Vertrek met de gegeven identifier'
-      operationId: 'findVertrekById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Vertrek om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Vertrek response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Vertrek'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /wijken:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Wijken'
-      operationId: 'readWijken'
+      operationId: 'listWijken'
       parameters:
       - name: 'params'
         in: 'query'
@@ -3785,6 +3935,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /wijken/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Wijk met de gegeven identifier'
+      operationId: 'readWijk'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Wijk om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Wijk response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wijk'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -3811,7 +3989,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Wijk'
-      operationId: 'modifyWijk'
+      operationId: 'updateWijk'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Wijk om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Wijk om te wijzigen'
         content:
@@ -3829,41 +4014,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /wijken/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Wijk met de gegeven identifier'
-      operationId: 'findWijkById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Wijk om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Wijk response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Wijk'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /woningwaarderingen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Woningwaarderingen'
-      operationId: 'readWoningwaarderingen'
+      operationId: 'listWoningwaarderingen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -3904,6 +4060,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /woningwaarderingen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Woningwaardering met de gegeven identifier'
+      operationId: 'readWoningwaardering'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Woningwaardering om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Woningwaardering response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Woningwaardering'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -3930,7 +4114,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Woningwaardering'
-      operationId: 'modifyWoningwaardering'
+      operationId: 'updateWoningwaardering'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Woningwaardering om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Woningwaardering om te wijzigen'
         content:
@@ -3948,41 +4139,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /woningwaarderingen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Woningwaardering met de gegeven identifier'
-      operationId: 'findWoningwaarderingById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Woningwaardering om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Woningwaardering response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Woningwaardering'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /woningwaardering-criteria:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van WoningwaarderingCriteria'
-      operationId: 'readWoningwaarderingCriteria'
+      operationId: 'listWoningwaarderingCriteria'
       parameters:
       - name: 'params'
         in: 'query'
@@ -4023,6 +4185,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /woningwaardering-criteria/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een WoningwaarderingCriterium met de gegeven identifier'
+      operationId: 'readWoningwaarderingCriterium'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van WoningwaarderingCriterium om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'WoningwaarderingCriterium response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WoningwaarderingCriterium'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -4049,7 +4239,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een WoningwaarderingCriterium'
-      operationId: 'modifyWoningwaarderingCriterium'
+      operationId: 'updateWoningwaarderingCriterium'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van WoningwaarderingCriterium om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'WoningwaarderingCriterium om te wijzigen'
         content:
@@ -4067,41 +4264,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /woningwaardering-criteria/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een WoningwaarderingCriterium met de gegeven identifier'
-      operationId: 'findWoningwaarderingCriteriumById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van WoningwaarderingCriterium om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'WoningwaarderingCriterium response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/WoningwaarderingCriterium'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /woningwaardering-criterium-groepen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van WoningwaarderingCriteriumGroepen'
-      operationId: 'readWoningwaarderingCriteriumGroepen'
+      operationId: 'listWoningwaarderingCriteriumGroepen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -4142,6 +4310,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /woningwaardering-criterium-groepen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een WoningwaarderingCriteriumGroep met de gegeven identifier'
+      operationId: 'readWoningwaarderingCriteriumGroep'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van WoningwaarderingCriteriumGroep om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'WoningwaarderingCriteriumGroep response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WoningwaarderingCriteriumGroep'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -4168,7 +4364,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een WoningwaarderingCriteriumGroep'
-      operationId: 'modifyWoningwaarderingCriteriumGroep'
+      operationId: 'updateWoningwaarderingCriteriumGroep'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van WoningwaarderingCriteriumGroep om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'WoningwaarderingCriteriumGroep om te wijzigen'
         content:
@@ -4186,41 +4389,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /woningwaardering-criterium-groepen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een WoningwaarderingCriteriumGroep met de gegeven identifier'
-      operationId: 'findWoningwaarderingCriteriumGroepById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van WoningwaarderingCriteriumGroep om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'WoningwaarderingCriteriumGroep response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/WoningwaarderingCriteriumGroep'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /woningwaardering-groepen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van WoningwaarderingGroepen'
-      operationId: 'readWoningwaarderingGroepen'
+      operationId: 'listWoningwaarderingGroepen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -4261,6 +4435,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /woningwaardering-groepen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een WoningwaarderingGroep met de gegeven identifier'
+      operationId: 'readWoningwaarderingGroep'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van WoningwaarderingGroep om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'WoningwaarderingGroep response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WoningwaarderingGroep'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -4287,7 +4489,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een WoningwaarderingGroep'
-      operationId: 'modifyWoningwaarderingGroep'
+      operationId: 'updateWoningwaarderingGroep'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van WoningwaarderingGroep om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'WoningwaarderingGroep om te wijzigen'
         content:
@@ -4305,41 +4514,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /woningwaardering-groepen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een WoningwaarderingGroep met de gegeven identifier'
-      operationId: 'findWoningwaarderingGroepById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van WoningwaarderingGroep om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'WoningwaarderingGroep response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/WoningwaarderingGroep'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /woningwaardering-resultaten:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van WoningwaarderingResultaten'
-      operationId: 'readWoningwaarderingResultaten'
+      operationId: 'listWoningwaarderingResultaten'
       parameters:
       - name: 'params'
         in: 'query'
@@ -4380,6 +4560,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /woningwaardering-resultaten/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een WoningwaarderingResultaat met de gegeven identifier'
+      operationId: 'readWoningwaarderingResultaat'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van WoningwaarderingResultaat om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'WoningwaarderingResultaat response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WoningwaarderingResultaat'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -4406,7 +4614,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een WoningwaarderingResultaat'
-      operationId: 'modifyWoningwaarderingResultaat'
+      operationId: 'updateWoningwaarderingResultaat'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van WoningwaarderingResultaat om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'WoningwaarderingResultaat om te wijzigen'
         content:
@@ -4424,41 +4639,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /woningwaardering-resultaten/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een WoningwaarderingResultaat met de gegeven identifier'
-      operationId: 'findWoningwaarderingResultaatById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van WoningwaarderingResultaat om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'WoningwaarderingResultaat response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/WoningwaarderingResultaat'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /woonplaatsen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Woonplaatsen'
-      operationId: 'readWoonplaatsen'
+      operationId: 'listWoonplaatsen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -4499,6 +4685,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /woonplaatsen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Woonplaats met de gegeven identifier'
+      operationId: 'readWoonplaats'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Woonplaats om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Woonplaats response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Woonplaats'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -4525,7 +4739,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Woonplaats'
-      operationId: 'modifyWoonplaats'
+      operationId: 'updateWoonplaats'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Woonplaats om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Woonplaats om te wijzigen'
         content:
@@ -4543,41 +4764,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /woonplaatsen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Woonplaats met de gegeven identifier'
-      operationId: 'findWoonplaatsById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Woonplaats om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Woonplaats response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Woonplaats'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /woz-eenheden:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van WozEenheden'
-      operationId: 'readWozEenheden'
+      operationId: 'listWozEenheden'
       parameters:
       - name: 'params'
         in: 'query'
@@ -4618,6 +4810,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /woz-eenheden/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een WozEenheid met de gegeven identifier'
+      operationId: 'readWozEenheid'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van WozEenheid om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'WozEenheid response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WozEenheid'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -4644,7 +4864,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een WozEenheid'
-      operationId: 'modifyWozEenheid'
+      operationId: 'updateWozEenheid'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van WozEenheid om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'WozEenheid om te wijzigen'
         content:
@@ -4662,41 +4889,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /woz-eenheden/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een WozEenheid met de gegeven identifier'
-      operationId: 'findWozEenheidById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van WozEenheid om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'WozEenheid response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/WozEenheid'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /zekerheid-verpandingen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van ZekerheidVerpandingen'
-      operationId: 'readZekerheidVerpandingen'
+      operationId: 'listZekerheidVerpandingen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -4737,6 +4935,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /zekerheid-verpandingen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een ZekerheidVerpanding met de gegeven identifier'
+      operationId: 'readZekerheidVerpanding'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van ZekerheidVerpanding om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'ZekerheidVerpanding response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZekerheidVerpanding'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -4763,7 +4989,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een ZekerheidVerpanding'
-      operationId: 'modifyZekerheidVerpanding'
+      operationId: 'updateZekerheidVerpanding'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van ZekerheidVerpanding om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'ZekerheidVerpanding om te wijzigen'
         content:
@@ -4781,73 +5014,62 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /zekerheid-verpandingen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een ZekerheidVerpanding met de gegeven identifier'
-      operationId: 'findZekerheidVerpandingById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van ZekerheidVerpanding om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'ZekerheidVerpanding response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ZekerheidVerpanding'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
 security:
-  - basicAuth: []
+  - ApiKeyAuth: []
 components:
   headers:
-    X_Pagination_Page:
-      schema:
-        type: integer
-        description: Huidige pagina.
-        example: 3
-    X_Pagination_Limit:
-      schema:
-        type: integer
-        description: Aantal resultaten per pagina.
-        example: 20
-    X_Stuurgegevens_TijdstipBericht:
+    X-Stuurgegevens-TijdstipBericht:
       schema:
         type: string
         format: data-time
         description: Tijdstip waarop het bericht verzonden is
-    X_Stuurgegevens_Referentienummer:
+    X-Stuurgegevens-Referentienummer:
       schema:
         type: string
         format: any
         description: Een unieke code voor correlatie
-    X_Stuurgegevens_Zender:
+    X-Stuurgegevens-Zender-Organisatie:
       schema:
         type: string
         format: any
-        description: Identificatie van de verzendende organisatie
+        description: Naam van de verzendende organisatie
+    X-Stuurgegevens-Zender-Administratie:
+      schema:
+        type: string
+        format: any
+        description: |
+          Met het stuurgegeven Administratie kan onderscheid gemaakt worden tussen 
+          de verschillende gegevensverzamelingen die de verzendende organisatie beheert
+    X-Parameters-Aantal:
+      schema:
+        type: integer
+        description: Totaal aantal gevonden entiteiten
+        example: 135
+    X-Parameters-AantalPerPagina:
+      schema:
+        type: integer
+        description: Miximum aantal entiteiten per pagina
+        example: 20
+    X-Parameters-Pagina:
+      schema:
+        type: integer
+        description: Huidige paginanummer
+        example: 3
+    X-Parameters-PeiltijdstipMaterieel:
+      schema:
+        type: string
+        format: date-time
+        description: De peildatum. Indien leeg worden de actuele gegevens opgevraagd
   securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
   responses:
     NietGeautoriseerd:
-      description: Authenticatie-informatie ontbreekt of is ongeldig
+      description: API-key ontbreekt of is ongeldig
       headers:
-        WWW_Authenticate:
+        X-API-KEY:
           schema:
             type: string
   schemas:
@@ -4931,11 +5153,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De sorteervolgorde van de referentiedata anders dan alfabetisch.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     AdresseerbaarObjectBasisregistratie:
       type: object
       properties:
@@ -5148,9 +5365,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WozEenheid'
-        rayon:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'Het rayon waar de eenheid in valt. Waarden zijn corporatiespecifiek en daarom niet in de referentiedata (bijlage G) beschreven.'
         adresseerbaarObjectBasisregistratie:
           $ref: '#/components/schemas/AdresseerbaarObjectBasisregistratie'
           description: 'Het adresseerbare object uit de BAG die overeenkomt met de eenheid.'
@@ -5735,14 +5949,14 @@ components:
         - $ref: '#/components/schemas/Geometrie'
         - type: object
           properties:
-              lengtegraad:
-                type: 'number'
-                format: 'float'
-                description: 'De lengtegraad.'
-              breedtegraad:
-                type: 'number'
-                format: 'float'
-                description: 'De breedtegraad.'
+            lengtegraad:
+              type: 'number'
+              format: 'float'
+              description: 'De lengtegraad.'
+            breedtegraad:
+              type: 'number'
+              format: 'float'
+              description: 'De breedtegraad.'
     Conditiemeting:
       type: object
       properties:
@@ -6671,58 +6885,58 @@ components:
         - $ref: '#/components/schemas/Adres'
         - type: object
           properties:
-              postbusnummer:
-                type: 'string'
-                format: 'any'
-                description: 'Het postbusnummer behorende bij het adres'
-              woonplaats:
-                type: 'string'
-                format: 'any'
-                description: 'De woonplaats waarin het adres zich bevindt.'
-              provincie:
-                type: 'string'
-                format: 'any'
-                description: 'De provincie behorend bij het adres.'
-              land:
-                $ref: '#/components/schemas/Referentiedata'
-                description: 'Het land waarin het adres zich bevindt.'
-              adresregel1:
-                type: 'string'
-                format: 'any'
-                description: 'Adresregel in verband met een buitenlands adres.'
-              adresregel2:
-                type: 'string'
-                format: 'any'
-                description: 'Adresregel in verband met een buitenlands adres.'
+            postbusnummer:
+              type: 'string'
+              format: 'any'
+              description: 'Het postbusnummer behorende bij het adres'
+            woonplaats:
+              type: 'string'
+              format: 'any'
+              description: 'De woonplaats waarin het adres zich bevindt.'
+            provincie:
+              type: 'string'
+              format: 'any'
+              description: 'De provincie behorend bij het adres.'
+            land:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'Het land waarin het adres zich bevindt.'
+            adresregel1:
+              type: 'string'
+              format: 'any'
+              description: 'Adresregel in verband met een buitenlands adres.'
+            adresregel2:
+              type: 'string'
+              format: 'any'
+              description: 'Adresregel in verband met een buitenlands adres.'
     Eenheidadres:
       allOf:
         - $ref: '#/components/schemas/Adres'
         - type: object
           properties:
-              woonplaats:
-                $ref: '#/components/schemas/Woonplaats'
-                description: 'De woonplaats waarin het adres zich bevindt.'
-              buurt:
-                $ref: '#/components/schemas/Buurt'
-                description: 'De buurt behorend bij het adres.'
-              wijk:
-                $ref: '#/components/schemas/Wijk'
-                description: 'De wijk behorend bij het adres.'
-              gemeente:
-                $ref: '#/components/schemas/Gemeente'
-                description: 'De gemeente behorend bij het adres.'
-              provincie:
-                $ref: '#/components/schemas/Referentiedata'
-                description: 'De provincie behorend bij het adres.'
-              land:
-                $ref: '#/components/schemas/Referentiedata'
-                description: 'Het land waarin het adres zich bevindt.'
-              bag:
-                $ref: '#/components/schemas/BagAdres'
-                description: 'De unieke aanduiding van een nummeraanduiding.'
-              geometrie:
-                $ref: '#/components/schemas/Punt'
-                description: 'De geometrie van het adres.'
+            woonplaats:
+              $ref: '#/components/schemas/Woonplaats'
+              description: 'De woonplaats waarin het adres zich bevindt.'
+            buurt:
+              $ref: '#/components/schemas/Buurt'
+              description: 'De buurt behorend bij het adres.'
+            wijk:
+              $ref: '#/components/schemas/Wijk'
+              description: 'De wijk behorend bij het adres.'
+            gemeente:
+              $ref: '#/components/schemas/Gemeente'
+              description: 'De gemeente behorend bij het adres.'
+            provincie:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'De provincie behorend bij het adres.'
+            land:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'Het land waarin het adres zich bevindt.'
+            bag:
+              $ref: '#/components/schemas/BagAdres'
+              description: 'De unieke aanduiding van een nummeraanduiding.'
+            geometrie:
+              $ref: '#/components/schemas/Punt'
+              description: 'De geometrie van het adres.'
     EenheidToestand:
       type: object
       properties:
@@ -6777,17 +6991,17 @@ components:
         - $ref: '#/components/schemas/Adres'
         - type: object
           properties:
-              postbusnummer:
-                type: 'string'
-                format: 'any'
-                description: 'Het postbusnummer behorende bij het adres.'
-              antwoordnummer:
-                type: 'string'
-                format: 'any'
-                description: 'Het antwoordnummer behorende bij het adres.'
-              woonplaats:
-                $ref: '#/components/schemas/Woonplaats'
-                description: 'De woonplaats waarin het adres zich bevindt.'
+            postbusnummer:
+              type: 'string'
+              format: 'any'
+              description: 'Het postbusnummer behorende bij het adres.'
+            antwoordnummer:
+              type: 'string'
+              format: 'any'
+              description: 'Het antwoordnummer behorende bij het adres.'
+            woonplaats:
+              $ref: '#/components/schemas/Woonplaats'
+              description: 'De woonplaats waarin het adres zich bevindt.'
     Adres-sleutels:
       type: object
       properties:
@@ -7264,3 +7478,4 @@ components:
           type: 'string'
         waarde:
           type: 'string'
+

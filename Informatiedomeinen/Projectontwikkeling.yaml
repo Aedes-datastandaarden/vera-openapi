@@ -1,15 +1,15 @@
 openapi: '3.0.0'
 info:
   title: 'VERA'
-  description: 'API-specificatie van het horizontale gegevensmodel'
+  description: API-specificatie van informatiedomein Projectontwikkeling
   termsOfService: 'https://www.stichting-vera.nl/voorwaarden/'
   contact:
     name: 'VERA'
-    url: 'https://www.stichting-vera.nl/'
+    url: 'https://cora.wikixl.nl/index.php/VERA_Standaard'
     email: 'info@stichting-vera.nl'
   license:
-    name: 'General Public License (GPL)'
-    url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+    name: European Union Public License, version 1.2 (EUPL-1.2)
+    url: https://eupl.eu/1.2/nl/
   version: '4.0.3'
 servers:
   - url: https://projectontwikkeling.vera.io:{port}/{basePath}
@@ -31,7 +31,7 @@ paths:
       tags:
       - 'Resources'
       description: 'Ophalen van Projecten'
-      operationId: 'readProjecten'
+      operationId: 'listProjecten'
       parameters:
       - name: 'params'
         in: 'query'
@@ -72,6 +72,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /projecten/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Project met de gegeven identifier'
+      operationId: 'readProject'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Project om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Project response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -98,7 +126,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Project'
-      operationId: 'modifyProject'
+      operationId: 'updateProject'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Project om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Project om te wijzigen'
         content:
@@ -116,41 +151,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /projecten/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Project met de gegeven identifier'
-      operationId: 'findProjectById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Project om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Project response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Project'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /projectbestedingen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Projectbestedingen'
-      operationId: 'readProjectbestedingen'
+      operationId: 'listProjectbestedingen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -191,6 +197,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /projectbestedingen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Projectbesteding met de gegeven identifier'
+      operationId: 'readProjectbesteding'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectbesteding om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Projectbesteding response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Projectbesteding'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -217,7 +251,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Projectbesteding'
-      operationId: 'modifyProjectbesteding'
+      operationId: 'updateProjectbesteding'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectbesteding om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Projectbesteding om te wijzigen'
         content:
@@ -235,41 +276,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /projectbestedingen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Projectbesteding met de gegeven identifier'
-      operationId: 'findProjectbestedingById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Projectbesteding om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Projectbesteding response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Projectbesteding'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /projectbudgetregels:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Projectbudgetregels'
-      operationId: 'readProjectbudgetregels'
+      operationId: 'listProjectbudgetregels'
       parameters:
       - name: 'params'
         in: 'query'
@@ -310,6 +322,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /projectbudgetregels/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Projectbudgetregel met de gegeven identifier'
+      operationId: 'readProjectbudgetregel'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectbudgetregel om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Projectbudgetregel response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Projectbudgetregel'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -336,7 +376,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Projectbudgetregel'
-      operationId: 'modifyProjectbudgetregel'
+      operationId: 'updateProjectbudgetregel'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectbudgetregel om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Projectbudgetregel om te wijzigen'
         content:
@@ -354,41 +401,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /projectbudgetregels/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Projectbudgetregel met de gegeven identifier'
-      operationId: 'findProjectbudgetregelById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Projectbudgetregel om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Projectbudgetregel response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Projectbudgetregel'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /projectdoelstellingen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Projectdoelstellingen'
-      operationId: 'readProjectdoelstellingen'
+      operationId: 'listProjectdoelstellingen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -429,6 +447,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /projectdoelstellingen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Projectdoelstelling met de gegeven identifier'
+      operationId: 'readProjectdoelstelling'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectdoelstelling om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Projectdoelstelling response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Projectdoelstelling'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -455,7 +501,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Projectdoelstelling'
-      operationId: 'modifyProjectdoelstelling'
+      operationId: 'updateProjectdoelstelling'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectdoelstelling om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Projectdoelstelling om te wijzigen'
         content:
@@ -473,41 +526,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /projectdoelstellingen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Projectdoelstelling met de gegeven identifier'
-      operationId: 'findProjectdoelstellingById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Projectdoelstelling om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Projectdoelstelling response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Projectdoelstelling'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /projectfasen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Projectfasen'
-      operationId: 'readProjectfasen'
+      operationId: 'listProjectfasen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -548,6 +572,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /projectfasen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Projectfase met de gegeven identifier'
+      operationId: 'readProjectfase'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectfase om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Projectfase response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Projectfase'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -574,7 +626,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Projectfase'
-      operationId: 'modifyProjectfase'
+      operationId: 'updateProjectfase'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectfase om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Projectfase om te wijzigen'
         content:
@@ -592,41 +651,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /projectfasen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Projectfase met de gegeven identifier'
-      operationId: 'findProjectfaseById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Projectfase om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Projectfase response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Projectfase'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /projectfasebesluiten:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Projectfasebesluiten'
-      operationId: 'readProjectfasebesluiten'
+      operationId: 'listProjectfasebesluiten'
       parameters:
       - name: 'params'
         in: 'query'
@@ -667,6 +697,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /projectfasebesluiten/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Projectfasebesluit met de gegeven identifier'
+      operationId: 'readProjectfasebesluit'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectfasebesluit om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Projectfasebesluit response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Projectfasebesluit'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -693,7 +751,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Projectfasebesluit'
-      operationId: 'modifyProjectfasebesluit'
+      operationId: 'updateProjectfasebesluit'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectfasebesluit om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Projectfasebesluit om te wijzigen'
         content:
@@ -711,41 +776,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /projectfasebesluiten/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Projectfasebesluit met de gegeven identifier'
-      operationId: 'findProjectfasebesluitById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Projectfasebesluit om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Projectfasebesluit response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Projectfasebesluit'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /projectorders:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Projectorders'
-      operationId: 'readProjectorders'
+      operationId: 'listProjectorders'
       parameters:
       - name: 'params'
         in: 'query'
@@ -786,6 +822,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /projectorders/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Projectorder met de gegeven identifier'
+      operationId: 'readProjectorder'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectorder om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Projectorder response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Projectorder'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -812,7 +876,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Projectorder'
-      operationId: 'modifyProjectorder'
+      operationId: 'updateProjectorder'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectorder om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Projectorder om te wijzigen'
         content:
@@ -830,41 +901,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /projectorders/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Projectorder met de gegeven identifier'
-      operationId: 'findProjectorderById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Projectorder om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Projectorder response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Projectorder'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /projectrelaties:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Projectrelaties'
-      operationId: 'readProjectrelaties'
+      operationId: 'listProjectrelaties'
       parameters:
       - name: 'params'
         in: 'query'
@@ -905,6 +947,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /projectrelaties/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Projectrelatie met de gegeven identifier'
+      operationId: 'readProjectrelatie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectrelatie om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Projectrelatie response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Projectrelatie'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -931,7 +1001,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Projectrelatie'
-      operationId: 'modifyProjectrelatie'
+      operationId: 'updateProjectrelatie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectrelatie om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Projectrelatie om te wijzigen'
         content:
@@ -949,41 +1026,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /projectrelaties/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Projectrelatie met de gegeven identifier'
-      operationId: 'findProjectrelatieById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Projectrelatie om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Projectrelatie response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Projectrelatie'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /projecttaken:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Projecttaken'
-      operationId: 'readProjecttaken'
+      operationId: 'listProjecttaken'
       parameters:
       - name: 'params'
         in: 'query'
@@ -1024,6 +1072,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /projecttaken/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Projecttaak met de gegeven identifier'
+      operationId: 'readProjecttaak'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projecttaak om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Projecttaak response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Projecttaak'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -1050,7 +1126,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Projecttaak'
-      operationId: 'modifyProjecttaak'
+      operationId: 'updateProjecttaak'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projecttaak om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Projecttaak om te wijzigen'
         content:
@@ -1068,73 +1151,62 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /projecttaken/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Projecttaak met de gegeven identifier'
-      operationId: 'findProjecttaakById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Projecttaak om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Projecttaak response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Projecttaak'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
 security:
-  - basicAuth: []
+  - ApiKeyAuth: []
 components:
   headers:
-    X_Pagination_Page:
-      schema:
-        type: integer
-        description: Huidige pagina.
-        example: 3
-    X_Pagination_Limit:
-      schema:
-        type: integer
-        description: Aantal resultaten per pagina.
-        example: 20
-    X_Stuurgegevens_TijdstipBericht:
+    X-Stuurgegevens-TijdstipBericht:
       schema:
         type: string
         format: data-time
         description: Tijdstip waarop het bericht verzonden is
-    X_Stuurgegevens_Referentienummer:
+    X-Stuurgegevens-Referentienummer:
       schema:
         type: string
         format: any
         description: Een unieke code voor correlatie
-    X_Stuurgegevens_Zender:
+    X-Stuurgegevens-Zender-Organisatie:
       schema:
         type: string
         format: any
-        description: Identificatie van de verzendende organisatie
+        description: Naam van de verzendende organisatie
+    X-Stuurgegevens-Zender-Administratie:
+      schema:
+        type: string
+        format: any
+        description: |
+          Met het stuurgegeven Administratie kan onderscheid gemaakt worden tussen 
+          de verschillende gegevensverzamelingen die de verzendende organisatie beheert
+    X-Parameters-Aantal:
+      schema:
+        type: integer
+        description: Totaal aantal gevonden entiteiten
+        example: 135
+    X-Parameters-AantalPerPagina:
+      schema:
+        type: integer
+        description: Miximum aantal entiteiten per pagina
+        example: 20
+    X-Parameters-Pagina:
+      schema:
+        type: integer
+        description: Huidige paginanummer
+        example: 3
+    X-Parameters-PeiltijdstipMaterieel:
+      schema:
+        type: string
+        format: date-time
+        description: De peildatum. Indien leeg worden de actuele gegevens opgevraagd
   securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
   responses:
     NietGeautoriseerd:
-      description: Authenticatie-informatie ontbreekt of is ongeldig
+      description: API-key ontbreekt of is ongeldig
       headers:
-        WWW_Authenticate:
+        X-API-KEY:
           schema:
             type: string
   schemas:
@@ -1251,11 +1323,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De sorteervolgorde van de referentiedata anders dan alfabetisch.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Projectdoelstelling:
       type: object
       properties:
@@ -1443,6 +1510,9 @@ components:
         soort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Bijvoorbeeld: Initiatieffase, Definitiefase, Ontwerpfase, Voorbereidingsfase, Realisatiefase, Nazorgfase'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: ''
         begindatum:
           type: 'string'
           format: 'date-time'
@@ -1458,9 +1528,6 @@ components:
         gewensteEinddatum:
           type: 'string'
           format: 'date-time'
-          description: ''
-        status:
-          $ref: '#/components/schemas/Referentiedata'
           description: ''
         project:
           $ref: '#/components/schemas/Project'
@@ -1823,3 +1890,4 @@ components:
           type: 'string'
         waarde:
           type: 'string'
+

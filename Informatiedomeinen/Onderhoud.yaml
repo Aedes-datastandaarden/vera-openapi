@@ -1,15 +1,15 @@
 openapi: '3.0.0'
 info:
   title: 'VERA'
-  description: 'API-specificatie van het horizontale gegevensmodel'
+  description: API-specificatie van informatiedomein Onderhoud
   termsOfService: 'https://www.stichting-vera.nl/voorwaarden/'
   contact:
     name: 'VERA'
-    url: 'https://www.stichting-vera.nl/'
+    url: 'https://cora.wikixl.nl/index.php/VERA_Standaard'
     email: 'info@stichting-vera.nl'
   license:
-    name: 'General Public License (GPL)'
-    url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+    name: European Union Public License, version 1.2 (EUPL-1.2)
+    url: https://eupl.eu/1.2/nl/
   version: '4.0.3'
 servers:
   - url: https://onderhoud.vera.io:{port}/{basePath}
@@ -31,7 +31,7 @@ paths:
       tags:
       - 'Resources'
       description: 'Ophalen van Defecten'
-      operationId: 'readDefecten'
+      operationId: 'listDefecten'
       parameters:
       - name: 'params'
         in: 'query'
@@ -72,6 +72,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /defecten/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Defect met de gegeven identifier'
+      operationId: 'readDefect'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Defect om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Defect response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Defect'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -98,7 +126,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Defect'
-      operationId: 'modifyDefect'
+      operationId: 'updateDefect'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Defect om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Defect om te wijzigen'
         content:
@@ -116,41 +151,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /defecten/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Defect met de gegeven identifier'
-      operationId: 'findDefectById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Defect om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Defect response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Defect'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /inspectierapporten:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Inspectierapporten'
-      operationId: 'readInspectierapporten'
+      operationId: 'listInspectierapporten'
       parameters:
       - name: 'params'
         in: 'query'
@@ -191,6 +197,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /inspectierapporten/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Inspectierapport met de gegeven identifier'
+      operationId: 'readInspectierapport'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Inspectierapport om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Inspectierapport response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Inspectierapport'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -217,7 +251,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Inspectierapport'
-      operationId: 'modifyInspectierapport'
+      operationId: 'updateInspectierapport'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Inspectierapport om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Inspectierapport om te wijzigen'
         content:
@@ -235,41 +276,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /inspectierapporten/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Inspectierapport met de gegeven identifier'
-      operationId: 'findInspectierapportById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Inspectierapport om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Inspectierapport response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Inspectierapport'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /onderhoudsbestedingen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Onderhoudsbestedingen'
-      operationId: 'readOnderhoudsbestedingen'
+      operationId: 'listOnderhoudsbestedingen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -310,6 +322,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /onderhoudsbestedingen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Onderhoudsbesteding met de gegeven identifier'
+      operationId: 'readOnderhoudsbesteding'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Onderhoudsbesteding om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Onderhoudsbesteding response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Onderhoudsbesteding'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -336,7 +376,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Onderhoudsbesteding'
-      operationId: 'modifyOnderhoudsbesteding'
+      operationId: 'updateOnderhoudsbesteding'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Onderhoudsbesteding om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Onderhoudsbesteding om te wijzigen'
         content:
@@ -354,41 +401,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /onderhoudsbestedingen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Onderhoudsbesteding met de gegeven identifier'
-      operationId: 'findOnderhoudsbestedingById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Onderhoudsbesteding om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Onderhoudsbesteding response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Onderhoudsbesteding'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /onderhoudsorders:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Onderhoudsorders'
-      operationId: 'readOnderhoudsorders'
+      operationId: 'listOnderhoudsorders'
       parameters:
       - name: 'params'
         in: 'query'
@@ -429,6 +447,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /onderhoudsorders/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Onderhoudsorder met de gegeven identifier'
+      operationId: 'readOnderhoudsorder'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Onderhoudsorder om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Onderhoudsorder response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Onderhoudsorder'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -455,7 +501,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Onderhoudsorder'
-      operationId: 'modifyOnderhoudsorder'
+      operationId: 'updateOnderhoudsorder'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Onderhoudsorder om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Onderhoudsorder om te wijzigen'
         content:
@@ -473,41 +526,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /onderhoudsorders/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Onderhoudsorder met de gegeven identifier'
-      operationId: 'findOnderhoudsorderById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Onderhoudsorder om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Onderhoudsorder response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Onderhoudsorder'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /onderhoudstaken:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Onderhoudstaken'
-      operationId: 'readOnderhoudstaken'
+      operationId: 'listOnderhoudstaken'
       parameters:
       - name: 'params'
         in: 'query'
@@ -548,6 +572,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /onderhoudstaken/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Onderhoudstaak met de gegeven identifier'
+      operationId: 'readOnderhoudstaak'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Onderhoudstaak om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Onderhoudstaak response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Onderhoudstaak'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -574,7 +626,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Onderhoudstaak'
-      operationId: 'modifyOnderhoudstaak'
+      operationId: 'updateOnderhoudstaak'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Onderhoudstaak om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Onderhoudstaak om te wijzigen'
         content:
@@ -592,41 +651,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /onderhoudstaken/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Onderhoudstaak met de gegeven identifier'
-      operationId: 'findOnderhoudstaakById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Onderhoudstaak om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Onderhoudstaak response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Onderhoudstaak'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /onderhoudstaakvoorcalculaties:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Onderhoudstaakvoorcalculaties'
-      operationId: 'readOnderhoudstaakvoorcalculaties'
+      operationId: 'listOnderhoudstaakvoorcalculaties'
       parameters:
       - name: 'params'
         in: 'query'
@@ -667,6 +697,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /onderhoudstaakvoorcalculaties/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Onderhoudstaakvoorcalculatie met de gegeven identifier'
+      operationId: 'readOnderhoudstaakvoorcalculatie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Onderhoudstaakvoorcalculatie om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Onderhoudstaakvoorcalculatie response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Onderhoudstaakvoorcalculatie'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -693,7 +751,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Onderhoudstaakvoorcalculatie'
-      operationId: 'modifyOnderhoudstaakvoorcalculatie'
+      operationId: 'updateOnderhoudstaakvoorcalculatie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Onderhoudstaakvoorcalculatie om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Onderhoudstaakvoorcalculatie om te wijzigen'
         content:
@@ -711,41 +776,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /onderhoudstaakvoorcalculaties/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Onderhoudstaakvoorcalculatie met de gegeven identifier'
-      operationId: 'findOnderhoudstaakvoorcalculatieById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Onderhoudstaakvoorcalculatie om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Onderhoudstaakvoorcalculatie response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Onderhoudstaakvoorcalculatie'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /onderhoudsverzoeken:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Onderhoudsverzoeken'
-      operationId: 'readOnderhoudsverzoeken'
+      operationId: 'listOnderhoudsverzoeken'
       parameters:
       - name: 'params'
         in: 'query'
@@ -786,6 +822,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /onderhoudsverzoeken/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Onderhoudsverzoek met de gegeven identifier'
+      operationId: 'readOnderhoudsverzoek'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Onderhoudsverzoek om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Onderhoudsverzoek response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Onderhoudsverzoek'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -812,7 +876,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Onderhoudsverzoek'
-      operationId: 'modifyOnderhoudsverzoek'
+      operationId: 'updateOnderhoudsverzoek'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Onderhoudsverzoek om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Onderhoudsverzoek om te wijzigen'
         content:
@@ -830,41 +901,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /onderhoudsverzoeken/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Onderhoudsverzoek met de gegeven identifier'
-      operationId: 'findOnderhoudsverzoekById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Onderhoudsverzoek om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Onderhoudsverzoek response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Onderhoudsverzoek'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /standaardprijzen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Standaardprijzen'
-      operationId: 'readStandaardprijzen'
+      operationId: 'listStandaardprijzen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -905,6 +947,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /standaardprijzen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Standaardprijs met de gegeven identifier'
+      operationId: 'readStandaardprijs'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Standaardprijs om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Standaardprijs response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Standaardprijs'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -931,7 +1001,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Standaardprijs'
-      operationId: 'modifyStandaardprijs'
+      operationId: 'updateStandaardprijs'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Standaardprijs om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Standaardprijs om te wijzigen'
         content:
@@ -949,73 +1026,62 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /standaardprijzen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Standaardprijs met de gegeven identifier'
-      operationId: 'findStandaardprijsById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Standaardprijs om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Standaardprijs response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Standaardprijs'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
 security:
-  - basicAuth: []
+  - ApiKeyAuth: []
 components:
   headers:
-    X_Pagination_Page:
-      schema:
-        type: integer
-        description: Huidige pagina.
-        example: 3
-    X_Pagination_Limit:
-      schema:
-        type: integer
-        description: Aantal resultaten per pagina.
-        example: 20
-    X_Stuurgegevens_TijdstipBericht:
+    X-Stuurgegevens-TijdstipBericht:
       schema:
         type: string
         format: data-time
         description: Tijdstip waarop het bericht verzonden is
-    X_Stuurgegevens_Referentienummer:
+    X-Stuurgegevens-Referentienummer:
       schema:
         type: string
         format: any
         description: Een unieke code voor correlatie
-    X_Stuurgegevens_Zender:
+    X-Stuurgegevens-Zender-Organisatie:
       schema:
         type: string
         format: any
-        description: Identificatie van de verzendende organisatie
+        description: Naam van de verzendende organisatie
+    X-Stuurgegevens-Zender-Administratie:
+      schema:
+        type: string
+        format: any
+        description: |
+          Met het stuurgegeven Administratie kan onderscheid gemaakt worden tussen 
+          de verschillende gegevensverzamelingen die de verzendende organisatie beheert
+    X-Parameters-Aantal:
+      schema:
+        type: integer
+        description: Totaal aantal gevonden entiteiten
+        example: 135
+    X-Parameters-AantalPerPagina:
+      schema:
+        type: integer
+        description: Miximum aantal entiteiten per pagina
+        example: 20
+    X-Parameters-Pagina:
+      schema:
+        type: integer
+        description: Huidige paginanummer
+        example: 3
+    X-Parameters-PeiltijdstipMaterieel:
+      schema:
+        type: string
+        format: date-time
+        description: De peildatum. Indien leeg worden de actuele gegevens opgevraagd
   securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
   responses:
     NietGeautoriseerd:
-      description: Authenticatie-informatie ontbreekt of is ongeldig
+      description: API-key ontbreekt of is ongeldig
       headers:
-        WWW_Authenticate:
+        X-API-KEY:
           schema:
             type: string
   schemas:
@@ -1123,11 +1189,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De sorteervolgorde van de referentiedata anders dan alfabetisch.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Onderhoudsverzoek:
       type: object
       properties:
@@ -1623,3 +1684,4 @@ components:
           type: 'string'
         waarde:
           type: 'string'
+

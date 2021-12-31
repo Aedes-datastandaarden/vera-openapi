@@ -1,15 +1,15 @@
 openapi: '3.0.0'
 info:
   title: 'Verhuren Eenheden'
-  description: 'API-specificatie van procesketengegevensmodel VHE'
+  description: API-specificatie van ketenproces "Verhuren Eenheden". Deze specificatie is gebaseerd op VERA versie 4.0.3
   termsOfService: 'https://www.stichting-vera.nl/voorwaarden/'
   contact:
     name: 'VERA'
-    url: 'https://www.stichting-vera.nl/'
+    url: 'https://cora.wikixl.nl/index.php/VERA_Standaard'
     email: 'info@stichting-vera.nl'
   license:
-    name: 'General Public License (GPL)'
-    url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+    name: European Union Public License, version 1.2 (EUPL-1.2)
+    url: https://eupl.eu/1.2/nl/
   version: '1.0.3'
 servers:
   - url: https://vhe.vera.io:{port}/{basePath}
@@ -35,7 +35,7 @@ paths:
       tags:
       - 'Clusters'
       description: 'Ophalen van Clusters'
-      operationId: 'readClusters'
+      operationId: 'listClusters'
       parameters:
       - name: 'params'
         in: 'query'
@@ -76,6 +76,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /clusters/{id}:
+    get:
+      tags:
+      - 'Clusters'
+      description: 'Retourneert een Cluster met de gegeven identifier'
+      operationId: 'readCluster'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Cluster om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Cluster response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Clusters-Cluster'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Clusters'
@@ -102,7 +130,14 @@ paths:
       tags:
       - 'Clusters'
       description: 'Wijzigen van een Cluster'
-      operationId: 'modifyCluster'
+      operationId: 'updateCluster'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Cluster om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Cluster om te wijzigen'
         content:
@@ -120,41 +155,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /clusters/{id}:
-    get:
-      tags:
-      - 'Clusters'
-      description: 'Retourneert een Cluster met de gegeven identifier'
-      operationId: 'findClusterById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Cluster om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Cluster response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Clusters-Cluster'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /eenheden:
     get:
       tags:
       - 'Eenheden'
       description: 'Ophalen van Eenheden'
-      operationId: 'readEenheden'
+      operationId: 'listEenheden'
       parameters:
       - name: 'params'
         in: 'query'
@@ -195,6 +201,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /eenheden/{id}:
+    get:
+      tags:
+      - 'Eenheden'
+      description: 'Retourneert een Eenheid met de gegeven identifier'
+      operationId: 'readEenheid'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Eenheid om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Eenheid response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Eenheden-Eenheid'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Eenheden'
@@ -221,7 +255,14 @@ paths:
       tags:
       - 'Eenheden'
       description: 'Wijzigen van een Eenheid'
-      operationId: 'modifyEenheid'
+      operationId: 'updateEenheid'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Eenheid om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Eenheid om te wijzigen'
         content:
@@ -239,41 +280,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /eenheden/{id}:
-    get:
-      tags:
-      - 'Eenheden'
-      description: 'Retourneert een Eenheid met de gegeven identifier'
-      operationId: 'findEenheidById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Eenheid om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Eenheid response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Eenheden-Eenheid'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /huuropzeggingen:
     get:
       tags:
       - 'Huuropzeggingen'
       description: 'Ophalen van Huuropzeggingen'
-      operationId: 'readHuuropzeggingen'
+      operationId: 'listHuuropzeggingen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -314,6 +326,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /huuropzeggingen/{id}:
+    get:
+      tags:
+      - 'Huuropzeggingen'
+      description: 'Retourneert een Huuropzegging met de gegeven identifier'
+      operationId: 'readHuuropzegging'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Huuropzegging om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Huuropzegging response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Huuropzeggingen-Huuropzegging'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Huuropzeggingen'
@@ -340,7 +380,14 @@ paths:
       tags:
       - 'Huuropzeggingen'
       description: 'Wijzigen van een Huuropzegging'
-      operationId: 'modifyHuuropzegging'
+      operationId: 'updateHuuropzegging'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Huuropzegging om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Huuropzegging om te wijzigen'
         content:
@@ -358,73 +405,62 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /huuropzeggingen/{id}:
-    get:
-      tags:
-      - 'Huuropzeggingen'
-      description: 'Retourneert een Huuropzegging met de gegeven identifier'
-      operationId: 'findHuuropzeggingById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Huuropzegging om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Huuropzegging response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Huuropzeggingen-Huuropzegging'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
 security:
-  - basicAuth: []
+  - ApiKeyAuth: []
 components:
   headers:
-    X_Pagination_Page:
-      schema:
-        type: integer
-        description: Huidige pagina.
-        example: 3
-    X_Pagination_Limit:
-      schema:
-        type: integer
-        description: Aantal resultaten per pagina.
-        example: 20
-    X_Stuurgegevens_TijdstipBericht:
+    X-Stuurgegevens-TijdstipBericht:
       schema:
         type: string
         format: data-time
         description: Tijdstip waarop het bericht verzonden is
-    X_Stuurgegevens_Referentienummer:
+    X-Stuurgegevens-Referentienummer:
       schema:
         type: string
         format: any
         description: Een unieke code voor correlatie
-    X_Stuurgegevens_Zender:
+    X-Stuurgegevens-Zender-Organisatie:
       schema:
         type: string
         format: any
-        description: Identificatie van de verzendende organisatie
+        description: Naam van de verzendende organisatie
+    X-Stuurgegevens-Zender-Administratie:
+      schema:
+        type: string
+        format: any
+        description: |
+          Met het stuurgegeven Administratie kan onderscheid gemaakt worden tussen 
+          de verschillende gegevensverzamelingen die de verzendende organisatie beheert
+    X-Parameters-Aantal:
+      schema:
+        type: integer
+        description: Totaal aantal gevonden entiteiten
+        example: 135
+    X-Parameters-AantalPerPagina:
+      schema:
+        type: integer
+        description: Miximum aantal entiteiten per pagina
+        example: 20
+    X-Parameters-Pagina:
+      schema:
+        type: integer
+        description: Huidige paginanummer
+        example: 3
+    X-Parameters-PeiltijdstipMaterieel:
+      schema:
+        type: string
+        format: date-time
+        description: De peildatum. Indien leeg worden de actuele gegevens opgevraagd
   securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
   responses:
     NietGeautoriseerd:
-      description: Authenticatie-informatie ontbreekt of is ongeldig
+      description: API-key ontbreekt of is ongeldig
       headers:
-        WWW_Authenticate:
+        X-API-KEY:
           schema:
             type: string
   schemas:
@@ -451,9 +487,8 @@ components:
           format: 'any'
           description: 'De omschrijving van de cluster.'
         bovenliggendeCluster:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Cluster in de vorm: vera/v4/clusters/12345'
+          $ref: '#/components/schemas/Cluster-sleutels'
+          description: 'Het bovenliggende / overkoepelende cluster waar dit cluster eventueel onderdeel van is.'
         begindatum:
           type: 'string'
           format: 'date'
@@ -514,11 +549,21 @@ components:
           type: 'string'
           format: 'any'
           description: 'De sorteervolgorde van de referentiedata anders dan alfabetisch.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
+    Cluster-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        naam:
+          type: 'string'
+          format: 'any'
+          description: 'De naam van de cluster.'
     Clusters-Eenheid:
       type: object
       properties:
@@ -547,24 +592,19 @@ components:
         soort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'soort Geometrie: punt of omtrek'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Clusters-Punt:
       allOf:
         - $ref: '#/components/schemas/Clusters-Geometrie'
         - type: object
           properties:
-              lengtegraad:
-                type: 'number'
-                format: 'float'
-                description: 'De lengtegraad.'
-              breedtegraad:
-                type: 'number'
-                format: 'float'
-                description: 'De breedtegraad.'
+            lengtegraad:
+              type: 'number'
+              format: 'float'
+              description: 'De lengtegraad.'
+            breedtegraad:
+              type: 'number'
+              format: 'float'
+              description: 'De breedtegraad.'
     Clusters-Relatierol:
       type: object
       properties:
@@ -588,14 +628,22 @@ components:
           format: 'any'
           description: 'De omschrijving van de relatie rol.'
         relatie:
+          $ref: '#/components/schemas/Relatie-sleutels'
+          description: 'De relatie waarvoor de rol van toepassing is.'
+    Relatie-sleutels:
+      type: object
+      properties:
+        id:
           type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
     Eenheden-Adres:
       type: object
       properties:
@@ -634,11 +682,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De postcode van het adres.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Referentiedata-restricted:
       type: object
       properties:
@@ -660,11 +703,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De sorteervolgorde van de referentiedata anders dan alfabetisch.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Eenheden-Afspraakverzoek:
       type: object
       properties:
@@ -691,11 +729,6 @@ components:
           type: 'integer'
           format: 'int32'
           description: 'Aantal keer dat de specifieke inspectie dient te worden uitgevoerd'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Eenheden-Buurt:
       type: object
       properties:
@@ -711,11 +744,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De naam van de buurt.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Eenheden-Cluster:
       type: object
       properties:
@@ -752,12 +780,6 @@ components:
         detailSoort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het type van de eenheid. Bijvoorbeeld: Hoekwoning, Tussenwoning, Flat, Maisonnette. Hiervoor wordt de lijst van de waarderingskamer als uitgangspunt genomen.'
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van de eenheid, bijvoorbeeld: Leegstand, Uit beheer, Renovatie, Verhuurd, Verkocht'
-        detailStatus:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De detailstatus (ook wel substatus) van een status. De detailstatus geeft een extra reden op van de eenheid status die de eenheid heeft. Bijvoorbeeld: de status is Renovatie, de detailstatus geeft aan dat het om planmatig onderhoud gaat.'
         naam:
           type: 'string'
           format: 'any'
@@ -766,6 +788,32 @@ components:
           type: 'string'
           format: 'any'
           description: 'De omschrijving van de eenheid.'
+        bouwnummer:
+          type: 'string'
+          format: 'any'
+          description: 'Het bouwnummer behorende bij de eenheid. Dit wordt aan een eenheid toegekend bij nieuwbouw van de eenheid. Vaak is op dat moment het adres van de eenheid nog niet bepaald.'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van de eenheid, bijvoorbeeld: Leegstand, Uit beheer, Renovatie, Verhuurd, Verkocht'
+        detailStatus:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De detailstatus (ook wel substatus) van een status. De detailstatus geeft een extra reden op van de eenheid status die de eenheid heeft. Bijvoorbeeld: de status is Renovatie, de detailstatus geeft aan dat het om planmatig onderhoud gaat.'
+        beginBouwdatum:
+          type: 'string'
+          format: 'date'
+          description: 'De begindatum van de bouw van de eenheid.'
+        opleverdatum:
+          type: 'string'
+          format: 'date'
+          description: 'De opleverdatum van de eenheid. De bouw van de eenheid is dan gereed of de eenheid is beschikbaar voor een volgende gebruiker.'
+        inExploitatiedatum:
+          type: 'string'
+          format: 'date'
+          description: 'De datum waarop de eenheid in exploitatie is gegaan. We spreken over exploitatie als de eenheid in beheer is met als doel dat er resultaat wordt behaald.'
+        uitExploitatiedatum:
+          type: 'string'
+          format: 'date'
+          description: 'De datum waarop de eenheid uit exploitatie is gegaan, zowel het beheer als andere activiteiten stoppen.'
         adres:
           $ref: '#/components/schemas/Eenheden-Adres'
           description: 'Het adres van de eenheid.'
@@ -784,13 +832,11 @@ components:
           items:
             $ref: '#/components/schemas/Eenheden-Cluster'
         eigenaar:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+          $ref: '#/components/schemas/Relatie-sleutels'
+          description: 'De eigenaar van de eenheid, bijvoorbeeld de corporatie, een collega-corporatie, of een eigenaar/bewoner.'
         beheerder:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+          $ref: '#/components/schemas/Relatie-sleutels'
+          description: 'De beheerder van de eenheid, bijvoorbeeld de corporatie of een collega-corporatie die de eenheid in exploitatie heeft.'
         rayon:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het rayon waar de eenheid in valt. Waarden zijn corporatiespecifiek en daarom niet in de referentiedata (bijlage G) beschreven.'
@@ -808,14 +854,6 @@ components:
         uitExploitatieReden:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De reden voor het uit exploitatie nemen van een eenheid. Voorbeeld: sloop.'
-        inExploitatiedatum:
-          type: 'string'
-          format: 'date'
-          description: 'De datum waarop de eenheid in exploitatie is gegaan. We spreken over exploitatie als de eenheid in beheer is met als doel dat er resultaat wordt behaald.'
-        uitExploitatiedatum:
-          type: 'string'
-          format: 'date'
-          description: 'De datum waarop de eenheid uit exploitatie is gegaan, zowel het beheer als andere activiteiten stoppen.'
         onderhoudslabel:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het onderhoudslabel geeft aan hoe hoog of laag het onderhoudsniveau van het betreffende eenheid moet zijn. Hierbij wordt rekening gehouden met het soort bewoners en de toekomst van het pand.'
@@ -880,18 +918,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Referentiedata'
-        beginBouwdatum:
-          type: 'string'
-          format: 'date'
-          description: 'De begindatum van de bouw van de eenheid.'
-        opleverdatum:
-          type: 'string'
-          format: 'date'
-          description: 'De opleverdatum van de eenheid. De bouw van de eenheid is dan gereed of de eenheid is beschikbaar voor een volgende gebruiker.'
-        bouwnummer:
-          type: 'string'
-          format: 'any'
-          description: 'Het bouwnummer behorende bij de eenheid. Dit wordt aan een eenheid toegekend bij nieuwbouw van de eenheid. Vaak is op dat moment het adres van de eenheid nog niet bepaald.'
         brutohuur:
           type: 'number'
           format: 'float'
@@ -997,21 +1023,21 @@ components:
         - $ref: '#/components/schemas/Eenheden-Adres'
         - type: object
           properties:
-              woonplaats:
-                $ref: '#/components/schemas/Eenheden-Woonplaats'
-                description: 'De woonplaats waarin het adres zich bevindt.'
-              buurt:
-                $ref: '#/components/schemas/Eenheden-Buurt'
-                description: 'De buurt behorend bij het adres.'
-              wijk:
-                $ref: '#/components/schemas/Eenheden-Wijk'
-                description: 'De wijk behorend bij het adres.'
-              gemeente:
-                $ref: '#/components/schemas/Eenheden-Gemeente'
-                description: 'De gemeente behorend bij het adres.'
-              land:
-                $ref: '#/components/schemas/Referentiedata-restricted'
-                description: 'Het land waarin het adres zich bevindt.'
+            woonplaats:
+              $ref: '#/components/schemas/Eenheden-Woonplaats'
+              description: 'De woonplaats waarin het adres zich bevindt.'
+            buurt:
+              $ref: '#/components/schemas/Eenheden-Buurt'
+              description: 'De buurt behorend bij het adres.'
+            wijk:
+              $ref: '#/components/schemas/Eenheden-Wijk'
+              description: 'De wijk behorend bij het adres.'
+            gemeente:
+              $ref: '#/components/schemas/Eenheden-Gemeente'
+              description: 'De gemeente behorend bij het adres.'
+            land:
+              $ref: '#/components/schemas/Referentiedata-restricted'
+              description: 'Het land waarin het adres zich bevindt.'
     Eenheden-EenheidVoorwaarden:
       type: object
       properties:
@@ -1057,11 +1083,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Referentiedata'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Eenheden-Energieprestatie:
       type: object
       properties:
@@ -1088,11 +1109,6 @@ components:
         label:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het energielabel voor woningen geeft met klassen (A tot en met G) en kleuren (groen tot en met rood) aan hoe energiezuinig een huis is ten opzichte van andere soortgelijke woningen. Energielabel A (donkergroen) is zuinig, energielabel G (rood) is onzuinig.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Eenheden-Gemeente:
       type: object
       properties:
@@ -1111,11 +1127,6 @@ components:
         provincie:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De provincie waar de gemeente onderdeel van is.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Eenheden-Pand:
       type: object
       properties:
@@ -1131,11 +1142,6 @@ components:
           type: 'boolean'
           format: 'true-or-false'
           description: 'De aanduiding geeft aan of in het pand in lift aanwezig is.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Eenheden-Prijscomponent:
       type: object
       properties:
@@ -1172,11 +1178,6 @@ components:
           type: 'number'
           format: 'float'
           description: 'Het bedrag in euro"s van het prijscomponent inclusief BTW.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Eenheden-Relatierol:
       type: object
       properties:
@@ -1196,14 +1197,8 @@ components:
           format: 'any'
           description: 'De naam van de relatie rol.'
         relatie:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
+          $ref: '#/components/schemas/Relatie-sleutels'
+          description: 'De relatie waarvoor de rol van toepassing is.'
     Eenheden-Stadsdeel:
       type: object
       properties:
@@ -1219,11 +1214,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De naam van het stadsdeel.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Eenheden-Vertrek:
       type: object
       properties:
@@ -1238,11 +1228,6 @@ components:
         soort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort ruimte. Ruimtes worden verdeeld in bijvoorbeeld vertrekken en overige ruimtes.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Eenheden-Wijk:
       type: object
       properties:
@@ -1261,11 +1246,6 @@ components:
         stadsdeel:
           $ref: '#/components/schemas/Eenheden-Stadsdeel'
           description: 'Het stadsdeel van de wijk.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Eenheden-Woonplaats:
       type: object
       properties:
@@ -1281,11 +1261,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De naam van de woonplaats.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Huuropzeggingen-Adres:
       type: object
       properties:
@@ -1324,11 +1299,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De postcode van het adres.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Huuropzeggingen-Afspraak:
       type: object
       properties:
@@ -1344,14 +1314,9 @@ components:
           type: 'string'
           format: 'any'
           description: 'Het onderwerp van de afspraak.'
-        relaties:
-          description: 'De relatie waarmee de afspraak is gemaakt. Bijv. Huurder, Medewerker.'
-          type: array
-          items:
-            $ref: '#/components/schemas/Huuropzeggingen-Relatierol'
-        locatie:
-          $ref: '#/components/schemas/Huuropzeggingen-Adres'
-          description: 'De locatie waar de afspraak zich plaatsvindt.'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van de afspraak.'
         begindatum:
           type: 'string'
           format: 'date-time'
@@ -1368,29 +1333,29 @@ components:
           type: 'string'
           format: 'date-time'
           description: 'De datum en tijd die het eind van een blok markeert waarbinnen de afspraak bij voorkeur start.'
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van de afspraak.'
+        relaties:
+          description: 'De relatie waarmee de afspraak is gemaakt. Bijv. Huurder, Medewerker.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Huuropzeggingen-Relatierol'
+        locatie:
+          $ref: '#/components/schemas/Huuropzeggingen-Adres'
+          description: 'De locatie waar de afspraak zich plaatsvindt.'
         alternatiefContactgegeven:
           type: 'string'
           format: 'any'
           description: 'Tekstveld waarin contactgegevens van een alternatieve contactpersoon opgenomen kunnen worden. Voorbeeld is het verzoek van een huurder (student) waarbij hij aangeeft contact op te nemen met zijn ouders voor de afhandeling van het verzoek.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Huuropzeggingen-Eenheidadres:
       allOf:
         - $ref: '#/components/schemas/Huuropzeggingen-Adres'
         - type: object
           properties:
-              woonplaats:
-                $ref: '#/components/schemas/Huuropzeggingen-Woonplaats'
-                description: 'De woonplaats waarin het adres zich bevindt.'
-              land:
-                $ref: '#/components/schemas/Referentiedata-restricted'
-                description: 'Het land waarin het adres zich bevindt.'
+            woonplaats:
+              $ref: '#/components/schemas/Huuropzeggingen-Woonplaats'
+              description: 'De woonplaats waarin het adres zich bevindt.'
+            land:
+              $ref: '#/components/schemas/Referentiedata-restricted'
+              description: 'Het land waarin het adres zich bevindt.'
     Huuropzeggingen-Huuropzegging:
       type: object
       properties:
@@ -1429,9 +1394,8 @@ components:
           items:
             $ref: '#/components/schemas/Huuropzeggingen-Afspraak'
         huurovereenkomst:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Overeenkomst in de vorm: vera/v4/overeenkomsten/12345'
+          $ref: '#/components/schemas/Overeenkomst-sleutels'
+          description: 'De opgezegde huurovereenkomst.'
         nieuweAdressen:
           description: 'De nieuwe adressen van de huurder van het vastgoed.'
           type: array
@@ -1442,6 +1406,20 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttributen'
+    Overeenkomst-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn.'
     Huuropzeggingen-Relatie:
       type: object
       properties:
@@ -1461,11 +1439,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Huuropzeggingen-RelatieAdres'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Huuropzeggingen-RelatieAdres:
       type: object
       properties:
@@ -1480,18 +1453,13 @@ components:
         soort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort adres van de relatie. Bijvoorbeeld: Woonadres, postadres, bezoekadres en factuuradres.'
-        adres:
-          $ref: '#/components/schemas/Huuropzeggingen-Adres'
-          description: 'Het adres behorend bij de relatie.'
         begindatum:
           type: 'string'
           format: 'date'
           description: 'De begindatum waarop de relatie bij het adres hoort.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
+        adres:
+          $ref: '#/components/schemas/Huuropzeggingen-Adres'
+          description: 'Het adres behorend bij de relatie.'
     Huuropzeggingen-Relatierol:
       type: object
       properties:
@@ -1517,340 +1485,7 @@ components:
         relatie:
           $ref: '#/components/schemas/Huuropzeggingen-Relatie'
           description: 'De relatie waarvoor de rol van toepassing is.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Huuropzeggingen-Woonplaats:
-      type: object
-      properties:
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        naam:
-          type: 'string'
-          format: 'any'
-          description: 'De naam van de woonplaats.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
-    ClustersCluster-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        naam:
-          type: 'string'
-          format: 'any'
-          description: 'De naam van de cluster.'
-    ClustersEenheid-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    ClustersRelatierol-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    EenhedenAdres-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    EenhedenAfspraakverzoek-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    EenhedenBuurt-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        naam:
-          type: 'string'
-          format: 'any'
-          description: 'De naam van de buurt.'
-    EenhedenCluster-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    EenhedenEenheid-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    EenhedenEenheidadres-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    EenhedenEenheidVoorwaarden-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    EenhedenEnergieprestatie-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    EenhedenGemeente-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        naam:
-          type: 'string'
-          format: 'any'
-          description: 'De naam van de gemeente.'
-    EenhedenPand-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    EenhedenPrijscomponent-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    EenhedenRelatierol-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    EenhedenStadsdeel-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    EenhedenVertrek-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    EenhedenWijk-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        naam:
-          type: 'string'
-          format: 'any'
-          description: 'De naam van de wijk.'
-    EenhedenWoonplaats-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        naam:
-          type: 'string'
-          format: 'any'
-          description: 'De naam van de woonplaats.'
-    HuuropzeggingenAdres-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    HuuropzeggingenAfspraak-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    HuuropzeggingenEenheidadres-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    HuuropzeggingenHuuropzegging-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    HuuropzeggingenRelatie-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        soort:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
-    HuuropzeggingenRelatieAdres-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        soort:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort adres van de relatie. Bijvoorbeeld: Woonadres, postadres, bezoekadres en factuuradres.'
-    HuuropzeggingenRelatierol-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    HuuropzeggingenWoonplaats-sleutels:
       type: object
       properties:
         code:
@@ -1875,3 +1510,4 @@ components:
           type: 'string'
         waarde:
           type: 'string'
+

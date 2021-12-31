@@ -1,15 +1,15 @@
 openapi: '3.0.0'
 info:
   title: 'Kwaliteitsmeting'
-  description: 'API-specificatie van procesketengegevensmodel KMT'
+  description: API-specificatie van ketenproces "Kwaliteitsmeting". Deze specificatie is gebaseerd op VERA versie 4.0.3
   termsOfService: 'https://www.stichting-vera.nl/voorwaarden/'
   contact:
     name: 'VERA'
-    url: 'https://www.stichting-vera.nl/'
+    url: 'https://cora.wikixl.nl/index.php/VERA_Standaard'
     email: 'info@stichting-vera.nl'
   license:
-    name: 'General Public License (GPL)'
-    url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+    name: European Union Public License, version 1.2 (EUPL-1.2)
+    url: https://eupl.eu/1.2/nl/
   version: '1.0.3'
 servers:
   - url: https://kmt.vera.io:{port}/{basePath}
@@ -37,7 +37,7 @@ paths:
       tags:
       - 'Kwaliteitsmetingsresultaten'
       description: 'Ophalen van Kwaliteitsmetingsresultaten'
-      operationId: 'readKwaliteitsmetingsresultaten'
+      operationId: 'listKwaliteitsmetingsresultaten'
       parameters:
       - name: 'params'
         in: 'query'
@@ -78,6 +78,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /kwaliteitsmetingsresultaten/{id}:
+    get:
+      tags:
+      - 'Kwaliteitsmetingsresultaten'
+      description: 'Retourneert een Kwaliteitsmetingsresultaat met de gegeven identifier'
+      operationId: 'readKwaliteitsmetingsresultaat'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Kwaliteitsmetingsresultaat om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Kwaliteitsmetingsresultaat response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Kwaliteitsmetingsresultaten-Kwaliteitsmetingsresultaat'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Kwaliteitsmetingsresultaten'
@@ -104,7 +132,14 @@ paths:
       tags:
       - 'Kwaliteitsmetingsresultaten'
       description: 'Wijzigen van een Kwaliteitsmetingsresultaat'
-      operationId: 'modifyKwaliteitsmetingsresultaat'
+      operationId: 'updateKwaliteitsmetingsresultaat'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Kwaliteitsmetingsresultaat om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Kwaliteitsmetingsresultaat om te wijzigen'
         content:
@@ -122,41 +157,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /kwaliteitsmetingsresultaten/{id}:
-    get:
-      tags:
-      - 'Kwaliteitsmetingsresultaten'
-      description: 'Retourneert een Kwaliteitsmetingsresultaat met de gegeven identifier'
-      operationId: 'findKwaliteitsmetingsresultaatById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Kwaliteitsmetingsresultaat om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Kwaliteitsmetingsresultaat response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Kwaliteitsmetingsresultaten-Kwaliteitsmetingsresultaat'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /kwaliteitsmetingsverzoeken:
     get:
       tags:
       - 'Kwaliteitsmetingsverzoeken'
       description: 'Ophalen van Kwaliteitsmetingsverzoeken'
-      operationId: 'readKwaliteitsmetingsverzoeken'
+      operationId: 'listKwaliteitsmetingsverzoeken'
       parameters:
       - name: 'params'
         in: 'query'
@@ -197,6 +203,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /kwaliteitsmetingsverzoeken/{id}:
+    get:
+      tags:
+      - 'Kwaliteitsmetingsverzoeken'
+      description: 'Retourneert een Kwaliteitsmetingsverzoek met de gegeven identifier'
+      operationId: 'readKwaliteitsmetingsverzoek'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Kwaliteitsmetingsverzoek om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Kwaliteitsmetingsverzoek response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Kwaliteitsmetingsverzoek'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Kwaliteitsmetingsverzoeken'
@@ -223,7 +257,14 @@ paths:
       tags:
       - 'Kwaliteitsmetingsverzoeken'
       description: 'Wijzigen van een Kwaliteitsmetingsverzoek'
-      operationId: 'modifyKwaliteitsmetingsverzoek'
+      operationId: 'updateKwaliteitsmetingsverzoek'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Kwaliteitsmetingsverzoek om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Kwaliteitsmetingsverzoek om te wijzigen'
         content:
@@ -241,41 +282,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /kwaliteitsmetingsverzoeken/{id}:
-    get:
-      tags:
-      - 'Kwaliteitsmetingsverzoeken'
-      description: 'Retourneert een Kwaliteitsmetingsverzoek met de gegeven identifier'
-      operationId: 'findKwaliteitsmetingsverzoekById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Kwaliteitsmetingsverzoek om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Kwaliteitsmetingsverzoek response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Kwaliteitsmetingsverzoek'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /onderzoeksopdrachten:
     get:
       tags:
       - 'Onderzoeksopdrachten'
       description: 'Ophalen van Onderzoeksopdrachten'
-      operationId: 'readOnderzoeksopdrachten'
+      operationId: 'listOnderzoeksopdrachten'
       parameters:
       - name: 'params'
         in: 'query'
@@ -316,6 +328,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /onderzoeksopdrachten/{id}:
+    get:
+      tags:
+      - 'Onderzoeksopdrachten'
+      description: 'Retourneert een Onderzoeksopdracht met de gegeven identifier'
+      operationId: 'readOnderzoeksopdracht'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Onderzoeksopdracht om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Onderzoeksopdracht response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Onderzoeksopdrachten-Onderzoeksopdracht'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Onderzoeksopdrachten'
@@ -342,7 +382,14 @@ paths:
       tags:
       - 'Onderzoeksopdrachten'
       description: 'Wijzigen van een Onderzoeksopdracht'
-      operationId: 'modifyOnderzoeksopdracht'
+      operationId: 'updateOnderzoeksopdracht'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Onderzoeksopdracht om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Onderzoeksopdracht om te wijzigen'
         content:
@@ -360,41 +407,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /onderzoeksopdrachten/{id}:
-    get:
-      tags:
-      - 'Onderzoeksopdrachten'
-      description: 'Retourneert een Onderzoeksopdracht met de gegeven identifier'
-      operationId: 'findOnderzoeksopdrachtById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Onderzoeksopdracht om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Onderzoeksopdracht response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Onderzoeksopdrachten-Onderzoeksopdracht'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /onderzoeksresultaten:
     get:
       tags:
       - 'Onderzoeksresultaten'
       description: 'Ophalen van Onderzoeksresultaten'
-      operationId: 'readOnderzoeksresultaten'
+      operationId: 'listOnderzoeksresultaten'
       parameters:
       - name: 'params'
         in: 'query'
@@ -435,6 +453,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /onderzoeksresultaten/{id}:
+    get:
+      tags:
+      - 'Onderzoeksresultaten'
+      description: 'Retourneert een Onderzoeksresultaat met de gegeven identifier'
+      operationId: 'readOnderzoeksresultaat'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Onderzoeksresultaat om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Onderzoeksresultaat response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Onderzoeksresultaten-Onderzoeksresultaat'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Onderzoeksresultaten'
@@ -461,7 +507,14 @@ paths:
       tags:
       - 'Onderzoeksresultaten'
       description: 'Wijzigen van een Onderzoeksresultaat'
-      operationId: 'modifyOnderzoeksresultaat'
+      operationId: 'updateOnderzoeksresultaat'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Onderzoeksresultaat om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Onderzoeksresultaat om te wijzigen'
         content:
@@ -479,73 +532,62 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /onderzoeksresultaten/{id}:
-    get:
-      tags:
-      - 'Onderzoeksresultaten'
-      description: 'Retourneert een Onderzoeksresultaat met de gegeven identifier'
-      operationId: 'findOnderzoeksresultaatById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Onderzoeksresultaat om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Onderzoeksresultaat response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Onderzoeksresultaten-Onderzoeksresultaat'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
 security:
-  - basicAuth: []
+  - ApiKeyAuth: []
 components:
   headers:
-    X_Pagination_Page:
-      schema:
-        type: integer
-        description: Huidige pagina.
-        example: 3
-    X_Pagination_Limit:
-      schema:
-        type: integer
-        description: Aantal resultaten per pagina.
-        example: 20
-    X_Stuurgegevens_TijdstipBericht:
+    X-Stuurgegevens-TijdstipBericht:
       schema:
         type: string
         format: data-time
         description: Tijdstip waarop het bericht verzonden is
-    X_Stuurgegevens_Referentienummer:
+    X-Stuurgegevens-Referentienummer:
       schema:
         type: string
         format: any
         description: Een unieke code voor correlatie
-    X_Stuurgegevens_Zender:
+    X-Stuurgegevens-Zender-Organisatie:
       schema:
         type: string
         format: any
-        description: Identificatie van de verzendende organisatie
+        description: Naam van de verzendende organisatie
+    X-Stuurgegevens-Zender-Administratie:
+      schema:
+        type: string
+        format: any
+        description: |
+          Met het stuurgegeven Administratie kan onderscheid gemaakt worden tussen 
+          de verschillende gegevensverzamelingen die de verzendende organisatie beheert
+    X-Parameters-Aantal:
+      schema:
+        type: integer
+        description: Totaal aantal gevonden entiteiten
+        example: 135
+    X-Parameters-AantalPerPagina:
+      schema:
+        type: integer
+        description: Miximum aantal entiteiten per pagina
+        example: 20
+    X-Parameters-Pagina:
+      schema:
+        type: integer
+        description: Huidige paginanummer
+        example: 3
+    X-Parameters-PeiltijdstipMaterieel:
+      schema:
+        type: string
+        format: date-time
+        description: De peildatum. Indien leeg worden de actuele gegevens opgevraagd
   securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
   responses:
     NietGeautoriseerd:
-      description: Authenticatie-informatie ontbreekt of is ongeldig
+      description: API-key ontbreekt of is ongeldig
       headers:
-        WWW_Authenticate:
+        X-API-KEY:
           schema:
             type: string
   schemas:
@@ -569,9 +611,8 @@ components:
           format: 'date'
           description: 'Datum waarop de resultaten van de onderzoeksopdracht zijn binnen gekomen (vóór de analyse).'
         kwaliteitsmetingsverzoek:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Kwaliteitsmetingsverzoek in de vorm: vera/v4/kwaliteitsmetingsverzoeken/12345'
+          $ref: '#/components/schemas/Kwaliteitsmetingsverzoek-sleutels'
+          description: 'Het kwaliteitsmetingsverzoek behorende bij het resultaat.'
         resultaatReactie:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Wordt aangegeven of de relatie de vragenlijst heeft ingevuld, of er opvolging gegeven moet worden aan de kwaliteitsmeting of dat de relatie niet heeft gereageerd. Deze laatste situatie kan ook gebruikt worden voor de situatie waarbij de relatie anoniem wil blijven. Mogelijke referentiedata: Volledig ingevuld, Deels ingevuld, Ingevuld met verzoek opvolging, Niet gereageerd.'
@@ -591,6 +632,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttributen'
+    Kwaliteitsmetingsverzoek-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
     Referentiedata:
       type: object
       properties:
@@ -628,11 +680,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De sorteervolgorde van de referentiedata anders dan alfabetisch.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Kwaliteitsmetingsverzoeken-Adres:
       type: object
       properties:
@@ -671,11 +718,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De postcode van het adres.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Referentiedata-restricted:
       type: object
       properties:
@@ -697,11 +739,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De sorteervolgorde van de referentiedata anders dan alfabetisch.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Kwaliteitsmetingsverzoeken-Contactgegeven:
       type: object
       properties:
@@ -726,11 +763,6 @@ components:
         voorkeur:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De manier waarop de relatie contact wil krijgen door dit contactgegeven. Bijvoorbeeld: 1e voorkeur, 2e voorkeur.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Kwaliteitsmetingsverzoeken-Contactmoment:
       type: object
       properties:
@@ -751,24 +783,31 @@ components:
           format: 'date-time'
           description: 'De datum en tijd waarop contact is geweest.'
         relatie:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+          $ref: '#/components/schemas/Relatie-sleutels'
+          description: 'De relatie waarmee contact is geweest'
         kanaal:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het kanaal via welke het contact heeft gelopen. Bijvoorbeeld: Telefoon, email, balie, internet.'
         medewerker:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+          $ref: '#/components/schemas/Relatie-sleutels'
+          description: 'De medewerker die het contactmoment heeft gehad met de relatie.'
         richting:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De communicatierichting behorend bij het contact. Bijvoorbeeld: Uitgaand of ingaand.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
+    Relatie-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
     Kwaliteitsmetingsverzoeken-Eenheid:
       type: object
       properties:
@@ -804,22 +843,31 @@ components:
           $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Adres'
           description: 'Het adres van de eenheid.'
         clusters:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Cluster in de vorm: vera/v4/clusters/12345'
-        eigenaar:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
-        beheerder:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'De clusters waar de eenheid onderdeel van uitmaakt.'
           type: array
           items:
-            $ref: '#/components/schemas/ExtraAttributen'
+            $ref: '#/components/schemas/Cluster-sleutels'
+        eigenaar:
+          $ref: '#/components/schemas/Relatie-sleutels'
+          description: 'De eigenaar van de eenheid, bijvoorbeeld de corporatie, een collega-corporatie, of een eigenaar/bewoner.'
+        beheerder:
+          $ref: '#/components/schemas/Relatie-sleutels'
+          description: 'De beheerder van de eenheid, bijvoorbeeld de corporatie of een collega-corporatie die de eenheid in exploitatie heeft.'
+    Cluster-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        naam:
+          type: 'string'
+          format: 'any'
+          description: 'De naam van de cluster.'
     Kwaliteitsmetingsverzoeken-Gemeente:
       type: object
       properties:
@@ -835,29 +883,24 @@ components:
           type: 'string'
           format: 'any'
           description: 'De naam van de gemeente.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Kwaliteitsmetingsverzoeken-Huurovereenkomst:
       allOf:
         - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Overeenkomst'
         - type: object
           properties:
-              opzegdatum:
-                type: 'string'
-                format: 'date'
-                description: 'De datum dat de overeenkomst is opgezegd door de huurder.'
-              eindeReden:
-                $ref: '#/components/schemas/Referentiedata'
-                description: 'De reden voor beëindiging van de huurovereenkomst.'
-              status:
-                $ref: '#/components/schemas/Referentiedata'
-                description: 'De status van een huurovereenkomst. Dit kan een waarde bevatten zoals: overeenkomst beëindigd en huurder is vertrokken, of overeenkomst is momenteel in gebruik.'
-              maatschappelijkLabel:
-                $ref: '#/components/schemas/Referentiedata'
-                description: 'Het label waarmee het maatschappelijk en economisch  belang van de dienstverlening wordt aangegeven bij de verhuring: DAEB of niet-DAEB. Het label op de huurovereenkomst kan afwijken van het maatschappelijk label van de eenheid. Hiermee kan worden aangegeven dat een eenheid die behoort tot de niet-DAEB tak als DAEB-verhuring verantwoord moet worden.'
+            status:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'De status van een huurovereenkomst. Dit kan een waarde bevatten zoals: overeenkomst beëindigd en huurder is vertrokken, of overeenkomst is momenteel in gebruik.'
+            opzegdatum:
+              type: 'string'
+              format: 'date'
+              description: 'De datum dat de overeenkomst is opgezegd door de huurder.'
+            eindeReden:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'De reden voor beëindiging van de huurovereenkomst.'
+            maatschappelijkLabel:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'Het label waarmee het maatschappelijk en economisch  belang van de dienstverlening wordt aangegeven bij de verhuring: DAEB of niet-DAEB. Het label op de huurovereenkomst kan afwijken van het maatschappelijk label van de eenheid. Hiermee kan worden aangegeven dat een eenheid die behoort tot de niet-DAEB tak als DAEB-verhuring verantwoord moet worden.'
     Kwaliteitsmetingsverzoeken-Kwaliteitsmetingsverzoek:
       type: object
       properties:
@@ -912,38 +955,38 @@ components:
         - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Relatie'
         - type: object
           properties:
-              voornaam:
-                type: 'string'
-                format: 'any'
-                description: 'De voornaam van de natuurlijk persoon.'
-              initialen:
-                type: 'string'
-                format: 'any'
-                description: 'De initialen van de natuurlijk persoon.'
-              tussenvoegsels:
-                type: 'string'
-                format: 'any'
-                description: 'De tussenvoegsels behorende bij de naam.'
-              achternaam:
-                type: 'string'
-                format: 'any'
-                description: 'De achternaam van de natuurlijk persoon.'
-              geboortedatum:
-                type: 'string'
-                format: 'date'
-                description: 'De geboortedatum van de natuurlijk persoon.'
-              overlijdensdatum:
-                type: 'string'
-                format: 'date'
-                description: 'De datum van overlijden van de natuurlijk persoon.'
-              aanhef:
-                type: 'string'
-                format: 'any'
-                description: 'De aanhef of aanspreking is een (meestal vriendelijke) introducerende zin van een brief of e-mail. Het gaat doorgaans om standaardformuleringen waarmee de schrijver zich tot de geadresseerde richt.'
-              voorletters:
-                type: 'string'
-                format: 'any'
-                description: 'Een voorletter is een afkorting van een voornaam, die in adressering veel wordt gebruikt. De voorletters geven in combinatie met de achternaam meestal een duidelijk onderscheid tussen leden van hetzelfde gezin of dezelfde familie. Indien iemand meerdere voornamen heeft dan worden de voorletters door een punt gescheiden.'
+            voornaam:
+              type: 'string'
+              format: 'any'
+              description: 'De voornaam van de natuurlijk persoon.'
+            initialen:
+              type: 'string'
+              format: 'any'
+              description: 'De initialen van de natuurlijk persoon.'
+            tussenvoegsels:
+              type: 'string'
+              format: 'any'
+              description: 'De tussenvoegsels behorende bij de naam.'
+            achternaam:
+              type: 'string'
+              format: 'any'
+              description: 'De achternaam van de natuurlijk persoon.'
+            geboortedatum:
+              type: 'string'
+              format: 'date'
+              description: 'De geboortedatum van de natuurlijk persoon.'
+            overlijdensdatum:
+              type: 'string'
+              format: 'date'
+              description: 'De datum van overlijden van de natuurlijk persoon.'
+            aanhef:
+              type: 'string'
+              format: 'any'
+              description: 'De aanhef of aanspreking is een (meestal vriendelijke) introducerende zin van een brief of e-mail. Het gaat doorgaans om standaardformuleringen waarmee de schrijver zich tot de geadresseerde richt.'
+            voorletters:
+              type: 'string'
+              format: 'any'
+              description: 'Een voorletter is een afkorting van een voornaam, die in adressering veel wordt gebruikt. De voorletters geven in combinatie met de achternaam meestal een duidelijk onderscheid tussen leden van hetzelfde gezin of dezelfde familie. Indien iemand meerdere voornamen heeft dan worden de voorletters door een punt gescheiden.'
     Kwaliteitsmetingsverzoeken-Onderhoudsverzoek:
       type: object
       properties:
@@ -970,14 +1013,8 @@ components:
           format: 'date-time'
           description: 'De datum waarop het onderhoudsverzoek is gemeld.'
         melder:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
+          $ref: '#/components/schemas/Relatie-sleutels'
+          description: 'De melder die het onderhoudsverzoek heeft gemeld.'
     Kwaliteitsmetingsverzoeken-Overeenkomst:
       type: object
       properties:
@@ -1003,20 +1040,15 @@ components:
           type: 'string'
           format: 'date'
           description: 'De einddatum van de overeenkomst.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Kwaliteitsmetingsverzoeken-Rechtspersoon:
       allOf:
         - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Relatie'
         - type: object
           properties:
-              naam:
-                type: 'string'
-                format: 'any'
-                description: 'De naam de rechtspersoon.'
+            naam:
+              type: 'string'
+              format: 'any'
+              description: 'De naam de rechtspersoon.'
     Kwaliteitsmetingsverzoeken-Relatie:
       type: object
       properties:
@@ -1036,11 +1068,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Contactgegeven'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Kwaliteitsmetingsverzoeken-Relatierol:
       type: object
       properties:
@@ -1062,11 +1089,6 @@ components:
         relatie:
           $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Relatie'
           description: 'De relatie waarvoor de rol van toepassing is.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Kwaliteitsmetingsverzoeken-Wijk:
       type: object
       properties:
@@ -1082,11 +1104,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De naam van de wijk.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Kwaliteitsmetingsverzoeken-Woonplaats:
       type: object
       properties:
@@ -1102,11 +1119,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De naam van de woonplaats.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Kwaliteitsmetingsverzoeken-Zaak:
       type: object
       properties:
@@ -1137,11 +1149,6 @@ components:
         zaaktype:
           $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Zaaktype'
           description: 'Zaaktype duidt de aard van de zaak aan en definieert daarmee de zaak.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Kwaliteitsmetingsverzoeken-Zaaktype:
       type: object
       properties:
@@ -1163,11 +1170,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'Een beknopte omschrijving van de aard van de zaak en van het zaaktype.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Onderzoeksopdrachten-Adres:
       type: object
       properties:
@@ -1206,11 +1208,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De postcode van het adres.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Onderzoeksopdrachten-Contactgegeven:
       type: object
       properties:
@@ -1235,11 +1232,6 @@ components:
         voorkeur:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De manier waarop de relatie contact wil krijgen door dit contactgegeven. Bijvoorbeeld: 1e voorkeur, 2e voorkeur.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Onderzoeksopdrachten-Onderzoeksopdracht:
       type: object
       properties:
@@ -1286,17 +1278,17 @@ components:
         - $ref: '#/components/schemas/Onderzoeksopdrachten-Adres'
         - type: object
           properties:
-              postbusnummer:
-                type: 'string'
-                format: 'any'
-                description: 'Het postbusnummer behorende bij het adres.'
-              antwoordnummer:
-                type: 'string'
-                format: 'any'
-                description: 'Het antwoordnummer behorende bij het adres.'
-              woonplaats:
-                $ref: '#/components/schemas/Onderzoeksopdrachten-Woonplaats'
-                description: 'De woonplaats waarin het adres zich bevindt.'
+            postbusnummer:
+              type: 'string'
+              format: 'any'
+              description: 'Het postbusnummer behorende bij het adres.'
+            antwoordnummer:
+              type: 'string'
+              format: 'any'
+              description: 'Het antwoordnummer behorende bij het adres.'
+            woonplaats:
+              $ref: '#/components/schemas/Onderzoeksopdrachten-Woonplaats'
+              description: 'De woonplaats waarin het adres zich bevindt.'
     Onderzoeksopdrachten-Relatie:
       type: object
       properties:
@@ -1311,11 +1303,6 @@ components:
         soort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Onderzoeksopdrachten-Vragenlijst:
       type: object
       properties:
@@ -1339,11 +1326,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Onderzoeksopdrachten-VragenlijstRegel'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Onderzoeksopdrachten-VragenlijstRegel:
       type: object
       properties:
@@ -1371,11 +1353,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Referentiedata'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Onderzoeksopdrachten-Woonplaats:
       type: object
       properties:
@@ -1391,11 +1368,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De naam van de woonplaats.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Onderzoeksresultaten-Onderzoeksresultaat:
       type: object
       properties:
@@ -1408,9 +1380,8 @@ components:
           format: 'any'
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
         opdracht:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Onderzoeksopdracht in de vorm: vera/v4/onderzoeksopdrachten/12345'
+          $ref: '#/components/schemas/Onderzoeksopdracht-sleutels'
+          description: 'De onderzoeksopdracht.'
         antwoorden:
           description: 'De antwoorden die door de relatie zijn gegeven behorende bij de onderzoeksopdracht.'
           type: array
@@ -1421,6 +1392,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttributen'
+    Onderzoeksopdracht-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
     Onderzoeksresultaten-VragenlijstAntwoord:
       type: object
       properties:
@@ -1441,19 +1423,12 @@ components:
           format: 'any'
           description: 'Toelichting bij het antwoord'
         vraag:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar VragenlijstRegel in de vorm: vera/v4/vragenlijstregels/12345'
+          $ref: '#/components/schemas/VragenlijstRegel-sleutels'
+          description: 'De vraag die hoort bij het gegeven antwoord'
         vragenlijst:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Vragenlijst in de vorm: vera/v4/vragenlijsten/12345'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
-    KwaliteitsmetingsresultatenKwaliteitsmetingsresultaat-sleutels:
+          $ref: '#/components/schemas/Vragenlijst-sleutels'
+          description: 'De vraag die hoort bij het gegeven antwoord'
+    VragenlijstRegel-sleutels:
       type: object
       properties:
         id:
@@ -1464,341 +1439,7 @@ components:
           type: 'string'
           format: 'any'
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    KwaliteitsmetingsverzoekenAdres-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    KwaliteitsmetingsverzoekenContactgegeven-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        soort:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort communicatie. Bijvoorbeeld: Telefoon, E-mail, .Social media etc.'
-    KwaliteitsmetingsverzoekenContactmoment-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    KwaliteitsmetingsverzoekenEenheid-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    KwaliteitsmetingsverzoekenGemeente-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        naam:
-          type: 'string'
-          format: 'any'
-          description: 'De naam van de gemeente.'
-    KwaliteitsmetingsverzoekenHuurovereenkomst-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        soort:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn.'
-    KwaliteitsmetingsverzoekenKwaliteitsmetingsverzoek-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    KwaliteitsmetingsverzoekenNatuurlijkPersoon-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        soort:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
-    KwaliteitsmetingsverzoekenOnderhoudsverzoek-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    KwaliteitsmetingsverzoekenOvereenkomst-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        soort:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn.'
-    KwaliteitsmetingsverzoekenRechtspersoon-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        soort:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
-    KwaliteitsmetingsverzoekenRelatie-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        soort:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
-    KwaliteitsmetingsverzoekenRelatierol-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    KwaliteitsmetingsverzoekenWijk-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        naam:
-          type: 'string'
-          format: 'any'
-          description: 'De naam van de wijk.'
-    KwaliteitsmetingsverzoekenWoonplaats-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        naam:
-          type: 'string'
-          format: 'any'
-          description: 'De naam van de woonplaats.'
-    KwaliteitsmetingsverzoekenZaak-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    KwaliteitsmetingsverzoekenZaaktype-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    OnderzoeksopdrachtenAdres-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    OnderzoeksopdrachtenContactgegeven-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        soort:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort communicatie. Bijvoorbeeld: Telefoon, E-mail, .Social media etc.'
-    OnderzoeksopdrachtenOnderzoeksopdracht-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    OnderzoeksopdrachtenPostadres-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        postbusnummer:
-          type: 'string'
-          format: 'any'
-          description: 'Het postbusnummer behorende bij het adres.'
-        antwoordnummer:
-          type: 'string'
-          format: 'any'
-          description: 'Het antwoordnummer behorende bij het adres.'
-    OnderzoeksopdrachtenRelatie-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        soort:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
-    OnderzoeksopdrachtenVragenlijst-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    OnderzoeksopdrachtenVragenlijstRegel-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    OnderzoeksopdrachtenWoonplaats-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        naam:
-          type: 'string'
-          format: 'any'
-          description: 'De naam van de woonplaats.'
-    OnderzoeksresultatenOnderzoeksresultaat-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    OnderzoeksresultatenVragenlijstAntwoord-sleutels:
+    Vragenlijst-sleutels:
       type: object
       properties:
         id:
@@ -1823,3 +1464,4 @@ components:
           type: 'string'
         waarde:
           type: 'string'
+

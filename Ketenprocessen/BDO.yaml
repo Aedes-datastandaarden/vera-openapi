@@ -1,15 +1,15 @@
 openapi: '3.0.0'
 info:
-  title: 'Beheer Dossiers'
-  description: 'API-specificatie van procesketengegevensmodel BDO'
+  title: 'Beheren Dossiers'
+  description: API-specificatie van ketenproces "Beheren Dossiers". Deze specificatie is gebaseerd op VERA versie 4.0.3
   termsOfService: 'https://www.stichting-vera.nl/voorwaarden/'
   contact:
     name: 'VERA'
-    url: 'https://www.stichting-vera.nl/'
+    url: 'https://cora.wikixl.nl/index.php/VERA_Standaard'
     email: 'info@stichting-vera.nl'
   license:
-    name: 'General Public License (GPL)'
-    url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+    name: European Union Public License, version 1.2 (EUPL-1.2)
+    url: https://eupl.eu/1.2/nl/
   version: '1.0.3'
 servers:
   - url: https://bdo.vera.io:{port}/{basePath}
@@ -35,7 +35,7 @@ paths:
       tags:
       - 'Dossiers'
       description: 'Ophalen van Dossiers'
-      operationId: 'readDossiers'
+      operationId: 'listDossiers'
       parameters:
       - name: 'params'
         in: 'query'
@@ -76,6 +76,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /dossiers/{id}:
+    get:
+      tags:
+      - 'Dossiers'
+      description: 'Retourneert een Dossier met de gegeven identifier'
+      operationId: 'readDossier'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Dossier om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Dossier response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossiers-Dossier'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Dossiers'
@@ -102,7 +130,14 @@ paths:
       tags:
       - 'Dossiers'
       description: 'Wijzigen van een Dossier'
-      operationId: 'modifyDossier'
+      operationId: 'updateDossier'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Dossier om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Dossier om te wijzigen'
         content:
@@ -120,41 +155,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /dossiers/{id}:
-    get:
-      tags:
-      - 'Dossiers'
-      description: 'Retourneert een Dossier met de gegeven identifier'
-      operationId: 'findDossierById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Dossier om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Dossier response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Dossiers-Dossier'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /informatieobjecten:
     get:
       tags:
       - 'Informatieobjecten'
       description: 'Ophalen van Informatieobjecten'
-      operationId: 'readInformatieobjecten'
+      operationId: 'listInformatieobjecten'
       parameters:
       - name: 'params'
         in: 'query'
@@ -195,6 +201,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /informatieobjecten/{id}:
+    get:
+      tags:
+      - 'Informatieobjecten'
+      description: 'Retourneert een Informatieobject met de gegeven identifier'
+      operationId: 'readInformatieobject'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Informatieobject om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Informatieobject response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Informatieobjecten-Informatieobject'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Informatieobjecten'
@@ -221,7 +255,14 @@ paths:
       tags:
       - 'Informatieobjecten'
       description: 'Wijzigen van een Informatieobject'
-      operationId: 'modifyInformatieobject'
+      operationId: 'updateInformatieobject'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Informatieobject om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Informatieobject om te wijzigen'
         content:
@@ -239,41 +280,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /informatieobjecten/{id}:
-    get:
-      tags:
-      - 'Informatieobjecten'
-      description: 'Retourneert een Informatieobject met de gegeven identifier'
-      operationId: 'findInformatieobjectById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Informatieobject om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Informatieobject response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Informatieobjecten-Informatieobject'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /zaken:
     get:
       tags:
       - 'Zaken'
       description: 'Ophalen van Zaken'
-      operationId: 'readZaken'
+      operationId: 'listZaken'
       parameters:
       - name: 'params'
         in: 'query'
@@ -314,6 +326,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /zaken/{id}:
+    get:
+      tags:
+      - 'Zaken'
+      description: 'Retourneert een Zaak met de gegeven identifier'
+      operationId: 'readZaak'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Zaak om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Zaak response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zaken-Zaak'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Zaken'
@@ -340,7 +380,14 @@ paths:
       tags:
       - 'Zaken'
       description: 'Wijzigen van een Zaak'
-      operationId: 'modifyZaak'
+      operationId: 'updateZaak'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Zaak om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Zaak om te wijzigen'
         content:
@@ -358,73 +405,62 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /zaken/{id}:
-    get:
-      tags:
-      - 'Zaken'
-      description: 'Retourneert een Zaak met de gegeven identifier'
-      operationId: 'findZaakById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Zaak om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Zaak response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Zaken-Zaak'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
 security:
-  - basicAuth: []
+  - ApiKeyAuth: []
 components:
   headers:
-    X_Pagination_Page:
-      schema:
-        type: integer
-        description: Huidige pagina.
-        example: 3
-    X_Pagination_Limit:
-      schema:
-        type: integer
-        description: Aantal resultaten per pagina.
-        example: 20
-    X_Stuurgegevens_TijdstipBericht:
+    X-Stuurgegevens-TijdstipBericht:
       schema:
         type: string
         format: data-time
         description: Tijdstip waarop het bericht verzonden is
-    X_Stuurgegevens_Referentienummer:
+    X-Stuurgegevens-Referentienummer:
       schema:
         type: string
         format: any
         description: Een unieke code voor correlatie
-    X_Stuurgegevens_Zender:
+    X-Stuurgegevens-Zender-Organisatie:
       schema:
         type: string
         format: any
-        description: Identificatie van de verzendende organisatie
+        description: Naam van de verzendende organisatie
+    X-Stuurgegevens-Zender-Administratie:
+      schema:
+        type: string
+        format: any
+        description: |
+          Met het stuurgegeven Administratie kan onderscheid gemaakt worden tussen 
+          de verschillende gegevensverzamelingen die de verzendende organisatie beheert
+    X-Parameters-Aantal:
+      schema:
+        type: integer
+        description: Totaal aantal gevonden entiteiten
+        example: 135
+    X-Parameters-AantalPerPagina:
+      schema:
+        type: integer
+        description: Miximum aantal entiteiten per pagina
+        example: 20
+    X-Parameters-Pagina:
+      schema:
+        type: integer
+        description: Huidige paginanummer
+        example: 3
+    X-Parameters-PeiltijdstipMaterieel:
+      schema:
+        type: string
+        format: date-time
+        description: De peildatum. Indien leeg worden de actuele gegevens opgevraagd
   securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
   responses:
     NietGeautoriseerd:
-      description: Authenticatie-informatie ontbreekt of is ongeldig
+      description: API-key ontbreekt of is ongeldig
       headers:
-        WWW_Authenticate:
+        X-API-KEY:
           schema:
             type: string
   schemas:
@@ -456,53 +492,63 @@ components:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Detaillering van de fase waarin het dossier zich vanuit het perspectief van afhandeling en archivering bevindt.'
         relaties:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+          description: 'Het dossier is gekoppeld aan/heeft betrekking op relatie(s). Bijvoorbeeld huurdersdossier of mutatiedossier.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Relatie-sleutels'
         clusters:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Cluster in de vorm: vera/v4/clusters/12345'
+          description: 'Het dossier is gekoppeld aan/heeft betrekking op cluster(s). Bijvoorbeeld complexdossier.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Cluster-sleutels'
         collectiefObjecten:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar CollectiefObject in de vorm: vera/v4/collectiefobjecten/12345'
+          description: 'Het dossier is gekoppeld aan/heeft betrekking op collectief object(en).'
+          type: array
+          items:
+            $ref: '#/components/schemas/CollectiefObject-sleutels'
         eenheden:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Eenheid in de vorm: vera/v4/eenheden/12345'
+          description: 'Het dossier is gekoppeld aan/heeft betrekking op eenheid(-en). Bijvoorbeeld technisch dossier.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Eenheid-sleutels'
         overeenkomsten:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Overeenkomst in de vorm: vera/v4/overeenkomsten/12345'
+          description: 'Het dossier is gekoppeld aan/heeft betrekking op overeenkomst(en).'
+          type: array
+          items:
+            $ref: '#/components/schemas/Overeenkomst-sleutels'
         inkoopfacturen:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Inkoopfactuur in de vorm: vera/v4/inkoopfacturen/12345'
+          description: 'Het dossier is gekoppeld aan/heeft betrekking op inkoopfactuur(-en). De relatie is niet gemodelleerd in het diagram conform richtlijn GT04 in verband met de leesbaarheid.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Inkoopfactuur-sleutels'
         inkoopopdrachten:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Inkoopopdracht in de vorm: vera/v4/inkoopopdrachten/12345'
+          description: 'Het dossier is gekoppeld aan/heeft betrekking op inkoopopdracht(-en). De relatie is niet gemodelleerd in het diagram conform richtlijn GT04 in verband met de leesbaarheid.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Inkoopopdracht-sleutels'
         omvattendDossier:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Dossier in de vorm: vera/v4/dossiers/12345'
+          $ref: '#/components/schemas/Dossier-sleutels'
+          description: 'Het dossier waarin dit dossier is opgenomen.'
         deelDossiers:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Dossier in de vorm: vera/v4/dossiers/12345'
+          description: 'Het dossier bevat onderliggende dossier(s).'
+          type: array
+          items:
+            $ref: '#/components/schemas/Dossier-sleutels'
         processen:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Proces in de vorm: vera/v4/processen/12345'
+          description: 'Het dossier is gekoppeld aan/heeft betrekking op proces(sen).'
+          type: array
+          items:
+            $ref: '#/components/schemas/Proces-sleutels'
         contactmomenten:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Contactmoment in de vorm: vera/v4/contactmomenten/12345'
+          description: 'De gegevens van de contactmomenten die in dit dossier zijn opgenomen.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Contactmoment-sleutels'
         onderhoudsverzoeken:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Onderhoudsverzoek in de vorm: vera/v4/onderhoudsverzoeken/12345'
+          description: 'Het dossier is gekoppeld aan/heeft betrekking op een onderhoudsverzoek.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Onderhoudsverzoek-sleutels'
         zaken:
           type: 'string'
           format: 'uri'
@@ -554,11 +600,137 @@ components:
           type: 'string'
           format: 'any'
           description: 'De sorteervolgorde van de referentiedata anders dan alfabetisch.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
+    Relatie-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
+    Cluster-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        naam:
+          type: 'string'
+          format: 'any'
+          description: 'De naam van de cluster.'
+    CollectiefObject-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Eenheid-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Overeenkomst-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn.'
+    Inkoopfactuur-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Inkoopopdracht-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Dossier-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Proces-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Contactmoment-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Onderhoudsverzoek-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
     Dossiers-Relatierol:
       type: object
       properties:
@@ -572,7 +744,7 @@ components:
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
         soort:
           $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort rol van de relatie. Bijvoorbeeld Klant, Prospect, Leverancier, Medewerker, Team etc.'
+          description: 'Het soort rol van de relatie. Bijvoorbeeld Klant, Prospect, Leverancier, Medewerker, Team etc.'
         naam:
           type: 'string'
           format: 'any'
@@ -582,14 +754,62 @@ components:
           format: 'any'
           description: 'De omschrijving van de relatie rol.'
         rolRelatie:
+          $ref: '#/components/schemas/Relatie-sleutels'
+          description: 'De relatie die aangeeft waar de relatie en rol koppeling van toepassing is. Dit attribuut geeft aan dat de aangegeven relatie de rol binnen bijvoorbeeld een relatiegroep heeft. Het attribuut relatie is dan bijvoorbeeld een persoon uit een huishouden en de rolRelatie is dan bijvoorbeeld de relatiegroep die het huishouden voorstelt.'
+    Informatieobjecten-Contactmoment:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        omschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'De omschrijving van het contactmoment'
+        datum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum en tijd waarop contact is geweest.'
+        relatie:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
+        kanaal:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het kanaal via welke het contact heeft gelopen. Bijvoorbeeld: Telefoon, email, balie, internet.'
+        medewerker:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+        richting:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De communicatierichting behorend bij het contact. Bijvoorbeeld: Uitgaand of ingaand.'
+        relatierol:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatierol in de vorm: vera/v4/relatierollen/12345'
+        zaak:
+          $ref: '#/components/schemas/Zaak-sleutels'
+          description: 'De zaak waarvoor het contactmoment heeft plaatsgevonden.'
+        dossier:
+          $ref: '#/components/schemas/Dossier-sleutels'
+          description: 'Het dossier waarbinnen het contactmoment is vastgelegd.'
+    Zaak-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
     Informatieobjecten-Informatieobject:
       type: object
       properties:
@@ -639,6 +859,10 @@ components:
           type: 'string'
           format: 'date-time'
           description: 'Publicatiedatum of verzenddatum van het informatieobject.'
+        archiefActiedatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum waarop het gearchiveerde informatieobject vernietigd moet worden dan wel overgebracht moet worden naar een archiefbewaarplaats.'
         auteur:
           type: 'string'
           format: 'any'
@@ -691,67 +915,90 @@ components:
         archiefnominatie:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Aanduiding of het informatieobject blijvend bewaard of na een bepaalde termijn vernietigd moet worden.'
-        archiefActiedatum:
-          type: 'string'
-          format: 'date-time'
-          description: 'De datum waarop het gearchiveerde informatieobject vernietigd moet worden dan wel overgebracht moet worden naar een archiefbewaarplaats.'
         isBijlageVan:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
+          $ref: '#/components/schemas/Informatieobject-sleutels'
+          description: 'Geeft aan dat het informatieobject een bijlage is van een ander informatieobject.'
         bijlagen:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
+          description: 'De bijlagen behorend bij het informatieobject.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject-sleutels'
         relaties:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+          description: 'Het dossier is gekoppeld aan/heeft betrekking op relatie(s). Bijvoorbeeld huurdersdossier of mutatiedossier.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Relatie-sleutels'
         clusters:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Cluster in de vorm: vera/v4/clusters/12345'
+          description: 'Het dossier is gekoppeld aan/heeft betrekking op cluster(s). Bijvoorbeeld complexdossier.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Cluster-sleutels'
         collectiefObjecten:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar CollectiefObject in de vorm: vera/v4/collectiefobjecten/12345'
+          description: 'Het informatieobject is gekoppeld aan/heeft betrekking op collectief object(en).'
+          type: array
+          items:
+            $ref: '#/components/schemas/CollectiefObject-sleutels'
         eenheden:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Eenheid in de vorm: vera/v4/eenheden/12345'
+          description: 'Het dossier is gekoppeld aan/heeft betrekking op eenheid(-en). Bijvoorbeeld technisch dossier.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Eenheid-sleutels'
         overeenkomsten:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Overeenkomst in de vorm: vera/v4/overeenkomsten/12345'
+          description: 'Het informatieobject is gekoppeld aan/heeft betrekking op/is verschijningsvorm van overeenkomst(en).'
+          type: array
+          items:
+            $ref: '#/components/schemas/Overeenkomst-sleutels'
         inkoopfacturen:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Inkoopfactuur in de vorm: vera/v4/inkoopfacturen/12345'
+          description: 'Het informatieobject is gekoppeld aan/heeft betrekking op/is verschijningsvorm van inkoopfactuur(-en). De relatie is niet gemodelleerd in het diagram conform richtlijn GT04 in verband met de leesbaarheid.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Inkoopfactuur-sleutels'
         inkoopopdrachten:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Inkoopopdracht in de vorm: vera/v4/inkoopopdrachten/12345'
+          description: 'Het informatieobject is gekoppeld aan/heeft betrekking op/is verschijningsvorm van inkoopopdracht(-en). De relatie is niet gemodelleerd in het diagram conform richtlijn GT04 in verband met de leesbaarheid.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Inkoopopdracht-sleutels'
         dossiers:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Dossier in de vorm: vera/v4/dossiers/12345'
+          description: 'Het informatieobject is gekoppeld aan/heeft betrekking op dossier(s).'
+          type: array
+          items:
+            $ref: '#/components/schemas/Dossier-sleutels'
         processen:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Proces in de vorm: vera/v4/processen/12345'
+          description: 'Het informatieobject is gekoppeld aan/heeft betrekking op proces(sen).'
+          type: array
+          items:
+            $ref: '#/components/schemas/Proces-sleutels'
         zaken:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Zaak in de vorm: vera/v4/zaken/12345'
+          description: 'Het informatieobject is gekoppeld aan/heeft betrekking op zaak(-en).'
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaak-sleutels'
         onderhoudsverzoeken:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Onderhoudsverzoek in de vorm: vera/v4/onderhoudsverzoeken/12345'
+          description: 'Het informatieobject is gekoppeld aan/heeft betrekking op een onderhoudsverzoek.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Onderhoudsverzoek-sleutels'
+        contactmomenten:
+          description: 'Het informatieobject is gekoppeld aan/heeft betrekking op proces(sen).'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobjecten-Contactmoment'
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttributen'
+    Informatieobject-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
     Zaken-Zaak:
       type: object
       properties:
@@ -782,7 +1029,7 @@ components:
         registratiedatum:
           type: 'string'
           format: 'date-time'
-          description: 'De datum waarop de zaakbehandelende organisatie de zaak heeft geregistreerd.'
+          description: 'De datum waarop de zaakbehandelende organisatie de zaak heeft geregistreerd.'
         geplandeEinddatum:
           type: 'string'
           format: 'date-time'
@@ -793,36 +1040,40 @@ components:
           description: 'De datum waarop de zaak uiterlijk dient afgehandeld te zijn.'
         zaaktype:
           $ref: '#/components/schemas/Zaken-Zaaktype'
-          description: 'Zaaktype duidt de aard van de zaak aan en definieert daarmee de zaak.'
+          description: 'Zaaktype duidt de aard van de zaak aan en definieert daarmee de zaak.'
         zaakstatussen:
           description: 'De statussen die bereikt zijn gedurende de behandeling van de zaak.'
           type: array
           items:
             $ref: '#/components/schemas/Zaken-Zaakstatus'
         gerelateerdeZaken:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Zaak in de vorm: vera/v4/zaken/12345'
+          description: 'Heeft één of meerdere gerelateerde interne of externe zaken.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaak-sleutels'
         isDeelzaakVan:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Zaak in de vorm: vera/v4/zaken/12345'
+          $ref: '#/components/schemas/Zaak-sleutels'
+          description: 'Specificeert de bijbehorende hoofdzaak.'
         deelzaken:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Zaak in de vorm: vera/v4/zaken/12345'
+          description: 'Specificeert de bijbehorende deelzaken.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaak-sleutels'
         relaties:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+          description: 'De zaak is gekoppeld aan/heeft betrekking op relatie(s).'
+          type: array
+          items:
+            $ref: '#/components/schemas/Relatie-sleutels'
         eenheden:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Eenheid in de vorm: vera/v4/eenheden/12345'
+          description: 'De zaak is gekoppeld aan/heeft betrekking op eenheid(-en).'
+          type: array
+          items:
+            $ref: '#/components/schemas/Eenheid-sleutels'
         overeenkomsten:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Overeenkomst in de vorm: vera/v4/overeenkomsten/12345'
+          description: 'De zaak is gekoppeld aan/heeft betrekking op overeenkomst(en).'
+          type: array
+          items:
+            $ref: '#/components/schemas/Overeenkomst-sleutels'
         rollen:
           description: 'De rollen op basis waarvan relaties betrokken zijn bij de zaak.'
           type: array
@@ -860,14 +1111,8 @@ components:
           format: 'true-or-false'
           description: 'Indicatie of de betrokkene in de rol bij de zaak optreedt als gemachtigde van een andere betrokkene bij die zaak.'
         relatie:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
+          $ref: '#/components/schemas/Relatie-sleutels'
+          description: 'De relatie die de rol uitoefent. Bijvoorbeeld de medewerker, organisatorische eenheid, klant, leverancier etc.'
     Zaken-Zaakstatus:
       type: object
       properties:
@@ -889,16 +1134,11 @@ components:
         begindatum:
           type: 'string'
           format: 'date-time'
-          description: 'Het moment waarop de status is bereikt.'
+          description: 'Het moment waarop de status is bereikt.'
         einddatum:
           type: 'string'
           format: 'date-time'
           description: 'Het moment waarop de status verlopen is.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Zaken-Zaaktype:
       type: object
       properties:
@@ -912,7 +1152,7 @@ components:
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken).'
         soort:
           $ref: '#/components/schemas/Referentiedata'
-          description: 'Categorisering van de aard van een zaak van dit zaaktype.'
+          description: 'Categorisering van de aard van een zaak van dit zaaktype.'
         detailSoort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Specificatie van de categorie ten aanzien van de aard van zaak van het zaaktype.'
@@ -931,7 +1171,7 @@ components:
         einddatum:
           type: 'string'
           format: 'date-time'
-          description: 'Met deze datum wordt aangegeven vanaf wanneer het zaaktype niet meer bestaat en niet meer toegepast kan worden.'
+          description: 'Met deze datum wordt aangegeven vanaf wanneer het zaaktype niet meer bestaat en niet meer toegepast kan worden.'
         doel:
           type: 'string'
           format: 'any'
@@ -939,18 +1179,18 @@ components:
         doorlooptijd:
           type: 'integer'
           format: 'int32'
-          description: 'De periode waarbinnen een zaak van dit zaaktype afgerond dient te zijn.'
+          description: 'De periode waarbinnen een zaak van dit zaaktype afgerond dient te zijn.'
         servicenorm:
           type: 'integer'
           format: 'int32'
-          description: 'De periode waarbinnen verwacht wordt dat een zaak van dit zaaktype afgerond wordt conform de geldende servicenormen van de zaakbehandelende organisatie.'
+          description: 'De periode waarbinnen verwacht wordt dat een zaak van dit zaaktype afgerond wordt conform de geldende servicenormen van de zaakbehandelende organisatie.'
         archiefcode:
           type: 'string'
           format: 'any'
           description: 'De systematische identificatie van zaakdossiers van dit zaaktype overeenkomstig logisch gestructureerde conventies, methoden en procedureregels.'
         vertrouwelijkheid:
           $ref: '#/components/schemas/Referentiedata'
-          description: 'Aanduiding van de mate waarin zaakdossiers van een zaak van dit zaaktype voor de openbaarheid bestemd zijn.'
+          description: 'Aanduiding van de mate waarin zaakdossiers van een zaak van dit zaaktype voor de openbaarheid bestemd zijn.'
         externePublicatie:
           type: 'boolean'
           format: 'true-or-false'
@@ -959,68 +1199,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De generieke tekst ten behoeve van de publicatie van een zaak van dit zaaktype.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
-    DossiersDossier-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem.'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken).'
-    DossiersRelatierol-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-    InformatieobjectenInformatieobject-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    ZakenZaak-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-    ZakenZaakRol-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-    ZakenZaakstatus-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-    ZakenZaaktype-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
     Foutbericht:
       type: 'object'
       properties:
@@ -1035,3 +1213,4 @@ components:
           type: 'string'
         waarde:
           type: 'string'
+

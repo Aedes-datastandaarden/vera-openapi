@@ -1,15 +1,15 @@
 openapi: '3.0.0'
 info:
   title: 'VERA'
-  description: 'API-specificatie van het horizontale gegevensmodel'
+  description: API-specificatie van informatiedomein Relaties
   termsOfService: 'https://www.stichting-vera.nl/voorwaarden/'
   contact:
     name: 'VERA'
-    url: 'https://www.stichting-vera.nl/'
+    url: 'https://cora.wikixl.nl/index.php/VERA_Standaard'
     email: 'info@stichting-vera.nl'
   license:
-    name: 'General Public License (GPL)'
-    url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+    name: European Union Public License, version 1.2 (EUPL-1.2)
+    url: https://eupl.eu/1.2/nl/
   version: '4.0.3'
 servers:
   - url: https://relaties.vera.io:{port}/{basePath}
@@ -31,7 +31,7 @@ paths:
       tags:
       - 'Resources'
       description: 'Ophalen van Accounts'
-      operationId: 'readAccounts'
+      operationId: 'listAccounts'
       parameters:
       - name: 'params'
         in: 'query'
@@ -72,6 +72,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /accounts/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Account met de gegeven identifier'
+      operationId: 'readAccount'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Account om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Account response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -98,7 +126,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Account'
-      operationId: 'modifyAccount'
+      operationId: 'updateAccount'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Account om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Account om te wijzigen'
         content:
@@ -116,41 +151,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /accounts/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Account met de gegeven identifier'
-      operationId: 'findAccountById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Account om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Account response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Account'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /afspraken:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Afspraken'
-      operationId: 'readAfspraken'
+      operationId: 'listAfspraken'
       parameters:
       - name: 'params'
         in: 'query'
@@ -191,6 +197,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /afspraken/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Afspraak met de gegeven identifier'
+      operationId: 'readAfspraak'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Afspraak om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Afspraak response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Afspraak'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -217,7 +251,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Afspraak'
-      operationId: 'modifyAfspraak'
+      operationId: 'updateAfspraak'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Afspraak om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Afspraak om te wijzigen'
         content:
@@ -235,41 +276,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /afspraken/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Afspraak met de gegeven identifier'
-      operationId: 'findAfspraakById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Afspraak om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Afspraak response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Afspraak'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /afspraak-opties:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van AfspraakOpties'
-      operationId: 'readAfspraakOpties'
+      operationId: 'listAfspraakOpties'
       parameters:
       - name: 'params'
         in: 'query'
@@ -310,6 +322,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /afspraak-opties/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een AfspraakOptie met de gegeven identifier'
+      operationId: 'readAfspraakOptie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van AfspraakOptie om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'AfspraakOptie response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AfspraakOptie'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -336,7 +376,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een AfspraakOptie'
-      operationId: 'modifyAfspraakOptie'
+      operationId: 'updateAfspraakOptie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van AfspraakOptie om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'AfspraakOptie om te wijzigen'
         content:
@@ -354,41 +401,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /afspraak-opties/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een AfspraakOptie met de gegeven identifier'
-      operationId: 'findAfspraakOptieById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van AfspraakOptie om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'AfspraakOptie response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AfspraakOptie'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /afspraakverzoeken:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Afspraakverzoeken'
-      operationId: 'readAfspraakverzoeken'
+      operationId: 'listAfspraakverzoeken'
       parameters:
       - name: 'params'
         in: 'query'
@@ -429,6 +447,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /afspraakverzoeken/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Afspraakverzoek met de gegeven identifier'
+      operationId: 'readAfspraakverzoek'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Afspraakverzoek om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Afspraakverzoek response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Afspraakverzoek'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -455,7 +501,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Afspraakverzoek'
-      operationId: 'modifyAfspraakverzoek'
+      operationId: 'updateAfspraakverzoek'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Afspraakverzoek om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Afspraakverzoek om te wijzigen'
         content:
@@ -473,41 +526,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /afspraakverzoeken/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Afspraakverzoek met de gegeven identifier'
-      operationId: 'findAfspraakverzoekById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Afspraakverzoek om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Afspraakverzoek response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Afspraakverzoek'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /betaalgegevens:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Betaalgegevens'
-      operationId: 'readBetaalgegevens'
+      operationId: 'listBetaalgegevens'
       parameters:
       - name: 'params'
         in: 'query'
@@ -548,6 +572,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /betaalgegevens/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Betaalgegeven met de gegeven identifier'
+      operationId: 'readBetaalgegeven'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Betaalgegeven om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Betaalgegeven response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Betaalgegeven'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -574,7 +626,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Betaalgegeven'
-      operationId: 'modifyBetaalgegeven'
+      operationId: 'updateBetaalgegeven'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Betaalgegeven om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Betaalgegeven om te wijzigen'
         content:
@@ -592,50 +651,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /betaalgegevens/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Betaalgegeven met de gegeven identifier'
-      operationId: 'findBetaalgegevenById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Betaalgegeven om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Betaalgegeven response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Betaalgegeven'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /contactgegevens:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Contactgegevens'
-      operationId: 'readContactgegevens'
+      operationId: 'listContactgegevens'
       parameters:
       - name: 'params'
         in: 'query'
         style: 'form'
         explode: true
         schema:
-          oneOf:
-                - $ref: '#/components/schemas/Telefoonnummer'
-      responses:
+                responses:
         '200':
           description: 'Contactgegeven response'
           content:
@@ -643,9 +671,7 @@ paths:
               schema:
                 type: 'array'
                 items:
-                  oneOf:
-                    - $ref: '#/components/schemas/Telefoonnummer'
-        '401':
+                          '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         default:
           description: 'Onverwachte fout'
@@ -663,13 +689,38 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/Telefoonnummer'
-      responses:
+                    responses:
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /contactgegevens/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Contactgegeven met de gegeven identifier'
+      operationId: 'readContactgegeven'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Contactgegeven om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Contactgegeven response'
+          content:
+            application/json:
+              schema:
+                        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -680,9 +731,7 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/Telefoonnummer'
-      responses:
+                    responses:
         '200':
           description: 'Contactgegeven succesvol vervangen'
         '401':
@@ -697,47 +746,22 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Contactgegeven'
-      operationId: 'modifyContactgegeven'
+      operationId: 'updateContactgegeven'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Contactgegeven om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Contactgegeven om te wijzigen'
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/Telefoonnummer'
-      responses:
+                    responses:
         '200':
           description: 'Contactgegeven succesvol gewijzigd'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
-  /contactgegevens/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Contactgegeven met de gegeven identifier'
-      operationId: 'findContactgegevenById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Contactgegeven om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Contactgegeven response'
-          content:
-            application/json:
-              schema:
-                oneOf:
-                  - $ref: '#/components/schemas/Telefoonnummer'
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -751,7 +775,7 @@ paths:
       tags:
       - 'Resources'
       description: 'Ophalen van Contactmomenten'
-      operationId: 'readContactmomenten'
+      operationId: 'listContactmomenten'
       parameters:
       - name: 'params'
         in: 'query'
@@ -792,6 +816,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /contactmomenten/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Contactmoment met de gegeven identifier'
+      operationId: 'readContactmoment'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Contactmoment om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Contactmoment response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contactmoment'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -818,7 +870,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Contactmoment'
-      operationId: 'modifyContactmoment'
+      operationId: 'updateContactmoment'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Contactmoment om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Contactmoment om te wijzigen'
         content:
@@ -836,41 +895,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /contactmomenten/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Contactmoment met de gegeven identifier'
-      operationId: 'findContactmomentById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Contactmoment om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Contactmoment response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Contactmoment'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /inkomens:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Inkomens'
-      operationId: 'readInkomens'
+      operationId: 'listInkomens'
       parameters:
       - name: 'params'
         in: 'query'
@@ -911,6 +941,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /inkomens/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Inkomen met de gegeven identifier'
+      operationId: 'readInkomen'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Inkomen om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Inkomen response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Inkomen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -937,7 +995,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Inkomen'
-      operationId: 'modifyInkomen'
+      operationId: 'updateInkomen'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Inkomen om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Inkomen om te wijzigen'
         content:
@@ -955,41 +1020,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /inkomens/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Inkomen met de gegeven identifier'
-      operationId: 'findInkomenById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Inkomen om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Inkomen response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Inkomen'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /natuurlijk-personen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van NatuurlijkPersonen'
-      operationId: 'readNatuurlijkPersonen'
+      operationId: 'listNatuurlijkPersonen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -1030,6 +1066,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /natuurlijk-personen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een NatuurlijkPersoon met de gegeven identifier'
+      operationId: 'readNatuurlijkPersoon'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van NatuurlijkPersoon om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'NatuurlijkPersoon response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NatuurlijkPersoon'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -1056,7 +1120,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een NatuurlijkPersoon'
-      operationId: 'modifyNatuurlijkPersoon'
+      operationId: 'updateNatuurlijkPersoon'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van NatuurlijkPersoon om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'NatuurlijkPersoon om te wijzigen'
         content:
@@ -1074,41 +1145,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /natuurlijk-personen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een NatuurlijkPersoon met de gegeven identifier'
-      operationId: 'findNatuurlijkPersoonById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van NatuurlijkPersoon om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'NatuurlijkPersoon response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/NatuurlijkPersoon'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /opleidingen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Opleidingen'
-      operationId: 'readOpleidingen'
+      operationId: 'listOpleidingen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -1149,6 +1191,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /opleidingen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Opleiding met de gegeven identifier'
+      operationId: 'readOpleiding'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Opleiding om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Opleiding response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Opleiding'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -1175,7 +1245,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Opleiding'
-      operationId: 'modifyOpleiding'
+      operationId: 'updateOpleiding'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Opleiding om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Opleiding om te wijzigen'
         content:
@@ -1193,41 +1270,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /opleidingen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Opleiding met de gegeven identifier'
-      operationId: 'findOpleidingById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Opleiding om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Opleiding response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Opleiding'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /rechtspersonen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Rechtspersonen'
-      operationId: 'readRechtspersonen'
+      operationId: 'listRechtspersonen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -1268,6 +1316,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /rechtspersonen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Rechtspersoon met de gegeven identifier'
+      operationId: 'readRechtspersoon'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Rechtspersoon om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Rechtspersoon response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rechtspersoon'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -1294,7 +1370,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Rechtspersoon'
-      operationId: 'modifyRechtspersoon'
+      operationId: 'updateRechtspersoon'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Rechtspersoon om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Rechtspersoon om te wijzigen'
         content:
@@ -1312,52 +1395,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /rechtspersonen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Rechtspersoon met de gegeven identifier'
-      operationId: 'findRechtspersoonById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Rechtspersoon om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Rechtspersoon response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Rechtspersoon'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /relaties:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Relaties'
-      operationId: 'readRelaties'
+      operationId: 'listRelaties'
       parameters:
       - name: 'params'
         in: 'query'
         style: 'form'
         explode: true
         schema:
-          oneOf:
-                - $ref: '#/components/schemas/NatuurlijkPersoon'
-                - $ref: '#/components/schemas/Rechtspersoon'
-                - $ref: '#/components/schemas/Relatiegroep'
-      responses:
+                responses:
         '200':
           description: 'Relatie response'
           content:
@@ -1365,11 +1415,7 @@ paths:
               schema:
                 type: 'array'
                 items:
-                  oneOf:
-                    - $ref: '#/components/schemas/NatuurlijkPersoon'
-                    - $ref: '#/components/schemas/Rechtspersoon'
-                    - $ref: '#/components/schemas/Relatiegroep'
-        '401':
+                          '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         default:
           description: 'Onverwachte fout'
@@ -1387,15 +1433,38 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/NatuurlijkPersoon'
-                - $ref: '#/components/schemas/Rechtspersoon'
-                - $ref: '#/components/schemas/Relatiegroep'
-      responses:
+                    responses:
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /relaties/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Relatie met de gegeven identifier'
+      operationId: 'readRelatie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Relatie om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Relatie response'
+          content:
+            application/json:
+              schema:
+                        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -1406,11 +1475,7 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/NatuurlijkPersoon'
-                - $ref: '#/components/schemas/Rechtspersoon'
-                - $ref: '#/components/schemas/Relatiegroep'
-      responses:
+                    responses:
         '200':
           description: 'Relatie succesvol vervangen'
         '401':
@@ -1425,51 +1490,22 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Relatie'
-      operationId: 'modifyRelatie'
+      operationId: 'updateRelatie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Relatie om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Relatie om te wijzigen'
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/NatuurlijkPersoon'
-                - $ref: '#/components/schemas/Rechtspersoon'
-                - $ref: '#/components/schemas/Relatiegroep'
-      responses:
+                    responses:
         '200':
           description: 'Relatie succesvol gewijzigd'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
-  /relaties/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Relatie met de gegeven identifier'
-      operationId: 'findRelatieById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Relatie om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Relatie response'
-          content:
-            application/json:
-              schema:
-                oneOf:
-                  - $ref: '#/components/schemas/NatuurlijkPersoon'
-                  - $ref: '#/components/schemas/Rechtspersoon'
-                  - $ref: '#/components/schemas/Relatiegroep'
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -1483,7 +1519,7 @@ paths:
       tags:
       - 'Resources'
       description: 'Ophalen van RelatieAdressen'
-      operationId: 'readRelatieAdressen'
+      operationId: 'listRelatieAdressen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -1524,6 +1560,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /relatie-adressen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een RelatieAdres met de gegeven identifier'
+      operationId: 'readRelatieAdres'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van RelatieAdres om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'RelatieAdres response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelatieAdres'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -1550,7 +1614,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een RelatieAdres'
-      operationId: 'modifyRelatieAdres'
+      operationId: 'updateRelatieAdres'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van RelatieAdres om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'RelatieAdres om te wijzigen'
         content:
@@ -1568,41 +1639,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /relatie-adressen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een RelatieAdres met de gegeven identifier'
-      operationId: 'findRelatieAdresById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van RelatieAdres om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'RelatieAdres response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RelatieAdres'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /relatiegroepen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Relatiegroepen'
-      operationId: 'readRelatiegroepen'
+      operationId: 'listRelatiegroepen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -1643,6 +1685,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /relatiegroepen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Relatiegroep met de gegeven identifier'
+      operationId: 'readRelatiegroep'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Relatiegroep om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Relatiegroep response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Relatiegroep'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -1669,7 +1739,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Relatiegroep'
-      operationId: 'modifyRelatiegroep'
+      operationId: 'updateRelatiegroep'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Relatiegroep om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Relatiegroep om te wijzigen'
         content:
@@ -1687,41 +1764,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /relatiegroepen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Relatiegroep met de gegeven identifier'
-      operationId: 'findRelatiegroepById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Relatiegroep om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Relatiegroep response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Relatiegroep'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /relatie-kenmerken:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van RelatieKenmerken'
-      operationId: 'readRelatieKenmerken'
+      operationId: 'listRelatieKenmerken'
       parameters:
       - name: 'params'
         in: 'query'
@@ -1762,6 +1810,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /relatie-kenmerken/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een RelatieKenmerk met de gegeven identifier'
+      operationId: 'readRelatieKenmerk'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van RelatieKenmerk om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'RelatieKenmerk response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelatieKenmerk'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -1788,7 +1864,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een RelatieKenmerk'
-      operationId: 'modifyRelatieKenmerk'
+      operationId: 'updateRelatieKenmerk'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van RelatieKenmerk om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'RelatieKenmerk om te wijzigen'
         content:
@@ -1806,41 +1889,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /relatie-kenmerken/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een RelatieKenmerk met de gegeven identifier'
-      operationId: 'findRelatieKenmerkById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van RelatieKenmerk om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'RelatieKenmerk response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RelatieKenmerk'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /relatierollen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Relatierollen'
-      operationId: 'readRelatierollen'
+      operationId: 'listRelatierollen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -1881,6 +1935,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /relatierollen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Relatierol met de gegeven identifier'
+      operationId: 'readRelatierol'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Relatierol om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Relatierol response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Relatierol'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -1907,7 +1989,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Relatierol'
-      operationId: 'modifyRelatierol'
+      operationId: 'updateRelatierol'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Relatierol om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Relatierol om te wijzigen'
         content:
@@ -1925,41 +2014,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /relatierollen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Relatierol met de gegeven identifier'
-      operationId: 'findRelatierolById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Relatierol om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Relatierol response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Relatierol'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /signaleringen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Signaleringen'
-      operationId: 'readSignaleringen'
+      operationId: 'listSignaleringen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -2000,6 +2060,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /signaleringen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Signalering met de gegeven identifier'
+      operationId: 'readSignalering'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Signalering om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Signalering response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Signalering'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -2026,7 +2114,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Signalering'
-      operationId: 'modifySignalering'
+      operationId: 'updateSignalering'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Signalering om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Signalering om te wijzigen'
         content:
@@ -2044,41 +2139,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /signaleringen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Signalering met de gegeven identifier'
-      operationId: 'findSignaleringById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Signalering om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Signalering response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Signalering'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /telefoonnummers:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Telefoonnummers'
-      operationId: 'readTelefoonnummers'
+      operationId: 'listTelefoonnummers'
       parameters:
       - name: 'params'
         in: 'query'
@@ -2119,6 +2185,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /telefoonnummers/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Telefoonnummer met de gegeven identifier'
+      operationId: 'readTelefoonnummer'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Telefoonnummer om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Telefoonnummer response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Telefoonnummer'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -2145,7 +2239,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Telefoonnummer'
-      operationId: 'modifyTelefoonnummer'
+      operationId: 'updateTelefoonnummer'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Telefoonnummer om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Telefoonnummer om te wijzigen'
         content:
@@ -2163,73 +2264,62 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /telefoonnummers/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Telefoonnummer met de gegeven identifier'
-      operationId: 'findTelefoonnummerById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Telefoonnummer om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Telefoonnummer response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Telefoonnummer'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
 security:
-  - basicAuth: []
+  - ApiKeyAuth: []
 components:
   headers:
-    X_Pagination_Page:
-      schema:
-        type: integer
-        description: Huidige pagina.
-        example: 3
-    X_Pagination_Limit:
-      schema:
-        type: integer
-        description: Aantal resultaten per pagina.
-        example: 20
-    X_Stuurgegevens_TijdstipBericht:
+    X-Stuurgegevens-TijdstipBericht:
       schema:
         type: string
         format: data-time
         description: Tijdstip waarop het bericht verzonden is
-    X_Stuurgegevens_Referentienummer:
+    X-Stuurgegevens-Referentienummer:
       schema:
         type: string
         format: any
         description: Een unieke code voor correlatie
-    X_Stuurgegevens_Zender:
+    X-Stuurgegevens-Zender-Organisatie:
       schema:
         type: string
         format: any
-        description: Identificatie van de verzendende organisatie
+        description: Naam van de verzendende organisatie
+    X-Stuurgegevens-Zender-Administratie:
+      schema:
+        type: string
+        format: any
+        description: |
+          Met het stuurgegeven Administratie kan onderscheid gemaakt worden tussen 
+          de verschillende gegevensverzamelingen die de verzendende organisatie beheert
+    X-Parameters-Aantal:
+      schema:
+        type: integer
+        description: Totaal aantal gevonden entiteiten
+        example: 135
+    X-Parameters-AantalPerPagina:
+      schema:
+        type: integer
+        description: Miximum aantal entiteiten per pagina
+        example: 20
+    X-Parameters-Pagina:
+      schema:
+        type: integer
+        description: Huidige paginanummer
+        example: 3
+    X-Parameters-PeiltijdstipMaterieel:
+      schema:
+        type: string
+        format: date-time
+        description: De peildatum. Indien leeg worden de actuele gegevens opgevraagd
   securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
   responses:
     NietGeautoriseerd:
-      description: Authenticatie-informatie ontbreekt of is ongeldig
+      description: API-key ontbreekt of is ongeldig
       headers:
-        WWW_Authenticate:
+        X-API-KEY:
           schema:
             type: string
   schemas:
@@ -2308,11 +2398,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De sorteervolgorde van de referentiedata anders dan alfabetisch.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Relatie:
       type: object
       properties:
@@ -2680,10 +2765,10 @@ components:
         - $ref: '#/components/schemas/Relatie'
         - type: object
           properties:
-              naam:
-                type: 'string'
-                format: 'any'
-                description: 'De naam van de relatiegroep.'
+            naam:
+              type: 'string'
+              format: 'any'
+              description: 'De naam van de relatiegroep.'
     AfspraakOptie:
       type: object
       properties:
@@ -2802,6 +2887,9 @@ components:
         bron:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De waarde die aangeeft op welke wijze het inkomen vergaard. Bijvoorbeeld: Uit Werk of uitkering.'
+        inkomensverklaringsoort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort inkomensverklaring waaruit het inkomen is overgenomen. Bijv. Jaaropgave, Inkomensverklaring belastingdienst etc.'
         controleur:
           $ref: '#/components/schemas/Relatie'
           description: 'De controleur van de inkomensgegevens.'
@@ -2815,91 +2903,91 @@ components:
         - $ref: '#/components/schemas/Relatie'
         - type: object
           properties:
-              bsn:
-                type: 'string'
-                format: 'any'
-                description: 'Het BSN (Burger Service Nummer) van de natuurlijk persoon.'
-              geboortedatum:
-                type: 'string'
-                format: 'date'
-                description: 'De geboortedatum van de natuurlijk persoon.'
-              overlijdensdatum:
-                type: 'string'
-                format: 'date'
-                description: 'De datum van overlijden van de natuurlijk persoon.'
-              voornaam:
-                type: 'string'
-                format: 'any'
-                description: 'De voornaam van de natuurlijk persoon.'
-              initialen:
-                type: 'string'
-                format: 'any'
-                description: 'De initialen van de natuurlijk persoon.'
-              tussenvoegsels:
-                type: 'string'
-                format: 'any'
-                description: 'De tussenvoegsels behorende bij de naam.'
-              achternaam:
-                type: 'string'
-                format: 'any'
-                description: 'De achternaam van de natuurlijk persoon.'
-              roepnaam:
-                type: 'string'
-                format: 'any'
-                description: 'De roepnaam van de natuurlijk persoon.'
-              aanhef:
-                type: 'string'
-                format: 'any'
-                description: 'De aanhef of aanspreking is een (meestal vriendelijke) introducerende zin van een brief of e-mail. Het gaat doorgaans om standaardformuleringen waarmee de schrijver zich tot de geadresseerde richt.'
-              voorletters:
-                type: 'string'
-                format: 'any'
-                description: 'Een voorletter is een afkorting van een voornaam, die in adressering veel wordt gebruikt. De voorletters geven in combinatie met de achternaam meestal een duidelijk onderscheid tussen leden van hetzelfde gezin of dezelfde familie. Indien iemand meerdere voornamen heeft dan worden de voorletters door een punt gescheiden.'
-              geslacht:
-                $ref: '#/components/schemas/Referentiedata'
-                description: 'Het geslacht van de natuurlijk persoon.'
-              burgerlijkeStaat:
-                $ref: '#/components/schemas/Referentiedata'
-                description: 'De burgerlijke staat van de natuurlijk persoon.'
-              nationaliteit:
-                $ref: '#/components/schemas/Referentiedata'
-                description: 'De nationaliteit van de natuurlijk persoon.'
-              reacties:
-                type: 'string'
-                format: 'uri'
-                description: 'Referentie naar Reactie in de vorm: vera/v4/reacties/12345'
-              aanbiedingen:
-                type: 'string'
-                format: 'uri'
-                description: 'Referentie naar Aanbieding in de vorm: vera/v4/aanbiedingen/12345'
-              toewijzingen:
-                type: 'string'
-                format: 'uri'
-                description: 'Referentie naar Toewijzing in de vorm: vera/v4/toewijzingen/12345'
-              signaleringen:
-                description: 'De signaleringen behorend bij de natuurlijk persoon.'
-                type: array
-                items:
-                  $ref: '#/components/schemas/Signalering'
-              inkomens:
-                description: 'De inkomens van de natuurlijk persoon.'
-                type: array
-                items:
-                  $ref: '#/components/schemas/Inkomen'
-              opleiding:
-                $ref: '#/components/schemas/Opleiding'
-                description: 'Het opleidingsgegeven van de natuurlijk persoon.'
-              regelingen:
-                type: 'string'
-                format: 'uri'
-                description: 'Referentie naar Regeling in de vorm: vera/v4/regelingen/12345'
-              voorrangsregelingen:
-                type: 'string'
-                format: 'uri'
-                description: 'Referentie naar Voorrangsregeling in de vorm: vera/v4/voorrangsregelingen/12345'
-              voorkeurstaal:
-                $ref: '#/components/schemas/Referentiedata'
-                description: 'De voorkeurstaal die de natuurlijk persoon voert.'
+            bsn:
+              type: 'string'
+              format: 'any'
+              description: 'Het BSN (Burger Service Nummer) van de natuurlijk persoon.'
+            geboortedatum:
+              type: 'string'
+              format: 'date'
+              description: 'De geboortedatum van de natuurlijk persoon.'
+            overlijdensdatum:
+              type: 'string'
+              format: 'date'
+              description: 'De datum van overlijden van de natuurlijk persoon.'
+            voornaam:
+              type: 'string'
+              format: 'any'
+              description: 'De voornaam van de natuurlijk persoon.'
+            initialen:
+              type: 'string'
+              format: 'any'
+              description: 'De initialen van de natuurlijk persoon.'
+            tussenvoegsels:
+              type: 'string'
+              format: 'any'
+              description: 'De tussenvoegsels behorende bij de naam.'
+            achternaam:
+              type: 'string'
+              format: 'any'
+              description: 'De achternaam van de natuurlijk persoon.'
+            roepnaam:
+              type: 'string'
+              format: 'any'
+              description: 'De roepnaam van de natuurlijk persoon.'
+            aanhef:
+              type: 'string'
+              format: 'any'
+              description: 'De aanhef of aanspreking is een (meestal vriendelijke) introducerende zin van een brief of e-mail. Het gaat doorgaans om standaardformuleringen waarmee de schrijver zich tot de geadresseerde richt.'
+            voorletters:
+              type: 'string'
+              format: 'any'
+              description: 'Een voorletter is een afkorting van een voornaam, die in adressering veel wordt gebruikt. De voorletters geven in combinatie met de achternaam meestal een duidelijk onderscheid tussen leden van hetzelfde gezin of dezelfde familie. Indien iemand meerdere voornamen heeft dan worden de voorletters door een punt gescheiden.'
+            geslacht:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'Het geslacht van de natuurlijk persoon.'
+            burgerlijkeStaat:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'De burgerlijke staat van de natuurlijk persoon.'
+            nationaliteit:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'De nationaliteit van de natuurlijk persoon.'
+            reacties:
+              type: 'string'
+              format: 'uri'
+              description: 'Referentie naar Reactie in de vorm: vera/v4/reacties/12345'
+            aanbiedingen:
+              type: 'string'
+              format: 'uri'
+              description: 'Referentie naar Aanbieding in de vorm: vera/v4/aanbiedingen/12345'
+            toewijzingen:
+              type: 'string'
+              format: 'uri'
+              description: 'Referentie naar Toewijzing in de vorm: vera/v4/toewijzingen/12345'
+            signaleringen:
+              description: 'De signaleringen behorend bij de natuurlijk persoon.'
+              type: array
+              items:
+                $ref: '#/components/schemas/Signalering'
+            inkomens:
+              description: 'De inkomens van de natuurlijk persoon.'
+              type: array
+              items:
+                $ref: '#/components/schemas/Inkomen'
+            opleiding:
+              $ref: '#/components/schemas/Opleiding'
+              description: 'Het opleidingsgegeven van de natuurlijk persoon.'
+            regelingen:
+              type: 'string'
+              format: 'uri'
+              description: 'Referentie naar Regeling in de vorm: vera/v4/regelingen/12345'
+            voorrangsregelingen:
+              type: 'string'
+              format: 'uri'
+              description: 'Referentie naar Voorrangsregeling in de vorm: vera/v4/voorrangsregelingen/12345'
+            voorkeurstaal:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'De voorkeurstaal die de natuurlijk persoon voert.'
     Signalering:
       type: object
       properties:
@@ -2986,30 +3074,30 @@ components:
         - $ref: '#/components/schemas/Relatie'
         - type: object
           properties:
-              kvkNummer:
-                type: 'string'
-                format: 'any'
-                description: 'Het KVK nummer van de rechtspersoon.'
-              globaalLocatienummer:
-                type: 'string'
-                format: 'any'
-                description: 'Een wereldwijd nummer ter identificatie van een partij of locatie. Het dertiencijferige nummer (GLN) wordt uitgegeven door GS1.'
-              naam:
-                type: 'string'
-                format: 'any'
-                description: 'De naam de rechtspersoon.'
-              btwNummer:
-                type: 'string'
-                format: 'any'
-                description: 'Het BTW nummer van de rechtspersoon.'
-              organisatievorm:
-                $ref: '#/components/schemas/Referentiedata'
-                description: 'De organisatievorm van de rechtspersoon. Bijvoorbeeld: BV, NV, stichting of vereniging. Ook wel rechtsvorm genoemd.'
-              contactpersonen:
-                description: 'De contactpersonen behorend bij de rechtspersoon.'
-                type: array
-                items:
-                  $ref: '#/components/schemas/Relatie'
+            kvkNummer:
+              type: 'string'
+              format: 'any'
+              description: 'Het KVK nummer van de rechtspersoon.'
+            globaalLocatienummer:
+              type: 'string'
+              format: 'any'
+              description: 'Een wereldwijd nummer ter identificatie van een partij of locatie. Het dertiencijferige nummer (GLN) wordt uitgegeven door GS1.'
+            naam:
+              type: 'string'
+              format: 'any'
+              description: 'De naam de rechtspersoon.'
+            btwNummer:
+              type: 'string'
+              format: 'any'
+              description: 'Het BTW nummer van de rechtspersoon.'
+            organisatievorm:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'De organisatievorm van de rechtspersoon. Bijvoorbeeld: BV, NV, stichting of vereniging. Ook wel rechtsvorm genoemd.'
+            contactpersonen:
+              description: 'De contactpersonen behorend bij de rechtspersoon.'
+              type: array
+              items:
+                $ref: '#/components/schemas/Relatie'
     RelatieKenmerk:
       type: object
       properties:
@@ -3046,27 +3134,27 @@ components:
         - $ref: '#/components/schemas/Contactgegeven'
         - type: object
           properties:
-              landnummer:
-                type: 'string'
-                format: 'any'
-                description: 'Het landnummer van het telefoonnummer.'
-              netnummer:
-                type: 'string'
-                format: 'any'
-                description: 'Het netnummer van het telefoonnummer.'
-              abonneenummer:
-                type: 'string'
-                format: 'any'
-                description: 'Het abonneenummer van het telefoonnummer.'
-              extensie:
-                type: 'string'
-                format: 'any'
-                description: 'De extensie van het telefoonnummer.'
-              dagdelen:
-                description: 'De dagdelen waarop er gebruikt gemaakt kan worden van het telefoonnummer.'
-                type: array
-                items:
-                  $ref: '#/components/schemas/Referentiedata'
+            landnummer:
+              type: 'string'
+              format: 'any'
+              description: 'Het landnummer van het telefoonnummer.'
+            netnummer:
+              type: 'string'
+              format: 'any'
+              description: 'Het netnummer van het telefoonnummer.'
+            abonneenummer:
+              type: 'string'
+              format: 'any'
+              description: 'Het abonneenummer van het telefoonnummer.'
+            extensie:
+              type: 'string'
+              format: 'any'
+              description: 'De extensie van het telefoonnummer.'
+            dagdelen:
+              description: 'De dagdelen waarop er gebruikt gemaakt kan worden van het telefoonnummer.'
+              type: array
+              items:
+                $ref: '#/components/schemas/Referentiedata'
     Account-sleutels:
       type: object
       properties:
@@ -3312,3 +3400,4 @@ components:
           type: 'string'
         waarde:
           type: 'string'
+

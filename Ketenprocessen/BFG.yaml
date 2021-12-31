@@ -1,15 +1,15 @@
 openapi: '3.0.0'
 info:
   title: 'Beheer Financiele Gegevens'
-  description: 'API-specificatie van procesketengegevensmodel BFG'
+  description: API-specificatie van ketenproces "Beheer Financiele Gegevens". Deze specificatie is gebaseerd op VERA versie 4.0.3
   termsOfService: 'https://www.stichting-vera.nl/voorwaarden/'
   contact:
     name: 'VERA'
-    url: 'https://www.stichting-vera.nl/'
+    url: 'https://cora.wikixl.nl/index.php/VERA_Standaard'
     email: 'info@stichting-vera.nl'
   license:
-    name: 'General Public License (GPL)'
-    url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+    name: European Union Public License, version 1.2 (EUPL-1.2)
+    url: https://eupl.eu/1.2/nl/
   version: '1.0.3'
 servers:
   - url: https://bfg.vera.io:{port}/{basePath}
@@ -33,7 +33,7 @@ paths:
       tags:
       - 'Boekingen'
       description: 'Ophalen van Boekingen'
-      operationId: 'readBoekingen'
+      operationId: 'listBoekingen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -74,6 +74,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /boekingen/{id}:
+    get:
+      tags:
+      - 'Boekingen'
+      description: 'Retourneert een Boeking met de gegeven identifier'
+      operationId: 'readBoeking'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Boeking om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Boeking response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Boekingen-Boeking'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Boekingen'
@@ -100,7 +128,14 @@ paths:
       tags:
       - 'Boekingen'
       description: 'Wijzigen van een Boeking'
-      operationId: 'modifyBoeking'
+      operationId: 'updateBoeking'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Boeking om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Boeking om te wijzigen'
         content:
@@ -118,41 +153,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /boekingen/{id}:
-    get:
-      tags:
-      - 'Boekingen'
-      description: 'Retourneert een Boeking met de gegeven identifier'
-      operationId: 'findBoekingById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Boeking om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Boeking response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Boekingen-Boeking'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /debiteuren:
     get:
       tags:
       - 'Debiteuren'
       description: 'Ophalen van Debiteuren'
-      operationId: 'readDebiteuren'
+      operationId: 'listDebiteuren'
       parameters:
       - name: 'params'
         in: 'query'
@@ -193,6 +199,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /debiteuren/{id}:
+    get:
+      tags:
+      - 'Debiteuren'
+      description: 'Retourneert een Debiteur met de gegeven identifier'
+      operationId: 'readDebiteur'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Debiteur om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Debiteur response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Debiteuren-Debiteur'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Debiteuren'
@@ -219,7 +253,14 @@ paths:
       tags:
       - 'Debiteuren'
       description: 'Wijzigen van een Debiteur'
-      operationId: 'modifyDebiteur'
+      operationId: 'updateDebiteur'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Debiteur om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Debiteur om te wijzigen'
         content:
@@ -237,73 +278,62 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /debiteuren/{id}:
-    get:
-      tags:
-      - 'Debiteuren'
-      description: 'Retourneert een Debiteur met de gegeven identifier'
-      operationId: 'findDebiteurById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Debiteur om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Debiteur response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Debiteuren-Debiteur'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
 security:
-  - basicAuth: []
+  - ApiKeyAuth: []
 components:
   headers:
-    X_Pagination_Page:
-      schema:
-        type: integer
-        description: Huidige pagina.
-        example: 3
-    X_Pagination_Limit:
-      schema:
-        type: integer
-        description: Aantal resultaten per pagina.
-        example: 20
-    X_Stuurgegevens_TijdstipBericht:
+    X-Stuurgegevens-TijdstipBericht:
       schema:
         type: string
         format: data-time
         description: Tijdstip waarop het bericht verzonden is
-    X_Stuurgegevens_Referentienummer:
+    X-Stuurgegevens-Referentienummer:
       schema:
         type: string
         format: any
         description: Een unieke code voor correlatie
-    X_Stuurgegevens_Zender:
+    X-Stuurgegevens-Zender-Organisatie:
       schema:
         type: string
         format: any
-        description: Identificatie van de verzendende organisatie
+        description: Naam van de verzendende organisatie
+    X-Stuurgegevens-Zender-Administratie:
+      schema:
+        type: string
+        format: any
+        description: |
+          Met het stuurgegeven Administratie kan onderscheid gemaakt worden tussen 
+          de verschillende gegevensverzamelingen die de verzendende organisatie beheert
+    X-Parameters-Aantal:
+      schema:
+        type: integer
+        description: Totaal aantal gevonden entiteiten
+        example: 135
+    X-Parameters-AantalPerPagina:
+      schema:
+        type: integer
+        description: Miximum aantal entiteiten per pagina
+        example: 20
+    X-Parameters-Pagina:
+      schema:
+        type: integer
+        description: Huidige paginanummer
+        example: 3
+    X-Parameters-PeiltijdstipMaterieel:
+      schema:
+        type: string
+        format: date-time
+        description: De peildatum. Indien leeg worden de actuele gegevens opgevraagd
   securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
   responses:
     NietGeautoriseerd:
-      description: Authenticatie-informatie ontbreekt of is ongeldig
+      description: API-key ontbreekt of is ongeldig
       headers:
-        WWW_Authenticate:
+        X-API-KEY:
           schema:
             type: string
   schemas:
@@ -331,18 +361,22 @@ components:
           format: 'float'
           description: 'Het afgeletterde bedrag.'
         huurBoeking:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Boeking in de vorm: vera/v4/boekingen/12345'
+          $ref: '#/components/schemas/Boeking-sleutels'
+          description: 'Boeking die ten grondslag ligt aan de aflettering.'
         tegenHuurBoeking:
+          $ref: '#/components/schemas/Boeking-sleutels'
+          description: 'Boeking waarop is afgeletterd.'
+    Boeking-sleutels:
+      type: object
+      properties:
+        id:
           type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Boeking in de vorm: vera/v4/boekingen/12345'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
     Boekingen-Betaalgegeven:
       type: object
       properties:
@@ -358,17 +392,11 @@ components:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort betaalgegeven (bijvoorbeeld een bankrekening, paypall etc.).'
         relatie:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+          $ref: '#/components/schemas/Relatie-sleutels'
+          description: 'De relatie behorend bij het betaalgegeven.'
         incassowijze:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De standaard incassowijze voor het betaalgegeven.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Referentiedata:
       type: object
       properties:
@@ -406,11 +434,20 @@ components:
           type: 'string'
           format: 'any'
           description: 'De sorteervolgorde van de referentiedata anders dan alfabetisch.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
+    Relatie-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
     Boekingen-Boeking:
       type: object
       properties:
@@ -522,11 +559,6 @@ components:
           type: 'number'
           format: 'float'
           description: 'Bedrag'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Boekingen-BtwTarief:
       type: object
       properties:
@@ -554,11 +586,6 @@ components:
           type: 'number'
           format: 'float'
           description: 'Het btw percentage van het tarief.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Boekingen-Debiteur:
       type: object
       properties:
@@ -600,11 +627,6 @@ components:
           type: 'string'
           format: 'date'
           description: 'Plandatum van afschrijven'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Debiteuren-Debiteur:
       type: object
       properties:
@@ -631,9 +653,8 @@ components:
           format: 'int32'
           description: 'Standaard vervaltermijn voor uit te sturen facturen in dagen.'
         relatie:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+          $ref: '#/components/schemas/Relatie-sleutels'
+          description: 'Relatie gekoppeld aan de debiteur.'
         kortingsdagen:
           type: 'integer'
           format: 'int32'
@@ -677,15 +698,9 @@ components:
           format: 'date'
           description: 'De afgiftedatum van de machtiging'
         rekening:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Betaalgegeven in de vorm: vera/v4/betaalgegevens/12345'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
-    BoekingenAflettering-sleutels:
+          $ref: '#/components/schemas/Betaalgegeven-sleutels'
+          description: 'De BIC kode van de bank van de debiteur'
+    Betaalgegeven-sleutels:
       type: object
       properties:
         id:
@@ -696,94 +711,14 @@ components:
           type: 'string'
           format: 'any'
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    BoekingenBetaalgegeven-sleutels:
-      type: object
-      properties:
-        id:
+        rekeningnummer:
           type: 'string'
           format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
+          description: 'Het rekeningnummer.'
+        iban:
           type: 'string'
           format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    BoekingenBoeking-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    BoekingenBoekingDetail-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    BoekingenBtwTarief-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    BoekingenDebiteur-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    BoekingenIncassoOpdracht-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    DebiteurenDebiteur-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    DebiteurenIncassomachtiging-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+          description: 'Het International Bank Account Number. Identificeert elke rekeninghouder, inclusief bank en vestigingsland.'
     Foutbericht:
       type: 'object'
       properties:
@@ -798,3 +733,4 @@ components:
           type: 'string'
         waarde:
           type: 'string'
+

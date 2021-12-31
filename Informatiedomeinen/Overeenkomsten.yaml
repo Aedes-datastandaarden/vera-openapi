@@ -1,15 +1,15 @@
 openapi: '3.0.0'
 info:
   title: 'VERA'
-  description: 'API-specificatie van het horizontale gegevensmodel'
+  description: API-specificatie van informatiedomein Overeenkomsten
   termsOfService: 'https://www.stichting-vera.nl/voorwaarden/'
   contact:
     name: 'VERA'
-    url: 'https://www.stichting-vera.nl/'
+    url: 'https://cora.wikixl.nl/index.php/VERA_Standaard'
     email: 'info@stichting-vera.nl'
   license:
-    name: 'General Public License (GPL)'
-    url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+    name: European Union Public License, version 1.2 (EUPL-1.2)
+    url: https://eupl.eu/1.2/nl/
   version: '4.0.3'
 servers:
   - url: https://overeenkomsten.vera.io:{port}/{basePath}
@@ -31,7 +31,7 @@ paths:
       tags:
       - 'Resources'
       description: 'Ophalen van Huurgeschillen'
-      operationId: 'readHuurgeschillen'
+      operationId: 'listHuurgeschillen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -72,6 +72,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /huurgeschillen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Huurgeschil met de gegeven identifier'
+      operationId: 'readHuurgeschil'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Huurgeschil om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Huurgeschil response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Huurgeschil'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -98,7 +126,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Huurgeschil'
-      operationId: 'modifyHuurgeschil'
+      operationId: 'updateHuurgeschil'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Huurgeschil om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Huurgeschil om te wijzigen'
         content:
@@ -116,41 +151,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /huurgeschillen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Huurgeschil met de gegeven identifier'
-      operationId: 'findHuurgeschilById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Huurgeschil om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Huurgeschil response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Huurgeschil'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /huurgeschil-acties:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van HuurgeschilActies'
-      operationId: 'readHuurgeschilActies'
+      operationId: 'listHuurgeschilActies'
       parameters:
       - name: 'params'
         in: 'query'
@@ -191,6 +197,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /huurgeschil-acties/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een HuurgeschilActie met de gegeven identifier'
+      operationId: 'readHuurgeschilActie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van HuurgeschilActie om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'HuurgeschilActie response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HuurgeschilActie'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -217,7 +251,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een HuurgeschilActie'
-      operationId: 'modifyHuurgeschilActie'
+      operationId: 'updateHuurgeschilActie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van HuurgeschilActie om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'HuurgeschilActie om te wijzigen'
         content:
@@ -235,41 +276,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /huurgeschil-acties/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een HuurgeschilActie met de gegeven identifier'
-      operationId: 'findHuurgeschilActieById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van HuurgeschilActie om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'HuurgeschilActie response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HuurgeschilActie'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /huurgeschil-uitspraken:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van HuurgeschilUitspraken'
-      operationId: 'readHuurgeschilUitspraken'
+      operationId: 'listHuurgeschilUitspraken'
       parameters:
       - name: 'params'
         in: 'query'
@@ -310,6 +322,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /huurgeschil-uitspraken/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een HuurgeschilUitspraak met de gegeven identifier'
+      operationId: 'readHuurgeschilUitspraak'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van HuurgeschilUitspraak om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'HuurgeschilUitspraak response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HuurgeschilUitspraak'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -336,7 +376,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een HuurgeschilUitspraak'
-      operationId: 'modifyHuurgeschilUitspraak'
+      operationId: 'updateHuurgeschilUitspraak'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van HuurgeschilUitspraak om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'HuurgeschilUitspraak om te wijzigen'
         content:
@@ -354,41 +401,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /huurgeschil-uitspraken/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een HuurgeschilUitspraak met de gegeven identifier'
-      operationId: 'findHuurgeschilUitspraakById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van HuurgeschilUitspraak om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'HuurgeschilUitspraak response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HuurgeschilUitspraak'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /huuropzeggingen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Huuropzeggingen'
-      operationId: 'readHuuropzeggingen'
+      operationId: 'listHuuropzeggingen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -429,6 +447,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /huuropzeggingen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Huuropzegging met de gegeven identifier'
+      operationId: 'readHuuropzegging'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Huuropzegging om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Huuropzegging response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Huuropzegging'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -455,7 +501,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Huuropzegging'
-      operationId: 'modifyHuuropzegging'
+      operationId: 'updateHuuropzegging'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Huuropzegging om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Huuropzegging om te wijzigen'
         content:
@@ -473,41 +526,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /huuropzeggingen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Huuropzegging met de gegeven identifier'
-      operationId: 'findHuuropzeggingById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Huuropzegging om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Huuropzegging response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Huuropzegging'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /huurovereenkomsten:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Huurovereenkomsten'
-      operationId: 'readHuurovereenkomsten'
+      operationId: 'listHuurovereenkomsten'
       parameters:
       - name: 'params'
         in: 'query'
@@ -548,6 +572,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /huurovereenkomsten/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Huurovereenkomst met de gegeven identifier'
+      operationId: 'readHuurovereenkomst'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Huurovereenkomst om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Huurovereenkomst response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Huurovereenkomst'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -574,7 +626,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Huurovereenkomst'
-      operationId: 'modifyHuurovereenkomst'
+      operationId: 'updateHuurovereenkomst'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Huurovereenkomst om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Huurovereenkomst om te wijzigen'
         content:
@@ -592,41 +651,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /huurovereenkomsten/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Huurovereenkomst met de gegeven identifier'
-      operationId: 'findHuurovereenkomstById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Huurovereenkomst om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Huurovereenkomst response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Huurovereenkomst'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /huurtoeslagen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Huurtoeslagen'
-      operationId: 'readHuurtoeslagen'
+      operationId: 'listHuurtoeslagen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -667,6 +697,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /huurtoeslagen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Huurtoeslag met de gegeven identifier'
+      operationId: 'readHuurtoeslag'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Huurtoeslag om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Huurtoeslag response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Huurtoeslag'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -693,7 +751,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Huurtoeslag'
-      operationId: 'modifyHuurtoeslag'
+      operationId: 'updateHuurtoeslag'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Huurtoeslag om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Huurtoeslag om te wijzigen'
         content:
@@ -711,41 +776,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /huurtoeslagen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Huurtoeslag met de gegeven identifier'
-      operationId: 'findHuurtoeslagById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Huurtoeslag om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Huurtoeslag response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Huurtoeslag'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /inspecties:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Inspecties'
-      operationId: 'readInspecties'
+      operationId: 'listInspecties'
       parameters:
       - name: 'params'
         in: 'query'
@@ -786,6 +822,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /inspecties/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Inspectie met de gegeven identifier'
+      operationId: 'readInspectie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Inspectie om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Inspectie response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Inspectie'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -812,7 +876,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Inspectie'
-      operationId: 'modifyInspectie'
+      operationId: 'updateInspectie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Inspectie om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Inspectie om te wijzigen'
         content:
@@ -830,41 +901,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /inspecties/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Inspectie met de gegeven identifier'
-      operationId: 'findInspectieById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Inspectie om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Inspectie response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Inspectie'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /koopovereenkomsten:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Koopovereenkomsten'
-      operationId: 'readKoopovereenkomsten'
+      operationId: 'listKoopovereenkomsten'
       parameters:
       - name: 'params'
         in: 'query'
@@ -905,6 +947,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /koopovereenkomsten/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Koopovereenkomst met de gegeven identifier'
+      operationId: 'readKoopovereenkomst'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Koopovereenkomst om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Koopovereenkomst response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Koopovereenkomst'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -931,7 +1001,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Koopovereenkomst'
-      operationId: 'modifyKoopovereenkomst'
+      operationId: 'updateKoopovereenkomst'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Koopovereenkomst om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Koopovereenkomst om te wijzigen'
         content:
@@ -949,41 +1026,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /koopovereenkomsten/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Koopovereenkomst met de gegeven identifier'
-      operationId: 'findKoopovereenkomstById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Koopovereenkomst om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Koopovereenkomst response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Koopovereenkomst'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /onderhoudsovereenkomsten:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Onderhoudsovereenkomsten'
-      operationId: 'readOnderhoudsovereenkomsten'
+      operationId: 'listOnderhoudsovereenkomsten'
       parameters:
       - name: 'params'
         in: 'query'
@@ -1024,6 +1072,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /onderhoudsovereenkomsten/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Onderhoudsovereenkomst met de gegeven identifier'
+      operationId: 'readOnderhoudsovereenkomst'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Onderhoudsovereenkomst om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Onderhoudsovereenkomst response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Onderhoudsovereenkomst'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -1050,7 +1126,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Onderhoudsovereenkomst'
-      operationId: 'modifyOnderhoudsovereenkomst'
+      operationId: 'updateOnderhoudsovereenkomst'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Onderhoudsovereenkomst om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Onderhoudsovereenkomst om te wijzigen'
         content:
@@ -1068,53 +1151,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /onderhoudsovereenkomsten/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Onderhoudsovereenkomst met de gegeven identifier'
-      operationId: 'findOnderhoudsovereenkomstById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Onderhoudsovereenkomst om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Onderhoudsovereenkomst response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Onderhoudsovereenkomst'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /overeenkomsten:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Overeenkomsten'
-      operationId: 'readOvereenkomsten'
+      operationId: 'listOvereenkomsten'
       parameters:
       - name: 'params'
         in: 'query'
         style: 'form'
         explode: true
         schema:
-          oneOf:
-                - $ref: '#/components/schemas/Huurovereenkomst'
-                - $ref: '#/components/schemas/Koopovereenkomst'
-                - $ref: '#/components/schemas/Onderhoudsovereenkomst'
-                - $ref: '#/components/schemas/Serviceovereenkomst'
-      responses:
+                responses:
         '200':
           description: 'Overeenkomst response'
           content:
@@ -1122,12 +1171,7 @@ paths:
               schema:
                 type: 'array'
                 items:
-                  oneOf:
-                    - $ref: '#/components/schemas/Huurovereenkomst'
-                    - $ref: '#/components/schemas/Koopovereenkomst'
-                    - $ref: '#/components/schemas/Onderhoudsovereenkomst'
-                    - $ref: '#/components/schemas/Serviceovereenkomst'
-        '401':
+                          '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         default:
           description: 'Onverwachte fout'
@@ -1145,16 +1189,38 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/Huurovereenkomst'
-                - $ref: '#/components/schemas/Koopovereenkomst'
-                - $ref: '#/components/schemas/Onderhoudsovereenkomst'
-                - $ref: '#/components/schemas/Serviceovereenkomst'
-      responses:
+                    responses:
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /overeenkomsten/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Overeenkomst met de gegeven identifier'
+      operationId: 'readOvereenkomst'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Overeenkomst om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Overeenkomst response'
+          content:
+            application/json:
+              schema:
+                        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -1165,12 +1231,7 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/Huurovereenkomst'
-                - $ref: '#/components/schemas/Koopovereenkomst'
-                - $ref: '#/components/schemas/Onderhoudsovereenkomst'
-                - $ref: '#/components/schemas/Serviceovereenkomst'
-      responses:
+                    responses:
         '200':
           description: 'Overeenkomst succesvol vervangen'
         '401':
@@ -1185,53 +1246,22 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Overeenkomst'
-      operationId: 'modifyOvereenkomst'
+      operationId: 'updateOvereenkomst'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Overeenkomst om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Overeenkomst om te wijzigen'
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/Huurovereenkomst'
-                - $ref: '#/components/schemas/Koopovereenkomst'
-                - $ref: '#/components/schemas/Onderhoudsovereenkomst'
-                - $ref: '#/components/schemas/Serviceovereenkomst'
-      responses:
+                    responses:
         '200':
           description: 'Overeenkomst succesvol gewijzigd'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
-  /overeenkomsten/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Overeenkomst met de gegeven identifier'
-      operationId: 'findOvereenkomstById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Overeenkomst om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Overeenkomst response'
-          content:
-            application/json:
-              schema:
-                oneOf:
-                  - $ref: '#/components/schemas/Huurovereenkomst'
-                  - $ref: '#/components/schemas/Koopovereenkomst'
-                  - $ref: '#/components/schemas/Onderhoudsovereenkomst'
-                  - $ref: '#/components/schemas/Serviceovereenkomst'
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -1245,7 +1275,7 @@ paths:
       tags:
       - 'Resources'
       description: 'Ophalen van Prijscomponenten'
-      operationId: 'readPrijscomponenten'
+      operationId: 'listPrijscomponenten'
       parameters:
       - name: 'params'
         in: 'query'
@@ -1286,6 +1316,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /prijscomponenten/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Prijscomponent met de gegeven identifier'
+      operationId: 'readPrijscomponent'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Prijscomponent om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Prijscomponent response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prijscomponent'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -1312,7 +1370,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Prijscomponent'
-      operationId: 'modifyPrijscomponent'
+      operationId: 'updatePrijscomponent'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Prijscomponent om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Prijscomponent om te wijzigen'
         content:
@@ -1330,41 +1395,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /prijscomponenten/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Prijscomponent met de gegeven identifier'
-      operationId: 'findPrijscomponentById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Prijscomponent om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Prijscomponent response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Prijscomponent'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /serviceovereenkomsten:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Serviceovereenkomsten'
-      operationId: 'readServiceovereenkomsten'
+      operationId: 'listServiceovereenkomsten'
       parameters:
       - name: 'params'
         in: 'query'
@@ -1405,6 +1441,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /serviceovereenkomsten/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Serviceovereenkomst met de gegeven identifier'
+      operationId: 'readServiceovereenkomst'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Serviceovereenkomst om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Serviceovereenkomst response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serviceovereenkomst'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -1431,7 +1495,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Serviceovereenkomst'
-      operationId: 'modifyServiceovereenkomst'
+      operationId: 'updateServiceovereenkomst'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Serviceovereenkomst om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Serviceovereenkomst om te wijzigen'
         content:
@@ -1449,73 +1520,62 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /serviceovereenkomsten/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Serviceovereenkomst met de gegeven identifier'
-      operationId: 'findServiceovereenkomstById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Serviceovereenkomst om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Serviceovereenkomst response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Serviceovereenkomst'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
 security:
-  - basicAuth: []
+  - ApiKeyAuth: []
 components:
   headers:
-    X_Pagination_Page:
-      schema:
-        type: integer
-        description: Huidige pagina.
-        example: 3
-    X_Pagination_Limit:
-      schema:
-        type: integer
-        description: Aantal resultaten per pagina.
-        example: 20
-    X_Stuurgegevens_TijdstipBericht:
+    X-Stuurgegevens-TijdstipBericht:
       schema:
         type: string
         format: data-time
         description: Tijdstip waarop het bericht verzonden is
-    X_Stuurgegevens_Referentienummer:
+    X-Stuurgegevens-Referentienummer:
       schema:
         type: string
         format: any
         description: Een unieke code voor correlatie
-    X_Stuurgegevens_Zender:
+    X-Stuurgegevens-Zender-Organisatie:
       schema:
         type: string
         format: any
-        description: Identificatie van de verzendende organisatie
+        description: Naam van de verzendende organisatie
+    X-Stuurgegevens-Zender-Administratie:
+      schema:
+        type: string
+        format: any
+        description: |
+          Met het stuurgegeven Administratie kan onderscheid gemaakt worden tussen 
+          de verschillende gegevensverzamelingen die de verzendende organisatie beheert
+    X-Parameters-Aantal:
+      schema:
+        type: integer
+        description: Totaal aantal gevonden entiteiten
+        example: 135
+    X-Parameters-AantalPerPagina:
+      schema:
+        type: integer
+        description: Miximum aantal entiteiten per pagina
+        example: 20
+    X-Parameters-Pagina:
+      schema:
+        type: integer
+        description: Huidige paginanummer
+        example: 3
+    X-Parameters-PeiltijdstipMaterieel:
+      schema:
+        type: string
+        format: date-time
+        description: De peildatum. Indien leeg worden de actuele gegevens opgevraagd
   securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
   responses:
     NietGeautoriseerd:
-      description: Authenticatie-informatie ontbreekt of is ongeldig
+      description: API-key ontbreekt of is ongeldig
       headers:
-        WWW_Authenticate:
+        X-API-KEY:
           schema:
             type: string
   schemas:
@@ -1619,11 +1679,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De sorteervolgorde van de referentiedata anders dan alfabetisch.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Overeenkomst:
       type: object
       properties:
@@ -1890,91 +1945,91 @@ components:
         - $ref: '#/components/schemas/Overeenkomst'
         - type: object
           properties:
-              opzegdatum:
-                type: 'string'
-                format: 'date'
-                description: 'De datum dat de overeenkomst is opgezegd door de huurder.'
-              prolongatieInterval:
-                type: 'string'
-                format: 'date-time'
-                description: 'De interval die aangeeft na hoeveel tijd er wordt geprolongeerd op de overeenkomst.'
-              prolongatieTotDatum:
-                type: 'string'
-                format: 'date'
-                description: 'De overeenkomst is geprolongeerd tot deze datum'
-              opzegtermijn:
-                $ref: '#/components/schemas/Referentiedata'
-                description: 'De opzegtermijn van de overeenkomst.'
-              vervaltermijnInterval:
-                type: 'string'
-                format: 'date-time'
-                description: 'De interval van de incasso vervaltermijn.'
-              waarborgsom:
-                type: 'number'
-                format: 'float'
-                description: 'De hoogte van de waarborgsom op de overeenkomst. Bijvoorbeeld: voor een studentenkamer is de borg €103 voor een vrije sector woning is de borg 1 maand huur. '
-              waarborgsomRente:
-                type: 'number'
-                format: 'float'
-                description: 'De rente van de waarborgsom op de overeenkomst. Deze waarde wordt in Euro"s aangegeven en is cumulatief over de volledige looptijd van de huurovereenkomst.'
-              btw:
-                type: 'boolean'
-                format: 'true-or-false'
-                description: 'De waarde geeft aan of er BTW wordt geheven over de overeenkomst.'
-              bepaaldeTijd:
-                type: 'boolean'
-                format: 'true-or-false'
-                description: 'De waarde die aangeeft of er sprake is van een tijdelijke huurovereenkomst.'
-              brutohuur:
-                type: 'number'
-                format: 'float'
-                description: 'De brutohuur = netto huur + servicekosten. De brutohuurprijs is inclusief BTW.'
-              rekenhuur:
-                type: 'number'
-                format: 'float'
-                description: 'Het huurbedrag waarvoor een huurder huurtoeslag mag aanvragen.'
-              huurHerzieningsdatum:
-                type: 'string'
-                format: 'date'
-                description: 'De datum dat de huurprijs van de huurovereenkomst is aangepast.'
-              incassowijze:
-                $ref: '#/components/schemas/Referentiedata'
-                description: 'De wijze van incasso waarop de huurovereenkomst wordt betaald.'
-              incassomoment:
-                $ref: '#/components/schemas/Referentiedata'
-                description: 'Het moment waarop de incasso wordt gedaan.'
-              afwijkendeBetaler:
-                type: 'string'
-                format: 'uri'
-                description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
-              afwijkendeBetalerIncassowijze:
-                $ref: '#/components/schemas/Referentiedata'
-                description: 'De wijze van incasso waarop de huurovereenkomst wordt betaald door de afwijkende betaler.'
-              huurtoeslagen:
-                description: 'De huurtoeslagen behorende bij de huurovereenkomst.'
-                type: array
-                items:
-                  $ref: '#/components/schemas/Huurtoeslag'
-              startBrutohuur:
-                type: 'number'
-                format: 'float'
-                description: 'De bruto huur (bruto huurprijs) bij aanvang huurovereenkomst in euro"s.'
-              startBrutoJaarinkomen:
-                type: 'number'
-                format: 'float'
-                description: 'De hoogte van het bruto inkomen bij aanvang huurovereenkomst in euro"s. Dit is het inkomen van de hoofdhuurder waaraan bijvoorbeeld de BBSH (Besluit Beheer Sociale Huursector) normen kunnen worden getoetst.'
-              startLeeftijd:
-                type: 'integer'
-                format: 'int32'
-                description: 'De leeftijd van de hoofdhuurder bij aanvang huurovereenkomst in jaren.'
-              huurgeschillen:
-                description: 'Verwijzing naar eventuele huurgeschillen van toepassing op de huurovereenkomst.'
-                type: array
-                items:
-                  $ref: '#/components/schemas/Huurgeschil'
-              maatschappelijkLabel:
-                $ref: '#/components/schemas/Referentiedata'
-                description: 'Het label waarmee het maatschappelijk en economisch  belang van de dienstverlening wordt aangegeven bij de verhuring: DAEB of niet-DAEB. Het label op de huurovereenkomst kan afwijken van het maatschappelijk label van de eenheid. Hiermee kan worden aangegeven dat een eenheid die behoort tot de niet-DAEB tak als DAEB-verhuring verantwoord moet worden.'
+            opzegdatum:
+              type: 'string'
+              format: 'date'
+              description: 'De datum dat de overeenkomst is opgezegd door de huurder.'
+            prolongatieInterval:
+              type: 'string'
+              format: 'date-time'
+              description: 'De interval die aangeeft na hoeveel tijd er wordt geprolongeerd op de overeenkomst.'
+            prolongatieTotDatum:
+              type: 'string'
+              format: 'date'
+              description: 'De overeenkomst is geprolongeerd tot deze datum'
+            opzegtermijn:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'De opzegtermijn van de overeenkomst.'
+            vervaltermijnInterval:
+              type: 'string'
+              format: 'date-time'
+              description: 'De interval van de incasso vervaltermijn.'
+            waarborgsom:
+              type: 'number'
+              format: 'float'
+              description: 'De hoogte van de waarborgsom op de overeenkomst. Bijvoorbeeld: voor een studentenkamer is de borg €103 voor een vrije sector woning is de borg 1 maand huur. '
+            waarborgsomRente:
+              type: 'number'
+              format: 'float'
+              description: 'De rente van de waarborgsom op de overeenkomst. Deze waarde wordt in Euro"s aangegeven en is cumulatief over de volledige looptijd van de huurovereenkomst.'
+            btw:
+              type: 'boolean'
+              format: 'true-or-false'
+              description: 'De waarde geeft aan of er BTW wordt geheven over de overeenkomst.'
+            bepaaldeTijd:
+              type: 'boolean'
+              format: 'true-or-false'
+              description: 'De waarde die aangeeft of er sprake is van een tijdelijke huurovereenkomst.'
+            brutohuur:
+              type: 'number'
+              format: 'float'
+              description: 'De brutohuur = netto huur + servicekosten. De brutohuurprijs is inclusief BTW.'
+            rekenhuur:
+              type: 'number'
+              format: 'float'
+              description: 'Het huurbedrag waarvoor een huurder huurtoeslag mag aanvragen.'
+            huurHerzieningsdatum:
+              type: 'string'
+              format: 'date'
+              description: 'De datum dat de huurprijs van de huurovereenkomst is aangepast.'
+            incassowijze:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'De wijze van incasso waarop de huurovereenkomst wordt betaald.'
+            incassomoment:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'Het moment waarop de incasso wordt gedaan.'
+            afwijkendeBetaler:
+              type: 'string'
+              format: 'uri'
+              description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+            afwijkendeBetalerIncassowijze:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'De wijze van incasso waarop de huurovereenkomst wordt betaald door de afwijkende betaler.'
+            huurtoeslagen:
+              description: 'De huurtoeslagen behorende bij de huurovereenkomst.'
+              type: array
+              items:
+                $ref: '#/components/schemas/Huurtoeslag'
+            startBrutohuur:
+              type: 'number'
+              format: 'float'
+              description: 'De bruto huur (bruto huurprijs) bij aanvang huurovereenkomst in euro"s.'
+            startBrutoJaarinkomen:
+              type: 'number'
+              format: 'float'
+              description: 'De hoogte van het bruto inkomen bij aanvang huurovereenkomst in euro"s. Dit is het inkomen van de hoofdhuurder waaraan bijvoorbeeld de BBSH (Besluit Beheer Sociale Huursector) normen kunnen worden getoetst.'
+            startLeeftijd:
+              type: 'integer'
+              format: 'int32'
+              description: 'De leeftijd van de hoofdhuurder bij aanvang huurovereenkomst in jaren.'
+            huurgeschillen:
+              description: 'Verwijzing naar eventuele huurgeschillen van toepassing op de huurovereenkomst.'
+              type: array
+              items:
+                $ref: '#/components/schemas/Huurgeschil'
+            maatschappelijkLabel:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'Het label waarmee het maatschappelijk en economisch  belang van de dienstverlening wordt aangegeven bij de verhuring: DAEB of niet-DAEB. Het label op de huurovereenkomst kan afwijken van het maatschappelijk label van de eenheid. Hiermee kan worden aangegeven dat een eenheid die behoort tot de niet-DAEB tak als DAEB-verhuring verantwoord moet worden.'
     Huurtoeslag:
       type: object
       properties:
@@ -2044,76 +2099,76 @@ components:
         - $ref: '#/components/schemas/Overeenkomst'
         - type: object
           properties:
-              prijs:
-                type: 'number'
-                format: 'float'
-                description: 'De uiteindelijke aankoop- of verkoopprijs in euro"s. (kosten koper)'
-              vveBijdrage:
-                type: 'number'
-                format: 'float'
-                description: 'Het bedrag dat de koper betaald aan VVE inclusief BTW. De koper heeft geen recht op VVE als er geen bedrag is ingevuld.'
-              transportdatum:
-                type: 'string'
-                format: 'date-time'
-                description: 'De datum waarop de akte gepasseerd zal worden bij de notaris. Deze datum is wordt ook passeerdatum genoemd.'
-              koopsom:
-                type: 'number'
-                format: 'float'
-                description: 'De koopsom van de verkochte eenheid in euro"s.'
-              koopsomTotaal:
-                type: 'number'
-                format: 'float'
-                description: 'De totale volledige koopsom van de verkochte eenheid in euro"s.'
-              kortingspercentage:
-                type: 'number'
-                format: 'float'
-                description: 'Het kortingspercentage dat de klant heeft gekregen op de overeenkomst in procenten.'
-              oudHuurder:
-                type: 'boolean'
-                format: 'true-or-false'
-                description: 'De waarde die aangeeft of de verkoopovereenkomst is afgesloten met de oud huurder.'
+            prijs:
+              type: 'number'
+              format: 'float'
+              description: 'De uiteindelijke aankoop- of verkoopprijs in euro"s. (kosten koper)'
+            vveBijdrage:
+              type: 'number'
+              format: 'float'
+              description: 'Het bedrag dat de koper betaald aan VVE inclusief BTW. De koper heeft geen recht op VVE als er geen bedrag is ingevuld.'
+            transportdatum:
+              type: 'string'
+              format: 'date-time'
+              description: 'De datum waarop de akte gepasseerd zal worden bij de notaris. Deze datum is wordt ook passeerdatum genoemd.'
+            koopsom:
+              type: 'number'
+              format: 'float'
+              description: 'De koopsom van de verkochte eenheid in euro"s.'
+            koopsomTotaal:
+              type: 'number'
+              format: 'float'
+              description: 'De totale volledige koopsom van de verkochte eenheid in euro"s.'
+            kortingspercentage:
+              type: 'number'
+              format: 'float'
+              description: 'Het kortingspercentage dat de klant heeft gekregen op de overeenkomst in procenten.'
+            oudHuurder:
+              type: 'boolean'
+              format: 'true-or-false'
+              description: 'De waarde die aangeeft of de verkoopovereenkomst is afgesloten met de oud huurder.'
     Onderhoudsovereenkomst:
       allOf:
         - $ref: '#/components/schemas/Overeenkomst'
         - type: object
           properties:
-              cluster:
-                type: 'string'
-                format: 'uri'
-                description: 'Referentie naar Cluster in de vorm: vera/v4/clusters/12345'
-              collectiefObject:
-                type: 'string'
-                format: 'uri'
-                description: 'Referentie naar CollectiefObject in de vorm: vera/v4/collectiefobjecten/12345'
-              bouwkundigElement:
-                type: 'string'
-                format: 'uri'
-                description: 'Referentie naar BouwkundigElement in de vorm: vera/v4/bouwkundigelementen/12345'
-              omschrijving:
-                type: 'string'
-                format: 'any'
-                description: 'Omschrijving van welke werkzaamheden wel en niet onder de overeenkomst vallen.'
-              orders:
-                type: 'string'
-                format: 'uri'
-                description: 'Referentie naar Onderhoudsorder in de vorm: vera/v4/onderhoudsorders/12345'
-              specialismen:
-                description: 'Het specialismen die de opdrachtnemer kan uitvoeren. Voorbeelden zijn Timmerman, Loodgieter, etc.'
-                type: array
-                items:
-                  $ref: '#/components/schemas/Referentiedata'
+            omschrijving:
+              type: 'string'
+              format: 'any'
+              description: 'Omschrijving van welke werkzaamheden wel en niet onder de overeenkomst vallen.'
+            cluster:
+              type: 'string'
+              format: 'uri'
+              description: 'Referentie naar Cluster in de vorm: vera/v4/clusters/12345'
+            collectiefObject:
+              type: 'string'
+              format: 'uri'
+              description: 'Referentie naar CollectiefObject in de vorm: vera/v4/collectiefobjecten/12345'
+            bouwkundigElement:
+              type: 'string'
+              format: 'uri'
+              description: 'Referentie naar BouwkundigElement in de vorm: vera/v4/bouwkundigelementen/12345'
+            orders:
+              type: 'string'
+              format: 'uri'
+              description: 'Referentie naar Onderhoudsorder in de vorm: vera/v4/onderhoudsorders/12345'
+            specialismen:
+              description: 'Het specialismen die de opdrachtnemer kan uitvoeren. Voorbeelden zijn Timmerman, Loodgieter, etc.'
+              type: array
+              items:
+                $ref: '#/components/schemas/Referentiedata'
     Serviceovereenkomst:
       allOf:
         - $ref: '#/components/schemas/Overeenkomst'
         - type: object
           properties:
-              bedrag:
-                type: 'number'
-                format: 'float'
-                description: 'Het bedrag inclusief BTW in euro"s dat betaald dient te worden voor de serviceovereenkomst. Naast huurders, kunnen ook andere relaties een serviceovereenkomst afsluiten met de woningcorporatie. Dit veld geeft het bedrag aan dat de relatie voor de dienstverlening betaalt.'
-              samenwerkingsverband:
-                $ref: '#/components/schemas/Referentiedata'
-                description: 'Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc.'
+            bedrag:
+              type: 'number'
+              format: 'float'
+              description: 'Het bedrag inclusief BTW in euro"s dat betaald dient te worden voor de serviceovereenkomst. Naast huurders, kunnen ook andere relaties een serviceovereenkomst afsluiten met de woningcorporatie. Dit veld geeft het bedrag aan dat de relatie voor de dienstverlening betaalt.'
+            samenwerkingsverband:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc.'
     Huurgeschil-sleutels:
       type: object
       properties:
@@ -2275,3 +2330,4 @@ components:
           type: 'string'
         waarde:
           type: 'string'
+

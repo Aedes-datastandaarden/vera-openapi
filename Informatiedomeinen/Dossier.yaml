@@ -1,15 +1,15 @@
 openapi: '3.0.0'
 info:
   title: 'VERA'
-  description: 'API-specificatie van het horizontale gegevensmodel'
+  description: API-specificatie van informatiedomein Dossier
   termsOfService: 'https://www.stichting-vera.nl/voorwaarden/'
   contact:
     name: 'VERA'
-    url: 'https://www.stichting-vera.nl/'
+    url: 'https://cora.wikixl.nl/index.php/VERA_Standaard'
     email: 'info@stichting-vera.nl'
   license:
-    name: 'General Public License (GPL)'
-    url: 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+    name: European Union Public License, version 1.2 (EUPL-1.2)
+    url: https://eupl.eu/1.2/nl/
   version: '4.0.3'
 servers:
   - url: https://dossier.vera.io:{port}/{basePath}
@@ -31,7 +31,7 @@ paths:
       tags:
       - 'Resources'
       description: 'Ophalen van Dossiers'
-      operationId: 'readDossiers'
+      operationId: 'listDossiers'
       parameters:
       - name: 'params'
         in: 'query'
@@ -72,6 +72,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /dossiers/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Dossier met de gegeven identifier'
+      operationId: 'readDossier'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Dossier om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Dossier response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -98,7 +126,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Dossier'
-      operationId: 'modifyDossier'
+      operationId: 'updateDossier'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Dossier om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Dossier om te wijzigen'
         content:
@@ -116,41 +151,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /dossiers/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Dossier met de gegeven identifier'
-      operationId: 'findDossierById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Dossier om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Dossier response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Dossier'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /informatieobjecten:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Informatieobjecten'
-      operationId: 'readInformatieobjecten'
+      operationId: 'listInformatieobjecten'
       parameters:
       - name: 'params'
         in: 'query'
@@ -191,6 +197,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /informatieobjecten/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Informatieobject met de gegeven identifier'
+      operationId: 'readInformatieobject'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Informatieobject om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Informatieobject response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Informatieobject'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -217,7 +251,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Informatieobject'
-      operationId: 'modifyInformatieobject'
+      operationId: 'updateInformatieobject'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Informatieobject om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Informatieobject om te wijzigen'
         content:
@@ -235,41 +276,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /informatieobjecten/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Informatieobject met de gegeven identifier'
-      operationId: 'findInformatieobjectById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Informatieobject om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Informatieobject response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Informatieobject'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /informatieobjectkenmerken:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Informatieobjectkenmerken'
-      operationId: 'readInformatieobjectkenmerken'
+      operationId: 'listInformatieobjectkenmerken'
       parameters:
       - name: 'params'
         in: 'query'
@@ -310,6 +322,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /informatieobjectkenmerken/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Informatieobjectkenmerk met de gegeven identifier'
+      operationId: 'readInformatieobjectkenmerk'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Informatieobjectkenmerk om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Informatieobjectkenmerk response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Informatieobjectkenmerk'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -336,7 +376,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Informatieobjectkenmerk'
-      operationId: 'modifyInformatieobjectkenmerk'
+      operationId: 'updateInformatieobjectkenmerk'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Informatieobjectkenmerk om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Informatieobjectkenmerk om te wijzigen'
         content:
@@ -354,41 +401,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /informatieobjectkenmerken/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Informatieobjectkenmerk met de gegeven identifier'
-      operationId: 'findInformatieobjectkenmerkById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Informatieobjectkenmerk om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Informatieobjectkenmerk response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Informatieobjectkenmerk'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /processen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Processen'
-      operationId: 'readProcessen'
+      operationId: 'listProcessen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -429,6 +447,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /processen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Proces met de gegeven identifier'
+      operationId: 'readProces'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Proces om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Proces response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Proces'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -455,7 +501,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Proces'
-      operationId: 'modifyProces'
+      operationId: 'updateProces'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Proces om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Proces om te wijzigen'
         content:
@@ -473,41 +526,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /processen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Proces met de gegeven identifier'
-      operationId: 'findProcesById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Proces om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Proces response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Proces'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /procesrollen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Procesrollen'
-      operationId: 'readProcesrollen'
+      operationId: 'listProcesrollen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -548,6 +572,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /procesrollen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Procesrol met de gegeven identifier'
+      operationId: 'readProcesrol'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Procesrol om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Procesrol response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Procesrol'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -574,7 +626,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Procesrol'
-      operationId: 'modifyProcesrol'
+      operationId: 'updateProcesrol'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Procesrol om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Procesrol om te wijzigen'
         content:
@@ -592,41 +651,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /procesrollen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Procesrol met de gegeven identifier'
-      operationId: 'findProcesrolById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Procesrol om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Procesrol response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Procesrol'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /processtappen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Processtappen'
-      operationId: 'readProcesstappen'
+      operationId: 'listProcesstappen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -667,6 +697,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /processtappen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Processtap met de gegeven identifier'
+      operationId: 'readProcesstap'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Processtap om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Processtap response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Processtap'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -693,7 +751,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Processtap'
-      operationId: 'modifyProcesstap'
+      operationId: 'updateProcesstap'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Processtap om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Processtap om te wijzigen'
         content:
@@ -711,41 +776,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /processtappen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Processtap met de gegeven identifier'
-      operationId: 'findProcesstapById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Processtap om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Processtap response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Processtap'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /zaken:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Zaken'
-      operationId: 'readZaken'
+      operationId: 'listZaken'
       parameters:
       - name: 'params'
         in: 'query'
@@ -786,6 +822,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /zaken/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Zaak met de gegeven identifier'
+      operationId: 'readZaak'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Zaak om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Zaak response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zaak'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -812,7 +876,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Zaak'
-      operationId: 'modifyZaak'
+      operationId: 'updateZaak'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Zaak om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Zaak om te wijzigen'
         content:
@@ -830,41 +901,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /zaken/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Zaak met de gegeven identifier'
-      operationId: 'findZaakById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Zaak om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Zaak response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Zaak'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /zaakkenmerken:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Zaakkenmerken'
-      operationId: 'readZaakkenmerken'
+      operationId: 'listZaakkenmerken'
       parameters:
       - name: 'params'
         in: 'query'
@@ -905,6 +947,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /zaakkenmerken/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Zaakkenmerk met de gegeven identifier'
+      operationId: 'readZaakkenmerk'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Zaakkenmerk om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Zaakkenmerk response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zaakkenmerk'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -931,7 +1001,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Zaakkenmerk'
-      operationId: 'modifyZaakkenmerk'
+      operationId: 'updateZaakkenmerk'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Zaakkenmerk om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Zaakkenmerk om te wijzigen'
         content:
@@ -949,41 +1026,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /zaakkenmerken/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Zaakkenmerk met de gegeven identifier'
-      operationId: 'findZaakkenmerkById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Zaakkenmerk om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Zaakkenmerk response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Zaakkenmerk'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /zaak-rollen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van ZaakRollen'
-      operationId: 'readZaakRollen'
+      operationId: 'listZaakRollen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -1024,6 +1072,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /zaak-rollen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een ZaakRol met de gegeven identifier'
+      operationId: 'readZaakRol'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van ZaakRol om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'ZaakRol response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZaakRol'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -1050,7 +1126,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een ZaakRol'
-      operationId: 'modifyZaakRol'
+      operationId: 'updateZaakRol'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van ZaakRol om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'ZaakRol om te wijzigen'
         content:
@@ -1068,41 +1151,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /zaak-rollen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een ZaakRol met de gegeven identifier'
-      operationId: 'findZaakRolById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van ZaakRol om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'ZaakRol response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ZaakRol'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /zaakstatussen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Zaakstatussen'
-      operationId: 'readZaakstatussen'
+      operationId: 'listZaakstatussen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -1143,6 +1197,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /zaakstatussen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Zaakstatus met de gegeven identifier'
+      operationId: 'readZaakstatus'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Zaakstatus om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Zaakstatus response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zaakstatus'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -1169,7 +1251,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Zaakstatus'
-      operationId: 'modifyZaakstatus'
+      operationId: 'updateZaakstatus'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Zaakstatus om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Zaakstatus om te wijzigen'
         content:
@@ -1187,41 +1276,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /zaakstatussen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Zaakstatus met de gegeven identifier'
-      operationId: 'findZaakstatusById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Zaakstatus om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Zaakstatus response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Zaakstatus'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /zaaktypen:
     get:
       tags:
       - 'Resources'
       description: 'Ophalen van Zaaktypen'
-      operationId: 'readZaaktypen'
+      operationId: 'listZaaktypen'
       parameters:
       - name: 'params'
         in: 'query'
@@ -1262,6 +1322,34 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
+  /zaaktypen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Zaaktype met de gegeven identifier'
+      operationId: 'readZaaktype'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Zaaktype om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Zaaktype response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zaaktype'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
       - 'Resources'
@@ -1288,7 +1376,14 @@ paths:
       tags:
       - 'Resources'
       description: 'Wijzigen van een Zaaktype'
-      operationId: 'modifyZaaktype'
+      operationId: 'updateZaaktype'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Zaaktype om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
       requestBody:
         description: 'Zaaktype om te wijzigen'
         content:
@@ -1306,73 +1401,62 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /zaaktypen/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een Zaaktype met de gegeven identifier'
-      operationId: 'findZaaktypeById'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van Zaaktype om op te halen'
-        required: true
-        schema:
-          type: 'integer'
-          format: 'int64'
-      responses:
-        '200':
-          description: 'Zaaktype response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Zaaktype'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
 security:
-  - basicAuth: []
+  - ApiKeyAuth: []
 components:
   headers:
-    X_Pagination_Page:
-      schema:
-        type: integer
-        description: Huidige pagina.
-        example: 3
-    X_Pagination_Limit:
-      schema:
-        type: integer
-        description: Aantal resultaten per pagina.
-        example: 20
-    X_Stuurgegevens_TijdstipBericht:
+    X-Stuurgegevens-TijdstipBericht:
       schema:
         type: string
         format: data-time
         description: Tijdstip waarop het bericht verzonden is
-    X_Stuurgegevens_Referentienummer:
+    X-Stuurgegevens-Referentienummer:
       schema:
         type: string
         format: any
         description: Een unieke code voor correlatie
-    X_Stuurgegevens_Zender:
+    X-Stuurgegevens-Zender-Organisatie:
       schema:
         type: string
         format: any
-        description: Identificatie van de verzendende organisatie
+        description: Naam van de verzendende organisatie
+    X-Stuurgegevens-Zender-Administratie:
+      schema:
+        type: string
+        format: any
+        description: |
+          Met het stuurgegeven Administratie kan onderscheid gemaakt worden tussen 
+          de verschillende gegevensverzamelingen die de verzendende organisatie beheert
+    X-Parameters-Aantal:
+      schema:
+        type: integer
+        description: Totaal aantal gevonden entiteiten
+        example: 135
+    X-Parameters-AantalPerPagina:
+      schema:
+        type: integer
+        description: Miximum aantal entiteiten per pagina
+        example: 20
+    X-Parameters-Pagina:
+      schema:
+        type: integer
+        description: Huidige paginanummer
+        example: 3
+    X-Parameters-PeiltijdstipMaterieel:
+      schema:
+        type: string
+        format: date-time
+        description: De peildatum. Indien leeg worden de actuele gegevens opgevraagd
   securitySchemes:
-    basicAuth:
-      type: http
-      scheme: basic
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
   responses:
     NietGeautoriseerd:
-      description: Authenticatie-informatie ontbreekt of is ongeldig
+      description: API-key ontbreekt of is ongeldig
       headers:
-        WWW_Authenticate:
+        X-API-KEY:
           schema:
             type: string
   schemas:
@@ -1518,11 +1602,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De sorteervolgorde van de referentiedata anders dan alfabetisch.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Proces:
       type: object
       properties:
@@ -2250,6 +2329,10 @@ components:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar Onderhoudsverzoek in de vorm: vera/v4/onderhoudsverzoeken/12345'
+        contactmomenten:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Contactmoment in de vorm: vera/v4/contactmomenten/12345'
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'
           type: array
@@ -2420,3 +2503,4 @@ components:
           type: 'string'
         waarde:
           type: 'string'
+
