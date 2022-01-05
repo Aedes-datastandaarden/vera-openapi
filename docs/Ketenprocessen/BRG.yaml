@@ -1,0 +1,1389 @@
+openapi: '3.0.0'
+info:
+  title: 'VERA-BRG'
+  description: API-specificatie van ketenproces "Beheer Relatiegegevens". Deze specificatie is gebaseerd op VERA versie 4.0.3
+  termsOfService: 'https://www.stichting-vera.nl/voorwaarden/'
+  contact:
+    name: 'VERA'
+    url: 'https://cora.wikixl.nl/index.php/VERA_Standaard'
+    email: 'info@stichting-vera.nl'
+  license:
+    name: European Union Public License, version 1.2 (EUPL-1.2)
+    url: https://eupl.eu/1.2/nl/
+  version: '1.0.3'
+servers:
+  - url: https://brg.vera.io:{port}/{basePath}
+    description: 'Productieserver'
+    variables:
+       port:
+         enum:
+           - '8443'
+           - '443'
+         default: '443'
+       basePath:
+         default: v1
+tags:
+- name: 'Betaalgegevens'
+  description: 'Operaties met betrekking tot betaalgegevens'
+- name: 'Contactmomenten'
+  description: 'Operaties met betrekking tot contactmomenten'
+- name: 'Relaties'
+  description: 'Operaties met betrekking tot relaties'
+- name: 'Signaleringen'
+  description: 'Operaties met betrekking tot signaleringen'
+paths:
+  /betaalgegevens:
+    get:
+      tags:
+      - 'Betaalgegevens'
+      description: 'Ophalen van Betaalgegevens'
+      operationId: 'listBetaalgegevens'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Betaalgegevens-Betaalgegeven'
+      responses:
+        '200':
+          description: 'Betaalgegeven response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Betaalgegevens-Betaalgegeven'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Betaalgegevens'
+      description: 'Voegt een nieuw(e) Betaalgegeven toe.'
+      operationId: 'createBetaalgegeven'
+      requestBody:
+        description: 'Betaalgegeven om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Betaalgegevens-Betaalgegeven'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+  /betaalgegevens/{id}:
+    get:
+      tags:
+      - 'Betaalgegevens'
+      description: 'Retourneert een Betaalgegeven met de gegeven identifier'
+      operationId: 'readBetaalgegeven'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Betaalgegeven om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Betaalgegeven response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Betaalgegevens-Betaalgegeven'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Betaalgegevens'
+      description: 'Vervangen van een Betaalgegeven'
+      operationId: 'replaceBetaalgegeven'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Betaalgegeven om te vervangen'
+        required: true
+        schema:
+          type: 'string'
+      requestBody:
+        description: 'Betaalgegeven om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Betaalgegevens-Betaalgegeven'
+      responses:
+        '200':
+          description: 'Betaalgegeven succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Betaalgegevens'
+      description: 'Wijzigen van een Betaalgegeven'
+      operationId: 'updateBetaalgegeven'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Betaalgegeven om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
+      requestBody:
+        description: 'Betaalgegeven om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Betaalgegevens-Betaalgegeven'
+      responses:
+        '200':
+          description: 'Betaalgegeven succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /contactmomenten:
+    get:
+      tags:
+      - 'Contactmomenten'
+      description: 'Ophalen van Contactmomenten'
+      operationId: 'listContactmomenten'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Contactmomenten-Contactmoment'
+      responses:
+        '200':
+          description: 'Contactmoment response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Contactmomenten-Contactmoment'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Contactmomenten'
+      description: 'Voegt een nieuw(e) Contactmoment toe.'
+      operationId: 'createContactmoment'
+      requestBody:
+        description: 'Contactmoment om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contactmomenten-Contactmoment'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+  /contactmomenten/{id}:
+    get:
+      tags:
+      - 'Contactmomenten'
+      description: 'Retourneert een Contactmoment met de gegeven identifier'
+      operationId: 'readContactmoment'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Contactmoment om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Contactmoment response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contactmomenten-Contactmoment'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Contactmomenten'
+      description: 'Vervangen van een Contactmoment'
+      operationId: 'replaceContactmoment'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Contactmoment om te vervangen'
+        required: true
+        schema:
+          type: 'string'
+      requestBody:
+        description: 'Contactmoment om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contactmomenten-Contactmoment'
+      responses:
+        '200':
+          description: 'Contactmoment succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Contactmomenten'
+      description: 'Wijzigen van een Contactmoment'
+      operationId: 'updateContactmoment'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Contactmoment om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
+      requestBody:
+        description: 'Contactmoment om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contactmomenten-Contactmoment'
+      responses:
+        '200':
+          description: 'Contactmoment succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /relaties:
+    get:
+      tags:
+      - 'Relaties'
+      description: 'Ophalen van Relaties'
+      operationId: 'listRelaties'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Relaties-Relatie'
+      responses:
+        '200':
+          description: 'Relatie response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Relaties-Relatie'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Relaties'
+      description: 'Voegt een nieuw(e) Relatie toe.'
+      operationId: 'createRelatie'
+      requestBody:
+        description: 'Relatie om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Relaties-Relatie'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+  /relaties/{id}:
+    get:
+      tags:
+      - 'Relaties'
+      description: 'Retourneert een Relatie met de gegeven identifier'
+      operationId: 'readRelatie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Relatie om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Relatie response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Relaties-Relatie'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Relaties'
+      description: 'Vervangen van een Relatie'
+      operationId: 'replaceRelatie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Relatie om te vervangen'
+        required: true
+        schema:
+          type: 'string'
+      requestBody:
+        description: 'Relatie om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Relaties-Relatie'
+      responses:
+        '200':
+          description: 'Relatie succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Relaties'
+      description: 'Wijzigen van een Relatie'
+      operationId: 'updateRelatie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Relatie om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
+      requestBody:
+        description: 'Relatie om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Relaties-Relatie'
+      responses:
+        '200':
+          description: 'Relatie succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /signaleringen:
+    get:
+      tags:
+      - 'Signaleringen'
+      description: 'Ophalen van Signaleringen'
+      operationId: 'listSignaleringen'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Signaleringen-Signalering'
+      responses:
+        '200':
+          description: 'Signalering response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Signaleringen-Signalering'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Signaleringen'
+      description: 'Voegt een nieuw(e) Signalering toe.'
+      operationId: 'createSignalering'
+      requestBody:
+        description: 'Signalering om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Signaleringen-Signalering'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+  /signaleringen/{id}:
+    get:
+      tags:
+      - 'Signaleringen'
+      description: 'Retourneert een Signalering met de gegeven identifier'
+      operationId: 'readSignalering'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Signalering om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Signalering response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Signaleringen-Signalering'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Signaleringen'
+      description: 'Vervangen van een Signalering'
+      operationId: 'replaceSignalering'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Signalering om te vervangen'
+        required: true
+        schema:
+          type: 'string'
+      requestBody:
+        description: 'Signalering om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Signaleringen-Signalering'
+      responses:
+        '200':
+          description: 'Signalering succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Signaleringen'
+      description: 'Wijzigen van een Signalering'
+      operationId: 'updateSignalering'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Signalering om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
+      requestBody:
+        description: 'Signalering om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Signaleringen-Signalering'
+      responses:
+        '200':
+          description: 'Signalering succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+security:
+  - ApiKeyAuth: []
+components:
+  headers:
+    X-Stuurgegevens-TijdstipBericht:
+      schema:
+        type: string
+        format: data-time
+        description: Tijdstip waarop het bericht verzonden is
+    X-Stuurgegevens-Referentienummer:
+      schema:
+        type: string
+        format: any
+        description: Een unieke code voor correlatie
+    X-Stuurgegevens-Zender-Organisatie:
+      schema:
+        type: string
+        format: any
+        description: Naam van de verzendende organisatie
+    X-Stuurgegevens-Zender-Administratie:
+      schema:
+        type: string
+        format: any
+        description: |
+          Met het stuurgegeven Administratie kan onderscheid gemaakt worden tussen 
+          de verschillende gegevensverzamelingen die de verzendende organisatie beheert
+    X-Parameters-Aantal:
+      schema:
+        type: integer
+        description: Totaal aantal gevonden entiteiten
+        example: 135
+    X-Parameters-AantalPerPagina:
+      schema:
+        type: integer
+        description: Miximum aantal entiteiten per pagina
+        example: 20
+    X-Parameters-Pagina:
+      schema:
+        type: integer
+        description: Huidige paginanummer
+        example: 3
+    X-Parameters-PeiltijdstipMaterieel:
+      schema:
+        type: string
+        format: date-time
+        description: De peildatum. Indien leeg worden de actuele gegevens opgevraagd
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+  responses:
+    NietGeautoriseerd:
+      description: API-key ontbreekt of is ongeldig
+      headers:
+        X-API-KEY:
+          schema:
+            type: string
+  schemas:
+    Betaalgegevens-Betaalgegeven:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort betaalgegeven (bijvoorbeeld een bankrekening, paypall etc.).'
+        rekeningnummer:
+          type: 'string'
+          format: 'any'
+          description: 'Het rekeningnummer.'
+        begindatum:
+          type: 'string'
+          format: 'date'
+          description: 'De begindatum van het betaalgegeven.'
+        einddatum:
+          type: 'string'
+          format: 'date'
+          description: 'De einddatum van het betaalgegeven.'
+        rekeninghouder:
+          type: 'string'
+          format: 'any'
+          description: 'De naam van de rekeninghouder.'
+        rekeningPlaats:
+          $ref: '#/components/schemas/Betaalgegevens-Woonplaats'
+          description: 'De woonplaats van de rekeninghouder.'
+        relatie:
+          $ref: '#/components/schemas/Betaalgegevens-Relatie'
+          description: 'De relatie behorend bij het betaalgegeven.'
+        iban:
+          type: 'string'
+          format: 'any'
+          description: 'Het International Bank Account Number. Identificeert elke rekeninghouder, inclusief bank en vestigingsland.'
+        bic:
+          type: 'string'
+          format: 'any'
+          description: 'Bank Identifier Code. Hierdoor komen internationale betalingsoverdrachten bij de juiste bank terecht. De BIC wordt ook wel SWIFT-adres of SWIFT-code genoemd.'
+        primair:
+          type: 'boolean'
+          format: 'true-or-false'
+          description: 'De aanduiding dat het betaalgegeven het primaire betaalgegeven betreft.'
+        incassowijze:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De standaard incassowijze voor het betaalgegeven.'
+        overeenkomst:
+          $ref: '#/components/schemas/Betaalgegevens-Overeenkomst'
+          description: 'De overeenkomst behorende bij het betaalgegeven.'
+        incassomachtigingen:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Incassomachtiging in de vorm: vera/v4/incassomachtigingen/12345'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Referentiedata:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van de referentiedata of klasse'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De soort van het referentiedata item. Bijvoorbeeld nationaliteit.'
+        naam:
+          type: 'string'
+          format: 'any'
+          description: 'De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.'
+        omschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'De omschrijving van de referentiedata. Bijvoorbeeld De Nederlandse nationaliteit.'
+        parent:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De bovenliggende referentiedata in het geval er sprake is van een hierarchische relatie tussen referentiedata.'
+        begindatum:
+          type: 'string'
+          format: 'date'
+          description: 'De begindatum van het klasse item.'
+        einddatum:
+          type: 'string'
+          format: 'date'
+          description: 'De einddatum van het klasse item.'
+        sortering:
+          type: 'string'
+          format: 'any'
+          description: 'De sorteervolgorde van de referentiedata anders dan alfabetisch.'
+    Betaalgegevens-Overeenkomst:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        soort:
+          $ref: '#/components/schemas/Referentiedata-restricted'
+          description: 'Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn.'
+        eenheden:
+          description: 'De eenheden waarop een overeenkomst van toepassing is. Hiermee is het mogelijk om een overeenkomst af te sluiten voor meerdere eenheden (verzamelovereenkomst)'
+          type: array
+          items:
+            $ref: '#/components/schemas/Eenheid-sleutels'
+    Referentiedata-restricted:
+      type: object
+      properties:
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.'
+        naam:
+          type: 'string'
+          format: 'any'
+          description: 'De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.'
+        soort:
+          $ref: '#/components/schemas/Referentiedata-restricted'
+          description: 'De soort van het referentiedata item. Bijvoorbeeld nationaliteit.'
+        parent:
+          $ref: '#/components/schemas/Referentiedata-restricted'
+          description: 'De bovenliggende referentiedata in het geval er sprake is van een hierarchische relatie tussen referentiedata.'
+        sortering:
+          type: 'string'
+          format: 'any'
+          description: 'De sorteervolgorde van de referentiedata anders dan alfabetisch.'
+    Eenheid-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Betaalgegevens-Relatie:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
+        rollen:
+          description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Betaalgegevens-Relatierol'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Betaalgegevens-Relatierol:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort rol van de relatie. Bijvoorbeeld Klant, Prospect, Leverancier, Medewerker, Team etc.'
+        naam:
+          type: 'string'
+          format: 'any'
+          description: 'De naam van de relatie rol.'
+        omschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'De omschrijving van de relatie rol.'
+    Betaalgegevens-Woonplaats:
+      type: object
+      properties:
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        naam:
+          type: 'string'
+          format: 'any'
+          description: 'De naam van de woonplaats.'
+    Contactmomenten-Contactmoment:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        omschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'De omschrijving van het contactmoment'
+        datum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum en tijd waarop contact is geweest.'
+        relatie:
+          $ref: '#/components/schemas/Relatierol-sleutels'
+          description: 'De relatie waarmee contact is geweest'
+        kanaal:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het kanaal via welke het contact heeft gelopen. Bijvoorbeeld: Telefoon, email, balie, internet.'
+        medewerker:
+          $ref: '#/components/schemas/Relatie-sleutels'
+          description: 'De medewerker die het contactmoment heeft gehad met de relatie.'
+        richting:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De communicatierichting behorend bij het contact. Bijvoorbeeld: Uitgaand of ingaand.'
+        zaak:
+          $ref: '#/components/schemas/Zaak-sleutels'
+          description: 'De zaak waarvoor het contactmoment heeft plaatsgevonden.'
+        dossier:
+          $ref: '#/components/schemas/Dossier-sleutels'
+          description: 'Het dossier waarbinnen het contactmoment is vastgelegd.'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Relatierol-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Relatie-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
+    Zaak-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Dossier-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Contactmomenten-Relatierol:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort rol van de relatie. Bijvoorbeeld Klant, Prospect, Leverancier, Medewerker, Team etc.'
+        naam:
+          type: 'string'
+          format: 'any'
+          description: 'De naam van de relatie rol.'
+        omschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'De omschrijving van de relatie rol.'
+        begindatum:
+          type: 'string'
+          format: 'date'
+          description: 'begindatum van de rol'
+        einddatum:
+          type: 'string'
+          format: 'date'
+          description: 'einddatum van de rol'
+        relatieAdressen:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar RelatieAdres in de vorm: vera/v4/relatieadressen/12345'
+        contactgegevens:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Contactgegeven in de vorm: vera/v4/contactgegevens/12345'
+    Relaties-Account:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        gebruikersnaam:
+          type: 'string'
+          format: 'any'
+          description: 'De gebruikersnaam van het account.'
+        status:
+          $ref: '#/components/schemas/Referentiedata-restricted'
+          description: 'De status van het account. Bijv. Geregistreerd, Geactiveerd, Beëindigd etc.'
+    Relaties-Adres:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata-restricted'
+          description: 'Het soort adres. Bijv. eenheidadres, postadres of buitenlands adres.'
+        adres:
+          type: 'string'
+          format: 'any'
+          description: 'De samenstelling van de attributen: straatnaam, huisnummer, huisletter en huisnummerToevoeging.'
+        straatnaam:
+          type: 'string'
+          format: 'any'
+          description: 'De straatnaam behorend bij het adres.'
+        huisnummer:
+          type: 'string'
+          format: 'any'
+          description: 'Het huisnummer dat door of namens het gemeentebestuur ten aanzien van een adresseerbaar object toegekende nummering.'
+        huisletter:
+          type: 'string'
+          format: 'any'
+          description: 'De huisletter door of namens het gemeentebestuur ten aanzien van een adresseerbaar object toegekende toevoeging aan een huisnummer in de vorm van een alfanumeriek teken.'
+        huisnummerToevoeging:
+          type: 'string'
+          format: 'any'
+          description: 'De huisnummer toevoeging van het adres.'
+        postcode:
+          type: 'string'
+          format: 'any'
+          description: 'De postcode van het adres.'
+    Relaties-BuitenlandsAdres:
+      allOf:
+        - $ref: '#/components/schemas/Relaties-Adres'
+        - type: object
+          properties:
+            postbusnummer:
+              type: 'string'
+              format: 'any'
+              description: 'Het postbusnummer behorende bij het adres'
+            woonplaats:
+              type: 'string'
+              format: 'any'
+              description: 'De woonplaats waarin het adres zich bevindt.'
+            provincie:
+              type: 'string'
+              format: 'any'
+              description: 'De provincie behorend bij het adres.'
+            land:
+              $ref: '#/components/schemas/Referentiedata-restricted'
+              description: 'Het land waarin het adres zich bevindt.'
+            adresregel1:
+              type: 'string'
+              format: 'any'
+              description: 'Adresregel in verband met een buitenlands adres.'
+            adresregel2:
+              type: 'string'
+              format: 'any'
+              description: 'Adresregel in verband met een buitenlands adres.'
+    Relaties-Contactgegeven:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort communicatie. Bijvoorbeeld: Telefoon, E-mail, .Social media etc.'
+        detailSoort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort detail communicatie. Bijvoorbeeld: Mobiel, privé, werk.'
+        waarde:
+          type: 'string'
+          format: 'any'
+          description: 'De aard van het contactgegeven. Dit kan de waarde zijn van een telefoonnummer, emailadres, of twitteradres. Bijvoorbeeld: 020-1234563 '
+        voorkeur:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De manier waarop de relatie contact wil krijgen door dit contactgegeven. Bijvoorbeeld: 1e voorkeur, 2e voorkeur.'
+    Relaties-Eenheidadres:
+      allOf:
+        - $ref: '#/components/schemas/Relaties-Adres'
+        - type: object
+          properties:
+            woonplaats:
+              $ref: '#/components/schemas/Relaties-Woonplaats'
+              description: 'De woonplaats waarin het adres zich bevindt.'
+            provincie:
+              $ref: '#/components/schemas/Referentiedata-restricted'
+              description: 'De provincie behorend bij het adres.'
+            land:
+              $ref: '#/components/schemas/Referentiedata-restricted'
+              description: 'Het land waarin het adres zich bevindt.'
+    Relaties-NatuurlijkPersoon:
+      allOf:
+        - $ref: '#/components/schemas/Relaties-Relatie'
+        - type: object
+          properties:
+            voornaam:
+              type: 'string'
+              format: 'any'
+              description: 'De voornaam van de natuurlijk persoon.'
+            initialen:
+              type: 'string'
+              format: 'any'
+              description: 'De initialen van de natuurlijk persoon.'
+            tussenvoegsels:
+              type: 'string'
+              format: 'any'
+              description: 'De tussenvoegsels behorende bij de naam.'
+            achternaam:
+              type: 'string'
+              format: 'any'
+              description: 'De achternaam van de natuurlijk persoon.'
+            roepnaam:
+              type: 'string'
+              format: 'any'
+              description: 'De roepnaam van de natuurlijk persoon.'
+            geslacht:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'link'
+            geboortedatum:
+              type: 'string'
+              format: 'date'
+              description: 'De geboortedatum van de natuurlijk persoon.'
+            overlijdensdatum:
+              type: 'string'
+              format: 'date'
+              description: 'De datum van overlijden van de natuurlijk persoon.'
+            burgerlijkeStaat:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'link'
+            nationaliteit:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'link'
+            bsn:
+              type: 'string'
+              format: 'any'
+              description: 'Het BSN (Burger Service Nummer) van de natuurlijk persoon.'
+            account:
+              $ref: '#/components/schemas/Relaties-Account'
+              description: 'link'
+            opleiding:
+              $ref: '#/components/schemas/Relaties-Opleiding'
+              description: 'link'
+            aanhef:
+              type: 'string'
+              format: 'any'
+              description: 'De aanhef of aanspreking is een (meestal vriendelijke) introducerende zin van een brief of e-mail. Het gaat doorgaans om standaardformuleringen waarmee de schrijver zich tot de geadresseerde richt.'
+            voorletters:
+              type: 'string'
+              format: 'any'
+              description: 'Een voorletter is een afkorting van een voornaam, die in adressering veel wordt gebruikt. De voorletters geven in combinatie met de achternaam meestal een duidelijk onderscheid tussen leden van hetzelfde gezin of dezelfde familie. Indien iemand meerdere voornamen heeft dan worden de voorletters door een punt gescheiden.'
+            voorkeurstaal:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'De voorkeurstaal die de natuurlijk persoon voert.'
+    Relaties-Opleiding:
+      type: object
+      properties:
+        instelling:
+          $ref: '#/components/schemas/Referentiedata-restricted'
+          description: 'De opleidingsinstelling die aangeeft waar de relatie de studie volgt. We hanteren hiervoor de BRIN.'
+        plaats:
+          type: 'string'
+          format: 'any'
+          description: 'De plaats waar de relatie de studie volgt.'
+        studentnummer:
+          type: 'string'
+          format: 'any'
+          description: 'Het studentnummer van de relatie'
+    Relaties-Postadres:
+      allOf:
+        - $ref: '#/components/schemas/Relaties-Adres'
+        - type: object
+          properties:
+            postbusnummer:
+              type: 'string'
+              format: 'any'
+              description: 'Het postbusnummer behorende bij het adres.'
+            antwoordnummer:
+              type: 'string'
+              format: 'any'
+              description: 'Het antwoordnummer behorende bij het adres.'
+            woonplaats:
+              $ref: '#/components/schemas/Relaties-Woonplaats'
+              description: 'De woonplaats waarin het adres zich bevindt.'
+    Relaties-Rechtspersoon:
+      allOf:
+        - $ref: '#/components/schemas/Relaties-Relatie'
+        - type: object
+          properties:
+            naam:
+              type: 'string'
+              format: 'any'
+              description: 'De naam de rechtspersoon.'
+            btwNummer:
+              type: 'string'
+              format: 'any'
+              description: 'Het BTW nummer van de rechtspersoon.'
+            kvkNummer:
+              type: 'string'
+              format: 'any'
+              description: 'Het KVK nummer van de rechtspersoon.'
+            organisatievorm:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'De organisatievorm van de rechtspersoon. Bijvoorbeeld: BV, NV, stichting of vereniging. Ook wel rechtsvorm genoemd.'
+            contactpersonen:
+              description: 'De contactpersonen behorend bij de rechtspersoon.'
+              type: array
+              items:
+                $ref: '#/components/schemas/Relaties-Relatie'
+            globaalLocatienummer:
+              type: 'string'
+              format: 'any'
+              description: 'Een wereldwijd nummer ter identificatie van een partij of locatie. Het dertiencijferige nummer (GLN) wordt uitgegeven door GS1.'
+    Relaties-Relatie:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
+        adressen:
+          description: 'De adressen behorend bij de relatie.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Relaties-RelatieAdres'
+        contactgegevens:
+          description: 'De contactgegevens van de relatie.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Relaties-Contactgegeven'
+        rollen:
+          description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Relaties-Relatierol'
+        groepen:
+          description: 'De relatiegroepen waar de relatie toe behoort.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Relaties-Relatiegroep'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Relaties-RelatieAdres:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort adres van de relatie. Bijvoorbeeld: Woonadres, postadres, bezoekadres en factuuradres.'
+        begindatum:
+          type: 'string'
+          format: 'date'
+          description: 'De begindatum waarop de relatie bij het adres hoort.'
+        einddatum:
+          type: 'string'
+          format: 'date'
+          description: 'De einddatum waarop de relatie niet meer bij het adres hoort.'
+        adres:
+          $ref: '#/components/schemas/Relaties-Adres'
+          description: 'Het adres behorend bij de relatie.'
+    Relaties-Relatiegroep:
+      allOf:
+        - $ref: '#/components/schemas/Relaties-Relatie'
+        - type: object
+          properties:
+            naam:
+              type: 'string'
+              format: 'any'
+              description: 'De naam van de relatiegroep.'
+    Relaties-Relatierol:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort rol van de relatie. Bijvoorbeeld Klant, Prospect, Leverancier, Medewerker, Team etc.'
+        naam:
+          type: 'string'
+          format: 'any'
+          description: 'De naam van de relatie rol.'
+        omschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'De omschrijving van de relatie rol.'
+        begindatum:
+          type: 'string'
+          format: 'date'
+          description: 'begindatum van de rol'
+        einddatum:
+          type: 'string'
+          format: 'date'
+          description: 'einddatum van de rol'
+        relatieAdressen:
+          description: 'De adresssen van de relatie die voor de rol van toepassing zijn'
+          type: array
+          items:
+            $ref: '#/components/schemas/Relaties-RelatieAdres'
+        contactgegevens:
+          description: 'De contactgegevens van een relatie in een bepaalde rol.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Relaties-Contactgegeven'
+        rolRelatie:
+          $ref: '#/components/schemas/Relaties-Relatie'
+          description: 'De relatie die aangeeft waar de relatie en rol koppeling van toepassing is. Dit attribuut geeft aan dat de aangegeven relatie de rol binnen bijvoorbeeld een relatiegroep heeft. Het attribuut relatie is dan bijvoorbeeld een persoon uit een huishouden en de rolRelatie is dan bijvoorbeeld de relatiegroep die het huishouden voorstelt.'
+    Relaties-Woonplaats:
+      type: object
+      properties:
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        naam:
+          type: 'string'
+          format: 'any'
+          description: 'De naam van de woonplaats.'
+    Signaleringen-Relatie:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Signaleringen-Signalering:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort signaal. Bijvoorbeeld: Huurschuld, overlast of wietplantage.'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van de signalering. Bijvoorbeeld: Actief, vervallen of passief.'
+        detailStatus:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De detailstatus van de signalering. Bijvoorbeeld: Ontruiming, vertrokken.'
+        begindatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De begindatum van de signalering'
+        einddatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De einddatum van de signalering'
+        relatie:
+          $ref: '#/components/schemas/Relatie-sleutels'
+          description: 'De relatie behorend bij de signalering.'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Foutbericht:
+      type: 'object'
+      properties:
+        code:
+          type: 'string'
+        omschrijving:
+          type: 'string'
+    ExtraAttributen:
+      type: 'object'
+      properties:
+        sleutel:
+          type: 'string'
+        waarde:
+          type: 'string'
+

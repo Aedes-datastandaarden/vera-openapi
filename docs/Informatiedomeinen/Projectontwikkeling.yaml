@@ -1,0 +1,1956 @@
+openapi: '3.0.0'
+info:
+  title: 'VERA-Projectontwikkeling'
+  description: API-specificatie van informatiedomein Projectontwikkeling
+  termsOfService: 'https://www.stichting-vera.nl/voorwaarden/'
+  contact:
+    name: 'VERA'
+    url: 'https://cora.wikixl.nl/index.php/VERA_Standaard'
+    email: 'info@stichting-vera.nl'
+  license:
+    name: European Union Public License, version 1.2 (EUPL-1.2)
+    url: https://eupl.eu/1.2/nl/
+  version: '4.0.3'
+servers:
+  - url: https://projectontwikkeling.vera.io:{port}/{basePath}
+    description: 'Productieserver'
+    variables:
+       port:
+         enum:
+           - '8443'
+           - '443'
+         default: '443'
+       basePath:
+         default: v4
+tags:
+- name: 'Resources'
+  description: 'Operaties met betrekking tot entiteiten in dit informatiedomein'
+paths:
+  /projecten:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van Projecten'
+      operationId: 'listProjecten'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Project'
+      responses:
+        '200':
+          description: 'Project response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Project'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Project toe.'
+      operationId: 'createProject'
+      requestBody:
+        description: 'Project om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+  /projecten/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Project met de gegeven identifier'
+      operationId: 'readProject'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Project om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Project response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Project'
+      operationId: 'replaceProject'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Project om te vervangen'
+        required: true
+        schema:
+          type: 'string'
+      requestBody:
+        description: 'Project om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+      responses:
+        '200':
+          description: 'Project succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Project'
+      operationId: 'updateProject'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Project om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
+      requestBody:
+        description: 'Project om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+      responses:
+        '200':
+          description: 'Project succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /projectbestedingen:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van Projectbestedingen'
+      operationId: 'listProjectbestedingen'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Projectbesteding'
+      responses:
+        '200':
+          description: 'Projectbesteding response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Projectbesteding'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Projectbesteding toe.'
+      operationId: 'createProjectbesteding'
+      requestBody:
+        description: 'Projectbesteding om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Projectbesteding'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+  /projectbestedingen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Projectbesteding met de gegeven identifier'
+      operationId: 'readProjectbesteding'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectbesteding om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Projectbesteding response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Projectbesteding'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Projectbesteding'
+      operationId: 'replaceProjectbesteding'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectbesteding om te vervangen'
+        required: true
+        schema:
+          type: 'string'
+      requestBody:
+        description: 'Projectbesteding om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Projectbesteding'
+      responses:
+        '200':
+          description: 'Projectbesteding succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Projectbesteding'
+      operationId: 'updateProjectbesteding'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectbesteding om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
+      requestBody:
+        description: 'Projectbesteding om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Projectbesteding'
+      responses:
+        '200':
+          description: 'Projectbesteding succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /projectbudgetregels:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van Projectbudgetregels'
+      operationId: 'listProjectbudgetregels'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Projectbudgetregel'
+      responses:
+        '200':
+          description: 'Projectbudgetregel response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Projectbudgetregel'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Projectbudgetregel toe.'
+      operationId: 'createProjectbudgetregel'
+      requestBody:
+        description: 'Projectbudgetregel om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Projectbudgetregel'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+  /projectbudgetregels/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Projectbudgetregel met de gegeven identifier'
+      operationId: 'readProjectbudgetregel'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectbudgetregel om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Projectbudgetregel response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Projectbudgetregel'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Projectbudgetregel'
+      operationId: 'replaceProjectbudgetregel'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectbudgetregel om te vervangen'
+        required: true
+        schema:
+          type: 'string'
+      requestBody:
+        description: 'Projectbudgetregel om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Projectbudgetregel'
+      responses:
+        '200':
+          description: 'Projectbudgetregel succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Projectbudgetregel'
+      operationId: 'updateProjectbudgetregel'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectbudgetregel om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
+      requestBody:
+        description: 'Projectbudgetregel om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Projectbudgetregel'
+      responses:
+        '200':
+          description: 'Projectbudgetregel succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /projectdoelstellingen:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van Projectdoelstellingen'
+      operationId: 'listProjectdoelstellingen'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Projectdoelstelling'
+      responses:
+        '200':
+          description: 'Projectdoelstelling response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Projectdoelstelling'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Projectdoelstelling toe.'
+      operationId: 'createProjectdoelstelling'
+      requestBody:
+        description: 'Projectdoelstelling om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Projectdoelstelling'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+  /projectdoelstellingen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Projectdoelstelling met de gegeven identifier'
+      operationId: 'readProjectdoelstelling'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectdoelstelling om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Projectdoelstelling response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Projectdoelstelling'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Projectdoelstelling'
+      operationId: 'replaceProjectdoelstelling'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectdoelstelling om te vervangen'
+        required: true
+        schema:
+          type: 'string'
+      requestBody:
+        description: 'Projectdoelstelling om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Projectdoelstelling'
+      responses:
+        '200':
+          description: 'Projectdoelstelling succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Projectdoelstelling'
+      operationId: 'updateProjectdoelstelling'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectdoelstelling om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
+      requestBody:
+        description: 'Projectdoelstelling om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Projectdoelstelling'
+      responses:
+        '200':
+          description: 'Projectdoelstelling succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /projectfasen:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van Projectfasen'
+      operationId: 'listProjectfasen'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Projectfase'
+      responses:
+        '200':
+          description: 'Projectfase response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Projectfase'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Projectfase toe.'
+      operationId: 'createProjectfase'
+      requestBody:
+        description: 'Projectfase om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Projectfase'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+  /projectfasen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Projectfase met de gegeven identifier'
+      operationId: 'readProjectfase'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectfase om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Projectfase response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Projectfase'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Projectfase'
+      operationId: 'replaceProjectfase'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectfase om te vervangen'
+        required: true
+        schema:
+          type: 'string'
+      requestBody:
+        description: 'Projectfase om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Projectfase'
+      responses:
+        '200':
+          description: 'Projectfase succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Projectfase'
+      operationId: 'updateProjectfase'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectfase om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
+      requestBody:
+        description: 'Projectfase om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Projectfase'
+      responses:
+        '200':
+          description: 'Projectfase succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /projectfasebesluiten:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van Projectfasebesluiten'
+      operationId: 'listProjectfasebesluiten'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Projectfasebesluit'
+      responses:
+        '200':
+          description: 'Projectfasebesluit response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Projectfasebesluit'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Projectfasebesluit toe.'
+      operationId: 'createProjectfasebesluit'
+      requestBody:
+        description: 'Projectfasebesluit om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Projectfasebesluit'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+  /projectfasebesluiten/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Projectfasebesluit met de gegeven identifier'
+      operationId: 'readProjectfasebesluit'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectfasebesluit om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Projectfasebesluit response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Projectfasebesluit'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Projectfasebesluit'
+      operationId: 'replaceProjectfasebesluit'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectfasebesluit om te vervangen'
+        required: true
+        schema:
+          type: 'string'
+      requestBody:
+        description: 'Projectfasebesluit om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Projectfasebesluit'
+      responses:
+        '200':
+          description: 'Projectfasebesluit succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Projectfasebesluit'
+      operationId: 'updateProjectfasebesluit'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectfasebesluit om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
+      requestBody:
+        description: 'Projectfasebesluit om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Projectfasebesluit'
+      responses:
+        '200':
+          description: 'Projectfasebesluit succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /projectorders:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van Projectorders'
+      operationId: 'listProjectorders'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Projectorder'
+      responses:
+        '200':
+          description: 'Projectorder response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Projectorder'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Projectorder toe.'
+      operationId: 'createProjectorder'
+      requestBody:
+        description: 'Projectorder om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Projectorder'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+  /projectorders/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Projectorder met de gegeven identifier'
+      operationId: 'readProjectorder'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectorder om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Projectorder response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Projectorder'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Projectorder'
+      operationId: 'replaceProjectorder'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectorder om te vervangen'
+        required: true
+        schema:
+          type: 'string'
+      requestBody:
+        description: 'Projectorder om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Projectorder'
+      responses:
+        '200':
+          description: 'Projectorder succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Projectorder'
+      operationId: 'updateProjectorder'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectorder om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
+      requestBody:
+        description: 'Projectorder om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Projectorder'
+      responses:
+        '200':
+          description: 'Projectorder succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /projectrelaties:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van Projectrelaties'
+      operationId: 'listProjectrelaties'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Projectrelatie'
+      responses:
+        '200':
+          description: 'Projectrelatie response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Projectrelatie'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Projectrelatie toe.'
+      operationId: 'createProjectrelatie'
+      requestBody:
+        description: 'Projectrelatie om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Projectrelatie'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+  /projectrelaties/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Projectrelatie met de gegeven identifier'
+      operationId: 'readProjectrelatie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectrelatie om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Projectrelatie response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Projectrelatie'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Projectrelatie'
+      operationId: 'replaceProjectrelatie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectrelatie om te vervangen'
+        required: true
+        schema:
+          type: 'string'
+      requestBody:
+        description: 'Projectrelatie om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Projectrelatie'
+      responses:
+        '200':
+          description: 'Projectrelatie succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Projectrelatie'
+      operationId: 'updateProjectrelatie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projectrelatie om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
+      requestBody:
+        description: 'Projectrelatie om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Projectrelatie'
+      responses:
+        '200':
+          description: 'Projectrelatie succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /projecttaken:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van Projecttaken'
+      operationId: 'listProjecttaken'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Projecttaak'
+      responses:
+        '200':
+          description: 'Projecttaak response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Projecttaak'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Projecttaak toe.'
+      operationId: 'createProjecttaak'
+      requestBody:
+        description: 'Projecttaak om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Projecttaak'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+  /projecttaken/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Projecttaak met de gegeven identifier'
+      operationId: 'readProjecttaak'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projecttaak om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Projecttaak response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Projecttaak'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Projecttaak'
+      operationId: 'replaceProjecttaak'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projecttaak om te vervangen'
+        required: true
+        schema:
+          type: 'string'
+      requestBody:
+        description: 'Projecttaak om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Projecttaak'
+      responses:
+        '200':
+          description: 'Projecttaak succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Projecttaak'
+      operationId: 'updateProjecttaak'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Projecttaak om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
+      requestBody:
+        description: 'Projecttaak om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Projecttaak'
+      responses:
+        '200':
+          description: 'Projecttaak succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+security:
+  - ApiKeyAuth: []
+components:
+  headers:
+    X-Stuurgegevens-TijdstipBericht:
+      schema:
+        type: string
+        format: data-time
+        description: Tijdstip waarop het bericht verzonden is
+    X-Stuurgegevens-Referentienummer:
+      schema:
+        type: string
+        format: any
+        description: Een unieke code voor correlatie
+    X-Stuurgegevens-Zender-Organisatie:
+      schema:
+        type: string
+        format: any
+        description: Naam van de verzendende organisatie
+    X-Stuurgegevens-Zender-Administratie:
+      schema:
+        type: string
+        format: any
+        description: |
+          Met het stuurgegeven Administratie kan onderscheid gemaakt worden tussen 
+          de verschillende gegevensverzamelingen die de verzendende organisatie beheert
+    X-Parameters-Aantal:
+      schema:
+        type: integer
+        description: Totaal aantal gevonden entiteiten
+        example: 135
+    X-Parameters-AantalPerPagina:
+      schema:
+        type: integer
+        description: Miximum aantal entiteiten per pagina
+        example: 20
+    X-Parameters-Pagina:
+      schema:
+        type: integer
+        description: Huidige paginanummer
+        example: 3
+    X-Parameters-PeiltijdstipMaterieel:
+      schema:
+        type: string
+        format: date-time
+        description: De peildatum. Indien leeg worden de actuele gegevens opgevraagd
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+  responses:
+    NietGeautoriseerd:
+      description: API-key ontbreekt of is ongeldig
+      headers:
+        X-API-KEY:
+          schema:
+            type: string
+  schemas:
+    Project:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: ''
+        naam:
+          type: 'string'
+          format: 'any'
+          description: 'De naam van het project'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: ''
+        begindatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De startdatum van het project.'
+        einddatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De einddatum van het project.'
+        detailStatus:
+          $ref: '#/components/schemas/Referentiedata'
+          description: ''
+        doelstelling:
+          $ref: '#/components/schemas/Projectdoelstelling'
+          description: ''
+        relaties:
+          description: ''
+          type: array
+          items:
+            $ref: '#/components/schemas/Projectrelatie'
+        bovenliggendProject:
+          $ref: '#/components/schemas/Project'
+          description: ''
+        fasen:
+          description: ''
+          type: array
+          items:
+            $ref: '#/components/schemas/Projectfase'
+        percelen:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar KadasterPerceel in de vorm: vera/v4/kadasterpercelen/12345'
+        clusters:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Cluster in de vorm: vera/v4/clusters/12345'
+        eenheden:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Eenheid in de vorm: vera/v4/eenheden/12345'
+        aanbestedingen:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Aanbesteding in de vorm: vera/v4/aanbestedingen/12345'
+        dossier:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Dossier in de vorm: vera/v4/dossiers/12345'
+        regiesoort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De regiekeuze voor de uitvoering van het te starten project. Bijv. turnkey, bouwteam.'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Referentiedata:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van de referentiedata of klasse'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De soort van het referentiedata item. Bijvoorbeeld nationaliteit.'
+        naam:
+          type: 'string'
+          format: 'any'
+          description: 'De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.'
+        omschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'De omschrijving van de referentiedata. Bijvoorbeeld De Nederlandse nationaliteit.'
+        parent:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De bovenliggende referentiedata in het geval er sprake is van een hierarchische relatie tussen referentiedata.'
+        begindatum:
+          type: 'string'
+          format: 'date'
+          description: 'De begindatum van het klasse item.'
+        einddatum:
+          type: 'string'
+          format: 'date'
+          description: 'De einddatum van het klasse item.'
+        sortering:
+          type: 'string'
+          format: 'any'
+          description: 'De sorteervolgorde van de referentiedata anders dan alfabetisch.'
+    Projectdoelstelling:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        gewensteBegindatum:
+          type: 'string'
+          format: 'date-time'
+          description: ''
+        gewensteEinddatum:
+          type: 'string'
+          format: 'date-time'
+          description: ''
+        project:
+          $ref: '#/components/schemas/Project'
+          description: ''
+        aantalTeSlopenEenheden:
+          type: 'integer'
+          format: 'int32'
+          description: 'Aantal te slopen eenheden'
+        aantalTeBouwenEenheden:
+          type: 'integer'
+          format: 'int32'
+          description: 'Aantal nieuw te bouwen eenheden'
+        aantalTeRenoverenEenheden:
+          type: 'integer'
+          format: 'int32'
+          description: 'Aantal te renoveren eenheden'
+        aantalTeTransformerenEenheden:
+          type: 'integer'
+          format: 'int32'
+          description: 'Aantal te transformeren eenheden'
+        aantalGetransformeerdeEenheden:
+          type: 'integer'
+          format: 'int32'
+          description: 'Aantal eenheden na transformatie'
+        gemiddeldeWoningwaarderingsPunten:
+          type: 'number'
+          format: 'float'
+          description: 'Gemiddeld aantal woningwaarderingsstelsel punten bij oplevering'
+        gemiddeldeEnergieindex:
+          type: 'integer'
+          format: 'int32'
+          description: 'Gemiddelde energieindex bij oplevering'
+        gemiddeldeHuurprijs:
+          type: 'number'
+          format: 'float'
+          description: 'Gemiddelde huurprijs bij oplevering'
+        gemBVOPerEenheid:
+          type: 'integer'
+          format: 'int32'
+          description: 'Gemiddeld brutto vloer oppervlakte per eenheid'
+        gemGBOPerEenheid:
+          type: 'integer'
+          format: 'int32'
+          description: 'Gemiddeld gemiddelde gebruiksoppervlakte per eenheid'
+        gemVVOPerEenheid:
+          type: 'integer'
+          format: 'int32'
+          description: 'Gemiddeld Verhuurbara vloeroppervlakte per eenheid'
+        marktwaarde:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Marktwaarde in de vorm: vera/v4/marktwaarden/12345'
+        beleidswaarde:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Beleidswaarde in de vorm: vera/v4/beleidswaarden/12345'
+        internalRateOfReturn:
+          type: 'number'
+          format: 'float'
+          description: 'IRR Internal Rate of Return.'
+        brutoAanvangsrendement:
+          type: 'number'
+          format: 'float'
+          description: 'BAR Bruto Aanvangsrendement.'
+        nettoAanvangsrendement:
+          type: 'number'
+          format: 'float'
+          description: 'NAR Netto Aanvangsrendement.'
+        initieleBudgetregels:
+          description: ''
+          type: array
+          items:
+            $ref: '#/components/schemas/Projectbudgetregel'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Projectbudgetregel:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Bijv. Prognose, Budget'
+        regelsoort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Bijv. kostendetailregel, opbrengstendetailregel, subtotaalregel'
+        omschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'Omschrijving van de budgetregel'
+        bovenliggendeBudgetregel:
+          $ref: '#/components/schemas/Projectbudgetregel'
+          description: ''
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Status van de budgetregel. Bijv. aangevraagd/vrijgegeven/goedgekeurd.'
+        begindatum:
+          type: 'string'
+          format: 'date-time'
+          description: ''
+        einddatum:
+          type: 'string'
+          format: 'date-time'
+          description: ''
+        datumAanvraag:
+          type: 'string'
+          format: 'date-time'
+          description: 'Datum aanvraag'
+        datumGoedkeuring:
+          type: 'string'
+          format: 'date-time'
+          description: 'Datum goedkeuring'
+        bedrag:
+          type: 'number'
+          format: 'float'
+          description: 'Bedrag exclusief BTW. van de budgetregel.'
+        btwTarief:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar BtwTarief in de vorm: vera/v4/btwtarieven/12345'
+        doelstelling:
+          $ref: '#/components/schemas/Projectdoelstelling'
+          description: ''
+        fase:
+          $ref: '#/components/schemas/Projectfase'
+          description: ''
+        fasebesluit:
+          $ref: '#/components/schemas/Projectfasebesluit'
+          description: ''
+        order:
+          $ref: '#/components/schemas/Projectorder'
+          description: ''
+        bestedingen:
+          description: ''
+          type: array
+          items:
+            $ref: '#/components/schemas/Projectbesteding'
+        grootboekrekening:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Grootboekrekening in de vorm: vera/v4/grootboekrekeningen/12345'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Projectfase:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Bijvoorbeeld: Initiatieffase, Definitiefase, Ontwerpfase, Voorbereidingsfase, Realisatiefase, Nazorgfase'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: ''
+        begindatum:
+          type: 'string'
+          format: 'date-time'
+          description: ''
+        einddatum:
+          type: 'string'
+          format: 'date-time'
+          description: ''
+        gewensteBegindatum:
+          type: 'string'
+          format: 'date-time'
+          description: ''
+        gewensteEinddatum:
+          type: 'string'
+          format: 'date-time'
+          description: ''
+        project:
+          $ref: '#/components/schemas/Project'
+          description: ''
+        besluit:
+          $ref: '#/components/schemas/Projectfasebesluit'
+          description: ''
+        relaties:
+          description: ''
+          type: array
+          items:
+            $ref: '#/components/schemas/Projectrelatie'
+        volgnummer:
+          type: 'integer'
+          format: 'int32'
+          description: ''
+        taken:
+          description: ''
+          type: array
+          items:
+            $ref: '#/components/schemas/Projecttaak'
+        budgetregels:
+          description: ''
+          type: array
+          items:
+            $ref: '#/components/schemas/Projectbudgetregel'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Projectfasebesluit:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: ''
+        begindatum:
+          type: 'string'
+          format: 'date-time'
+          description: ''
+        einddatum:
+          type: 'string'
+          format: 'date-time'
+          description: ''
+        project:
+          $ref: '#/components/schemas/Project'
+          description: ''
+        fase:
+          $ref: '#/components/schemas/Projectfase'
+          description: ''
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Projectrelatie:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: ''
+        detailSoort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: ''
+        begindatum:
+          type: 'string'
+          format: 'date-time'
+          description: ''
+        einddatum:
+          type: 'string'
+          format: 'date-time'
+          description: ''
+        relatie:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+        project:
+          $ref: '#/components/schemas/Project'
+          description: ''
+        fases:
+          description: ''
+          type: array
+          items:
+            $ref: '#/components/schemas/Projectfase'
+        taken:
+          description: ''
+          type: array
+          items:
+            $ref: '#/components/schemas/Projecttaak'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Projecttaak:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: ''
+        detailSoort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: ''
+        omschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'De omschrijving van de taak'
+        begindatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'Werkelijke uitvoeringsdatum'
+        einddatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'Werkelijke einddatum uitvoering'
+        gewensteBegindatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'Gewenste uitvoeringsdatum'
+        gewensteEinddatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'Gewenste uitvoeringsdatum'
+        fase:
+          $ref: '#/components/schemas/Projectfase'
+          description: ''
+        relaties:
+          description: ''
+          type: array
+          items:
+            $ref: '#/components/schemas/Projectrelatie'
+        kwaliteitsmetingen:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Kwaliteitsmetingsverzoek in de vorm: vera/v4/kwaliteitsmetingsverzoeken/12345'
+        orders:
+          description: ''
+          type: array
+          items:
+            $ref: '#/components/schemas/Projectorder'
+        bestedingen:
+          description: ''
+          type: array
+          items:
+            $ref: '#/components/schemas/Projectbesteding'
+        percelen:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar KadasterPerceel in de vorm: vera/v4/kadasterpercelen/12345'
+        clusters:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Cluster in de vorm: vera/v4/clusters/12345'
+        eenheden:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Eenheid in de vorm: vera/v4/eenheden/12345'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Projectorder:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        budgetregels:
+          description: ''
+          type: array
+          items:
+            $ref: '#/components/schemas/Projectbudgetregel'
+        taak:
+          $ref: '#/components/schemas/Projecttaak'
+          description: ''
+        inkoopopdracht:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Inkoopopdracht in de vorm: vera/v4/inkoopopdrachten/12345'
+        overeenkomst:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Overeenkomst in de vorm: vera/v4/overeenkomsten/12345'
+        bestedingen:
+          description: ''
+          type: array
+          items:
+            $ref: '#/components/schemas/Projectbesteding'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Projectbesteding:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        taak:
+          $ref: '#/components/schemas/Projecttaak'
+          description: ''
+        order:
+          $ref: '#/components/schemas/Projectorder'
+          description: ''
+        budgetregel:
+          $ref: '#/components/schemas/Projectbudgetregel'
+          description: ''
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Project-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Projectbesteding-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Projectbudgetregel-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Projectdoelstelling-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Projectfase-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Projectfasebesluit-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Projectorder-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Projectrelatie-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Projecttaak-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Foutbericht:
+      type: 'object'
+      properties:
+        code:
+          type: 'string'
+        omschrijving:
+          type: 'string'
+    ExtraAttributen:
+      type: 'object'
+      properties:
+        sleutel:
+          type: 'string'
+        waarde:
+          type: 'string'
+

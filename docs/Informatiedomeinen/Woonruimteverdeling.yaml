@@ -1,0 +1,2700 @@
+openapi: '3.0.0'
+info:
+  title: 'VERA-Woonruimteverdeling'
+  description: API-specificatie van informatiedomein Woonruimteverdeling
+  termsOfService: 'https://www.stichting-vera.nl/voorwaarden/'
+  contact:
+    name: 'VERA'
+    url: 'https://cora.wikixl.nl/index.php/VERA_Standaard'
+    email: 'info@stichting-vera.nl'
+  license:
+    name: European Union Public License, version 1.2 (EUPL-1.2)
+    url: https://eupl.eu/1.2/nl/
+  version: '4.0.3'
+servers:
+  - url: https://woonruimteverdeling.vera.io:{port}/{basePath}
+    description: 'Productieserver'
+    variables:
+       port:
+         enum:
+           - '8443'
+           - '443'
+         default: '443'
+       basePath:
+         default: v4
+tags:
+- name: 'Resources'
+  description: 'Operaties met betrekking tot entiteiten in dit informatiedomein'
+paths:
+  /aanbiedingen:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van Aanbiedingen'
+      operationId: 'listAanbiedingen'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Aanbieding'
+      responses:
+        '200':
+          description: 'Aanbieding response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Aanbieding'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Aanbieding toe.'
+      operationId: 'createAanbieding'
+      requestBody:
+        description: 'Aanbieding om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Aanbieding'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+  /aanbiedingen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Aanbieding met de gegeven identifier'
+      operationId: 'readAanbieding'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Aanbieding om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Aanbieding response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Aanbieding'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Aanbieding'
+      operationId: 'replaceAanbieding'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Aanbieding om te vervangen'
+        required: true
+        schema:
+          type: 'string'
+      requestBody:
+        description: 'Aanbieding om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Aanbieding'
+      responses:
+        '200':
+          description: 'Aanbieding succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Aanbieding'
+      operationId: 'updateAanbieding'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Aanbieding om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
+      requestBody:
+        description: 'Aanbieding om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Aanbieding'
+      responses:
+        '200':
+          description: 'Aanbieding succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /gebeurtenissen:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van Gebeurtenissen'
+      operationId: 'listGebeurtenissen'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Gebeurtenis'
+      responses:
+        '200':
+          description: 'Gebeurtenis response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Gebeurtenis'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Gebeurtenis toe.'
+      operationId: 'createGebeurtenis'
+      requestBody:
+        description: 'Gebeurtenis om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Gebeurtenis'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+  /gebeurtenissen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Gebeurtenis met de gegeven identifier'
+      operationId: 'readGebeurtenis'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Gebeurtenis om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Gebeurtenis response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Gebeurtenis'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Gebeurtenis'
+      operationId: 'replaceGebeurtenis'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Gebeurtenis om te vervangen'
+        required: true
+        schema:
+          type: 'string'
+      requestBody:
+        description: 'Gebeurtenis om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Gebeurtenis'
+      responses:
+        '200':
+          description: 'Gebeurtenis succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Gebeurtenis'
+      operationId: 'updateGebeurtenis'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Gebeurtenis om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
+      requestBody:
+        description: 'Gebeurtenis om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Gebeurtenis'
+      responses:
+        '200':
+          description: 'Gebeurtenis succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /huidige-gebruikers:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van HuidigeGebruikers'
+      operationId: 'listHuidigeGebruikers'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/HuidigeGebruiker'
+      responses:
+        '200':
+          description: 'HuidigeGebruiker response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/HuidigeGebruiker'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) HuidigeGebruiker toe.'
+      operationId: 'createHuidigeGebruiker'
+      requestBody:
+        description: 'HuidigeGebruiker om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HuidigeGebruiker'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+  /huidige-gebruikers/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een HuidigeGebruiker met de gegeven identifier'
+      operationId: 'readHuidigeGebruiker'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van HuidigeGebruiker om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'HuidigeGebruiker response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HuidigeGebruiker'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een HuidigeGebruiker'
+      operationId: 'replaceHuidigeGebruiker'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van HuidigeGebruiker om te vervangen'
+        required: true
+        schema:
+          type: 'string'
+      requestBody:
+        description: 'HuidigeGebruiker om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HuidigeGebruiker'
+      responses:
+        '200':
+          description: 'HuidigeGebruiker succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een HuidigeGebruiker'
+      operationId: 'updateHuidigeGebruiker'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van HuidigeGebruiker om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
+      requestBody:
+        description: 'HuidigeGebruiker om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HuidigeGebruiker'
+      responses:
+        '200':
+          description: 'HuidigeGebruiker succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /kandidaten:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van Kandidaten'
+      operationId: 'listKandidaten'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Kandidaat'
+      responses:
+        '200':
+          description: 'Kandidaat response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Kandidaat'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Kandidaat toe.'
+      operationId: 'createKandidaat'
+      requestBody:
+        description: 'Kandidaat om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Kandidaat'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+  /kandidaten/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Kandidaat met de gegeven identifier'
+      operationId: 'readKandidaat'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Kandidaat om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Kandidaat response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Kandidaat'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Kandidaat'
+      operationId: 'replaceKandidaat'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Kandidaat om te vervangen'
+        required: true
+        schema:
+          type: 'string'
+      requestBody:
+        description: 'Kandidaat om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Kandidaat'
+      responses:
+        '200':
+          description: 'Kandidaat succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Kandidaat'
+      operationId: 'updateKandidaat'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Kandidaat om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
+      requestBody:
+        description: 'Kandidaat om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Kandidaat'
+      responses:
+        '200':
+          description: 'Kandidaat succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /publicaties:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van Publicaties'
+      operationId: 'listPublicaties'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Publicatie'
+      responses:
+        '200':
+          description: 'Publicatie response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Publicatie'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Publicatie toe.'
+      operationId: 'createPublicatie'
+      requestBody:
+        description: 'Publicatie om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Publicatie'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+  /publicaties/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Publicatie met de gegeven identifier'
+      operationId: 'readPublicatie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Publicatie om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Publicatie response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Publicatie'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Publicatie'
+      operationId: 'replacePublicatie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Publicatie om te vervangen'
+        required: true
+        schema:
+          type: 'string'
+      requestBody:
+        description: 'Publicatie om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Publicatie'
+      responses:
+        '200':
+          description: 'Publicatie succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Publicatie'
+      operationId: 'updatePublicatie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Publicatie om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
+      requestBody:
+        description: 'Publicatie om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Publicatie'
+      responses:
+        '200':
+          description: 'Publicatie succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /puntenberekeningen:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van Puntenberekeningen'
+      operationId: 'listPuntenberekeningen'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Puntenberekening'
+      responses:
+        '200':
+          description: 'Puntenberekening response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Puntenberekening'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Puntenberekening toe.'
+      operationId: 'createPuntenberekening'
+      requestBody:
+        description: 'Puntenberekening om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Puntenberekening'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+  /puntenberekeningen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Puntenberekening met de gegeven identifier'
+      operationId: 'readPuntenberekening'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Puntenberekening om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Puntenberekening response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Puntenberekening'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Puntenberekening'
+      operationId: 'replacePuntenberekening'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Puntenberekening om te vervangen'
+        required: true
+        schema:
+          type: 'string'
+      requestBody:
+        description: 'Puntenberekening om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Puntenberekening'
+      responses:
+        '200':
+          description: 'Puntenberekening succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Puntenberekening'
+      operationId: 'updatePuntenberekening'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Puntenberekening om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
+      requestBody:
+        description: 'Puntenberekening om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Puntenberekening'
+      responses:
+        '200':
+          description: 'Puntenberekening succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /puntenmutaties:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van Puntenmutaties'
+      operationId: 'listPuntenmutaties'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Puntenmutatie'
+      responses:
+        '200':
+          description: 'Puntenmutatie response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Puntenmutatie'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Puntenmutatie toe.'
+      operationId: 'createPuntenmutatie'
+      requestBody:
+        description: 'Puntenmutatie om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Puntenmutatie'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+  /puntenmutaties/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Puntenmutatie met de gegeven identifier'
+      operationId: 'readPuntenmutatie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Puntenmutatie om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Puntenmutatie response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Puntenmutatie'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Puntenmutatie'
+      operationId: 'replacePuntenmutatie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Puntenmutatie om te vervangen'
+        required: true
+        schema:
+          type: 'string'
+      requestBody:
+        description: 'Puntenmutatie om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Puntenmutatie'
+      responses:
+        '200':
+          description: 'Puntenmutatie succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Puntenmutatie'
+      operationId: 'updatePuntenmutatie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Puntenmutatie om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
+      requestBody:
+        description: 'Puntenmutatie om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Puntenmutatie'
+      responses:
+        '200':
+          description: 'Puntenmutatie succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /reacties:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van Reacties'
+      operationId: 'listReacties'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Reactie'
+      responses:
+        '200':
+          description: 'Reactie response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Reactie'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Reactie toe.'
+      operationId: 'createReactie'
+      requestBody:
+        description: 'Reactie om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reactie'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+  /reacties/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Reactie met de gegeven identifier'
+      operationId: 'readReactie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Reactie om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Reactie response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reactie'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Reactie'
+      operationId: 'replaceReactie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Reactie om te vervangen'
+        required: true
+        schema:
+          type: 'string'
+      requestBody:
+        description: 'Reactie om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reactie'
+      responses:
+        '200':
+          description: 'Reactie succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Reactie'
+      operationId: 'updateReactie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Reactie om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
+      requestBody:
+        description: 'Reactie om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reactie'
+      responses:
+        '200':
+          description: 'Reactie succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /regelingen:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van Regelingen'
+      operationId: 'listRegelingen'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Regeling'
+      responses:
+        '200':
+          description: 'Regeling response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Regeling'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Regeling toe.'
+      operationId: 'createRegeling'
+      requestBody:
+        description: 'Regeling om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Regeling'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+  /regelingen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Regeling met de gegeven identifier'
+      operationId: 'readRegeling'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Regeling om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Regeling response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Regeling'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Regeling'
+      operationId: 'replaceRegeling'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Regeling om te vervangen'
+        required: true
+        schema:
+          type: 'string'
+      requestBody:
+        description: 'Regeling om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Regeling'
+      responses:
+        '200':
+          description: 'Regeling succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Regeling'
+      operationId: 'updateRegeling'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Regeling om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
+      requestBody:
+        description: 'Regeling om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Regeling'
+      responses:
+        '200':
+          description: 'Regeling succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /sancties:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van Sancties'
+      operationId: 'listSancties'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Sanctie'
+      responses:
+        '200':
+          description: 'Sanctie response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Sanctie'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Sanctie toe.'
+      operationId: 'createSanctie'
+      requestBody:
+        description: 'Sanctie om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Sanctie'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+  /sancties/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Sanctie met de gegeven identifier'
+      operationId: 'readSanctie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Sanctie om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Sanctie response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sanctie'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Sanctie'
+      operationId: 'replaceSanctie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Sanctie om te vervangen'
+        required: true
+        schema:
+          type: 'string'
+      requestBody:
+        description: 'Sanctie om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Sanctie'
+      responses:
+        '200':
+          description: 'Sanctie succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Sanctie'
+      operationId: 'updateSanctie'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Sanctie om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
+      requestBody:
+        description: 'Sanctie om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Sanctie'
+      responses:
+        '200':
+          description: 'Sanctie succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /toewijzingen:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van Toewijzingen'
+      operationId: 'listToewijzingen'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Toewijzing'
+      responses:
+        '200':
+          description: 'Toewijzing response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Toewijzing'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Toewijzing toe.'
+      operationId: 'createToewijzing'
+      requestBody:
+        description: 'Toewijzing om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Toewijzing'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+  /toewijzingen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Toewijzing met de gegeven identifier'
+      operationId: 'readToewijzing'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Toewijzing om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Toewijzing response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Toewijzing'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Toewijzing'
+      operationId: 'replaceToewijzing'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Toewijzing om te vervangen'
+        required: true
+        schema:
+          type: 'string'
+      requestBody:
+        description: 'Toewijzing om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Toewijzing'
+      responses:
+        '200':
+          description: 'Toewijzing succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Toewijzing'
+      operationId: 'updateToewijzing'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Toewijzing om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
+      requestBody:
+        description: 'Toewijzing om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Toewijzing'
+      responses:
+        '200':
+          description: 'Toewijzing succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /voorrangsregelingen:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van Voorrangsregelingen'
+      operationId: 'listVoorrangsregelingen'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Voorrangsregeling'
+      responses:
+        '200':
+          description: 'Voorrangsregeling response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Voorrangsregeling'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) Voorrangsregeling toe.'
+      operationId: 'createVoorrangsregeling'
+      requestBody:
+        description: 'Voorrangsregeling om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Voorrangsregeling'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+  /voorrangsregelingen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een Voorrangsregeling met de gegeven identifier'
+      operationId: 'readVoorrangsregeling'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Voorrangsregeling om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Voorrangsregeling response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Voorrangsregeling'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een Voorrangsregeling'
+      operationId: 'replaceVoorrangsregeling'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Voorrangsregeling om te vervangen'
+        required: true
+        schema:
+          type: 'string'
+      requestBody:
+        description: 'Voorrangsregeling om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Voorrangsregeling'
+      responses:
+        '200':
+          description: 'Voorrangsregeling succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een Voorrangsregeling'
+      operationId: 'updateVoorrangsregeling'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Voorrangsregeling om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
+      requestBody:
+        description: 'Voorrangsregeling om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Voorrangsregeling'
+      responses:
+        '200':
+          description: 'Voorrangsregeling succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /voorrangsregeling-profielen:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Ophalen van VoorrangsregelingProfielen'
+      operationId: 'listVoorrangsregelingProfielen'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/VoorrangsregelingProfiel'
+      responses:
+        '200':
+          description: 'VoorrangsregelingProfiel response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/VoorrangsregelingProfiel'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Resources'
+      description: 'Voegt een nieuw(e) VoorrangsregelingProfiel toe.'
+      operationId: 'createVoorrangsregelingProfiel'
+      requestBody:
+        description: 'VoorrangsregelingProfiel om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VoorrangsregelingProfiel'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+  /voorrangsregeling-profielen/{id}:
+    get:
+      tags:
+      - 'Resources'
+      description: 'Retourneert een VoorrangsregelingProfiel met de gegeven identifier'
+      operationId: 'readVoorrangsregelingProfiel'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van VoorrangsregelingProfiel om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'VoorrangsregelingProfiel response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoorrangsregelingProfiel'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Resources'
+      description: 'Vervangen van een VoorrangsregelingProfiel'
+      operationId: 'replaceVoorrangsregelingProfiel'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van VoorrangsregelingProfiel om te vervangen'
+        required: true
+        schema:
+          type: 'string'
+      requestBody:
+        description: 'VoorrangsregelingProfiel om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VoorrangsregelingProfiel'
+      responses:
+        '200':
+          description: 'VoorrangsregelingProfiel succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Resources'
+      description: 'Wijzigen van een VoorrangsregelingProfiel'
+      operationId: 'updateVoorrangsregelingProfiel'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van VoorrangsregelingProfiel om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
+      requestBody:
+        description: 'VoorrangsregelingProfiel om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VoorrangsregelingProfiel'
+      responses:
+        '200':
+          description: 'VoorrangsregelingProfiel succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+security:
+  - ApiKeyAuth: []
+components:
+  headers:
+    X-Stuurgegevens-TijdstipBericht:
+      schema:
+        type: string
+        format: data-time
+        description: Tijdstip waarop het bericht verzonden is
+    X-Stuurgegevens-Referentienummer:
+      schema:
+        type: string
+        format: any
+        description: Een unieke code voor correlatie
+    X-Stuurgegevens-Zender-Organisatie:
+      schema:
+        type: string
+        format: any
+        description: Naam van de verzendende organisatie
+    X-Stuurgegevens-Zender-Administratie:
+      schema:
+        type: string
+        format: any
+        description: |
+          Met het stuurgegeven Administratie kan onderscheid gemaakt worden tussen 
+          de verschillende gegevensverzamelingen die de verzendende organisatie beheert
+    X-Parameters-Aantal:
+      schema:
+        type: integer
+        description: Totaal aantal gevonden entiteiten
+        example: 135
+    X-Parameters-AantalPerPagina:
+      schema:
+        type: integer
+        description: Miximum aantal entiteiten per pagina
+        example: 20
+    X-Parameters-Pagina:
+      schema:
+        type: integer
+        description: Huidige paginanummer
+        example: 3
+    X-Parameters-PeiltijdstipMaterieel:
+      schema:
+        type: string
+        format: date-time
+        description: De peildatum. Indien leeg worden de actuele gegevens opgevraagd
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+  responses:
+    NietGeautoriseerd:
+      description: API-key ontbreekt of is ongeldig
+      headers:
+        X-API-KEY:
+          schema:
+            type: string
+  schemas:
+    Aanbieding:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van de aanbieding.'
+        detailStatus:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De detail status van de aanbieding'
+        antwoorddatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum waarop het antwoord op de aanbieding is gegeven.'
+        vervaldatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum waarop de aanbieding vervalt als men niet reageert.'
+        antwoordToelichting:
+          type: 'string'
+          format: 'any'
+          description: 'De specifieke toelichting van de status van de aanbieding in het proces voor de woningzoekende.'
+        kandidaat:
+          $ref: '#/components/schemas/Kandidaat'
+          description: 'De kandidaat behorend bij de aanbieding.'
+        relatie:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+        contactmomenten:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Contactmoment in de vorm: vera/v4/contactmomenten/12345'
+        bezichtiging:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Afspraak in de vorm: vera/v4/afspraken/12345'
+        publicatie:
+          $ref: '#/components/schemas/Publicatie'
+          description: 'De publicatie naar aanleiding waarvan de aanbieding is gedaan.'
+        cluster:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Cluster in de vorm: vera/v4/clusters/12345'
+        eenheid:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Eenheid in de vorm: vera/v4/eenheden/12345'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Referentiedata:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van de referentiedata of klasse'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De soort van het referentiedata item. Bijvoorbeeld nationaliteit.'
+        naam:
+          type: 'string'
+          format: 'any'
+          description: 'De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.'
+        omschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'De omschrijving van de referentiedata. Bijvoorbeeld De Nederlandse nationaliteit.'
+        parent:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De bovenliggende referentiedata in het geval er sprake is van een hierarchische relatie tussen referentiedata.'
+        begindatum:
+          type: 'string'
+          format: 'date'
+          description: 'De begindatum van het klasse item.'
+        einddatum:
+          type: 'string'
+          format: 'date'
+          description: 'De einddatum van het klasse item.'
+        sortering:
+          type: 'string'
+          format: 'any'
+          description: 'De sorteervolgorde van de referentiedata anders dan alfabetisch.'
+    Kandidaat:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van de kandidaat.'
+        detailStatus:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De detail status van de kandidaat.'
+        reactie:
+          $ref: '#/components/schemas/Reactie'
+          description: 'De reactie behorend bij de kandidaat.'
+        aanvrager:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+        medeaanvrager:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+        aanbiedingen:
+          description: 'De aanbiedingen die een kandidaat zijn gedaan.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Aanbieding'
+        contactmomenten:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Contactmoment in de vorm: vera/v4/contactmomenten/12345'
+        positie:
+          type: 'integer'
+          format: 'int32'
+          description: 'De positie van de kandidaat voor een eenheid ten opzichte van de overige kandidaten.'
+        eenheid:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Eenheid in de vorm: vera/v4/eenheden/12345'
+        publicatie:
+          $ref: '#/components/schemas/Publicatie'
+          description: 'De publicatie waarvoor de kandidaat in aanmerking komt.'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Reactie:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          type: 'string'
+          format: 'any'
+          description: 'Het soort reactie. Bijvoorbeeld: Optie of belangstelling.'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van de reactie.'
+        detailStatus:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De detail status van de reactie.'
+        datum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum en het tijdstip waarop de reactie is geplaatst.'
+        begeleiderDatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum en tijd waarop de begeleider namens de woningzoekende een reactie heeft geplaatst.'
+        voorkeur:
+          type: 'integer'
+          format: 'int32'
+          description: 'De volgorde van reacties op voorkeur van de woningzoekende.'
+        statusToelichting:
+          type: 'string'
+          format: 'any'
+          description: 'De omschrijving van de status van de reactie in het proces.'
+        positie:
+          type: 'integer'
+          format: 'int32'
+          description: 'De positie van de kandidaat ten tijde van de reactie.'
+        relatie:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+        publicatie:
+          $ref: '#/components/schemas/Publicatie'
+          description: 'De publicatie behorend bij de reactie.'
+        begeleider:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+        contactmomenten:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Contactmoment in de vorm: vera/v4/contactmomenten/12345'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Publicatie:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van de publicatie.'
+        detailStatus:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De detail status van de publicatie.'
+        begindatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De begindatum en tijdstip wanneer de publicatie zichtbaar moet zijn.'
+        einddatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De einddatum en tijdstip wanneer de publicatie niet meer zichtbaar moet zijn.'
+        looptijd:
+          type: 'string'
+          format: 'any'
+          description: 'De looptijd van het contract van de toekomstige bewoner.'
+        opleverdatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum waarop de gepubliceerde eenheid kan worden betrokken.'
+        modules:
+          description: 'De modules waarvoor de publicatie bestemd is. Bijvoorbeeld: Sociale huur, Koop of vrijesector modules.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
+        eenheden:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Eenheid in de vorm: vera/v4/eenheden/12345'
+        cluster:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Cluster in de vorm: vera/v4/clusters/12345'
+        aantalEenheden:
+          type: 'integer'
+          format: 'int32'
+          description: 'Het totaal aantal eenheden van de publicatie.'
+        aantalEenhedenBeschikbaar:
+          type: 'integer'
+          format: 'int32'
+          description: 'Het aantal beschikbare eenheden van de publicatie.'
+        advertentieUrl:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire URL waarop de advertentie is te vinden.'
+        reactieUrl:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire URL waarop men kan reageren op de publicatie.'
+        model:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het model dat aangeeft hoe de eenheden worden verdeeld. Bijvoorbeeld: Aanbod-, Loting- , optiemodel of vrije sector.'
+        detailModel:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het detailmodel dat aangeeft hoe de eenheden worden verdeeld. Bijvoorbeeld: leefstijl, snelzoek, spoedzoek, woonversnelling etc.'
+        intakevorm:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De intakevorm die geldt voor de gepubliceerde eenheid.'
+        taal:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De taal van de publicatiegegevens.'
+        wachttijd:
+          type: 'integer'
+          format: 'int32'
+          description: 'De gemiddelde wachttijd in maanden voor vergelijkbare eenheden.'
+        wachttijdMetVoorrang:
+          type: 'integer'
+          format: 'int32'
+          description: 'De gemiddelde wachttijd in maanden voor mensen met voorrang.'
+        oplevering:
+          type: 'string'
+          format: 'any'
+          description: 'De omschrijving die aangeeft wanneer de gepubliceerde eenheid kan worden betrokken. Bijvoorbeeld: In overleg of beschikbaar per 01-01-2012.'
+        overeenkomstsoort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort overeenkomst dat de nieuwe gebruiker van de eenheid zal aangaan. Bijv. huur of koop.'
+        overeenkomstDetailsoort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het detailsoort van de overeenkomst dat de nieuwe gebruiker van de eenheid zal aangaan. Bijv. tijdelijk contract, campuscontract, Jongerencontract, MGE contract etc.'
+        label:
+          type: 'string'
+          format: 'any'
+          description: 'Het label waarmee de eenheid gepubliceerd kan worden. Bijvoorbeeld Containerwoning, Atelierwoning, Duplexwoning.'
+        huidigeGebruiker:
+          $ref: '#/components/schemas/HuidigeGebruiker'
+          description: 'De huidige gebruiker van de eenheid'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    HuidigeGebruiker:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        Vertrekdatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'de vertrekdatum van de huidige gebruiker'
+        contactpersoon:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+        contactgegevens:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Contactgegeven in de vorm: vera/v4/contactgegevens/12345'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Gebeurtenis:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort gebeurtenis. Bijv. Niet aanwezig op bevestige bezichtiging.'
+        begindatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De begindatum van de gebeurtenis.'
+        einddatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De einddatum van de gebeurtenis.'
+        datum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum waarop gebeurtenis heeft plaatsgevonden.'
+        inschrijving:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Overeenkomst in de vorm: vera/v4/overeenkomsten/12345'
+        contextId:
+          type: 'string'
+          format: 'any'
+          description: 'De id van de context van de gebeurtenis, bijv. een reactie id, een aanbieding id etc.'
+        vestiging:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De vestiging van de vastgoedaanbieder die de woning heeft aangeboden.'
+        adres:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Adres in de vorm: vera/v4/adressen/12345'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Puntenberekening:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        datum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum waarop gebeurtenis heeft plaatsgevonden.'
+        begindatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De begindatum van de gebeurtenis.'
+        einddatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De einddatum van de gebeurtenis.'
+        relatie:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+        zoekpunten:
+          type: 'number'
+          format: 'float'
+          description: 'Het aantal punten dat aangeeft hoe actief men op zoek is naar een woning.'
+        situatiepunten:
+          type: 'number'
+          format: 'float'
+          description: 'Het aantal punten voor dringende omstandigheden die niet binnen gemeentelijk urgentiebeleid vallen.'
+        startpunten:
+          type: 'number'
+          format: 'float'
+          description: 'Het aantal punten dat men krijgt voor voorrang binnen de eigen gemeente.'
+        puntenmutaties:
+          description: 'De puntenmutaties die hebben geleid tot een puntenberekening.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Puntenmutatie'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Puntenmutatie:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort puntenmutatie.'
+        omschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'De omschrijving in duidelijke tekst welke puntenmutatie heeft plaatsgevonden en waarom.'
+        datum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum waarop de puntenmutatie is bepaald.'
+        relatie:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+        gebeurtenissen:
+          description: 'De gebeurtenissen welke hebben geleid tot de puntenmutatie.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Gebeurtenis'
+        zoekpunten:
+          type: 'number'
+          format: 'float'
+          description: 'Het aantal punten dat aangeeft hoe actief men op zoek is naar een woning.'
+        situatiepunten:
+          type: 'number'
+          format: 'float'
+          description: 'Het aantal punten voor dringende omstandigheden die niet binnen gemeentelijk urgentiebeleid vallen.'
+        startpunten:
+          type: 'number'
+          format: 'float'
+          description: 'Het aantal punten dat men krijgt voor voorrang binnen de eigen gemeente.'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Regeling:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De soort regeling.'
+        begindatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De begindatum die aangeeft vanaf wanneer men de regeling gebruikt.'
+        einddatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De einddatum die aangeeft tot wanneer men van de regeling gebruik maakt of mag maken.'
+        relatie:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+        gebruiken:
+          type: 'boolean'
+          format: 'true-or-false'
+          description: 'De waarde die aangeeft of men gebruik maakt van de regeling.'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Sanctie:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort sanctie. Bijv. zware sanctie.'
+        omschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'De omschrijving van de sanctie, wat de oorzaak is en welke gevolgen dit heeft voor iemands puntenopbouw.'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van een sanctie. Bijv. Definitief toegekend, Ingetrokken etc.'
+        begindatum:
+          type: 'string'
+          format: 'date'
+          description: 'De begindatum van de sanctie.'
+        einddatum:
+          type: 'string'
+          format: 'date'
+          description: 'De einddatum van de sanctie.'
+        relatie:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+        gebeurtenissen:
+          description: 'De geberutenissen die hebben geleid tot de sanctie.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Gebeurtenis'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Toewijzing:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        datum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum waarop de eenheid is toegewezen.'
+        aanbieding:
+          $ref: '#/components/schemas/Aanbieding'
+          description: 'De aanbieding behorend bij de toewijzing.'
+        relatie:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+        contactmomenten:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Contactmoment in de vorm: vera/v4/contactmomenten/12345'
+        overeenkomst:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Overeenkomst in de vorm: vera/v4/overeenkomsten/12345'
+        afspraken:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Afspraak in de vorm: vera/v4/afspraken/12345'
+        kandidaat:
+          $ref: '#/components/schemas/Kandidaat'
+          description: 'De kandidaat behorende bij de toewijzing.'
+        publicatie:
+          $ref: '#/components/schemas/Publicatie'
+          description: 'De publicatie behorende bij de toewijzing.'
+        eenheid:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Eenheid in de vorm: vera/v4/eenheden/12345'
+        doelgroep:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De eventuele doelgroep waartoe het huishouden waaraan de eenheid is toegewezen behoort. Deze doelgroep kan afwijken van de doelgroep waarvoor de eenheid bij publicatie was gelabeld. Eventueel te gebruiken in combinatie met aanvullendeDoelgroep.'
+        Rekeninkomen:
+          type: 'number'
+          format: 'float'
+          description: 'Het huishoudinkomen dat gebruikt is als toets inkomen bij de toewijzing. (Bij sociale huur het rekeninkomen conform de wet op de huurtoeslag.)'
+        Rekenhuur:
+          type: 'number'
+          format: 'float'
+          description: 'De huurprijs ten tijde van de toewijzing. (Bij sociale huur de rekenhuur conform de wet op de huurtoeslag.)'
+        huishoudgrootte:
+          type: 'integer'
+          format: 'int32'
+          description: 'Aantal personen waaruit het huishouden bestaat waaraan de woning is toegewezen.'
+        aanvullendeDoelgroep:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De eventuele aanvullende doelgroep (een verbijzondering van doelgroep) waartoe het huishouden waaraan de eenheid is toegewezen behoort. Bijv. Ouderen, Geestelijk gehandicapten, Lichamelijk gehandicapten, GGZ-Patiënten etc. Onderdeel van de reden van de toewijzing.'
+        voorrangsregelingen:
+          description: 'De voorrangsregeling(en) die van toepassing was of waren voor de toewijzing binnen het woonruimteverdeelproces. Onderdeel van de reden van de toewijzing.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Voorrangsregeling'
+        passendheidsoort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De indicatie of de toewijzing passend is volgens de wetgeving of valt binnen de vrij toe te wijzen ruimte.'
+        isOuderenhuishouden:
+          type: 'boolean'
+          format: 'true-or-false'
+          description: 'Geeft aan of de kandidaat, of één van diens medebewoners, op 1 januari van het jaar van toewijzen de pensioengerechtigde leeftijd bereikt.'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Voorrangsregeling:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort voorrangsregeling. Bijvoorbeeld: Urgentie, binding, indicatie of groep.'
+        detailSoort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het detailsoort voorrangsregeling. Bijvoorbeeld: medisch, financieel, economisch, relationeel, huisvesting, gezinssituatie of student.'
+        naam:
+          type: 'string'
+          format: 'any'
+          description: 'De naam van de specifieke voorrangsregeling.'
+        begindatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De begindatum die aangeeft vanaf wanneer men deze voorrang heeft.'
+        einddatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De einddatum tot wanneer men deze voorrang heeft.'
+        relatie:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+        profiel:
+          $ref: '#/components/schemas/VoorrangsregelingProfiel'
+          description: 'Het profiel waarop de voorrangsregeling van toepassing is.'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    VoorrangsregelingProfiel:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        gemeenten:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Gemeente in de vorm: vera/v4/gemeenten/12345'
+        woonplaatsen:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Woonplaats in de vorm: vera/v4/woonplaatsen/12345'
+        stadsdelen:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Stadsdeel in de vorm: vera/v4/stadsdelen/12345'
+        wijken:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Wijk in de vorm: vera/v4/wijken/12345'
+        buurten:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Buurt in de vorm: vera/v4/buurten/12345'
+        eenheidSoorten:
+          description: 'De eenheid soorten waar het voorrangsregeling profiel voor geldt.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
+        toegankelijkheidslabels:
+          description: 'De toegankelijkheidslabels waar het voorrangsregeling profiel voor geldt.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
+        minimumOppervlakte:
+          type: 'integer'
+          format: 'int32'
+          description: 'De aanduiding die aangeeft dat er is sprake op voorrang voor eenheden die minimaal voldoen aan de aangegeven woonoppervlakte in m2.'
+        huurInkomenTabel:
+          type: 'boolean'
+          format: 'true-or-false'
+          description: 'De aanduiding die aangeeft dat er sprake is van voorrang voor eenheden die voldoen aan de huur inkomen tabel.'
+        minimumBrutoHuur:
+          type: 'integer'
+          format: 'int32'
+          description: 'De voorrang voor eenheden waar de bruto huur aan het minimum voldoet.'
+        maximumBrutoHuur:
+          type: 'integer'
+          format: 'int32'
+          description: 'De voorrang voor eenheden waar de bruto huur aan het maximum voldoet.'
+        minimumKamers:
+          type: 'integer'
+          format: 'int32'
+          description: 'De voorrang voor eenheden waar het aantal kamers aan het minimum voldoet.'
+        maximumKamers:
+          type: 'integer'
+          format: 'int32'
+          description: 'De voorrang voor eenheden waar het aantal kamers aan het maximum voldoet.'
+        huidigeVerdieping:
+          type: 'integer'
+          format: 'int32'
+          description: 'De voorrang die wordt gegeven op basis van huidige verdieping.'
+        huidigeOppervlakte:
+          type: 'integer'
+          format: 'int32'
+          description: 'De voorrang die wordt gegeven op basis van huidige woonoppervlakte in m2.'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
+    Aanbieding-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Gebeurtenis-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort gebeurtenis. Bijv. Niet aanwezig op bevestige bezichtiging.'
+    HuidigeGebruiker-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Kandidaat-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Publicatie-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Puntenberekening-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+    Puntenmutatie-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort puntenmutatie.'
+    Reactie-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Regeling-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Sanctie-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort sanctie. Bijv. zware sanctie.'
+    Toewijzing-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Voorrangsregeling-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    VoorrangsregelingProfiel-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Foutbericht:
+      type: 'object'
+      properties:
+        code:
+          type: 'string'
+        omschrijving:
+          type: 'string'
+    ExtraAttributen:
+      type: 'object'
+      properties:
+        sleutel:
+          type: 'string'
+        waarde:
+          type: 'string'
+
