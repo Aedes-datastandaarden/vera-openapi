@@ -2,11 +2,15 @@
 
 #### Inhoud
 
+- [Inleiding](#Inleiding)
 - [Viewers](#Viewers)
 - [Toelichting](#Toelichting)
 - [Definities](#Definities)
 - [Toepassing](#Toepassing)
 
+## Inleiding
+De mappen 'Informatiedomeinen' en 'Ketenprocessen' bevatten de OpenAPI-specificaties (YAML).  
+Alle overige bestanden in deze repo (in de root en in map 'docs') zijn enkel voor de documentatie en viewers.
 
 ## Viewers
 Overzicht van views (SwaggerUI) van de API-specificaties:  
