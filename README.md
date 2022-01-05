@@ -24,7 +24,7 @@
 - [VHE](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/VHE.html)
 - [WRV](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/WRV.html)
 
-> :bulb: **Tip:** MD opent links niet in een nieuwe pagina. Als je een view opent, navigeer dan terug om weer naar deze pagina terug te keren.
+> :bulb: **Tip:** MD opent links niet in een nieuwe pagina. Als je een view opent, navigeer dan terug om weer op deze pagina te komen.
 
 ## Toelichting
 Het gegevensmodel van VERA kent verticale modellen en een horizontaal model. Het horizontale model is de meest rijke verzameling aan klassen en velden per klasse (klassen en velden worden binnen Novius aangeduid met: entiteitstypes en attribuuttypes, dat nemen we hier over). De verticale modellen richten zich op specifieke ketenprocessen en bevatten alleen die entiteiten en attributen die relevant zijn binnen een proces. Ze bevatten een selectie van entiteiten uit de horizontale verzameling, en per entiteit vaak weer een selectie aan attributen. ​
