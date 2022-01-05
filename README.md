@@ -1,7 +1,32 @@
-# vera-openapi
+# VERA-openapi
 
+## Viewers
+### Informatiedomeinen
+- [Algemeen](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Algemeen.html)
+- [Dossier](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Dossier.html)
+- [Financien](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Financien.html)
+- [Kwaliteit](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Kwaliteit.html)
+- [Onderhoud](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Onderhoud.html)
+- [Overeenkomsten](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Overeenkomsten.html)
+- [Projectontwikkeling](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Projectontwikkeling.html)
+- [Relaties](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Relaties.html)
+- [Vastgoed](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Vastgoed.html)
+- [Woonruimteverdeling](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Woonruimteverdeling.html)
+### Ketenprocessen
+- [BDO](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BDO.html)
+- [BFG](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BFG.html)
+- [BOG](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BOG.html)
+- [BRG](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BRG.html)
+- [BVG](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BVG.html)
+- [INC](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/INC.html)
+- [KMT](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/KMT.html)
+- [OHD](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/OHD.html)
+- [VHE](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/VHE.html)
+- [WRV](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/WRV.html)
 
+> :bulb: **Tip:** MD opent links niet in een nieuwe pagina. Als je een view opent, navigeer dan terug om weer naar deze pagina terug te keren.
 
+## Toelichting
 Het gegevensmodel van VERA kent verticale modellen en een horizontaal model. Het horizontale model is de meest rijke verzameling aan klassen en velden per klasse (klassen en velden worden binnen Novius aangeduid met: entiteitstypes en attribuuttypes, dat nemen we hier over). De verticale modellen richten zich op specifieke ketenprocessen en bevatten alleen die entiteiten en attributen die relevant zijn binnen een proces. Ze bevatten een selectie van entiteiten uit de horizontale verzameling, en per entiteit vaak weer een selectie aan attributen. ​
 
 De entiteiten uit alle modellen (zowel de verticale als horizontale) zijn verdeeld in Informatiedomeinen. Een Informatiedomein is een clustering op basis van een Bedrijfsfunctie. Een Bedrijfsfunctie heeft een 1 op 1 relatie met een Afdeling waarbinnen deze Bedrijfsfuncie valt, en daarmee met een Informatiemodel. Een Informatiemodel bevat dus functies met een sterk onderlinge cohesie.​
@@ -47,27 +72,4 @@ De verticale API's zijn voor (sub)systemen die een ketenproces implementeren. De
 
 ![alt text](matrix-apis.png)
 
-## SwaggerUI Viewers
-### Informatiedomeinen
-- [Algemeen](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Algemeen.html)
-- [Dossier](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Dossier.html)
-- [Financien](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Financien.html)
-- [Kwaliteit](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Kwaliteit.html)
-- [Onderhoud](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Onderhoud.html)
-- [Overeenkomsten](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Overeenkomsten.html)
-- [Projectontwikkeling](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Projectontwikkeling.html)
-- [Relaties](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Relaties.html)
-- [Vastgoed](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Vastgoed.html)
-- [Woonruimteverdeling](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Woonruimteverdeling.html)
-### Ketenprocessen
-- [BDO](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BDO.html)
-- [BFG](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BFG.html)
-- [BOG](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BOG.html)
-- [BRG](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BRG.html)
-- [BVG](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BVG.html)
-- [INC](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/INC.html)
-- [KMT](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/KMT.html)
-- [OHD](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/OHD.html)
-- [VHE](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/VHE.html)
-- [WRV](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/WRV.html)
 
