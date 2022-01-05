@@ -46,3 +46,28 @@ Binnen Informatiedomeinen bevinden zich applicaties/systemen met functies die st
 De verticale API's zijn voor (sub)systemen die een ketenproces implementeren. Deze subsystemen agregeren (mogelijk) informatie uit kernpakketten via horizontale API's.
 
 ![alt text](matrix-apis.png)
+
+## SwaggerUI Viewers
+### Informatiedomeinen
+- [Algemeen](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Algemeen.html)
+- [Dossier](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Dossier.html)
+- [Financien](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Financien.html)
+- [Kwaliteit](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Kwaliteit.html)
+- [Onderhoud](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Onderhoud.html)
+- [Overeenkomsten](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Overeenkomsten.html)
+- [Projectontwikkeling](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Projectontwikkeling.html)
+- [Relaties](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Relaties.html)
+- [Vastgoed](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Vastgoed.html)
+- [Woonruimteverdeling](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Woonruimteverdeling.html)
+### Ketenprocessen
+- [BDO](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BDO.html)
+- [BFG](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BFG.html)
+- [BOG](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BOG.html)
+- [BRG](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BRG.html)
+- [BVG](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BVG.html)
+- [INC](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/INC.html)
+- [KMT](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/KMT.html)
+- [OHD](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/OHD.html)
+- [VHE](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/VHE.html)
+- [WRV](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/WRV.html)
+
