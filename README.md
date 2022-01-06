@@ -9,12 +9,15 @@
 - [Toepassing](#Toepassing)
 
 ## Inleiding
-De mappen 'Informatiedomeinen' en 'Ketenprocessen' bevatten de OpenAPI-specificaties (YAML).  
-Alle overige bestanden in deze repo (in de root en in map 'docs') zijn enkel voor de documentatie en viewers.
+De mappen **Informatiedomeinen** en **Ketenprocessen** bevatten alle OpenAPI-specificaties (YAML).
+Alle overige bestanden in deze repo (in de root en in map 'docs') zijn enkel bedoeld voor documentatie en horen niet bij de opleverset.
+Op deze pagina staat een toelichting op de totstandkoming en toepassing van de API's.
 
 ## Viewers
-Overzicht van views (SwaggerUI) van de API-specificaties:  
-> :bulb: **Tip:** MD opent links niet in een nieuwe pagina. Als je een view opent, navigeer dan terug om weer op deze pagina te komen.
+Hieronder staan links naar SwaggerUI views op de API's. 
+Let op: de API's voor de **Informatiedomeinen** zijn afgeleid van het **horizontale** gegevensmodel. De API's voor de **Ketenprocessen** horen bij de **verticale** gegevensmodellen.
+Zie ook de toeliching hieronder.
+> :bulb: **Tip:** In MarkDown worden links niet in een nieuwe pagina geopend. Als je een view opent, navigeer dan terug om weer op deze pagina te komen.
 ### Informatiedomeinen
 - [Algemeen](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Algemeen.html)
 - [Dossier](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Dossier.html)
