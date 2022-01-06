@@ -1,7 +1,7 @@
 openapi: '3.0.0'
 info:
   title: 'VERA-VHE'
-  description: API-specificatie van ketenproces "Verhuren Eenheden". Deze specificatie is gebaseerd op VERA versie 4.0.3
+  description: API-specificatie van ketenproces "Verhuren Eenheden". Deze specificatie is gebaseerd op VERA versie 4.0
   termsOfService: 'https://www.stichting-vera.nl/voorwaarden/'
   contact:
     name: 'VERA'
@@ -10,7 +10,7 @@ info:
   license:
     name: European Union Public License, version 1.2 (EUPL-1.2)
     url: https://eupl.eu/1.2/nl/
-  version: '1.0.3'
+  version: '1.0'
 servers:
   - url: https://vhe.vera.io:{port}/{basePath}
     description: 'Productieserver'
@@ -527,7 +527,7 @@ components:
           description: 'De relaties die een speciale rol spelen voor het cluster bijvoorbeeld een Vereniging van eigenaren, een onderhoudsbedrijf, projectleider etc.'
           type: array
           items:
-            $ref: '#/components/schemas/Clusters-Relatierol'
+            $ref: '#/components/schemas/Clusters-Relatie'
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'
           type: array
@@ -556,7 +556,7 @@ components:
           format: 'any'
           description: 'De omschrijving van de referentiedata. Bijvoorbeeld De Nederlandse nationaliteit.'
         parent:
-          $ref: '#/components/schemas/Referentiedata'
+          $ref: '#/components/schemas/Referentiedata-sleutels'
           description: 'De bovenliggende referentiedata in het geval er sprake is van een hierarchische relatie tussen referentiedata.'
         begindatum:
           type: 'string'
@@ -570,6 +570,21 @@ components:
           type: 'string'
           format: 'any'
           description: 'De sorteervolgorde van de referentiedata anders dan alfabetisch.'
+    Referentiedata-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van de referentiedata of klasse'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.'
+        naam:
+          type: 'string'
+          format: 'any'
+          description: 'De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.'
     Cluster-sleutels:
       type: object
       properties:
@@ -626,6 +641,25 @@ components:
               type: 'number'
               format: 'float'
               description: 'De breedtegraad.'
+    Clusters-Relatie:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
+        rollen:
+          description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Clusters-Relatierol'
     Clusters-Relatierol:
       type: object
       properties:
@@ -644,27 +678,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De naam van de relatie rol.'
-        omschrijving:
-          type: 'string'
-          format: 'any'
-          description: 'De omschrijving van de relatie rol.'
-        relatie:
-          $ref: '#/components/schemas/Relatie-sleutels'
-          description: 'De relatie waarvoor de rol van toepassing is.'
-    Relatie-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        soort:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
     Eenheden-Adres:
       type: object
       properties:
@@ -677,7 +690,7 @@ components:
           format: 'any'
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
         soort:
-          $ref: '#/components/schemas/Referentiedata-restricted'
+          $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort adres. Bijv. eenheidadres, postadres of buitenlands adres.'
         adres:
           type: 'string'
@@ -703,27 +716,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De postcode van het adres.'
-    Referentiedata-restricted:
-      type: object
-      properties:
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.'
-        naam:
-          type: 'string'
-          format: 'any'
-          description: 'De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.'
-        soort:
-          $ref: '#/components/schemas/Referentiedata-restricted'
-          description: 'De soort van het referentiedata item. Bijvoorbeeld nationaliteit.'
-        parent:
-          $ref: '#/components/schemas/Referentiedata-restricted'
-          description: 'De bovenliggende referentiedata in het geval er sprake is van een hierarchische relatie tussen referentiedata.'
-        sortering:
-          type: 'string'
-          format: 'any'
-          description: 'De sorteervolgorde van de referentiedata anders dan alfabetisch.'
     Eenheden-Afspraakverzoek:
       type: object
       properties:
@@ -852,12 +844,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Eenheden-Cluster'
-        eigenaar:
-          $ref: '#/components/schemas/Relatie-sleutels'
-          description: 'De eigenaar van de eenheid, bijvoorbeeld de corporatie, een collega-corporatie, of een eigenaar/bewoner.'
-        beheerder:
-          $ref: '#/components/schemas/Relatie-sleutels'
-          description: 'De beheerder van de eenheid, bijvoorbeeld de corporatie of een collega-corporatie die de eenheid in exploitatie heeft.'
         rayon:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het rayon waar de eenheid in valt. Waarden zijn corporatiespecifiek en daarom niet in de referentiedata (bijlage G) beschreven.'
@@ -1025,10 +1011,10 @@ components:
           format: 'int32'
           description: 'De gebruiksoppervlakte van een eenheid(verblijfsobject) in gehele vierkante meters, gemeten conform NEN 2580. Te gebruiken voor verantwoording dVi. Naast gebruiksoppervlakte is ook een attribuut totaleOppervlakte beschikbaar.'
         relaties:
-          description: 'De contactpersonen die gekoppeld zijn aan de eenheid. Met de koppeling naar Relatierol kan de soort rol van de relatie ten opzichte van de eenheid vastgelegd worden.'
+          description: 'Bij.v de eigenaar, beheerder en contactpersonen die gekoppeld zijn aan de eenheid. Met de koppeling naar Relatierol kan de soort rol van de relatie ten opzichte van de eenheid vastgelegd worden.'
           type: array
           items:
-            $ref: '#/components/schemas/Eenheden-Relatierol'
+            $ref: '#/components/schemas/Eenheden-Relatie'
         benodigdeAfspraakverzoeken:
           description: 'Specificatie van de (inspectie)afspraken die gemaakt moet worden'
           type: array
@@ -1057,7 +1043,7 @@ components:
               $ref: '#/components/schemas/Eenheden-Gemeente'
               description: 'De gemeente behorend bij het adres.'
             land:
-              $ref: '#/components/schemas/Referentiedata-restricted'
+              $ref: '#/components/schemas/Referentiedata'
               description: 'Het land waarin het adres zich bevindt.'
     Eenheden-EenheidVoorwaarden:
       type: object
@@ -1199,6 +1185,25 @@ components:
           type: 'number'
           format: 'float'
           description: 'Het bedrag in euro"s van het prijscomponent inclusief BTW.'
+    Eenheden-Relatie:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
+        rollen:
+          description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Eenheden-Relatierol'
     Eenheden-Relatierol:
       type: object
       properties:
@@ -1217,9 +1222,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De naam van de relatie rol.'
-        relatie:
-          $ref: '#/components/schemas/Relatie-sleutels'
-          description: 'De relatie waarvoor de rol van toepassing is.'
     Eenheden-Stadsdeel:
       type: object
       properties:
@@ -1294,7 +1296,7 @@ components:
           format: 'any'
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
         soort:
-          $ref: '#/components/schemas/Referentiedata-restricted'
+          $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort adres. Bijv. eenheidadres, postadres of buitenlands adres.'
         adres:
           type: 'string'
@@ -1358,7 +1360,7 @@ components:
           description: 'De relatie waarmee de afspraak is gemaakt. Bijv. Huurder, Medewerker.'
           type: array
           items:
-            $ref: '#/components/schemas/Huuropzeggingen-Relatierol'
+            $ref: '#/components/schemas/Huuropzeggingen-Relatie'
         locatie:
           $ref: '#/components/schemas/Huuropzeggingen-Adres'
           description: 'De locatie waar de afspraak zich plaatsvindt.'
@@ -1375,7 +1377,7 @@ components:
               $ref: '#/components/schemas/Huuropzeggingen-Woonplaats'
               description: 'De woonplaats waarin het adres zich bevindt.'
             land:
-              $ref: '#/components/schemas/Referentiedata-restricted'
+              $ref: '#/components/schemas/Referentiedata'
               description: 'Het land waarin het adres zich bevindt.'
     Huuropzeggingen-Huuropzegging:
       type: object
@@ -1400,8 +1402,10 @@ components:
           format: 'date'
           description: 'De begindatum waarop de opzegging is afgerond'
         relaties:
-          $ref: '#/components/schemas/Huuropzeggingen-Relatierol'
           description: 'De relaties voor de huuropzegging. Bijv. de melder, de behandelaar, .'
+          type: array
+          items:
+            $ref: '#/components/schemas/Huuropzeggingen-Relatierol'
         opzegdatum:
           type: 'string'
           format: 'date'
@@ -1460,6 +1464,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Huuropzeggingen-RelatieAdres'
+        rollen:
+          description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Huuropzeggingen-Relatierol'
     Huuropzeggingen-RelatieAdres:
       type: object
       properties:
@@ -1499,13 +1508,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De naam van de relatie rol.'
-        omschrijving:
-          type: 'string'
-          format: 'any'
-          description: 'De omschrijving van de relatie rol.'
-        relatie:
-          $ref: '#/components/schemas/Huuropzeggingen-Relatie'
-          description: 'De relatie waarvoor de rol van toepassing is.'
     Huuropzeggingen-Woonplaats:
       type: object
       properties:

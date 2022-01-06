@@ -10,7 +10,7 @@ info:
   license:
     name: European Union Public License, version 1.2 (EUPL-1.2)
     url: https://eupl.eu/1.2/nl/
-  version: '4.0.3'
+  version: '4.0'
 servers:
   - url: https://dossier.vera.io:{port}/{basePath}
     description: 'Productieserver'
@@ -1558,8 +1558,8 @@ components:
           type: 'string'
           format: 'any'
           description: 'Beknopte omschrijving van het dossier.'
-        omvattendDossier:
-          $ref: '#/components/schemas/Dossier'
+        bovenliggendDossier:
+          $ref: '#/components/schemas/Dossier-sleutels'
           description: 'Het dossier waarin dit dossier is opgenomen.'
         status:
           $ref: '#/components/schemas/Referentiedata'
@@ -1633,10 +1633,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Zaak'
-        relatieRollen:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Relatierol in de vorm: vera/v4/relatierollen/12345'
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'
           type: array
@@ -1665,7 +1661,7 @@ components:
           format: 'any'
           description: 'De omschrijving van de referentiedata. Bijvoorbeeld De Nederlandse nationaliteit.'
         parent:
-          $ref: '#/components/schemas/Referentiedata'
+          $ref: '#/components/schemas/Referentiedata-sleutels'
           description: 'De bovenliggende referentiedata in het geval er sprake is van een hierarchische relatie tussen referentiedata.'
         begindatum:
           type: 'string'
@@ -1679,6 +1675,32 @@ components:
           type: 'string'
           format: 'any'
           description: 'De sorteervolgorde van de referentiedata anders dan alfabetisch.'
+    Referentiedata-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van de referentiedata of klasse'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.'
+        naam:
+          type: 'string'
+          format: 'any'
+          description: 'De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.'
+    Dossier-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
     Proces:
       type: object
       properties:
@@ -1694,7 +1716,7 @@ components:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De omschrijving en definitie van het proces (bijvoorbeeld aanbieden woning).'
         bovenliggendProces:
-          $ref: '#/components/schemas/Proces'
+          $ref: '#/components/schemas/Proces-sleutels'
           description: 'Specificeert het bijbehorende hoofdproces.'
         status:
           $ref: '#/components/schemas/Referentiedata'
@@ -1779,6 +1801,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttributen'
+    Proces-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
     Processtap:
       type: object
       properties:
@@ -1902,7 +1935,7 @@ components:
           format: 'any'
           description: 'Een beknopte toelichting op de zaak.'
         bovenliggendeZaak:
-          $ref: '#/components/schemas/Zaak'
+          $ref: '#/components/schemas/Zaak-sleutels'
           description: 'Specificeert de bijbehorende hoofdzaak.'
         begindatum:
           type: 'string'
@@ -2027,6 +2060,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttributen'
+    Zaak-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
     Zaakkenmerk:
       type: object
       properties:
@@ -2133,7 +2177,7 @@ components:
           type: 'string'
           format: 'any'
           description: 'De generieke tekst ten behoeve van de publicatie van een zaak van dit zaaktype.'
-        verantwoordelijke:
+        relatie:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
@@ -2445,17 +2489,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttributen'
-    Dossier-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
     Informatieobject-sleutels:
       type: object
       properties:
@@ -2478,17 +2511,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    Proces-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
     Procesrol-sleutels:
       type: object
       properties:
@@ -2501,17 +2523,6 @@ components:
           format: 'any'
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
     Processtap-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    Zaak-sleutels:
       type: object
       properties:
         id:

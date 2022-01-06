@@ -10,7 +10,7 @@ info:
   license:
     name: European Union Public License, version 1.2 (EUPL-1.2)
     url: https://eupl.eu/1.2/nl/
-  version: '4.0.3'
+  version: '4.0'
 servers:
   - url: https://vastgoed.vera.io:{port}/{basePath}
     description: 'Productieserver'
@@ -5455,7 +5455,7 @@ components:
           format: 'any'
           description: 'De omschrijving van de referentiedata. Bijvoorbeeld De Nederlandse nationaliteit.'
         parent:
-          $ref: '#/components/schemas/Referentiedata'
+          $ref: '#/components/schemas/Referentiedata-sleutels'
           description: 'De bovenliggende referentiedata in het geval er sprake is van een hierarchische relatie tussen referentiedata.'
         begindatum:
           type: 'string'
@@ -5469,6 +5469,21 @@ components:
           type: 'string'
           format: 'any'
           description: 'De sorteervolgorde van de referentiedata anders dan alfabetisch.'
+    Referentiedata-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van de referentiedata of klasse'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.'
+        naam:
+          type: 'string'
+          format: 'any'
+          description: 'De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.'
     AdresseerbaarObjectBasisregistratie:
       type: object
       properties:
@@ -5653,18 +5668,14 @@ components:
           items:
             $ref: '#/components/schemas/Pand'
         bovenliggendeEenheid:
-          $ref: '#/components/schemas/Eenheid'
+          $ref: '#/components/schemas/Eenheid-sleutels'
           description: 'De bovenliggende eenheid waarvan de eenheid onderdeel van uit maakt. '
         clusters:
           description: 'De clusters waar de eenheid onderdeel van uitmaakt.'
           type: array
           items:
             $ref: '#/components/schemas/Cluster-sleutels'
-        eigenaar:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
-        beheerder:
+        relaties:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
@@ -5925,6 +5936,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttributen'
+    Eenheid-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
     Cluster-sleutels:
       type: object
       properties:
@@ -6071,23 +6093,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Cluster'
-        relatiegroepen:
+        relaties:
           type: 'string'
           format: 'uri'
-          description: 'Referentie naar Relatiegroep in de vorm: vera/v4/relatiegroepen/12345'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
         garanties:
           description: 'De garanties behorend bij het collectief object.'
           type: array
           items:
             $ref: '#/components/schemas/Garantie'
-        eigenaar:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
-        beheerder:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
         adres:
           $ref: '#/components/schemas/Adres'
           description: 'Aan een Collectief Object kan een adres gekoppeld worden zodat een specifieke locatie opgenomen kan worden. Met name bij onderhoudswerkzaamheden is dit wenselijk.'
@@ -6119,7 +6133,7 @@ components:
           format: 'any'
           description: 'De omschrijving van de cluster.'
         bovenliggendeCluster:
-          $ref: '#/components/schemas/Cluster'
+          $ref: '#/components/schemas/Cluster-sleutels'
           description: 'Het bovenliggende / overkoepelende cluster waar dit cluster eventueel onderdeel van is.'
         begindatum:
           type: 'string'
@@ -6150,7 +6164,7 @@ components:
         conditiemeting:
           $ref: '#/components/schemas/Conditiemeting'
           description: 'Aan een cluster kunnen meerdere conditiescores conform de NEN 2767 gekoppeld worden (per tijdvak).'
-        contactpersonen:
+        relaties:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar Relatierol in de vorm: vera/v4/relatierollen/12345'
@@ -6196,7 +6210,7 @@ components:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar Overeenkomst in de vorm: vera/v4/overeenkomsten/12345'
-        leverancier:
+        relatie:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
@@ -6247,11 +6261,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Garantie'
-        eigenaar:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
-        beheerder:
+        relaties:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
@@ -6338,7 +6348,7 @@ components:
         geometrie:
           $ref: '#/components/schemas/Punt'
           description: 'De geometrie van de buurt.'
-        contactpersonen:
+        relaties:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar Relatierol in de vorm: vera/v4/relatierollen/12345'
@@ -6383,7 +6393,7 @@ components:
         geometrie:
           $ref: '#/components/schemas/Geometrie'
           description: 'De geometrie van de wijk.'
-        contactpersonen:
+        relaties:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar Relatierol in de vorm: vera/v4/relatierollen/12345'
@@ -6933,7 +6943,7 @@ components:
         eenheid:
           $ref: '#/components/schemas/Eenheid'
           description: 'De eenheid waarop de energielabel van toepassing is.'
-        adviseur:
+        relatie:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
@@ -6967,17 +6977,13 @@ components:
         eenheid:
           $ref: '#/components/schemas/Eenheid'
           description: 'De eenheid waarop de zekerheid is verleend.'
-        zekerheidsnemer:
+        relaties:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
         akteSoort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Soort akte waarmee de zekerheid is gevestigd. (Notarieel of onderhands)'
-        notaris:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
         belastingdienstRegistratiedatum:
           type: 'string'
           format: 'date'
@@ -7444,17 +7450,6 @@ components:
           format: 'any'
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
     Conditiemeting-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    Eenheid-sleutels:
       type: object
       properties:
         id:

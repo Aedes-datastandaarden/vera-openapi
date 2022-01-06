@@ -1,7 +1,7 @@
 openapi: '3.0.0'
 info:
   title: 'VERA-BRG'
-  description: API-specificatie van ketenproces "Beheer Relatiegegevens". Deze specificatie is gebaseerd op VERA versie 4.0.3
+  description: API-specificatie van ketenproces "Beheer Relatiegegevens". Deze specificatie is gebaseerd op VERA versie 4.0
   termsOfService: 'https://www.stichting-vera.nl/voorwaarden/'
   contact:
     name: 'VERA'
@@ -10,7 +10,7 @@ info:
   license:
     name: European Union Public License, version 1.2 (EUPL-1.2)
     url: https://eupl.eu/1.2/nl/
-  version: '1.0.3'
+  version: '1.0'
 servers:
   - url: https://brg.vera.io:{port}/{basePath}
     description: 'Productieserver'
@@ -705,7 +705,7 @@ components:
           format: 'any'
           description: 'De omschrijving van de referentiedata. Bijvoorbeeld De Nederlandse nationaliteit.'
         parent:
-          $ref: '#/components/schemas/Referentiedata'
+          $ref: '#/components/schemas/Referentiedata-sleutels'
           description: 'De bovenliggende referentiedata in het geval er sprake is van een hierarchische relatie tussen referentiedata.'
         begindatum:
           type: 'string'
@@ -719,24 +719,13 @@ components:
           type: 'string'
           format: 'any'
           description: 'De sorteervolgorde van de referentiedata anders dan alfabetisch.'
-    Betaalgegevens-Overeenkomst:
+    Referentiedata-sleutels:
       type: object
       properties:
         id:
           type: 'string'
           format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        soort:
-          $ref: '#/components/schemas/Referentiedata-restricted'
-          description: 'Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn.'
-        eenheden:
-          description: 'De eenheden waarop een overeenkomst van toepassing is. Hiermee is het mogelijk om een overeenkomst af te sluiten voor meerdere eenheden (verzamelovereenkomst)'
-          type: array
-          items:
-            $ref: '#/components/schemas/Eenheid-sleutels'
-    Referentiedata-restricted:
-      type: object
-      properties:
+          description: 'De primaire sleutel van de referentiedata of klasse'
         code:
           type: 'string'
           format: 'any'
@@ -745,16 +734,21 @@ components:
           type: 'string'
           format: 'any'
           description: 'De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.'
-        soort:
-          $ref: '#/components/schemas/Referentiedata-restricted'
-          description: 'De soort van het referentiedata item. Bijvoorbeeld nationaliteit.'
-        parent:
-          $ref: '#/components/schemas/Referentiedata-restricted'
-          description: 'De bovenliggende referentiedata in het geval er sprake is van een hierarchische relatie tussen referentiedata.'
-        sortering:
+    Betaalgegevens-Overeenkomst:
+      type: object
+      properties:
+        id:
           type: 'string'
           format: 'any'
-          description: 'De sorteervolgorde van de referentiedata anders dan alfabetisch.'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn.'
+        eenheden:
+          description: 'De eenheden waarop een overeenkomst van toepassing is. Hiermee is het mogelijk om een overeenkomst af te sluiten voor meerdere eenheden (verzamelovereenkomst)'
+          type: array
+          items:
+            $ref: '#/components/schemas/Eenheid-sleutels'
     Eenheid-sleutels:
       type: object
       properties:
@@ -808,10 +802,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De naam van de relatie rol.'
-        omschrijving:
-          type: 'string'
-          format: 'any'
-          description: 'De omschrijving van de relatie rol.'
     Betaalgegevens-Woonplaats:
       type: object
       properties:
@@ -842,15 +832,14 @@ components:
           type: 'string'
           format: 'date-time'
           description: 'De datum en tijd waarop contact is geweest.'
-        relatie:
-          $ref: '#/components/schemas/Relatierol-sleutels'
-          description: 'De relatie waarmee contact is geweest'
+        relaties:
+          description: 'De relatie waarmee contact is geweest. Bijv. een huurder, mederwerker etc.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Contactmomenten-Relatie'
         kanaal:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het kanaal via welke het contact heeft gelopen. Bijvoorbeeld: Telefoon, email, balie, internet.'
-        medewerker:
-          $ref: '#/components/schemas/Relatie-sleutels'
-          description: 'De medewerker die het contactmoment heeft gehad met de relatie.'
         richting:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De communicatierichting behorend bij het contact. Bijvoorbeeld: Uitgaand of ingaand.'
@@ -865,31 +854,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttributen'
-    Relatierol-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    Relatie-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        soort:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
     Zaak-sleutels:
       type: object
       properties:
@@ -912,6 +876,30 @@ components:
           type: 'string'
           format: 'any'
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+    Contactmomenten-Relatie:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
+        rollen:
+          description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Contactmomenten-Relatierol'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttributen'
     Contactmomenten-Relatierol:
       type: object
       properties:
@@ -930,26 +918,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De naam van de relatie rol.'
-        omschrijving:
-          type: 'string'
-          format: 'any'
-          description: 'De omschrijving van de relatie rol.'
-        begindatum:
-          type: 'string'
-          format: 'date'
-          description: 'begindatum van de rol'
-        einddatum:
-          type: 'string'
-          format: 'date'
-          description: 'einddatum van de rol'
-        relatieAdressen:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar RelatieAdres in de vorm: vera/v4/relatieadressen/12345'
-        contactgegevens:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Contactgegeven in de vorm: vera/v4/contactgegevens/12345'
     Relaties-Account:
       type: object
       properties:
@@ -962,7 +930,7 @@ components:
           format: 'any'
           description: 'De gebruikersnaam van het account.'
         status:
-          $ref: '#/components/schemas/Referentiedata-restricted'
+          $ref: '#/components/schemas/Referentiedata'
           description: 'De status van het account. Bijv. Geregistreerd, Geactiveerd, Beëindigd etc.'
     Relaties-Adres:
       type: object
@@ -976,7 +944,7 @@ components:
           format: 'any'
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
         soort:
-          $ref: '#/components/schemas/Referentiedata-restricted'
+          $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort adres. Bijv. eenheidadres, postadres of buitenlands adres.'
         adres:
           type: 'string'
@@ -1020,7 +988,7 @@ components:
               format: 'any'
               description: 'De provincie behorend bij het adres.'
             land:
-              $ref: '#/components/schemas/Referentiedata-restricted'
+              $ref: '#/components/schemas/Referentiedata'
               description: 'Het land waarin het adres zich bevindt.'
             adresregel1:
               type: 'string'
@@ -1063,10 +1031,10 @@ components:
               $ref: '#/components/schemas/Relaties-Woonplaats'
               description: 'De woonplaats waarin het adres zich bevindt.'
             provincie:
-              $ref: '#/components/schemas/Referentiedata-restricted'
+              $ref: '#/components/schemas/Referentiedata'
               description: 'De provincie behorend bij het adres.'
             land:
-              $ref: '#/components/schemas/Referentiedata-restricted'
+              $ref: '#/components/schemas/Referentiedata'
               description: 'Het land waarin het adres zich bevindt.'
     Relaties-NatuurlijkPersoon:
       allOf:
@@ -1135,7 +1103,7 @@ components:
       type: object
       properties:
         instelling:
-          $ref: '#/components/schemas/Referentiedata-restricted'
+          $ref: '#/components/schemas/Referentiedata'
           description: 'De opleidingsinstelling die aangeeft waar de relatie de studie volgt. We hanteren hiervoor de BRIN.'
         plaats:
           type: 'string'
@@ -1181,7 +1149,7 @@ components:
             organisatievorm:
               $ref: '#/components/schemas/Referentiedata'
               description: 'De organisatievorm van de rechtspersoon. Bijvoorbeeld: BV, NV, stichting of vereniging. Ook wel rechtsvorm genoemd.'
-            contactpersonen:
+            relaties:
               description: 'De contactpersonen behorend bij de rechtspersoon.'
               type: array
               items:
@@ -1263,6 +1231,11 @@ components:
               type: 'string'
               format: 'any'
               description: 'De naam van de relatiegroep.'
+            relaties:
+              description: ''
+              type: array
+              items:
+                $ref: '#/components/schemas/Relaties-Relatie'
     Relaties-Relatierol:
       type: object
       properties:
@@ -1365,7 +1338,7 @@ components:
           format: 'date-time'
           description: 'De einddatum van de signalering'
         relatie:
-          $ref: '#/components/schemas/Relatie-sleutels'
+          $ref: '#/components/schemas/Signaleringen-Relatie'
           description: 'De relatie behorend bij de signalering.'
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'

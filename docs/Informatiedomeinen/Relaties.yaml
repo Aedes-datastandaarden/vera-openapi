@@ -10,7 +10,7 @@ info:
   license:
     name: European Union Public License, version 1.2 (EUPL-1.2)
     url: https://eupl.eu/1.2/nl/
-  version: '4.0.3'
+  version: '4.0'
 servers:
   - url: https://relaties.vera.io:{port}/{basePath}
     description: 'Productieserver'
@@ -1898,138 +1898,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /relatie-kenmerken:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Ophalen van RelatieKenmerken'
-      operationId: 'listRelatieKenmerken'
-      parameters:
-      - name: 'params'
-        in: 'query'
-        style: 'form'
-        explode: true
-        schema:
-          $ref: '#/components/schemas/RelatieKenmerk'
-      responses:
-        '200':
-          description: 'RelatieKenmerk response'
-          content:
-            'application/json':
-              schema:
-                type: 'array'
-                items:
-                  $ref: '#/components/schemas/RelatieKenmerk'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            'application/json':
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
-    post:
-      tags:
-      - 'Resources'
-      description: 'Voegt een nieuw(e) RelatieKenmerk toe.'
-      operationId: 'createRelatieKenmerk'
-      requestBody:
-        description: 'RelatieKenmerk om toe te voegen'
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RelatieKenmerk'
-      responses:
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        '405':
-          description: 'Foutieve invoer'
-  /relatie-kenmerken/{id}:
-    get:
-      tags:
-      - 'Resources'
-      description: 'Retourneert een RelatieKenmerk met de gegeven identifier'
-      operationId: 'readRelatieKenmerk'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van RelatieKenmerk om op te halen'
-        required: true
-        schema:
-          type: 'string'
-      responses:
-        '200':
-          description: 'RelatieKenmerk response'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RelatieKenmerk'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
-    put:
-      tags:
-      - 'Resources'
-      description: 'Vervangen van een RelatieKenmerk'
-      operationId: 'replaceRelatieKenmerk'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van RelatieKenmerk om te vervangen'
-        required: true
-        schema:
-          type: 'string'
-      requestBody:
-        description: 'RelatieKenmerk om te vervangen'
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RelatieKenmerk'
-      responses:
-        '200':
-          description: 'RelatieKenmerk succesvol vervangen'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
-    patch:
-      tags:
-      - 'Resources'
-      description: 'Wijzigen van een RelatieKenmerk'
-      operationId: 'updateRelatieKenmerk'
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: 'Id van RelatieKenmerk om te wijzigen'
-        required: true
-        schema:
-          type: 'integer'
-      requestBody:
-        description: 'RelatieKenmerk om te wijzigen'
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RelatieKenmerk'
-      responses:
-        '200':
-          description: 'RelatieKenmerk succesvol gewijzigd'
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: 'Onverwachte fout'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
   /relatierollen:
     get:
       tags:
@@ -2546,7 +2414,7 @@ components:
           format: 'any'
           description: 'De omschrijving van de referentiedata. Bijvoorbeeld De Nederlandse nationaliteit.'
         parent:
-          $ref: '#/components/schemas/Referentiedata'
+          $ref: '#/components/schemas/Referentiedata-sleutels'
           description: 'De bovenliggende referentiedata in het geval er sprake is van een hierarchische relatie tussen referentiedata.'
         begindatum:
           type: 'string'
@@ -2560,6 +2428,21 @@ components:
           type: 'string'
           format: 'any'
           description: 'De sorteervolgorde van de referentiedata anders dan alfabetisch.'
+    Referentiedata-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van de referentiedata of klasse'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.'
+        naam:
+          type: 'string'
+          format: 'any'
+          description: 'De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.'
     Relatie:
       type: object
       properties:
@@ -2773,21 +2656,17 @@ components:
           type: 'string'
           format: 'date-time'
           description: 'De datum en tijd waarop contact is geweest.'
-        relatie:
-          $ref: '#/components/schemas/Relatie'
-          description: 'De relatie waarmee contact is geweest'
+        relaties:
+          description: 'De relatie waarmee contact is geweest. Bijv. een huurder, medewerker etc.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Relatie'
         kanaal:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het kanaal via welke het contact heeft gelopen. Bijvoorbeeld: Telefoon, email, balie, internet.'
-        medewerker:
-          $ref: '#/components/schemas/Relatie'
-          description: 'De medewerker die het contactmoment heeft gehad met de relatie.'
         richting:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De communicatierichting behorend bij het contact. Bijvoorbeeld: Uitgaand of ingaand.'
-        relatierol:
-          $ref: '#/components/schemas/Relatierol'
-          description: 'De rol van de relatie voor het contactmoment.'
         zaak:
           type: 'string'
           format: 'uri'
@@ -2900,16 +2779,15 @@ components:
           type: 'string'
           format: 'date-time'
           description: 'De datum en tijd die het eind van een blok markeert waarbinnen de afspraak bij voorkeur start.'
-        relatie:
-          $ref: '#/components/schemas/Relatie'
-          description: 'De relatie waarmee de afspraak is gemaakt.'
+        relaties:
+          description: 'De relatie waarmee de afspraak is gemaakt. Bijv. de huurder, medewerker etc.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Relatie'
         locatie:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar Adres in de vorm: vera/v4/adressen/12345'
-        medewerker:
-          $ref: '#/components/schemas/Relatie'
-          description: 'De medewerker die de afspraak heeft met de relatie. Als met bloktijden gewerkt wordt kan het voorkomen dat er (nog) geen medewerker bekend is. De medewerker is pas bekend als de afspraak is ingepland. Er is dan ook een afspraak begindatum en tijd bekend.'
         contactgegeven:
           $ref: '#/components/schemas/Contactgegeven'
           description: 'Het contactgegeven van de relatie welke van toepassing is voor de afspraak.'
@@ -2931,6 +2809,11 @@ components:
               type: 'string'
               format: 'any'
               description: 'De naam van de relatiegroep.'
+            relaties:
+              description: ''
+              type: array
+              items:
+                $ref: '#/components/schemas/Relatie'
     AfspraakOptie:
       type: object
       properties:
@@ -2965,9 +2848,11 @@ components:
         specialisme:
           $ref: '#/components/schemas/Referentiedata'
           description: ''
-        uitvoerende:
-          $ref: '#/components/schemas/Relatie'
-          description: ''
+        relaties:
+          description: 'De relaties waarvoor de afspraak optie van toepassing is.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Relatie'
         planningscore:
           type: 'number'
           format: 'float'
@@ -3027,9 +2912,11 @@ components:
           type: 'string'
           format: 'date-time'
           description: 'De datum en tijd waarop de inkomensgegevens zijn gecontroleerd.'
-        relatie:
-          $ref: '#/components/schemas/Relatie'
-          description: 'De relatie behorend bij het inkomen.'
+        relaties:
+          description: 'De relaties behorend bij het inkomen. Bijv. de woningzoekende, huurder, controleur etc.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Relatie'
         nettoMaandinkomen:
           type: 'number'
           format: 'float'
@@ -3052,9 +2939,6 @@ components:
         inkomensverklaringsoort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort inkomensverklaring waaruit het inkomen is overgenomen. Bijv. Jaaropgave, Inkomensverklaring belastingdienst etc.'
-        controleur:
-          $ref: '#/components/schemas/Relatie'
-          description: 'De controleur van de inkomensgegevens.'
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'
           type: array
@@ -3255,42 +3139,11 @@ components:
             organisatievorm:
               $ref: '#/components/schemas/Referentiedata'
               description: 'De organisatievorm van de rechtspersoon. Bijvoorbeeld: BV, NV, stichting of vereniging. Ook wel rechtsvorm genoemd.'
-            contactpersonen:
+            relaties:
               description: 'De contactpersonen behorend bij de rechtspersoon.'
               type: array
               items:
                 $ref: '#/components/schemas/Relatie'
-    RelatieKenmerk:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        omschrijving:
-          type: 'string'
-          format: 'any'
-          description: 'Uitbreiding van elementen voor informatie die nog niet in het logisch datamodel beschikbaar is.'
-        datatype:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'Een label dat gebruikt wordt voor operationele sturing en verantwoording. Deze labels worden toegekend op basis van complexe definities, bijv. uit de DVI.'
-        groep:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De naam van de relatiegroep.'
-        relaties:
-          description: 'Uitbreiding van elementen voor informatie die nog niet in het logisch datamodel beschikbaar is.'
-          type: array
-          items:
-            $ref: '#/components/schemas/Relatie'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttributen'
     Telefoonnummer:
       allOf:
         - $ref: '#/components/schemas/Contactgegeven'
@@ -3501,17 +3354,6 @@ components:
         soort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
-    RelatieKenmerk-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
     Relatierol-sleutels:
       type: object
       properties:
