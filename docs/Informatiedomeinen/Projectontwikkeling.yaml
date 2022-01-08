@@ -1325,9 +1325,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De naam van het project'
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: ''
         begindatum:
           type: 'string'
           format: 'date-time'
@@ -1336,20 +1333,34 @@ components:
           type: 'string'
           format: 'date-time'
           description: 'De einddatum van het project.'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: ''
+        aanbestedingen:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Aanbesteding in de vorm: vera/v4/aanbestedingen/12345'
+        bovenliggendProject:
+          $ref: '#/components/schemas/Project-sleutels'
+          description: ''
+        clusters:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Cluster in de vorm: vera/v4/clusters/12345'
         detailStatus:
           $ref: '#/components/schemas/Referentiedata'
           description: ''
         doelstelling:
           $ref: '#/components/schemas/Projectdoelstelling'
           description: ''
-        relaties:
-          description: ''
-          type: array
-          items:
-            $ref: '#/components/schemas/Projectrelatie'
-        bovenliggendProject:
-          $ref: '#/components/schemas/Project-sleutels'
-          description: ''
+        dossier:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Dossier in de vorm: vera/v4/dossiers/12345'
+        eenheden:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Eenheid in de vorm: vera/v4/eenheden/12345'
         fasen:
           description: ''
           type: array
@@ -1359,25 +1370,14 @@ components:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar KadasterPerceel in de vorm: vera/v4/kadasterpercelen/12345'
-        clusters:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Cluster in de vorm: vera/v4/clusters/12345'
-        eenheden:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Eenheid in de vorm: vera/v4/eenheden/12345'
-        aanbestedingen:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Aanbesteding in de vorm: vera/v4/aanbestedingen/12345'
-        dossier:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Dossier in de vorm: vera/v4/dossiers/12345'
         regiesoort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De regiekeuze voor de uitvoering van het te starten project. Bijv. turnkey, bouwteam.'
+        relaties:
+          description: ''
+          type: array
+          items:
+            $ref: '#/components/schemas/Projectrelatie'
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'
           type: array
@@ -1435,6 +1435,17 @@ components:
           type: 'string'
           format: 'any'
           description: 'De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.'
+    Project-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
     Projectdoelstelling:
       type: object
       properties:
@@ -1454,13 +1465,10 @@ components:
           type: 'string'
           format: 'date-time'
           description: ''
-        project:
-          $ref: '#/components/schemas/Project'
-          description: ''
-        aantalTeSlopenEenheden:
+        aantalGetransformeerdeEenheden:
           type: 'integer'
           format: 'int32'
-          description: 'Aantal te slopen eenheden'
+          description: 'Aantal eenheden na transformatie'
         aantalTeBouwenEenheden:
           type: 'integer'
           format: 'int32'
@@ -1469,26 +1477,22 @@ components:
           type: 'integer'
           format: 'int32'
           description: 'Aantal te renoveren eenheden'
+        aantalTeSlopenEenheden:
+          type: 'integer'
+          format: 'int32'
+          description: 'Aantal te slopen eenheden'
         aantalTeTransformerenEenheden:
           type: 'integer'
           format: 'int32'
           description: 'Aantal te transformeren eenheden'
-        aantalGetransformeerdeEenheden:
-          type: 'integer'
-          format: 'int32'
-          description: 'Aantal eenheden na transformatie'
-        gemiddeldeWoningwaarderingsPunten:
+        beleidswaarde:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Beleidswaarde in de vorm: vera/v4/beleidswaarden/12345'
+        brutoAanvangsrendement:
           type: 'number'
           format: 'float'
-          description: 'Gemiddeld aantal woningwaarderingsstelsel punten bij oplevering'
-        gemiddeldeEnergieindex:
-          type: 'integer'
-          format: 'int32'
-          description: 'Gemiddelde energieindex bij oplevering'
-        gemiddeldeHuurprijs:
-          type: 'number'
-          format: 'float'
-          description: 'Gemiddelde huurprijs bij oplevering'
+          description: 'BAR Bruto Aanvangsrendement.'
         gemBVOPerEenheid:
           type: 'integer'
           format: 'int32'
@@ -1497,35 +1501,42 @@ components:
           type: 'integer'
           format: 'int32'
           description: 'Gemiddeld gemiddelde gebruiksoppervlakte per eenheid'
+        gemiddeldeEnergieindex:
+          type: 'integer'
+          format: 'int32'
+          description: 'Gemiddelde energieindex bij oplevering'
+        gemiddeldeHuurprijs:
+          type: 'number'
+          format: 'float'
+          description: 'Gemiddelde huurprijs bij oplevering'
+        gemiddeldeWoningwaarderingsPunten:
+          type: 'number'
+          format: 'float'
+          description: 'Gemiddeld aantal woningwaarderingsstelsel punten bij oplevering'
         gemVVOPerEenheid:
           type: 'integer'
           format: 'int32'
           description: 'Gemiddeld Verhuurbara vloeroppervlakte per eenheid'
-        marktwaarde:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Marktwaarde in de vorm: vera/v4/marktwaarden/12345'
-        beleidswaarde:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Beleidswaarde in de vorm: vera/v4/beleidswaarden/12345'
-        internalRateOfReturn:
-          type: 'number'
-          format: 'float'
-          description: 'IRR Internal Rate of Return.'
-        brutoAanvangsrendement:
-          type: 'number'
-          format: 'float'
-          description: 'BAR Bruto Aanvangsrendement.'
-        nettoAanvangsrendement:
-          type: 'number'
-          format: 'float'
-          description: 'NAR Netto Aanvangsrendement.'
         initieleBudgetregels:
           description: ''
           type: array
           items:
             $ref: '#/components/schemas/Projectbudgetregel'
+        internalRateOfReturn:
+          type: 'number'
+          format: 'float'
+          description: 'IRR Internal Rate of Return.'
+        marktwaarde:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Marktwaarde in de vorm: vera/v4/marktwaarden/12345'
+        nettoAanvangsrendement:
+          type: 'number'
+          format: 'float'
+          description: 'NAR Netto Aanvangsrendement.'
+        project:
+          $ref: '#/components/schemas/Project'
+          description: ''
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'
           type: array
@@ -1555,14 +1566,7 @@ components:
         bovenliggendeBudgetregel:
           $ref: '#/components/schemas/Projectbudgetregel-sleutels'
           description: ''
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'Status van de budgetregel. Bijv. aangevraagd/vrijgegeven/goedgekeurd.'
         begindatum:
-          type: 'string'
-          format: 'date-time'
-          description: ''
-        einddatum:
           type: 'string'
           format: 'date-time'
           description: ''
@@ -1574,10 +1578,22 @@ components:
           type: 'string'
           format: 'date-time'
           description: 'Datum goedkeuring'
+        einddatum:
+          type: 'string'
+          format: 'date-time'
+          description: ''
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Status van de budgetregel. Bijv. aangevraagd/vrijgegeven/goedgekeurd.'
         bedrag:
           type: 'number'
           format: 'float'
           description: 'Bedrag exclusief BTW. van de budgetregel.'
+        bestedingen:
+          description: ''
+          type: array
+          items:
+            $ref: '#/components/schemas/Projectbesteding'
         btwTarief:
           type: 'string'
           format: 'uri'
@@ -1591,18 +1607,13 @@ components:
         fasebesluit:
           $ref: '#/components/schemas/Projectfasebesluit'
           description: ''
-        order:
-          $ref: '#/components/schemas/Projectorder'
-          description: ''
-        bestedingen:
-          description: ''
-          type: array
-          items:
-            $ref: '#/components/schemas/Projectbesteding'
         grootboekrekening:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar Grootboekrekening in de vorm: vera/v4/grootboekrekeningen/12345'
+        order:
+          $ref: '#/components/schemas/Projectorder'
+          description: ''
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'
           type: array
@@ -1619,7 +1630,7 @@ components:
           type: 'string'
           format: 'any'
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    Projectfase:
+    Projectbesteding:
       type: object
       properties:
         id:
@@ -1630,56 +1641,21 @@ components:
           type: 'string'
           format: 'any'
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        soort:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'Bijvoorbeeld: Initiatieffase, Definitiefase, Ontwerpfase, Voorbereidingsfase, Realisatiefase, Nazorgfase'
-        begindatum:
-          type: 'string'
-          format: 'date-time'
+        budgetregel:
+          $ref: '#/components/schemas/Projectbudgetregel'
           description: ''
-        einddatum:
-          type: 'string'
-          format: 'date-time'
+        order:
+          $ref: '#/components/schemas/Projectorder'
           description: ''
-        gewensteBegindatum:
-          type: 'string'
-          format: 'date-time'
+        taak:
+          $ref: '#/components/schemas/Projecttaak'
           description: ''
-        gewensteEinddatum:
-          type: 'string'
-          format: 'date-time'
-          description: ''
-        project:
-          $ref: '#/components/schemas/Project'
-          description: ''
-        besluit:
-          $ref: '#/components/schemas/Projectfasebesluit'
-          description: ''
-        relaties:
-          description: ''
-          type: array
-          items:
-            $ref: '#/components/schemas/Projectrelatie'
-        volgnummer:
-          type: 'integer'
-          format: 'int32'
-          description: ''
-        taken:
-          description: ''
-          type: array
-          items:
-            $ref: '#/components/schemas/Projecttaak'
-        budgetregels:
-          description: ''
-          type: array
-          items:
-            $ref: '#/components/schemas/Projectbudgetregel'
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
-    Projectfasebesluit:
+    Projectorder:
       type: object
       properties:
         id:
@@ -1690,75 +1666,27 @@ components:
           type: 'string'
           format: 'any'
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        status:
-          $ref: '#/components/schemas/Referentiedata'
+        bestedingen:
           description: ''
-        begindatum:
-          type: 'string'
-          format: 'date-time'
-          description: ''
-        einddatum:
-          type: 'string'
-          format: 'date-time'
-          description: ''
-        project:
-          $ref: '#/components/schemas/Project'
-          description: ''
-        fase:
-          $ref: '#/components/schemas/Projectfase'
-          description: ''
+          type: array
+          items:
+            $ref: '#/components/schemas/Projectbesteding'
         budgetregels:
           description: ''
           type: array
           items:
             $ref: '#/components/schemas/Projectbudgetregel'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttribuut'
-    Projectrelatie:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        soort:
-          $ref: '#/components/schemas/Referentiedata'
-          description: ''
-        detailSoort:
-          $ref: '#/components/schemas/Referentiedata'
-          description: ''
-        begindatum:
-          type: 'string'
-          format: 'date-time'
-          description: ''
-        einddatum:
-          type: 'string'
-          format: 'date-time'
-          description: ''
-        relatie:
+        inkoopopdracht:
           type: 'string'
           format: 'uri'
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
-        project:
-          $ref: '#/components/schemas/Project'
+          description: 'Referentie naar Inkoopopdracht in de vorm: vera/v4/inkoopopdrachten/12345'
+        overeenkomst:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Overeenkomst in de vorm: vera/v4/overeenkomsten/12345'
+        taak:
+          $ref: '#/components/schemas/Projecttaak'
           description: ''
-        fases:
-          description: ''
-          type: array
-          items:
-            $ref: '#/components/schemas/Projectfase'
-        taken:
-          description: ''
-          type: array
-          items:
-            $ref: '#/components/schemas/Projecttaak'
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'
           type: array
@@ -1801,14 +1729,22 @@ components:
           type: 'string'
           format: 'date-time'
           description: 'Gewenste uitvoeringsdatum'
-        fase:
-          $ref: '#/components/schemas/Projectfase'
-          description: ''
-        relaties:
+        bestedingen:
           description: ''
           type: array
           items:
-            $ref: '#/components/schemas/Projectrelatie'
+            $ref: '#/components/schemas/Projectbesteding'
+        clusters:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Cluster in de vorm: vera/v4/clusters/12345'
+        eenheden:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Eenheid in de vorm: vera/v4/eenheden/12345'
+        fase:
+          $ref: '#/components/schemas/Projectfase'
+          description: ''
         kwaliteitsmetingen:
           type: 'string'
           format: 'uri'
@@ -1818,29 +1754,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Projectorder'
-        bestedingen:
-          description: ''
-          type: array
-          items:
-            $ref: '#/components/schemas/Projectbesteding'
         percelen:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar KadasterPerceel in de vorm: vera/v4/kadasterpercelen/12345'
-        clusters:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Cluster in de vorm: vera/v4/clusters/12345'
-        eenheden:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Eenheid in de vorm: vera/v4/eenheden/12345'
+        relaties:
+          description: ''
+          type: array
+          items:
+            $ref: '#/components/schemas/Projectrelatie'
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
-    Projectorder:
+    Projectfase:
       type: object
       properties:
         id:
@@ -1851,33 +1779,56 @@ components:
           type: 'string'
           format: 'any'
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Bijvoorbeeld: Initiatieffase, Definitiefase, Ontwerpfase, Voorbereidingsfase, Realisatiefase, Nazorgfase'
+        begindatum:
+          type: 'string'
+          format: 'date-time'
+          description: ''
+        einddatum:
+          type: 'string'
+          format: 'date-time'
+          description: ''
+        gewensteBegindatum:
+          type: 'string'
+          format: 'date-time'
+          description: ''
+        gewensteEinddatum:
+          type: 'string'
+          format: 'date-time'
+          description: ''
+        besluit:
+          $ref: '#/components/schemas/Projectfasebesluit'
+          description: ''
         budgetregels:
           description: ''
           type: array
           items:
             $ref: '#/components/schemas/Projectbudgetregel'
-        taak:
-          $ref: '#/components/schemas/Projecttaak'
+        project:
+          $ref: '#/components/schemas/Project'
           description: ''
-        inkoopopdracht:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Inkoopopdracht in de vorm: vera/v4/inkoopopdrachten/12345'
-        overeenkomst:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Overeenkomst in de vorm: vera/v4/overeenkomsten/12345'
-        bestedingen:
+        relaties:
           description: ''
           type: array
           items:
-            $ref: '#/components/schemas/Projectbesteding'
+            $ref: '#/components/schemas/Projectrelatie'
+        taken:
+          description: ''
+          type: array
+          items:
+            $ref: '#/components/schemas/Projecttaak'
+        volgnummer:
+          type: 'integer'
+          format: 'int32'
+          description: ''
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
-    Projectbesteding:
+    Projectfasebesluit:
       type: object
       properties:
         id:
@@ -1888,21 +1839,34 @@ components:
           type: 'string'
           format: 'any'
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        taak:
-          $ref: '#/components/schemas/Projecttaak'
+        begindatum:
+          type: 'string'
+          format: 'date-time'
           description: ''
-        order:
-          $ref: '#/components/schemas/Projectorder'
+        einddatum:
+          type: 'string'
+          format: 'date-time'
           description: ''
-        budgetregel:
-          $ref: '#/components/schemas/Projectbudgetregel'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: ''
+        budgetregels:
+          description: ''
+          type: array
+          items:
+            $ref: '#/components/schemas/Projectbudgetregel'
+        fase:
+          $ref: '#/components/schemas/Projectfase'
+          description: ''
+        project:
+          $ref: '#/components/schemas/Project'
           description: ''
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
-    Project-sleutels:
+    Projectrelatie:
       type: object
       properties:
         id:
@@ -1913,6 +1877,42 @@ components:
           type: 'string'
           format: 'any'
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: ''
+        detailSoort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: ''
+        begindatum:
+          type: 'string'
+          format: 'date-time'
+          description: ''
+        einddatum:
+          type: 'string'
+          format: 'date-time'
+          description: ''
+        fases:
+          description: ''
+          type: array
+          items:
+            $ref: '#/components/schemas/Projectfase'
+        project:
+          $ref: '#/components/schemas/Project'
+          description: ''
+        relatie:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+        taken:
+          description: ''
+          type: array
+          items:
+            $ref: '#/components/schemas/Projecttaak'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttribuut'
     Projectbesteding-sleutels:
       type: object
       properties:

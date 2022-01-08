@@ -1754,13 +1754,22 @@ components:
           type: 'string'
           format: 'any'
           description: 'De omschrijving van het huurgeschil.'
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van het huurgeschil. Bijvoorbeeld: In behandeling huurcommissie.'
         einddatum:
           type: 'string'
           format: 'date'
           description: 'De datum dat het huurgeschil is beëindigd.'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van het huurgeschil. Bijvoorbeeld: In behandeling huurcommissie.'
+        acties:
+          description: 'De huurgeschil acties uitgevoerd door de medewerker behorende bij het huurgeschil.'
+          type: array
+          items:
+            $ref: '#/components/schemas/HuurgeschilActie'
+        bedrag:
+          type: 'number'
+          format: 'float'
+          description: 'Het bedrag in euro"s waar het huurgeschil over gaat.'
         contactmomenten:
           type: 'string'
           format: 'uri'
@@ -1769,13 +1778,13 @@ components:
           type: 'string'
           format: 'date'
           description: 'De datum waarop de hoorzitting van de huurcommissie plaats vindt of heeft plaatsgevonden.'
+        huurcomissieDossiernummer:
+          type: 'string'
+          format: 'any'
+          description: 'Het nummer van het dossier van het huurgeschil dat naar de huurcommissie is gegaan.'
         huurovereenkomst:
           $ref: '#/components/schemas/Overeenkomst'
           description: 'De huurovereenkomst waardoor het geschil is ontstaan.'
-        bedrag:
-          type: 'number'
-          format: 'float'
-          description: 'Het bedrag in euro"s waar het huurgeschil over gaat.'
         matigen:
           type: 'boolean'
           format: 'true-or-false'
@@ -1783,15 +1792,6 @@ components:
         reden:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De reden van het huurgeschil.'
-        huurcomissieDossiernummer:
-          type: 'string'
-          format: 'any'
-          description: 'Het nummer van het dossier van het huurgeschil dat naar de huurcommissie is gegaan.'
-        acties:
-          description: 'De huurgeschil acties uitgevoerd door de medewerker behorende bij het huurgeschil.'
-          type: array
-          items:
-            $ref: '#/components/schemas/HuurgeschilActie'
         uitspraken:
           description: 'De uitspraken die zijn gedaan door de huurcommissie.'
           type: array
@@ -1854,6 +1854,37 @@ components:
           type: 'string'
           format: 'any'
           description: 'De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.'
+    HuurgeschilActie:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        omschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'De omschrijving van de huurgeschil-actie'
+        actiedatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum en tijd waarop de actie is uitgevoerd.'
+        huurgeschil:
+          $ref: '#/components/schemas/Huurgeschil'
+          description: 'Het huurgeschil waarvoor de actie is uitgezet / wordt ondernomen.'
+        relatie:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttribuut'
     Overeenkomst:
       type: object
       properties:
@@ -1871,80 +1902,80 @@ components:
         detailSoort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het detail soort overeenkomst. Bijvoorbeeld BOG (Bedrijfs Onroerend Goed).'
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van een huurovereenkomst. Dit kan een waarde bevatten zoals: overeenkomst beëindigd en huurder is vertrokken, of overeenkomst is momenteel in gebruik.'
         begindatum:
           type: 'string'
           format: 'date'
           description: 'De begindatum van de overeenkomst.'
-        einddatum:
-          type: 'string'
-          format: 'date'
-          description: 'De einddatum van de overeenkomst.'
+        bewakingsstatus:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De bewakingsstatus bij de overeenkomst die wordt gebruikt in verband met incasso en prolongatie. Deze status is van toepassing als een crediteur niet aan zijn overeenkomst verplichtingen kan voldoen.'
         conceptVersturingsdatum:
           type: 'string'
           format: 'date-time'
           description: 'De datum waarop een concept overeenkomst is verstuurd.'
+        einddatum:
+          type: 'string'
+          format: 'date'
+          description: 'De einddatum van de overeenkomst.'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van een huurovereenkomst. Dit kan een waarde bevatten zoals: overeenkomst beëindigd en huurder is vertrokken, of overeenkomst is momenteel in gebruik.'
+        versturenStatus:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van het versturen van de overeenkomst.'
         verstuurdatum:
           type: 'string'
           format: 'date-time'
           description: 'De datum waarop de overeenkomst is verstuurd.'
-        versturenStatus:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van het versturen van de overeenkomst.'
-        bewakingsstatus:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De bewakingsstatus bij de overeenkomst die wordt gebruikt in verband met incasso en prolongatie. Deze status is van toepassing als een crediteur niet aan zijn overeenkomst verplichtingen kan voldoen.'
-        volgnummer:
+        betaalgegeven:
           type: 'string'
-          format: 'any'
-          description: 'Het volgnummer van de overeenkomst.'
-        redenOntbinding:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De reden van de voortijdige ontbinding van de overeenkomst.'
+          format: 'uri'
+          description: 'Referentie naar Betaalgegeven in de vorm: vera/v4/betaalgegevens/12345'
         contactmomenten:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar Contactmoment in de vorm: vera/v4/contactmomenten/12345'
+        eenheden:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Eenheid in de vorm: vera/v4/eenheden/12345'
+        eindeReden:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De reden voor beëindiging van de overeenkomst.'
         garanties:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar Garantie in de vorm: vera/v4/garanties/12345'
+        onderhoudsverzoeken:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Onderhoudsverzoek in de vorm: vera/v4/onderhoudsverzoeken/12345'
         prijscomponenten:
           description: 'De prijscomponenten behorende bij de huurprijs, koopprijs of maandelijkse lasten van de overeenkomst.'
           type: array
           items:
             $ref: '#/components/schemas/Prijscomponent'
-        betaalgegeven:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Betaalgegeven in de vorm: vera/v4/betaalgegevens/12345'
-        versturen:
-          type: 'boolean'
-          format: 'true-or-false'
-          description: 'De aanduiding of een afschrift van de overeenkomst moet worden gestuurd naar de relatie'
-        eenheden:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Eenheid in de vorm: vera/v4/eenheden/12345'
-        onderhoudsverzoeken:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Onderhoudsverzoek in de vorm: vera/v4/onderhoudsverzoeken/12345'
-        relaties:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Relatierol in de vorm: vera/v4/relatierollen/12345'
-        eindeReden:
+        redenOntbinding:
           $ref: '#/components/schemas/Referentiedata'
-          description: 'De reden voor beëindiging van de overeenkomst.'
+          description: 'De reden van de voortijdige ontbinding van de overeenkomst.'
         redenOpzegging:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De reden van de voortijdige ontbinding van de overeenkomst.'
         redenVernietiging:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De reden van de vernietiging van de overeenkomst.'
+        relaties:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatierol in de vorm: vera/v4/relatierollen/12345'
+        versturen:
+          type: 'boolean'
+          format: 'true-or-false'
+          description: 'De aanduiding of een afschrift van de overeenkomst moet worden gestuurd naar de relatie'
+        volgnummer:
+          type: 'string'
+          format: 'any'
+          description: 'Het volgnummer van de overeenkomst.'
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'
           type: array
@@ -1986,13 +2017,13 @@ components:
           type: 'number'
           format: 'float'
           description: 'Het bedrag in euro"s van het prijscomponent exclusief BTW.'
-        btw:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De BTW van het prijscomponent.'
         bedragInclusiefBtw:
           type: 'number'
           format: 'float'
           description: 'Het bedrag in euro"s van het prijscomponent inclusief BTW.'
+        btw:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De BTW van het prijscomponent.'
         eenheid:
           type: 'string'
           format: 'uri'
@@ -2000,37 +2031,6 @@ components:
         overeenkomst:
           $ref: '#/components/schemas/Overeenkomst'
           description: 'De overeenkomst waaraan het prijscomponent.'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttribuut'
-    HuurgeschilActie:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        omschrijving:
-          type: 'string'
-          format: 'any'
-          description: 'De omschrijving van de huurgeschil-actie'
-        actiedatum:
-          type: 'string'
-          format: 'date-time'
-          description: 'De datum en tijd waarop de actie is uitgevoerd.'
-        relatie:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
-        huurgeschil:
-          $ref: '#/components/schemas/Huurgeschil'
-          description: 'Het huurgeschil waarvoor de actie is uitgezet / wordt ondernomen.'
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'
           type: array
@@ -2077,9 +2077,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van de huuropzegging. Bijv. Aangemaakt, Goedgekeurd, Geannuleerd, Afgewezen, In behandeling, Afgehandeld.'
         begindatum:
           type: 'string'
           format: 'date'
@@ -2092,20 +2089,23 @@ components:
           type: 'string'
           format: 'date'
           description: 'De datum per wanneer de opzegging in gaat.'
-        relaties:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
-        redenOpzegging:
+        status:
           $ref: '#/components/schemas/Referentiedata'
-          description: 'De reden van de voortijdige ontbinding van de overeenkomst.'
+          description: 'De status van de huuropzegging. Bijv. Aangemaakt, Goedgekeurd, Geannuleerd, Afgewezen, In behandeling, Afgehandeld.'
+        huurovereenkomst:
+          $ref: '#/components/schemas/Overeenkomst'
+          description: 'De opgezegde huurovereenkomst.'
         inspectieafspraken:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar Afspraak in de vorm: vera/v4/afspraken/12345'
-        huurovereenkomst:
-          $ref: '#/components/schemas/Overeenkomst'
-          description: 'De opgezegde huurovereenkomst.'
+        redenOpzegging:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De reden van de voortijdige ontbinding van de overeenkomst.'
+        relaties:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'
           type: array
@@ -2128,25 +2128,13 @@ components:
               type: 'string'
               format: 'date'
               description: 'De overeenkomst is geprolongeerd tot deze datum'
-            opzegtermijn:
-              $ref: '#/components/schemas/Referentiedata'
-              description: 'De opzegtermijn van de overeenkomst.'
-            vervaltermijnInterval:
+            afwijkendeBetaler:
               type: 'string'
-              format: 'date-time'
-              description: 'De interval van de incasso vervaltermijn.'
-            waarborgsom:
-              type: 'number'
-              format: 'float'
-              description: 'De hoogte van de waarborgsom op de overeenkomst. Bijvoorbeeld: voor een studentenkamer is de borg €103 voor een vrije sector woning is de borg 1 maand huur. '
-            waarborgsomRente:
-              type: 'number'
-              format: 'float'
-              description: 'De rente van de waarborgsom op de overeenkomst. Deze waarde wordt in Euro"s aangegeven en is cumulatief over de volledige looptijd van de huurovereenkomst.'
-            btw:
-              type: 'boolean'
-              format: 'true-or-false'
-              description: 'De waarde geeft aan of er BTW wordt geheven over de overeenkomst.'
+              format: 'uri'
+              description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+            afwijkendeBetalerIncassowijze:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'De wijze van incasso waarop de huurovereenkomst wordt betaald door de afwijkende betaler.'
             bepaaldeTijd:
               type: 'boolean'
               format: 'true-or-false'
@@ -2155,32 +2143,40 @@ components:
               type: 'number'
               format: 'float'
               description: 'De brutohuur = netto huur + servicekosten. De brutohuurprijs is inclusief BTW.'
-            rekenhuur:
-              type: 'number'
-              format: 'float'
-              description: 'Het huurbedrag waarvoor een huurder huurtoeslag mag aanvragen.'
+            btw:
+              type: 'boolean'
+              format: 'true-or-false'
+              description: 'De waarde geeft aan of er BTW wordt geheven over de overeenkomst.'
+            huurgeschillen:
+              description: 'Verwijzing naar eventuele huurgeschillen van toepassing op de huurovereenkomst.'
+              type: array
+              items:
+                $ref: '#/components/schemas/Huurgeschil'
             huurHerzieningsdatum:
               type: 'string'
               format: 'date'
               description: 'De datum dat de huurprijs van de huurovereenkomst is aangepast.'
-            incassowijze:
-              $ref: '#/components/schemas/Referentiedata'
-              description: 'De wijze van incasso waarop de huurovereenkomst wordt betaald.'
-            incassomoment:
-              $ref: '#/components/schemas/Referentiedata'
-              description: 'Het moment waarop de incasso wordt gedaan.'
-            afwijkendeBetaler:
-              type: 'string'
-              format: 'uri'
-              description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
-            afwijkendeBetalerIncassowijze:
-              $ref: '#/components/schemas/Referentiedata'
-              description: 'De wijze van incasso waarop de huurovereenkomst wordt betaald door de afwijkende betaler.'
             huurtoeslagen:
               description: 'De huurtoeslagen behorende bij de huurovereenkomst.'
               type: array
               items:
                 $ref: '#/components/schemas/Huurtoeslag'
+            incassomoment:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'Het moment waarop de incasso wordt gedaan.'
+            incassowijze:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'De wijze van incasso waarop de huurovereenkomst wordt betaald.'
+            maatschappelijkLabel:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'Het label waarmee het maatschappelijk en economisch  belang van de dienstverlening wordt aangegeven bij de verhuring: DAEB of niet-DAEB. Het label op de huurovereenkomst kan afwijken van het maatschappelijk label van de eenheid. Hiermee kan worden aangegeven dat een eenheid die behoort tot de niet-DAEB tak als DAEB-verhuring verantwoord moet worden.'
+            opzegtermijn:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'De opzegtermijn van de overeenkomst.'
+            rekenhuur:
+              type: 'number'
+              format: 'float'
+              description: 'Het huurbedrag waarvoor een huurder huurtoeslag mag aanvragen.'
             startBrutohuur:
               type: 'number'
               format: 'float'
@@ -2193,14 +2189,18 @@ components:
               type: 'integer'
               format: 'int32'
               description: 'De leeftijd van de hoofdhuurder bij aanvang huurovereenkomst in jaren.'
-            huurgeschillen:
-              description: 'Verwijzing naar eventuele huurgeschillen van toepassing op de huurovereenkomst.'
-              type: array
-              items:
-                $ref: '#/components/schemas/Huurgeschil'
-            maatschappelijkLabel:
-              $ref: '#/components/schemas/Referentiedata'
-              description: 'Het label waarmee het maatschappelijk en economisch  belang van de dienstverlening wordt aangegeven bij de verhuring: DAEB of niet-DAEB. Het label op de huurovereenkomst kan afwijken van het maatschappelijk label van de eenheid. Hiermee kan worden aangegeven dat een eenheid die behoort tot de niet-DAEB tak als DAEB-verhuring verantwoord moet worden.'
+            vervaltermijnInterval:
+              type: 'string'
+              format: 'date-time'
+              description: 'De interval van de incasso vervaltermijn.'
+            waarborgsom:
+              type: 'number'
+              format: 'float'
+              description: 'De hoogte van de waarborgsom op de overeenkomst. Bijvoorbeeld: voor een studentenkamer is de borg €103 voor een vrije sector woning is de borg 1 maand huur. '
+            waarborgsomRente:
+              type: 'number'
+              format: 'float'
+              description: 'De rente van de waarborgsom op de overeenkomst. Deze waarde wordt in Euro"s aangegeven en is cumulatief over de volledige looptijd van de huurovereenkomst.'
     Huurtoeslag:
       type: object
       properties:
@@ -2215,14 +2215,14 @@ components:
         huurovereenkomst:
           $ref: '#/components/schemas/Overeenkomst'
           description: 'Het huurovereenkomst behorende bij de huurtoeslag.'
-        maand:
-          type: 'integer'
-          format: 'int32'
-          description: 'Het maand nummer waar de huurtoeslag betrekking op heeft.'
         jaar:
           type: 'integer'
           format: 'int32'
           description: 'Het jaar waar de huurtoeslag betrekking op heeft.'
+        maand:
+          type: 'integer'
+          format: 'int32'
+          description: 'Het maand nummer waar de huurtoeslag betrekking op heeft.'
         bedrag:
           type: 'number'
           format: 'float'
@@ -2249,13 +2249,13 @@ components:
         status:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De status van de inspectie. bijvoorbeeld Aangemaakt, Ingepland, InUitvoering, Afgerond.'
-        overeenkomst:
-          $ref: '#/components/schemas/Overeenkomst'
-          description: 'De overeenkomst die geïnspecteerd wordt.'
         afspraak:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar Afspraak in de vorm: vera/v4/afspraken/12345'
+        overeenkomst:
+          $ref: '#/components/schemas/Overeenkomst'
+          description: 'De overeenkomst die geïnspecteerd wordt.'
         relaties:
           type: 'string'
           format: 'uri'
@@ -2270,18 +2270,6 @@ components:
         - $ref: '#/components/schemas/Overeenkomst'
         - type: object
           properties:
-            prijs:
-              type: 'number'
-              format: 'float'
-              description: 'De uiteindelijke aankoop- of verkoopprijs in euro"s. (kosten koper)'
-            vveBijdrage:
-              type: 'number'
-              format: 'float'
-              description: 'Het bedrag dat de koper betaald aan VVE inclusief BTW. De koper heeft geen recht op VVE als er geen bedrag is ingevuld.'
-            transportdatum:
-              type: 'string'
-              format: 'date-time'
-              description: 'De datum waarop de akte gepasseerd zal worden bij de notaris. Deze datum is wordt ook passeerdatum genoemd.'
             koopsom:
               type: 'number'
               format: 'float'
@@ -2298,6 +2286,18 @@ components:
               type: 'boolean'
               format: 'true-or-false'
               description: 'De waarde die aangeeft of de verkoopovereenkomst is afgesloten met de oud huurder.'
+            prijs:
+              type: 'number'
+              format: 'float'
+              description: 'De uiteindelijke aankoop- of verkoopprijs in euro"s. (kosten koper)'
+            transportdatum:
+              type: 'string'
+              format: 'date-time'
+              description: 'De datum waarop de akte gepasseerd zal worden bij de notaris. Deze datum is wordt ook passeerdatum genoemd.'
+            vveBijdrage:
+              type: 'number'
+              format: 'float'
+              description: 'Het bedrag dat de koper betaald aan VVE inclusief BTW. De koper heeft geen recht op VVE als er geen bedrag is ingevuld.'
     Onderhoudsovereenkomst:
       allOf:
         - $ref: '#/components/schemas/Overeenkomst'
@@ -2307,6 +2307,10 @@ components:
               type: 'string'
               format: 'any'
               description: 'Omschrijving van welke werkzaamheden wel en niet onder de overeenkomst vallen.'
+            bouwkundigElement:
+              type: 'string'
+              format: 'uri'
+              description: 'Referentie naar BouwkundigElement in de vorm: vera/v4/bouwkundigelementen/12345'
             cluster:
               type: 'string'
               format: 'uri'
@@ -2315,10 +2319,6 @@ components:
               type: 'string'
               format: 'uri'
               description: 'Referentie naar CollectiefObject in de vorm: vera/v4/collectiefobjecten/12345'
-            bouwkundigElement:
-              type: 'string'
-              format: 'uri'
-              description: 'Referentie naar BouwkundigElement in de vorm: vera/v4/bouwkundigelementen/12345'
             orders:
               type: 'string'
               format: 'uri'

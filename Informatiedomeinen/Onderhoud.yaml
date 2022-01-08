@@ -1189,17 +1189,20 @@ components:
           type: 'string'
           format: 'any'
           description: 'De korte omschrijving van het defect. Bijvoorbeeld: Keuken: kraan lekt. Meestal wordt deze omschrijving automatisch samengesteld uit de LEDO.'
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van een defect. Bijvoorbeeld een huurder heeft een defect gemeld en een inspecteur heeft het defect geïnspecteerd.'
         melddatum:
           type: 'string'
           format: 'date-time'
           description: 'De datum waarop het defect is gemeld.'
-        eenheid:
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van een defect. Bijvoorbeeld een huurder heeft een defect gemeld en een inspecteur heeft het defect geïnspecteerd.'
+        aangetroffenOorzaak:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De achteraf vastgestelde oorzaak. Een voorbeeld is: de voetafdruk van een huurder tegen de deur die nu "opeens" klemt. De oorzaak was door de huurder als normale slijtage opgegeven maar de vakman heeft vastgesteld dat het bewonersgedrag is. '
+        bouwkundigElement:
           type: 'string'
           format: 'uri'
-          description: 'Referentie naar Eenheid in de vorm: vera/v4/eenheden/12345'
+          description: 'Referentie naar BouwkundigElement in de vorm: vera/v4/bouwkundigelementen/12345'
         cluster:
           type: 'string'
           format: 'uri'
@@ -1208,31 +1211,28 @@ components:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar CollectiefObject in de vorm: vera/v4/collectiefobjecten/12345'
+        eenheid:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Eenheid in de vorm: vera/v4/eenheden/12345'
+        inspectierapport:
+          $ref: '#/components/schemas/Inspectierapport'
+          description: 'Het inspectierapport waarmee het defect is gemeld.'
         locatie:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De locatie waar het onderhoud moet plaatsvinden. Bijvoorbeeld huiskamer of toilet.'
-        bouwkundigElement:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar BouwkundigElement in de vorm: vera/v4/bouwkundigelementen/12345'
-        oorzaak:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De oorzaak van het defect zoals initieel bij het melden van het defect is vastgelegd. Dit is vaak de oorzaak die de huurder aangeeft bij de melding.'
-        aangetroffenOorzaak:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De achteraf vastgestelde oorzaak. Een voorbeeld is: de voetafdruk van een huurder tegen de deur die nu "opeens" klemt. De oorzaak was door de huurder als normale slijtage opgegeven maar de vakman heeft vastgesteld dat het bewonersgedrag is. '
-        relaties:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
         onderhoudsverzoeken:
           description: 'De onderhoudsverzoeken waarmee het defect is gemeld.'
           type: array
           items:
             $ref: '#/components/schemas/Onderhoudsverzoek'
-        inspectierapport:
-          $ref: '#/components/schemas/Inspectierapport'
-          description: 'Het inspectierapport waarmee het defect is gemeld.'
+        oorzaak:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De oorzaak van het defect zoals initieel bij het melden van het defect is vastgelegd. Dit is vaak de oorzaak die de huurder aangeeft bij de melding.'
+        relaties:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'
           type: array
@@ -1290,7 +1290,7 @@ components:
           type: 'string'
           format: 'any'
           description: 'De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.'
-    Onderhoudsverzoek:
+    Inspectierapport:
       type: object
       properties:
         id:
@@ -1301,56 +1301,33 @@ components:
           type: 'string'
           format: 'any'
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        onderhoudSoort:
+        soort:
           $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort onderhoud dat wordt verzocht. Bijvoorbeeld: reparatie, mutatieonderhoud etc.'
+          description: 'Bijvoorbeeld: Voorinspectierapport, eindinspectierapport.'
         omschrijving:
           type: 'string'
           format: 'any'
-          description: 'De korte omschrijving van het verzoek. Bijvoorbeeld: Keuken: kraan lekt.'
+          description: 'De korte omschrijving van de uitgevoerde inspectie. Bijvoorbeeld: Voorinspectie ten behoeve van mutatieonderhoud'
         status:
           $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van het verzoek. Bijvoorbeeld: Geregistreerd, In behandeling, Geannuleerd, Afgehandeld'
-        melddatum:
-          type: 'string'
-          format: 'date-time'
-          description: 'De datum waarop het onderhoudsverzoek is gemeld.'
-        onderhoudsorders:
-          description: 'De onderhoudsorders behorend bij het onderhoudsverzoek.'
+          description: 'De status van het inspectierapport. Bijvoorbeeld Concept, Definitief, Getekend etc.'
+        geconstateerdeDefecten:
+          description: 'De defecten die zijn geconstateerd tijdens de inspectie.'
           type: array
           items:
-            $ref: '#/components/schemas/Onderhoudsorder'
+            $ref: '#/components/schemas/Defect'
+        inspectieOrder:
+          $ref: '#/components/schemas/Onderhoudsorder'
+          description: 'De inspectieorder waardoor de inspectie heeft plaatsgevonden.'
         relaties:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
-        voorkeurAfspraken:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Afspraak in de vorm: vera/v4/afspraken/12345'
-        contactmomenten:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Contactmoment in de vorm: vera/v4/contactmomenten/12345'
-        defecten:
-          description: 'De defecten die via zijn gemeld en gekoppeld aan het onderhoudsverzoek.'
-          type: array
-          items:
-            $ref: '#/components/schemas/Defect'
-        onderhoudstaken:
-          description: 'De taken die via het verzoek zijn gemeld.'
+        voorgesteldeOnderhoudstaken:
+          description: 'In de situatie dat de inspecteur ook uit te voeren onderhoudstaken vaststelt tijdens de inspectie kunnen deze als voorgestelde onderhoudstaken opgenomen worden bij het inspectierapport'
           type: array
           items:
             $ref: '#/components/schemas/Onderhoudstaak'
-        onderhoudsverzoeken:
-          description: 'Gerelateerde onderhoudsverzoeken bij het onderhoudsverzoek.'
-          type: array
-          items:
-            $ref: '#/components/schemas/Onderhoudsverzoek'
-        alternatiefContactgegeven:
-          type: 'string'
-          format: 'any'
-          description: 'Tekstveld waarin contactgegevens van een alternatieve contactpersoon opgenomen kunnen worden. Voorbeeld is het verzoek van een huurder (student) waarbij hij aangeeft contact op te nemen met zijn ouders voor de afhandeling van het verzoek.'
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'
           type: array
@@ -1380,9 +1357,6 @@ components:
         bovenliggendeOrder:
           $ref: '#/components/schemas/Onderhoudsorder-sleutels'
           description: 'Als een onderhoudsorder door een opdrachtnemer wordt uitbesteed aan een of meer onderaannemers, dan kan een hiërarchie tussen de orders worden aangebracht door dit attribuut te gebruiken.'
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van de order. Bijvoorbeeld: Order zit in de steekproef of de order is technisch gereed.'
         begindatum:
           type: 'string'
           format: 'date-time'
@@ -1391,63 +1365,66 @@ components:
           type: 'string'
           format: 'date-time'
           description: 'De datum waarop de order beëindigd is/wordt.'
-        uitersteGereeddatum:
-          type: 'string'
-          format: 'date-time'
-          description: 'Uiterste datum waarop de onderhoudsorder technisch gereed moet zijn. Dit wordt vaak bepaald aan de hand van de LEDO.'
         opdrachtdatum:
           type: 'string'
           format: 'date-time'
           description: 'Datum (en tijdstip) waarop de opdracht is verstrekt aan het (extern) onderhoudsbedrijf of de interne vakgroep voor de uitvoering van de werkzaamheden.'
-        onderhoudsverzoeken:
-          description: 'Het onderhoudsverzoek of de onderhoudsverzoeken die hebben geleid tot de onderhoudsorder.'
-          type: array
-          items:
-            $ref: '#/components/schemas/Onderhoudsverzoek'
-        onderhoudstaken:
-          description: 'De onderhoudstaken behorend bij de onderhoudsorder.'
-          type: array
-          items:
-            $ref: '#/components/schemas/Onderhoudstaak'
-        technischGereeddatum:
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van de order. Bijvoorbeeld: Order zit in de steekproef of de order is technisch gereed.'
+        uitersteGereeddatum:
           type: 'string'
           format: 'date-time'
-          description: 'De datum waarop de order technisch beëindigd is.'
-        financieelGereeddatum:
-          type: 'string'
-          format: 'date-time'
-          description: 'De datum waarop de order financieel beëindigd is.'
+          description: 'Uiterste datum waarop de onderhoudsorder technisch gereed moet zijn. Dit wordt vaak bepaald aan de hand van de LEDO.'
+        afrekenwijze:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De wijze waarop de onderhoudsorder wordt afgerekend (of niet). Bijvoorbeeld: Nacalculatie regie, Nacalculatie eenheidsprijzen, Vaste prijs, Afkoop, Garantie.'
         afspraken:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar Afspraak in de vorm: vera/v4/afspraken/12345'
-        overeenkomst:
+        debiteur:
           type: 'string'
           format: 'uri'
-          description: 'Referentie naar Overeenkomst in de vorm: vera/v4/overeenkomsten/12345'
+          description: 'Referentie naar Debiteur in de vorm: vera/v4/debiteuren/12345'
         defecten:
           description: 'De defecten die via het verzoek of het inspectierapport zijn gemeld.'
           type: array
           items:
             $ref: '#/components/schemas/Defect'
-        relaties:
+        financieelGereeddatum:
           type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
-        debiteur:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Debiteur in de vorm: vera/v4/debiteuren/12345'
-        uitvoerendeSoort:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De waarde die het soort uitvoerende aangeeft die de taak uitvoert. Bijvoorbeeld: vakgroep/leverancier of intern/extern.'
-        afrekenwijze:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De wijze waarop de onderhoudsorder wordt afgerekend (of niet). Bijvoorbeeld: Nacalculatie regie, Nacalculatie eenheidsprijzen, Vaste prijs, Afkoop, Garantie.'
+          format: 'date-time'
+          description: 'De datum waarop de order financieel beëindigd is.'
         offertes:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar Offerte in de vorm: vera/v4/offertes/12345'
+        onderhoudstaken:
+          description: 'De onderhoudstaken behorend bij de onderhoudsorder.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Onderhoudstaak'
+        onderhoudsverzoeken:
+          description: 'Het onderhoudsverzoek of de onderhoudsverzoeken die hebben geleid tot de onderhoudsorder.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Onderhoudsverzoek'
+        overeenkomst:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Overeenkomst in de vorm: vera/v4/overeenkomsten/12345'
+        relaties:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+        technischGereeddatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum waarop de order technisch beëindigd is.'
+        uitvoerendeSoort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De waarde die het soort uitvoerende aangeeft die de taak uitvoert. Bijvoorbeeld: vakgroep/leverancier of intern/extern.'
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'
           type: array
@@ -1479,31 +1456,36 @@ components:
           type: 'string'
           format: 'any'
           description: 'De korte omschrijving van de taak.'
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van de onderhoudstaak. Bijvoorbeeld;aangemaakt, ingepland, in uitvoer, afgerond, '
         detailStatus:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De detail status van de onderhoudstaak. Bijvoorbeeld: Klant niet aanwezig'
-        onderhoudsorder:
-          $ref: '#/components/schemas/Onderhoudsorder'
-          description: 'De onderhoudsorder behorend bij de onderhoudstaak.'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van de onderhoudstaak. Bijvoorbeeld;aangemaakt, ingepland, in uitvoer, afgerond, '
+        afspraken:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Afspraak in de vorm: vera/v4/afspraken/12345'
+        defecten:
+          description: 'De geconstateerde defecten die met de onderhoudstaak worden verholpen'
+          type: array
+          items:
+            $ref: '#/components/schemas/Defect'
         onderhoudsbestedingen:
           description: 'De onderhoudsbestedingen behorend bij de onderhoudstaak.'
           type: array
           items:
             $ref: '#/components/schemas/Onderhoudsbesteding'
-        afspraken:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Afspraak in de vorm: vera/v4/afspraken/12345'
+        onderhoudsorder:
+          $ref: '#/components/schemas/Onderhoudsorder'
+          description: 'De onderhoudsorder behorend bij de onderhoudstaak.'
+        onderhoudsverzoek:
+          $ref: '#/components/schemas/Onderhoudsverzoek'
+          description: 'Het onderhoudsverzoek behorend bij de onderhoudstaak. Ook als er (nog) geen onderhoudsorder is bij de onderhoudstaak, kan op deze manier het bijbehorende onderhoudsverzoek worden gevonden.'
         relaties:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
-        onderhoudsverzoek:
-          $ref: '#/components/schemas/Onderhoudsverzoek'
-          description: 'Het onderhoudsverzoek behorend bij de onderhoudstaak. Ook als er (nog) geen onderhoudsorder is bij de onderhoudstaak, kan op deze manier het bijbehorende onderhoudsverzoek worden gevonden.'
         specialisme:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het specialisme dat nodig is om de taak uit te voeren. Voorbeelden zijn Timmerman, Loodgieter, etc.'
@@ -1512,11 +1494,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Onderhoudstaakvoorcalculatie'
-        defecten:
-          description: 'De geconstateerde defecten die met de onderhoudstaak worden verholpen'
-          type: array
-          items:
-            $ref: '#/components/schemas/Defect'
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'
           type: array
@@ -1540,28 +1517,18 @@ components:
           type: 'string'
           format: 'any'
           description: 'De korte omschrijving van de onderhoudsbesteding.'
-        uitvoerdatum:
-          type: 'string'
-          format: 'date-time'
-          description: 'De datum waarop de onderhoudsbesteding is uitgevoerd.'
         uitvoerBegintijd:
           type: 'string'
           format: 'date-time'
           description: 'De aanvangstijd van de uitvoering'
+        uitvoerdatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum waarop de onderhoudsbesteding is uitgevoerd.'
         uitvoerEindtijd:
           type: 'string'
           format: 'date-time'
           description: 'De eindtijd van de uitvoering.'
-        onderhoudstaak:
-          $ref: '#/components/schemas/Onderhoudstaak'
-          description: 'Verwijzing naar de onderhoudstaak'
-        reistijd:
-          type: 'string'
-          format: 'date-time'
-          description: 'De reistijd'
-        meeteenheid:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De meeteenheid waarin de besteding wordt gemeten. Bijv. uur, liter etc.'
         aantal:
           type: 'number'
           format: 'float'
@@ -1570,6 +1537,82 @@ components:
           type: 'number'
           format: 'float'
           description: 'De totale kosten van de bestedingsregel op basis van het aantal, de meeteenheid en het eventueel gebruikte artikel'
+        meeteenheid:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De meeteenheid waarin de besteding wordt gemeten. Bijv. uur, liter etc.'
+        onderhoudstaak:
+          $ref: '#/components/schemas/Onderhoudstaak'
+          description: 'Verwijzing naar de onderhoudstaak'
+        reistijd:
+          type: 'string'
+          format: 'date-time'
+          description: 'De reistijd'
+        extra-attributen:
+          description: 'Toegevoegde sleutel/waarde-paren'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttribuut'
+    Onderhoudsverzoek:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        onderhoudSoort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort onderhoud dat wordt verzocht. Bijvoorbeeld: reparatie, mutatieonderhoud etc.'
+        omschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'De korte omschrijving van het verzoek. Bijvoorbeeld: Keuken: kraan lekt.'
+        melddatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum waarop het onderhoudsverzoek is gemeld.'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van het verzoek. Bijvoorbeeld: Geregistreerd, In behandeling, Geannuleerd, Afgehandeld'
+        alternatiefContactgegeven:
+          type: 'string'
+          format: 'any'
+          description: 'Tekstveld waarin contactgegevens van een alternatieve contactpersoon opgenomen kunnen worden. Voorbeeld is het verzoek van een huurder (student) waarbij hij aangeeft contact op te nemen met zijn ouders voor de afhandeling van het verzoek.'
+        contactmomenten:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Contactmoment in de vorm: vera/v4/contactmomenten/12345'
+        defecten:
+          description: 'De defecten die via zijn gemeld en gekoppeld aan het onderhoudsverzoek.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Defect'
+        onderhoudsorders:
+          description: 'De onderhoudsorders behorend bij het onderhoudsverzoek.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Onderhoudsorder'
+        onderhoudstaken:
+          description: 'De taken die via het verzoek zijn gemeld.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Onderhoudstaak'
+        onderhoudsverzoeken:
+          description: 'Gerelateerde onderhoudsverzoeken bij het onderhoudsverzoek.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Onderhoudsverzoek'
+        relaties:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+        voorkeurAfspraken:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Afspraak in de vorm: vera/v4/afspraken/12345'
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'
           type: array
@@ -1593,12 +1636,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De omschrijving van de voorcalculatie.'
-        onderhoudstaak:
-          $ref: '#/components/schemas/Onderhoudstaak'
-          description: 'De onderhoudstaak behorende bij de voorcalculatie.'
-        meeteenheid:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De meeteenheid waarin de voorcalculatie wordt gemeten. Bijv. uur, liter etc.'
         aantal:
           type: 'number'
           format: 'float'
@@ -1607,6 +1644,12 @@ components:
           type: 'number'
           format: 'float'
           description: 'Een indicatie van de kosten van de verwachte bestedingen.'
+        meeteenheid:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De meeteenheid waarin de voorcalculatie wordt gemeten. Bijv. uur, liter etc.'
+        onderhoudstaak:
+          $ref: '#/components/schemas/Onderhoudstaak'
+          description: 'De onderhoudstaak behorende bij de voorcalculatie.'
         standaardprijs:
           $ref: '#/components/schemas/Standaardprijs'
           description: 'Verwijzing naar een standaard (eenheids- of taak-) prijs die past bij de bestedingssoort, of die geldt voor de onderhoudstaak als geheel.'
@@ -1646,49 +1689,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Onderhoudstaakvoorcalculatie'
-        extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttribuut'
-    Inspectierapport:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        soort:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'Bijvoorbeeld: Voorinspectierapport, eindinspectierapport.'
-        omschrijving:
-          type: 'string'
-          format: 'any'
-          description: 'De korte omschrijving van de uitgevoerde inspectie. Bijvoorbeeld: Voorinspectie ten behoeve van mutatieonderhoud'
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van het inspectierapport. Bijvoorbeeld Concept, Definitief, Getekend etc.'
-        relaties:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
-        inspectieOrder:
-          $ref: '#/components/schemas/Onderhoudsorder'
-          description: 'De inspectieorder waardoor de inspectie heeft plaatsgevonden.'
-        geconstateerdeDefecten:
-          description: 'De defecten die zijn geconstateerd tijdens de inspectie.'
-          type: array
-          items:
-            $ref: '#/components/schemas/Defect'
-        voorgesteldeOnderhoudstaken:
-          description: 'In de situatie dat de inspecteur ook uit te voeren onderhoudstaken vaststelt tijdens de inspectie kunnen deze als voorgestelde onderhoudstaken opgenomen worden bij het inspectierapport'
-          type: array
-          items:
-            $ref: '#/components/schemas/Onderhoudstaak'
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'
           type: array

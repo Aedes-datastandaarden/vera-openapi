@@ -622,10 +622,6 @@ components:
     Betaalgegevens-Betaalgegeven:
       type: object
       properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem'
         code:
           type: 'string'
           format: 'any'
@@ -645,6 +641,32 @@ components:
           type: 'string'
           format: 'date'
           description: 'De einddatum van het betaalgegeven.'
+        bic:
+          type: 'string'
+          format: 'any'
+          description: 'Bank Identifier Code. Hierdoor komen internationale betalingsoverdrachten bij de juiste bank terecht. De BIC wordt ook wel SWIFT-adres of SWIFT-code genoemd.'
+        iban:
+          type: 'string'
+          format: 'any'
+          description: 'Het International Bank Account Number. Identificeert elke rekeninghouder, inclusief bank en vestigingsland.'
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        incassomachtigingen:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Incassomachtiging in de vorm: vera/v4/incassomachtigingen/12345'
+        incassowijze:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De standaard incassowijze voor het betaalgegeven.'
+        overeenkomst:
+          $ref: '#/components/schemas/Betaalgegevens-Overeenkomst'
+          description: 'De overeenkomst behorende bij het betaalgegeven.'
+        primair:
+          type: 'boolean'
+          format: 'true-or-false'
+          description: 'De aanduiding dat het betaalgegeven het primaire betaalgegeven betreft.'
         rekeninghouder:
           type: 'string'
           format: 'any'
@@ -655,28 +677,6 @@ components:
         relatie:
           $ref: '#/components/schemas/Betaalgegevens-Relatie'
           description: 'De relatie behorend bij het betaalgegeven.'
-        iban:
-          type: 'string'
-          format: 'any'
-          description: 'Het International Bank Account Number. Identificeert elke rekeninghouder, inclusief bank en vestigingsland.'
-        bic:
-          type: 'string'
-          format: 'any'
-          description: 'Bank Identifier Code. Hierdoor komen internationale betalingsoverdrachten bij de juiste bank terecht. De BIC wordt ook wel SWIFT-adres of SWIFT-code genoemd.'
-        primair:
-          type: 'boolean'
-          format: 'true-or-false'
-          description: 'De aanduiding dat het betaalgegeven het primaire betaalgegeven betreft.'
-        incassowijze:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De standaard incassowijze voor het betaalgegeven.'
-        overeenkomst:
-          $ref: '#/components/schemas/Betaalgegevens-Overeenkomst'
-          description: 'De overeenkomst behorende bij het betaalgegeven.'
-        incassomachtigingen:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Incassomachtiging in de vorm: vera/v4/incassomachtigingen/12345'
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'
           type: array
@@ -791,29 +791,29 @@ components:
           type: 'string'
           format: 'date-time'
           description: 'De datum en tijd waarop contact is geweest.'
+        dossier:
+          $ref: '#/components/schemas/Dossier-sleutels'
+          description: 'Het dossier waarbinnen het contactmoment is vastgelegd.'
+        kanaal:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het kanaal via welke het contact heeft gelopen. Bijvoorbeeld: Telefoon, email, balie, internet.'
         relaties:
           description: 'De relatie waarmee contact is geweest. Bijv. een huurder, mederwerker etc.'
           type: array
           items:
             $ref: '#/components/schemas/Contactmomenten-Relatie'
-        kanaal:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'Het kanaal via welke het contact heeft gelopen. Bijvoorbeeld: Telefoon, email, balie, internet.'
         richting:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De communicatierichting behorend bij het contact. Bijvoorbeeld: Uitgaand of ingaand.'
         zaak:
           $ref: '#/components/schemas/Zaak-sleutels'
           description: 'De zaak waarvoor het contactmoment heeft plaatsgevonden.'
-        dossier:
-          $ref: '#/components/schemas/Dossier-sleutels'
-          description: 'Het dossier waarbinnen het contactmoment is vastgelegd.'
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
-    Zaak-sleutels:
+    Dossier-sleutels:
       type: object
       properties:
         id:
@@ -824,7 +824,7 @@ components:
           type: 'string'
           format: 'any'
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    Dossier-sleutels:
+    Zaak-sleutels:
       type: object
       properties:
         id:
@@ -909,18 +909,14 @@ components:
           type: 'string'
           format: 'any'
           description: 'De samenstelling van de attributen: straatnaam, huisnummer, huisletter en huisnummerToevoeging.'
-        straatnaam:
-          type: 'string'
-          format: 'any'
-          description: 'De straatnaam behorend bij het adres.'
-        huisnummer:
-          type: 'string'
-          format: 'any'
-          description: 'Het huisnummer dat door of namens het gemeentebestuur ten aanzien van een adresseerbaar object toegekende nummering.'
         huisletter:
           type: 'string'
           format: 'any'
           description: 'De huisletter door of namens het gemeentebestuur ten aanzien van een adresseerbaar object toegekende toevoeging aan een huisnummer in de vorm van een alfanumeriek teken.'
+        huisnummer:
+          type: 'string'
+          format: 'any'
+          description: 'Het huisnummer dat door of namens het gemeentebestuur ten aanzien van een adresseerbaar object toegekende nummering.'
         huisnummerToevoeging:
           type: 'string'
           format: 'any'
@@ -929,26 +925,15 @@ components:
           type: 'string'
           format: 'any'
           description: 'De postcode van het adres.'
+        straatnaam:
+          type: 'string'
+          format: 'any'
+          description: 'De straatnaam behorend bij het adres.'
     Relaties-BuitenlandsAdres:
       allOf:
         - $ref: '#/components/schemas/Relaties-Adres'
         - type: object
           properties:
-            postbusnummer:
-              type: 'string'
-              format: 'any'
-              description: 'Het postbusnummer behorende bij het adres'
-            woonplaats:
-              type: 'string'
-              format: 'any'
-              description: 'De woonplaats waarin het adres zich bevindt.'
-            provincie:
-              type: 'string'
-              format: 'any'
-              description: 'De provincie behorend bij het adres.'
-            land:
-              $ref: '#/components/schemas/Referentiedata'
-              description: 'Het land waarin het adres zich bevindt.'
             adresregel1:
               type: 'string'
               format: 'any'
@@ -957,6 +942,21 @@ components:
               type: 'string'
               format: 'any'
               description: 'Adresregel in verband met een buitenlands adres.'
+            land:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'Het land waarin het adres zich bevindt.'
+            postbusnummer:
+              type: 'string'
+              format: 'any'
+              description: 'Het postbusnummer behorende bij het adres'
+            provincie:
+              type: 'string'
+              format: 'any'
+              description: 'De provincie behorend bij het adres.'
+            woonplaats:
+              type: 'string'
+              format: 'any'
+              description: 'De woonplaats waarin het adres zich bevindt.'
     Relaties-Contactgegeven:
       type: object
       properties:
@@ -974,27 +974,27 @@ components:
         detailSoort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort detail communicatie. Bijvoorbeeld: Mobiel, privé, werk.'
+        voorkeur:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De manier waarop de relatie contact wil krijgen door dit contactgegeven. Bijvoorbeeld: 1e voorkeur, 2e voorkeur.'
         waarde:
           type: 'string'
           format: 'any'
           description: 'De aard van het contactgegeven. Dit kan de waarde zijn van een telefoonnummer, emailadres, of twitteradres. Bijvoorbeeld: 020-1234563 '
-        voorkeur:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De manier waarop de relatie contact wil krijgen door dit contactgegeven. Bijvoorbeeld: 1e voorkeur, 2e voorkeur.'
     Relaties-Eenheidadres:
       allOf:
         - $ref: '#/components/schemas/Relaties-Adres'
         - type: object
           properties:
-            woonplaats:
-              $ref: '#/components/schemas/Relaties-Woonplaats'
-              description: 'De woonplaats waarin het adres zich bevindt.'
-            provincie:
-              $ref: '#/components/schemas/Referentiedata'
-              description: 'De provincie behorend bij het adres.'
             land:
               $ref: '#/components/schemas/Referentiedata'
               description: 'Het land waarin het adres zich bevindt.'
+            provincie:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'De provincie behorend bij het adres.'
+            woonplaats:
+              $ref: '#/components/schemas/Relaties-Woonplaats'
+              description: 'De woonplaats waarin het adres zich bevindt.'
     Relaties-NatuurlijkPersoon:
       allOf:
         - $ref: '#/components/schemas/Relaties-Relatie'
@@ -1008,56 +1008,56 @@ components:
               type: 'string'
               format: 'any'
               description: 'De initialen van de natuurlijk persoon.'
-            tussenvoegsels:
+            aanhef:
               type: 'string'
               format: 'any'
-              description: 'De tussenvoegsels behorende bij de naam.'
+              description: 'De aanhef of aanspreking is een (meestal vriendelijke) introducerende zin van een brief of e-mail. Het gaat doorgaans om standaardformuleringen waarmee de schrijver zich tot de geadresseerde richt.'
+            account:
+              $ref: '#/components/schemas/Relaties-Account'
+              description: 'link'
             achternaam:
               type: 'string'
               format: 'any'
               description: 'De achternaam van de natuurlijk persoon.'
-            roepnaam:
+            bsn:
               type: 'string'
               format: 'any'
-              description: 'De roepnaam van de natuurlijk persoon.'
-            geslacht:
+              description: 'Het BSN (Burger Service Nummer) van de natuurlijk persoon.'
+            burgerlijkeStaat:
               $ref: '#/components/schemas/Referentiedata'
               description: 'link'
             geboortedatum:
               type: 'string'
               format: 'date'
               description: 'De geboortedatum van de natuurlijk persoon.'
-            overlijdensdatum:
-              type: 'string'
-              format: 'date'
-              description: 'De datum van overlijden van de natuurlijk persoon.'
-            burgerlijkeStaat:
+            geslacht:
               $ref: '#/components/schemas/Referentiedata'
               description: 'link'
             nationaliteit:
               $ref: '#/components/schemas/Referentiedata'
               description: 'link'
-            bsn:
-              type: 'string'
-              format: 'any'
-              description: 'Het BSN (Burger Service Nummer) van de natuurlijk persoon.'
-            account:
-              $ref: '#/components/schemas/Relaties-Account'
-              description: 'link'
             opleiding:
               $ref: '#/components/schemas/Relaties-Opleiding'
               description: 'link'
-            aanhef:
+            overlijdensdatum:
+              type: 'string'
+              format: 'date'
+              description: 'De datum van overlijden van de natuurlijk persoon.'
+            roepnaam:
               type: 'string'
               format: 'any'
-              description: 'De aanhef of aanspreking is een (meestal vriendelijke) introducerende zin van een brief of e-mail. Het gaat doorgaans om standaardformuleringen waarmee de schrijver zich tot de geadresseerde richt.'
+              description: 'De roepnaam van de natuurlijk persoon.'
+            tussenvoegsels:
+              type: 'string'
+              format: 'any'
+              description: 'De tussenvoegsels behorende bij de naam.'
+            voorkeurstaal:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'De voorkeurstaal die de natuurlijk persoon voert.'
             voorletters:
               type: 'string'
               format: 'any'
               description: 'Een voorletter is een afkorting van een voornaam, die in adressering veel wordt gebruikt. De voorletters geven in combinatie met de achternaam meestal een duidelijk onderscheid tussen leden van hetzelfde gezin of dezelfde familie. Indien iemand meerdere voornamen heeft dan worden de voorletters door een punt gescheiden.'
-            voorkeurstaal:
-              $ref: '#/components/schemas/Referentiedata'
-              description: 'De voorkeurstaal die de natuurlijk persoon voert.'
     Relaties-Opleiding:
       type: object
       properties:
@@ -1077,14 +1077,14 @@ components:
         - $ref: '#/components/schemas/Relaties-Adres'
         - type: object
           properties:
-            postbusnummer:
-              type: 'string'
-              format: 'any'
-              description: 'Het postbusnummer behorende bij het adres.'
             antwoordnummer:
               type: 'string'
               format: 'any'
               description: 'Het antwoordnummer behorende bij het adres.'
+            postbusnummer:
+              type: 'string'
+              format: 'any'
+              description: 'Het postbusnummer behorende bij het adres.'
             woonplaats:
               $ref: '#/components/schemas/Relaties-Woonplaats'
               description: 'De woonplaats waarin het adres zich bevindt.'
@@ -1101,6 +1101,10 @@ components:
               type: 'string'
               format: 'any'
               description: 'Het BTW nummer van de rechtspersoon.'
+            globaalLocatienummer:
+              type: 'string'
+              format: 'any'
+              description: 'Een wereldwijd nummer ter identificatie van een partij of locatie. Het dertiencijferige nummer (GLN) wordt uitgegeven door GS1.'
             kvkNummer:
               type: 'string'
               format: 'any'
@@ -1113,10 +1117,6 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Relaties-Relatie'
-            globaalLocatienummer:
-              type: 'string'
-              format: 'any'
-              description: 'Een wereldwijd nummer ter identificatie van een partij of locatie. Het dertiencijferige nummer (GLN) wordt uitgegeven door GS1.'
     Relaties-Relatie:
       type: object
       properties:
@@ -1141,16 +1141,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Relaties-Contactgegeven'
-        rollen:
-          description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
-          type: array
-          items:
-            $ref: '#/components/schemas/Relaties-Relatierol'
         groepen:
           description: 'De relatiegroepen waar de relatie toe behoort.'
           type: array
           items:
             $ref: '#/components/schemas/Relaties-Relatiegroep'
+        rollen:
+          description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Relaties-Relatierol'
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'
           type: array
@@ -1225,16 +1225,16 @@ components:
           type: 'string'
           format: 'date'
           description: 'einddatum van de rol'
-        relatieAdressen:
-          description: 'De adresssen van de relatie die voor de rol van toepassing zijn'
-          type: array
-          items:
-            $ref: '#/components/schemas/Relaties-RelatieAdres'
         contactgegevens:
           description: 'De contactgegevens van een relatie in een bepaalde rol.'
           type: array
           items:
             $ref: '#/components/schemas/Relaties-Contactgegeven'
+        relatieAdressen:
+          description: 'De adresssen van de relatie die voor de rol van toepassing zijn'
+          type: array
+          items:
+            $ref: '#/components/schemas/Relaties-RelatieAdres'
         rolRelatie:
           $ref: '#/components/schemas/Relaties-Relatie'
           description: 'De relatie die aangeeft waar de relatie en rol koppeling van toepassing is. Dit attribuut geeft aan dat de aangegeven relatie de rol binnen bijvoorbeeld een relatiegroep heeft. Het attribuut relatie is dan bijvoorbeeld een persoon uit een huishouden en de rolRelatie is dan bijvoorbeeld de relatiegroep die het huishouden voorstelt.'
@@ -1282,20 +1282,20 @@ components:
         soort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort signaal. Bijvoorbeeld: Huurschuld, overlast of wietplantage.'
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van de signalering. Bijvoorbeeld: Actief, vervallen of passief.'
-        detailStatus:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De detailstatus van de signalering. Bijvoorbeeld: Ontruiming, vertrokken.'
         begindatum:
           type: 'string'
           format: 'date-time'
           description: 'De begindatum van de signalering'
+        detailStatus:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De detailstatus van de signalering. Bijvoorbeeld: Ontruiming, vertrokken.'
         einddatum:
           type: 'string'
           format: 'date-time'
           description: 'De einddatum van de signalering'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van de signalering. Bijvoorbeeld: Actief, vervallen of passief.'
         relatie:
           $ref: '#/components/schemas/Signaleringen-Relatie'
           description: 'De relatie behorend bij de signalering.'

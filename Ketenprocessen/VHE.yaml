@@ -592,14 +592,14 @@ components:
         - $ref: '#/components/schemas/Clusters-Geometrie'
         - type: object
           properties:
-            lengtegraad:
-              type: 'number'
-              format: 'float'
-              description: 'De lengtegraad.'
             breedtegraad:
               type: 'number'
               format: 'float'
               description: 'De breedtegraad.'
+            lengtegraad:
+              type: 'number'
+              format: 'float'
+              description: 'De lengtegraad.'
     Clusters-Relatie:
       type: object
       properties:
@@ -655,18 +655,14 @@ components:
           type: 'string'
           format: 'any'
           description: 'De samenstelling van de attributen: straatnaam, huisnummer, huisletter en huisnummerToevoeging.'
-        straatnaam:
-          type: 'string'
-          format: 'any'
-          description: 'De straatnaam behorend bij het adres.'
-        huisnummer:
-          type: 'string'
-          format: 'any'
-          description: 'Het huisnummer dat door of namens het gemeentebestuur ten aanzien van een adresseerbaar object toegekende nummering.'
         huisletter:
           type: 'string'
           format: 'any'
           description: 'De huisletter door of namens het gemeentebestuur ten aanzien van een adresseerbaar object toegekende toevoeging aan een huisnummer in de vorm van een alfanumeriek teken.'
+        huisnummer:
+          type: 'string'
+          format: 'any'
+          description: 'Het huisnummer dat door of namens het gemeentebestuur ten aanzien van een adresseerbaar object toegekende nummering.'
         huisnummerToevoeging:
           type: 'string'
           format: 'any'
@@ -675,6 +671,10 @@ components:
           type: 'string'
           format: 'any'
           description: 'De postcode van het adres.'
+        straatnaam:
+          type: 'string'
+          format: 'any'
+          description: 'De straatnaam behorend bij het adres.'
     Eenheden-Afspraakverzoek:
       type: object
       properties:
@@ -764,104 +764,210 @@ components:
           type: 'string'
           format: 'any'
           description: 'Het bouwnummer behorende bij de eenheid. Dit wordt aan een eenheid toegekend bij nieuwbouw van de eenheid. Vaak is op dat moment het adres van de eenheid nog niet bepaald.'
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van de eenheid, bijvoorbeeld: Leegstand, Uit beheer, Renovatie, Verhuurd, Verkocht'
-        detailStatus:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De detailstatus (ook wel substatus) van een status. De detailstatus geeft een extra reden op van de eenheid status die de eenheid heeft. Bijvoorbeeld: de status is Renovatie, de detailstatus geeft aan dat het om planmatig onderhoud gaat.'
         beginBouwdatum:
           type: 'string'
           format: 'date'
           description: 'De begindatum van de bouw van de eenheid.'
-        opleverdatum:
-          type: 'string'
-          format: 'date'
-          description: 'De opleverdatum van de eenheid. De bouw van de eenheid is dan gereed of de eenheid is beschikbaar voor een volgende gebruiker.'
+        detailStatus:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De detailstatus (ook wel substatus) van een status. De detailstatus geeft een extra reden op van de eenheid status die de eenheid heeft. Bijvoorbeeld: de status is Renovatie, de detailstatus geeft aan dat het om planmatig onderhoud gaat.'
         inExploitatiedatum:
           type: 'string'
           format: 'date'
           description: 'De datum waarop de eenheid in exploitatie is gegaan. We spreken over exploitatie als de eenheid in beheer is met als doel dat er resultaat wordt behaald.'
+        opleverdatum:
+          type: 'string'
+          format: 'date'
+          description: 'De opleverdatum van de eenheid. De bouw van de eenheid is dan gereed of de eenheid is beschikbaar voor een volgende gebruiker.'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van de eenheid, bijvoorbeeld: Leegstand, Uit beheer, Renovatie, Verhuurd, Verkocht'
         uitExploitatiedatum:
           type: 'string'
           format: 'date'
           description: 'De datum waarop de eenheid uit exploitatie is gegaan, zowel het beheer als andere activiteiten stoppen.'
+        aanvullendeDoelgroep:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De aanvullende doelgroep waarvoor de woning het meest geschikt is en waarvoor meestal ook voorrang wordt verleend. Bijv. Ouderen, Geestelijk gehandicapten, Lichamelijk gehandicapten, GGZ-Patiënten etc. Eventueel te gebruiken in combinatie met doelgroep.'
         adres:
           $ref: '#/components/schemas/Eenheden-Adres'
           description: 'Het adres van de eenheid.'
-        kadastraalNummer:
-          type: 'string'
-          format: 'any'
-          description: 'Het kadastraalnummer behorend bij de eenheid.'
-        panden:
-          description: 'De panden behorend bij een eenheid.'
+        benodigdeAfspraakverzoeken:
+          description: 'Specificatie van de (inspectie)afspraken die gemaakt moet worden'
           type: array
           items:
-            $ref: '#/components/schemas/Eenheden-Pand'
+            $ref: '#/components/schemas/Eenheden-Afspraakverzoek'
+        beoogdUitExploitatieDatum:
+          type: 'string'
+          format: 'date'
+          description: 'Verwachte datum waarop de eenheid aan het bezit zal worden onttrokken door sloop of verkoop.'
+        bestemming:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Door de corporatie bepaalde bestemming van de eenheid bij mutatie (sloop, verkoop, huur). In AddresseerbaarObjectRegistratie wordt met het attribuut gebruiksdoel aangegeven wat volgens de gemeente het gebruiksdoel van de eenheid is (wonen, werken, zorg, enz.)'
+        brutohuur:
+          type: 'number'
+          format: 'float'
+          description: 'De brutohuur in euro"s die geregistreerd staat bij de eenheid. De brutohuur is de netto huur (of kale huur) inclusief alle huurcomponenten en inclusief BTW.'
+        buitenruimten:
+          description: 'Bij de eenheid kan ook een buitenruimte horen die zelf geen vertrek is (Tuin, terras, etc.).'
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
         clusters:
           description: 'De clusters waar de eenheid onderdeel van uitmaakt.'
           type: array
           items:
             $ref: '#/components/schemas/Eenheden-Cluster'
-        rayon:
+        doelgroep:
           $ref: '#/components/schemas/Referentiedata'
-          description: 'Het rayon waar de eenheid in valt. Waarden zijn corporatiespecifiek en daarom niet in de referentiedata (bijlage G) beschreven.'
-        volgnummer:
-          type: 'string'
-          format: 'any'
-          description: 'Het volgnummer van een eenheid, zoals een appartementsaanduiding, of een nummering van garageboxen.'
+          description: 'De doelgroep waarvoor de eenheid bestemd is, bijv. zorgwoning, jongerenwoning, seniorenwoning, eengezinswoning, starterswoning etc. Eventueel te gebruiken in combinatie met aanvullendeDoelgroep.'
+        energieprestatie:
+          $ref: '#/components/schemas/Eenheden-Energieprestatie'
+          description: 'De huidige energieprestatie van de eenheid.'
+        energievoorzieningen:
+          description: 'Voorzieningen met betrekking tot energie zoals zonnepanelen en oplaadpunten'
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
         etage:
           type: 'integer'
           format: 'int32'
           description: 'De etage waarop de eenheid zich bevindt.'
+        gebruiksoppervlakte:
+          type: 'integer'
+          format: 'int32'
+          description: 'De gebruiksoppervlakte van een eenheid(verblijfsobject) in gehele vierkante meters, gemeten conform NEN 2580. Te gebruiken voor verantwoording dVi. Naast gebruiksoppervlakte is ook een attribuut totaleOppervlakte beschikbaar.'
         inExploitatieReden:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De reden voor het in exploitatie nemen van een eenheid. Bijvoorbeeld: verhuur of beheer namens andere eigenaren.'
-        uitExploitatieReden:
+        interieur:
+          description: 'Binnenruimte van de woning zoals gemeubileerd en vloerbedekking in de woonkamer.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
+        isolatie:
+          description: 'Getroffen isolatie maatregelen in de eenheid.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
+        kadastraalNummer:
+          type: 'string'
+          format: 'any'
+          description: 'Het kadastraalnummer behorend bij de eenheid.'
+        kamersAantal:
+          type: 'integer'
+          format: 'int32'
+          description: 'Het aantal leefruimten en slaapkamers behorende bij de eenheid.'
+        klimaatbeheersing:
+          description: 'Verzameling van kenmerken die het binnenklimaat (lucht, warmte en koeling) regelen in de eenheid.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
+        kwaliteitsniveau:
           $ref: '#/components/schemas/Referentiedata'
-          description: 'De reden voor het uit exploitatie nemen van een eenheid. Voorbeeld: sloop.'
+          description: 'Het kwaliteitsniveau van de eenheid.'
+        ligging:
+          description: 'De omschrijving van de situering van de eenheid behorend bij de eenheid. Bijvoorbeeld: Ligt aan drukke weg en vrij uitzicht'
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
+        liggingTuin:
+          description: 'Specifieke aanduiding in welke windrichting de tuin gelegen is ten opzichte van de eenheid.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
+        maatschappelijkLabel:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het label waarmee het maatschappelijk en economisch belang van de dienstverlening wordt aangegeven: behoort de eenheid tot de DAEB-tak of tot de niet-DAEB-tak. Het label op de eenheid kan afwijken van het maatschappelijk label van de huurovereenkomst. Hiermee kan worden aangegeven dat een eenheid die behoort tot de niet-DAEB tak als DAEB-verhuring verantwoord moet worden.'
+        monumenten:
+          description: 'De aanduiding die aangeeft of de eenheid een monument is, en ook welke soort monument het is. Bijvoorbeeld rijksmonument, beschermd stadsgezicht etc. Een eenheid kan onder meerdere typen monumenten vallen.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
         onderhoudslabel:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het onderhoudslabel geeft aan hoe hoog of laag het onderhoudsniveau van het betreffende eenheid moet zijn. Hierbij wordt rekening gehouden met het soort bewoners en de toekomst van het pand.'
+        overigeVertrekkenTotaalOppervlakte:
+          type: 'number'
+          format: 'float'
+          description: 'Het totaal aan oppervlakte van overige vertrekken. Met overige vertrekken worden de ruimtes bedoeld die ook in de categorie overige ruimtes vallen bij het bepalen van de woningwaarderingspunten.'
+        panden:
+          description: 'De panden behorend bij een eenheid.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Eenheden-Pand'
+        prijscomponenten:
+          description: 'De prijscomponenten behorend bij de eenheid. Bijvoorbeel huurcomponenten of maandelijkse lasten.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Eenheden-Prijscomponent'
+        rayon:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het rayon waar de eenheid in valt. Waarden zijn corporatiespecifiek en daarom niet in de referentiedata (bijlage G) beschreven.'
+        rekenhuur:
+          type: 'number'
+          format: 'float'
+          description: 'De subsidiabele huur in euro"s die geregistreerd staat bij de eenheid. De subsidiabele huur is het bedrag van de huur dat in aanmerking komt voor huurtoeslag.'
+        relaties:
+          description: 'Bij.v de eigenaar, beheerder en contactpersonen die gekoppeld zijn aan de eenheid. Met de koppeling naar Relatierol kan de soort rol van de relatie ten opzichte van de eenheid vastgelegd worden.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Eenheden-Relatie'
+        sanitair:
+          description: 'Sanitaire voorzieningen'
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
+        streefhuur:
+          type: 'number'
+          format: 'float'
+          description: 'De netto huur in euro"s waarnaar de woningcorporatie streeft.'
+        toegankelijkheidslabel:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het toegankelijkheidslabel van de eenheid. Bijvoorbeeld, de eenheid is geschikt voor minder validen.'
+        totaleOppervlakte:
+          type: 'number'
+          format: 'float'
+          description: 'De totale oppervlakte van een eenheid. Vertrekken die niet bewoonbaar zijn, worden hierbij meegeteld. Let op: niet te verwarren met de voor de dVi vereiste "gebruiksoppervlakte".'
+        uitExploitatieReden:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De reden voor het uit exploitatie nemen van een eenheid. Voorbeeld: sloop.'
+        verkoop:
+          type: 'boolean'
+          format: 'true-or-false'
+          description: 'De waarde die aangeeft of de eenheid beschikbaar is voor de verkoop.'
         vertrekken:
           description: 'De ruimten behorend bij de eenheid.'
           type: array
           items:
             $ref: '#/components/schemas/Eenheden-Vertrek'
-        kamersAantal:
-          type: 'integer'
-          format: 'int32'
-          description: 'Het aantal leefruimten en slaapkamers behorende bij de eenheid.'
-        verwarmdeVertrekkenAantal:
-          type: 'integer'
-          format: 'int32'
-          description: 'Het aantal verwarmde vertrekken van de eenheid.'
-        totaleOppervlakte:
-          type: 'number'
-          format: 'float'
-          description: 'De totale oppervlakte van een eenheid. Vertrekken die niet bewoonbaar zijn, worden hierbij meegeteld. Let op: niet te verwarren met de voor de dVi vereiste "gebruiksoppervlakte".'
-        woonvertrekInhoud:
-          type: 'number'
-          format: 'float'
-          description: 'De inhoud van de eenheid in m3 waarin gewoond kan worden.'
         vertrekkenAantal:
           type: 'integer'
           format: 'int32'
           description: 'Het aantal vertrekken behorende bij de eenheid.'
+        verwarmdeVertrekkenAantal:
+          type: 'integer'
+          format: 'int32'
+          description: 'Het aantal verwarmde vertrekken van de eenheid.'
+        volgnummer:
+          type: 'string'
+          format: 'any'
+          description: 'Het volgnummer van een eenheid, zoals een appartementsaanduiding, of een nummering van garageboxen.'
+        voorwaarden:
+          $ref: '#/components/schemas/Eenheden-EenheidVoorwaarden'
+          description: 'De voorwaarden waaraan de bewoner moet voldoen om in aanmerking te komen of voorrang te krijgen voor de eenheid.'
+        vraagprijs:
+          type: 'number'
+          format: 'float'
+          description: 'De vraagprijs voor de verkoop van de eenheid.'
+        woonvertrekInhoud:
+          type: 'number'
+          format: 'float'
+          description: 'De inhoud van de eenheid in m3 waarin gewoond kan worden.'
         woonvertrekkenTotaalOppervlakte:
           type: 'number'
           format: 'float'
           description: 'Het totaal aan oppervlakte van woonvertrekken. Met woonvertrekken worden de ruimtes bedoeld die ook in de categorie woonvertrekken vallen bij het bepalen van de woningwaarderingspunten.'
-        overigeVertrekkenTotaalOppervlakte:
-          type: 'number'
-          format: 'float'
-          description: 'Het totaal aan oppervlakte van overige vertrekken. Met overige vertrekken worden de ruimtes bedoeld die ook in de categorie overige ruimtes vallen bij het bepalen van de woningwaarderingspunten.'
-        bestemming:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'Door de corporatie bepaalde bestemming van de eenheid bij mutatie (sloop, verkoop, huur). In AddresseerbaarObjectRegistratie wordt met het attribuut gebruiksdoel aangegeven wat volgens de gemeente het gebruiksdoel van de eenheid is (wonen, werken, zorg, enz.)'
-        doelgroep:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De doelgroep waarvoor de eenheid bestemd is, bijv. zorgwoning, jongerenwoning, seniorenwoning, eengezinswoning, starterswoning etc. Eventueel te gebruiken in combinatie met aanvullendeDoelgroep.'
         woonvorm:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De woonvorm van de eenheid. Bijvoorbeeld groepswonen.'
@@ -873,112 +979,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De omschrijving van de zorgfaciliteit behorende bij de eenheid.'
-        kwaliteitsniveau:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'Het kwaliteitsniveau van de eenheid.'
-        toegankelijkheidslabel:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'Het toegankelijkheidslabel van de eenheid. Bijvoorbeeld, de eenheid is geschikt voor minder validen.'
-        monumenten:
-          description: 'De aanduiding die aangeeft of de eenheid een monument is, en ook welke soort monument het is. Bijvoorbeeld rijksmonument, beschermd stadsgezicht etc. Een eenheid kan onder meerdere typen monumenten vallen.'
-          type: array
-          items:
-            $ref: '#/components/schemas/Referentiedata'
-        brutohuur:
-          type: 'number'
-          format: 'float'
-          description: 'De brutohuur in euro"s die geregistreerd staat bij de eenheid. De brutohuur is de netto huur (of kale huur) inclusief alle huurcomponenten en inclusief BTW.'
-        rekenhuur:
-          type: 'number'
-          format: 'float'
-          description: 'De subsidiabele huur in euro"s die geregistreerd staat bij de eenheid. De subsidiabele huur is het bedrag van de huur dat in aanmerking komt voor huurtoeslag.'
-        streefhuur:
-          type: 'number'
-          format: 'float'
-          description: 'De netto huur in euro"s waarnaar de woningcorporatie streeft.'
-        prijscomponenten:
-          description: 'De prijscomponenten behorend bij de eenheid. Bijvoorbeel huurcomponenten of maandelijkse lasten.'
-          type: array
-          items:
-            $ref: '#/components/schemas/Eenheden-Prijscomponent'
-        vraagprijs:
-          type: 'number'
-          format: 'float'
-          description: 'De vraagprijs voor de verkoop van de eenheid.'
-        verkoop:
-          type: 'boolean'
-          format: 'true-or-false'
-          description: 'De waarde die aangeeft of de eenheid beschikbaar is voor de verkoop.'
-        voorwaarden:
-          $ref: '#/components/schemas/Eenheden-EenheidVoorwaarden'
-          description: 'De voorwaarden waaraan de bewoner moet voldoen om in aanmerking te komen of voorrang te krijgen voor de eenheid.'
-        energieprestatie:
-          $ref: '#/components/schemas/Eenheden-Energieprestatie'
-          description: 'De huidige energieprestatie van de eenheid.'
-        maatschappelijkLabel:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'Het label waarmee het maatschappelijk en economisch belang van de dienstverlening wordt aangegeven: behoort de eenheid tot de DAEB-tak of tot de niet-DAEB-tak. Het label op de eenheid kan afwijken van het maatschappelijk label van de huurovereenkomst. Hiermee kan worden aangegeven dat een eenheid die behoort tot de niet-DAEB tak als DAEB-verhuring verantwoord moet worden.'
-        klimaatbeheersing:
-          description: 'Verzameling van kenmerken die het binnenklimaat (lucht, warmte en koeling) regelen in de eenheid.'
-          type: array
-          items:
-            $ref: '#/components/schemas/Referentiedata'
-        liggingTuin:
-          description: 'Specifieke aanduiding in welke windrichting de tuin gelegen is ten opzichte van de eenheid.'
-          type: array
-          items:
-            $ref: '#/components/schemas/Referentiedata'
-        buitenruimten:
-          description: 'Bij de eenheid kan ook een buitenruimte horen die zelf geen vertrek is (Tuin, terras, etc.).'
-          type: array
-          items:
-            $ref: '#/components/schemas/Referentiedata'
-        interieur:
-          description: 'Binnenruimte van de woning zoals gemeubileerd en vloerbedekking in de woonkamer.'
-          type: array
-          items:
-            $ref: '#/components/schemas/Referentiedata'
-        isolatie:
-          description: 'Getroffen isolatie maatregelen in de eenheid.'
-          type: array
-          items:
-            $ref: '#/components/schemas/Referentiedata'
-        sanitair:
-          description: 'Sanitaire voorzieningen'
-          type: array
-          items:
-            $ref: '#/components/schemas/Referentiedata'
-        energievoorzieningen:
-          description: 'Voorzieningen met betrekking tot energie zoals zonnepanelen en oplaadpunten'
-          type: array
-          items:
-            $ref: '#/components/schemas/Referentiedata'
-        ligging:
-          description: 'De omschrijving van de situering van de eenheid behorend bij de eenheid. Bijvoorbeeld: Ligt aan drukke weg en vrij uitzicht'
-          type: array
-          items:
-            $ref: '#/components/schemas/Referentiedata'
-        beoogdUitExploitatieDatum:
-          type: 'string'
-          format: 'date'
-          description: 'Verwachte datum waarop de eenheid aan het bezit zal worden onttrokken door sloop of verkoop.'
-        aanvullendeDoelgroep:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De aanvullende doelgroep waarvoor de woning het meest geschikt is en waarvoor meestal ook voorrang wordt verleend. Bijv. Ouderen, Geestelijk gehandicapten, Lichamelijk gehandicapten, GGZ-Patiënten etc. Eventueel te gebruiken in combinatie met doelgroep.'
-        gebruiksoppervlakte:
-          type: 'integer'
-          format: 'int32'
-          description: 'De gebruiksoppervlakte van een eenheid(verblijfsobject) in gehele vierkante meters, gemeten conform NEN 2580. Te gebruiken voor verantwoording dVi. Naast gebruiksoppervlakte is ook een attribuut totaleOppervlakte beschikbaar.'
-        relaties:
-          description: 'Bij.v de eigenaar, beheerder en contactpersonen die gekoppeld zijn aan de eenheid. Met de koppeling naar Relatierol kan de soort rol van de relatie ten opzichte van de eenheid vastgelegd worden.'
-          type: array
-          items:
-            $ref: '#/components/schemas/Eenheden-Relatie'
-        benodigdeAfspraakverzoeken:
-          description: 'Specificatie van de (inspectie)afspraken die gemaakt moet worden'
-          type: array
-          items:
-            $ref: '#/components/schemas/Eenheden-Afspraakverzoek'
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'
           type: array
@@ -989,21 +989,21 @@ components:
         - $ref: '#/components/schemas/Eenheden-Adres'
         - type: object
           properties:
-            woonplaats:
-              $ref: '#/components/schemas/Eenheden-Woonplaats'
-              description: 'De woonplaats waarin het adres zich bevindt.'
             buurt:
               $ref: '#/components/schemas/Eenheden-Buurt'
               description: 'De buurt behorend bij het adres.'
-            wijk:
-              $ref: '#/components/schemas/Eenheden-Wijk'
-              description: 'De wijk behorend bij het adres.'
             gemeente:
               $ref: '#/components/schemas/Eenheden-Gemeente'
               description: 'De gemeente behorend bij het adres.'
             land:
               $ref: '#/components/schemas/Referentiedata'
               description: 'Het land waarin het adres zich bevindt.'
+            wijk:
+              $ref: '#/components/schemas/Eenheden-Wijk'
+              description: 'De wijk behorend bij het adres.'
+            woonplaats:
+              $ref: '#/components/schemas/Eenheden-Woonplaats'
+              description: 'De woonplaats waarin het adres zich bevindt.'
     Eenheden-EenheidVoorwaarden:
       type: object
       properties:
@@ -1015,37 +1015,37 @@ components:
           type: 'string'
           format: 'any'
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        minimumAantalPersonen:
-          type: 'integer'
-          format: 'int32'
-          description: 'Het minimum aantal personen waarvoor de eenheid geschikt is.'
         maximumAantalPersonen:
           type: 'integer'
           format: 'int32'
           description: 'Het maximaal aantal personen waarvoor de eenheid geschikt is.'
-        minimumleeftijd:
-          type: 'integer'
-          format: 'int32'
-          description: 'De minimumleeftijd waaraan de bewoner moet voldoen om in aanmerking te komen voor de eenheid.'
-        maximunleeftijd:
-          type: 'integer'
-          format: 'int32'
-          description: 'De maximumleeftijd waaraan de bewoner moet voldoen om in aanmerking te komen voor de eenheid.'
-        minimuminkomen:
-          type: 'number'
-          format: 'float'
-          description: 'Het minimuminkomen dat de bewoner moet hebben om in aanmerking te komen voor de eenheid.'
         maximuminkomen:
           type: 'number'
           format: 'float'
           description: 'Het maximuminkomen dat de bewoner moet hebben om in aanmerking te komen voor de eenheid.'
-        voorrangscriteria:
-          description: 'De criteria waaraan men moet voldoen om voorrang te krijgen voor deze eenheid.'
+        maximunleeftijd:
+          type: 'integer'
+          format: 'int32'
+          description: 'De maximumleeftijd waaraan de bewoner moet voldoen om in aanmerking te komen voor de eenheid.'
+        minimumAantalPersonen:
+          type: 'integer'
+          format: 'int32'
+          description: 'Het minimum aantal personen waarvoor de eenheid geschikt is.'
+        minimuminkomen:
+          type: 'number'
+          format: 'float'
+          description: 'Het minimuminkomen dat de bewoner moet hebben om in aanmerking te komen voor de eenheid.'
+        minimumleeftijd:
+          type: 'integer'
+          format: 'int32'
+          description: 'De minimumleeftijd waaraan de bewoner moet voldoen om in aanmerking te komen voor de eenheid.'
+        selectiecriteria:
+          description: 'De criteria waaraan men moet voldoen om in aanmerking te komen voor deze eenheid.'
           type: array
           items:
             $ref: '#/components/schemas/Referentiedata'
-        selectiecriteria:
-          description: 'De criteria waaraan men moet voldoen om in aanmerking te komen voor deze eenheid.'
+        voorrangscriteria:
+          description: 'De criteria waaraan men moet voldoen om voorrang te krijgen voor deze eenheid.'
           type: array
           items:
             $ref: '#/components/schemas/Referentiedata'
@@ -1137,13 +1137,13 @@ components:
           type: 'number'
           format: 'float'
           description: 'Het bedrag in euro"s van het prijscomponent exclusief BTW.'
-        btw:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De BTW van het prijscomponent.'
         bedragInclusiefBtw:
           type: 'number'
           format: 'float'
           description: 'Het bedrag in euro"s van het prijscomponent inclusief BTW.'
+        btw:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De BTW van het prijscomponent.'
     Eenheden-Relatie:
       type: object
       properties:
@@ -1261,18 +1261,14 @@ components:
           type: 'string'
           format: 'any'
           description: 'De samenstelling van de attributen: straatnaam, huisnummer, huisletter en huisnummerToevoeging.'
-        straatnaam:
-          type: 'string'
-          format: 'any'
-          description: 'De straatnaam behorend bij het adres.'
-        huisnummer:
-          type: 'string'
-          format: 'any'
-          description: 'Het huisnummer dat door of namens het gemeentebestuur ten aanzien van een adresseerbaar object toegekende nummering.'
         huisletter:
           type: 'string'
           format: 'any'
           description: 'De huisletter door of namens het gemeentebestuur ten aanzien van een adresseerbaar object toegekende toevoeging aan een huisnummer in de vorm van een alfanumeriek teken.'
+        huisnummer:
+          type: 'string'
+          format: 'any'
+          description: 'Het huisnummer dat door of namens het gemeentebestuur ten aanzien van een adresseerbaar object toegekende nummering.'
         huisnummerToevoeging:
           type: 'string'
           format: 'any'
@@ -1281,6 +1277,10 @@ components:
           type: 'string'
           format: 'any'
           description: 'De postcode van het adres.'
+        straatnaam:
+          type: 'string'
+          format: 'any'
+          description: 'De straatnaam behorend bij het adres.'
     Huuropzeggingen-Afspraak:
       type: object
       properties:
@@ -1296,17 +1296,10 @@ components:
           type: 'string'
           format: 'any'
           description: 'Het onderwerp van de afspraak.'
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van de afspraak.'
         begindatum:
           type: 'string'
           format: 'date-time'
           description: 'De datum en tijd waarop de afspraak plaatsvindt. Als (nog) geen afspraak begindatum bekend is kan er wel een bloktijd zijn opgeven.'
-        einddatum:
-          type: 'string'
-          format: 'date-time'
-          description: 'De datum en tijd tot wanneer de afspraak naar verwachting loopt.'
         bloktijdBegin:
           type: 'string'
           format: 'date-time'
@@ -1315,29 +1308,36 @@ components:
           type: 'string'
           format: 'date-time'
           description: 'De datum en tijd die het eind van een blok markeert waarbinnen de afspraak bij voorkeur start.'
+        einddatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum en tijd tot wanneer de afspraak naar verwachting loopt.'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van de afspraak.'
+        alternatiefContactgegeven:
+          type: 'string'
+          format: 'any'
+          description: 'Tekstveld waarin contactgegevens van een alternatieve contactpersoon opgenomen kunnen worden. Voorbeeld is het verzoek van een huurder (student) waarbij hij aangeeft contact op te nemen met zijn ouders voor de afhandeling van het verzoek.'
+        locatie:
+          $ref: '#/components/schemas/Huuropzeggingen-Adres'
+          description: 'De locatie waar de afspraak zich plaatsvindt.'
         relaties:
           description: 'De relatie waarmee de afspraak is gemaakt. Bijv. Huurder, Medewerker.'
           type: array
           items:
             $ref: '#/components/schemas/Huuropzeggingen-Relatie'
-        locatie:
-          $ref: '#/components/schemas/Huuropzeggingen-Adres'
-          description: 'De locatie waar de afspraak zich plaatsvindt.'
-        alternatiefContactgegeven:
-          type: 'string'
-          format: 'any'
-          description: 'Tekstveld waarin contactgegevens van een alternatieve contactpersoon opgenomen kunnen worden. Voorbeeld is het verzoek van een huurder (student) waarbij hij aangeeft contact op te nemen met zijn ouders voor de afhandeling van het verzoek.'
     Huuropzeggingen-Eenheidadres:
       allOf:
         - $ref: '#/components/schemas/Huuropzeggingen-Adres'
         - type: object
           properties:
-            woonplaats:
-              $ref: '#/components/schemas/Huuropzeggingen-Woonplaats'
-              description: 'De woonplaats waarin het adres zich bevindt.'
             land:
               $ref: '#/components/schemas/Referentiedata'
               description: 'Het land waarin het adres zich bevindt.'
+            woonplaats:
+              $ref: '#/components/schemas/Huuropzeggingen-Woonplaats'
+              description: 'De woonplaats waarin het adres zich bevindt.'
     Huuropzeggingen-Huuropzegging:
       type: object
       properties:
@@ -1349,9 +1349,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van de huuropzegging. Bijv. Aangemaakt, Goedgekeurd, Geannuleerd, Afgewezen, In behandeling, Afgehandeld.'
         begindatum:
           type: 'string'
           format: 'date'
@@ -1360,11 +1357,22 @@ components:
           type: 'string'
           format: 'date'
           description: 'De begindatum waarop de opzegging is afgerond'
-        relaties:
-          description: 'De relaties voor de huuropzegging. Bijv. de melder, de behandelaar, .'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van de huuropzegging. Bijv. Aangemaakt, Goedgekeurd, Geannuleerd, Afgewezen, In behandeling, Afgehandeld.'
+        huurovereenkomst:
+          $ref: '#/components/schemas/Overeenkomst-sleutels'
+          description: 'De opgezegde huurovereenkomst.'
+        inspectieafspraken:
+          description: 'De inspectieafspraken van de opzegging.'
           type: array
           items:
-            $ref: '#/components/schemas/Huuropzeggingen-Relatierol'
+            $ref: '#/components/schemas/Huuropzeggingen-Afspraak'
+        nieuweAdressen:
+          description: 'De nieuwe adressen van de huurder van het vastgoed.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Huuropzeggingen-RelatieAdres'
         opzegdatum:
           type: 'string'
           format: 'date'
@@ -1372,19 +1380,11 @@ components:
         redenOpzegging:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De reden van de voortijdige ontbinding van de overeenkomst.'
-        inspectieafspraken:
-          description: 'De inspectieafspraken van de opzegging.'
+        relaties:
+          description: 'De relaties voor de huuropzegging. Bijv. de melder, de behandelaar, .'
           type: array
           items:
-            $ref: '#/components/schemas/Huuropzeggingen-Afspraak'
-        huurovereenkomst:
-          $ref: '#/components/schemas/Overeenkomst-sleutels'
-          description: 'De opgezegde huurovereenkomst.'
-        nieuweAdressen:
-          description: 'De nieuwe adressen van de huurder van het vastgoed.'
-          type: array
-          items:
-            $ref: '#/components/schemas/Huuropzeggingen-RelatieAdres'
+            $ref: '#/components/schemas/Huuropzeggingen-Relatierol'
         extra-attributen:
           description: 'Toegevoegde sleutel/waarde-paren'
           type: array
