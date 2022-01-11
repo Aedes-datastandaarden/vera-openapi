@@ -506,12 +506,12 @@ components:
           type: 'string'
           format: 'any'
           description: 'Beknopte omschrijving van het dossier.'
-        detailStatus:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'Detaillering van de fase waarin het dossier zich vanuit het perspectief van afhandeling en archivering bevindt.'
         status:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De fase waarin het dossier zich vanuit het perspectief van afhandeling en archivering bevindt (Bijvoorbeeld "Gearchiveerd").'
+        detailStatus:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Detaillering van de fase waarin het dossier zich vanuit het perspectief van afhandeling en archivering bevindt.'
         clusters:
           description: 'Het dossier is gekoppeld aan/heeft betrekking op cluster(s). Bijvoorbeeld complexdossier.'
           type: array
@@ -576,10 +576,15 @@ components:
           items:
             $ref: '#/components/schemas/Dossiers-Zaak'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
     Referentiedata:
       type: object
       properties:
@@ -722,6 +727,89 @@ components:
         soort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
+    ExtraAttribuut:
+      type: object
+      properties:
+        naam:
+          type: 'string'
+          format: 'any'
+          description: 'De naam van het niet bestaande attribuut. Bijv. Huurprognose.'
+        waarde:
+          type: 'string'
+          format: 'any'
+          description: 'De waarde van het niet bestaande attribuut. Bijv. €850,-.'
+    Informatieobject:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Specificatie van het documenttype. Bijvoorbeeld verslag, rapport etc.'
+        detailSoort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Detail specificatie van het documenttype. Bijvoorbeeld notulen, adviesrapport etc.'
+        onderwerp:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Onderwerp van het informatieobject.'
+        subonderwerp:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Subonderwerp van het informatieobject.'
+        titel:
+          type: 'string'
+          format: 'any'
+          description: 'Titel van het informatieobject.'
+        beschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'Beschrijving van het informatieobject.'
+        bestand:
+          type: 'string'
+          format: 'byte'
+          description: 'De binaire representatie van het informatieobject.'
+        bestandsgrootte:
+          type: 'integer'
+          format: 'int32'
+          description: 'Omvang van het bestand in bytes.'
+        bestandslocatie:
+          type: 'string'
+          format: 'uri'
+          description: 'Een link (URI) naar de binaire representatie van het informatieobject.'
+        bestandsnaam:
+          type: 'string'
+          format: 'any'
+          description: 'De naam van het fysieke bestand waarin de inhoud van het informatieobject is vastgelegd.'
+        externePublicatie:
+          type: 'boolean'
+          format: 'true-or-false'
+          description: 'Aanduiding of dit informatieobject extern gepubliceerd dient te worden.'
+        externePublicatietekst:
+          type: 'string'
+          format: 'any'
+          description: 'Tekstuele omschrijving ten behoeve van externe publicatie van dit informatieobject.'
+        formaat:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het digitale formaat (IANA media type) van het informatieobject.'
+        gebruiksrechten:
+          type: 'string'
+          format: 'any'
+          description: 'Informatie omtrent rechten die geassocieerd zijn met het informatieobject zoals intellectueel eigendom.'
+        taal:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De taal waarin het informatieobject is opgesteld.'
+        versie:
+          type: 'number'
+          format: 'float'
+          description: 'Het versienummer van het informatieobject.'
+        vertrouwelijkheid:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De classificatie van het vertrouwelijkheidsniveau van het informatieobject.'
     Dossiers-NatuurlijkPersoon:
       allOf:
         - $ref: '#/components/schemas/Dossiers-Relatie'
@@ -953,10 +1041,15 @@ components:
           format: 'uri'
           description: 'Referentie naar Zaaktype in de vorm: vera/v4/zaaktypen/12345'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
     Zaak-sleutels:
       type: object
       properties:
@@ -1035,13 +1128,16 @@ components:
           type: 'string'
           format: 'any'
           description: 'Beschrijving van het informatieobject.'
-        archiefActiedatum:
-          type: 'string'
-          format: 'date-time'
-          description: 'De datum waarop het gearchiveerde informatieobject vernietigd moet worden dan wel overgebracht moet worden naar een archiefbewaarplaats.'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De fase waarin het informatieobject zich vanuit het perspectief van archivering bevindt.'
         detailStatus:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Detaillering van de fase waarin het informatieobject zich vanuit het perspectief van archivering bevindt.'
+        registratiedatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'Registratiedatum van het informatieobject.'
         ontvangstdatum:
           type: 'string'
           format: 'date-time'
@@ -1050,13 +1146,10 @@ components:
           type: 'string'
           format: 'date-time'
           description: 'Publicatiedatum of verzenddatum van het informatieobject.'
-        registratiedatum:
+        archiefActiedatum:
           type: 'string'
           format: 'date-time'
-          description: 'Registratiedatum van het informatieobject.'
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De fase waarin het informatieobject zich vanuit het perspectief van archivering bevindt.'
+          description: 'De datum waarop het gearchiveerde informatieobject vernietigd moet worden dan wel overgebracht moet worden naar een archiefbewaarplaats.'
         archiefnominatie:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Aanduiding of het informatieobject blijvend bewaard of na een bepaalde termijn vernietigd moet worden.'
@@ -1178,10 +1271,15 @@ components:
           items:
             $ref: '#/components/schemas/Zaak-sleutels'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobjecten-Informatieobject'
     Informatieobject-sleutels:
       type: object
       properties:
@@ -1406,14 +1504,14 @@ components:
           type: 'string'
           format: 'date-time'
           description: 'De datum waarop de uitvoering van de zaak afgerond is.'
-        geplandeEinddatum:
-          type: 'string'
-          format: 'date-time'
-          description: 'De datum waarop volgens de planning verwacht wordt dat de zaak afgerond wordt.'
         registratiedatum:
           type: 'string'
           format: 'date-time'
           description: 'De datum waarop de zaakbehandelende organisatie de zaak heeft geregistreerd.'
+        geplandeEinddatum:
+          type: 'string'
+          format: 'date-time'
+          description: 'De datum waarop volgens de planning verwacht wordt dat de zaak afgerond wordt.'
         uiterlijkeEinddatum:
           type: 'string'
           format: 'date-time'
@@ -1460,10 +1558,15 @@ components:
           $ref: '#/components/schemas/Zaken-Zaaktype'
           description: 'Zaaktype duidt de aard van de zaak aan en definieert daarmee de zaak.'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
     Zaken-ZaakRol:
       type: object
       properties:
@@ -1579,17 +1682,6 @@ components:
         vertrouwelijkheid:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Aanduiding van de mate waarin zaakdossiers van een zaak van dit zaaktype voor de openbaarheid bestemd zijn.'
-    ExtraAttribuut:
-      type: object
-      properties:
-        naam:
-          type: 'string'
-          format: 'any'
-          description: 'De naam van het niet bestaande attribuut. Bijv. Huurprognose.'
-        waarde:
-          type: 'string'
-          format: 'any'
-          description: 'De waarde van het niet bestaande attribuut. Bijv. €850,-.'
     Foutbericht:
       type: 'object'
       properties:

@@ -457,6 +457,9 @@ components:
           type: 'string'
           format: 'any'
           description: 'Omschrijving van de boeking.'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Status van de boeking. Bijvoorbeeld;voorlopig, gefiatteerd. '
         boekdatum:
           type: 'string'
           format: 'date'
@@ -465,9 +468,6 @@ components:
           type: 'string'
           format: 'date'
           description: 'Boekstuk- of factuurdatum van de boeking.'
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'Status van de boeking. Bijvoorbeeld;voorlopig, gefiatteerd. '
         vervaldatum:
           type: 'string'
           format: 'date'
@@ -524,10 +524,98 @@ components:
           format: 'float'
           description: 'Het saldo of openstaande bedrag van de boeking.'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
+    ExtraAttribuut:
+      type: object
+      properties:
+        naam:
+          type: 'string'
+          format: 'any'
+          description: 'De naam van het niet bestaande attribuut. Bijv. Huurprognose.'
+        waarde:
+          type: 'string'
+          format: 'any'
+          description: 'De waarde van het niet bestaande attribuut. Bijv. €850,-.'
+    Informatieobject:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Specificatie van het documenttype. Bijvoorbeeld verslag, rapport etc.'
+        detailSoort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Detail specificatie van het documenttype. Bijvoorbeeld notulen, adviesrapport etc.'
+        onderwerp:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Onderwerp van het informatieobject.'
+        subonderwerp:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Subonderwerp van het informatieobject.'
+        titel:
+          type: 'string'
+          format: 'any'
+          description: 'Titel van het informatieobject.'
+        beschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'Beschrijving van het informatieobject.'
+        bestand:
+          type: 'string'
+          format: 'byte'
+          description: 'De binaire representatie van het informatieobject.'
+        bestandsgrootte:
+          type: 'integer'
+          format: 'int32'
+          description: 'Omvang van het bestand in bytes.'
+        bestandslocatie:
+          type: 'string'
+          format: 'uri'
+          description: 'Een link (URI) naar de binaire representatie van het informatieobject.'
+        bestandsnaam:
+          type: 'string'
+          format: 'any'
+          description: 'De naam van het fysieke bestand waarin de inhoud van het informatieobject is vastgelegd.'
+        externePublicatie:
+          type: 'boolean'
+          format: 'true-or-false'
+          description: 'Aanduiding of dit informatieobject extern gepubliceerd dient te worden.'
+        externePublicatietekst:
+          type: 'string'
+          format: 'any'
+          description: 'Tekstuele omschrijving ten behoeve van externe publicatie van dit informatieobject.'
+        formaat:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het digitale formaat (IANA media type) van het informatieobject.'
+        gebruiksrechten:
+          type: 'string'
+          format: 'any'
+          description: 'Informatie omtrent rechten die geassocieerd zijn met het informatieobject zoals intellectueel eigendom.'
+        taal:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De taal waarin het informatieobject is opgesteld.'
+        versie:
+          type: 'number'
+          format: 'float'
+          description: 'Het versienummer van het informatieobject.'
+        vertrouwelijkheid:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De classificatie van het vertrouwelijkheidsniveau van het informatieobject.'
     Boekingen-BoekingDetail:
       type: object
       properties:
@@ -595,10 +683,15 @@ components:
           $ref: '#/components/schemas/Relatie-sleutels'
           description: 'Relatie gekoppeld aan de debiteur.'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
     Boekingen-IncassoOpdracht:
       type: object
       properties:
@@ -658,10 +751,15 @@ components:
           format: 'float'
           description: 'Openstaand saldo.'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
     Debiteuren-Incassomachtiging:
       type: object
       properties:
@@ -706,17 +804,6 @@ components:
           type: 'string'
           format: 'any'
           description: 'Het rekeningnummer.'
-    ExtraAttribuut:
-      type: object
-      properties:
-        naam:
-          type: 'string'
-          format: 'any'
-          description: 'De naam van het niet bestaande attribuut. Bijv. Huurprognose.'
-        waarde:
-          type: 'string'
-          format: 'any'
-          description: 'De waarde van het niet bestaande attribuut. Bijv. €850,-.'
     Foutbericht:
       type: 'object'
       properties:

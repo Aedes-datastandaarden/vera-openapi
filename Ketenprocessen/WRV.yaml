@@ -1420,24 +1420,24 @@ components:
           type: 'string'
           format: 'any'
           description: 'Het kadastraalnummer behorend bij de eenheid.'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van de eenheid, bijvoorbeeld: Leegstand, Uit beheer, Renovatie, Verhuurd, Verkocht'
+        detailStatus:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De detailstatus (ook wel substatus) van een status. De detailstatus geeft een extra reden op van de eenheid status die de eenheid heeft. Bijvoorbeeld: de status is Renovatie, de detailstatus geeft aan dat het om planmatig onderhoud gaat.'
         beginBouwdatum:
           type: 'string'
           format: 'date'
           description: 'De begindatum van de bouw van de eenheid.'
-        detailStatus:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De detailstatus (ook wel substatus) van een status. De detailstatus geeft een extra reden op van de eenheid status die de eenheid heeft. Bijvoorbeeld: de status is Renovatie, de detailstatus geeft aan dat het om planmatig onderhoud gaat.'
-        inExploitatiedatum:
-          type: 'string'
-          format: 'date'
-          description: 'De datum waarop de eenheid in exploitatie is gegaan. We spreken over exploitatie als de eenheid in beheer is met als doel dat er resultaat wordt behaald.'
         opleverdatum:
           type: 'string'
           format: 'date'
           description: 'De opleverdatum van de eenheid. De bouw van de eenheid is dan gereed of de eenheid is beschikbaar voor een volgende gebruiker.'
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van de eenheid, bijvoorbeeld: Leegstand, Uit beheer, Renovatie, Verhuurd, Verkocht'
+        inExploitatiedatum:
+          type: 'string'
+          format: 'date'
+          description: 'De datum waarop de eenheid in exploitatie is gegaan. We spreken over exploitatie als de eenheid in beheer is met als doel dat er resultaat wordt behaald.'
         uitExploitatiedatum:
           type: 'string'
           format: 'date'
@@ -1634,10 +1634,98 @@ components:
           format: 'any'
           description: 'De omschrijving van de zorgfaciliteit behorende bij de eenheid.'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
+    ExtraAttribuut:
+      type: object
+      properties:
+        naam:
+          type: 'string'
+          format: 'any'
+          description: 'De naam van het niet bestaande attribuut. Bijv. Huurprognose.'
+        waarde:
+          type: 'string'
+          format: 'any'
+          description: 'De waarde van het niet bestaande attribuut. Bijv. €850,-.'
+    Informatieobject:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Specificatie van het documenttype. Bijvoorbeeld verslag, rapport etc.'
+        detailSoort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Detail specificatie van het documenttype. Bijvoorbeeld notulen, adviesrapport etc.'
+        onderwerp:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Onderwerp van het informatieobject.'
+        subonderwerp:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Subonderwerp van het informatieobject.'
+        titel:
+          type: 'string'
+          format: 'any'
+          description: 'Titel van het informatieobject.'
+        beschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'Beschrijving van het informatieobject.'
+        bestand:
+          type: 'string'
+          format: 'byte'
+          description: 'De binaire representatie van het informatieobject.'
+        bestandsgrootte:
+          type: 'integer'
+          format: 'int32'
+          description: 'Omvang van het bestand in bytes.'
+        bestandslocatie:
+          type: 'string'
+          format: 'uri'
+          description: 'Een link (URI) naar de binaire representatie van het informatieobject.'
+        bestandsnaam:
+          type: 'string'
+          format: 'any'
+          description: 'De naam van het fysieke bestand waarin de inhoud van het informatieobject is vastgelegd.'
+        externePublicatie:
+          type: 'boolean'
+          format: 'true-or-false'
+          description: 'Aanduiding of dit informatieobject extern gepubliceerd dient te worden.'
+        externePublicatietekst:
+          type: 'string'
+          format: 'any'
+          description: 'Tekstuele omschrijving ten behoeve van externe publicatie van dit informatieobject.'
+        formaat:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het digitale formaat (IANA media type) van het informatieobject.'
+        gebruiksrechten:
+          type: 'string'
+          format: 'any'
+          description: 'Informatie omtrent rechten die geassocieerd zijn met het informatieobject zoals intellectueel eigendom.'
+        taal:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De taal waarin het informatieobject is opgesteld.'
+        versie:
+          type: 'number'
+          format: 'float'
+          description: 'Het versienummer van het informatieobject.'
+        vertrouwelijkheid:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De classificatie van het vertrouwelijkheidsniveau van het informatieobject.'
     Eenheden-Eenheidadres:
       allOf:
         - $ref: '#/components/schemas/Eenheden-Adres'
@@ -1819,10 +1907,15 @@ components:
           items:
             $ref: '#/components/schemas/Eenheden-Relatierol'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
     Eenheden-RelatieAdres:
       type: object
       properties:
@@ -1983,14 +2076,14 @@ components:
         soort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort gebeurtenis. Bijv. Niet aanwezig op bevestige bezichtiging.'
-        begindatum:
-          type: 'string'
-          format: 'date'
-          description: 'De begindatum van de gebeurtenis.'
         datum:
           type: 'string'
           format: 'date'
           description: 'De datum waarop gebeurtenis heeft plaatsgevonden.'
+        begindatum:
+          type: 'string'
+          format: 'date'
+          description: 'De begindatum van de gebeurtenis.'
         einddatum:
           type: 'string'
           format: 'date'
@@ -2009,10 +2102,15 @@ components:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De vestiging van de vastgoedaanbieder die de woning heeft aangeboden.'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
     Gebeurtenissen-Gemeente:
       type: object
       properties:
@@ -2038,10 +2136,15 @@ components:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het detail soort overeenkomst. Bijvoorbeeld BOG (Bedrijfs Onroerend Goed).'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
     Gebeurtenissen-Serviceovereenkomst:
       allOf:
         - $ref: '#/components/schemas/Gebeurtenissen-Overeenkomst'
@@ -2111,12 +2214,12 @@ components:
           type: 'string'
           format: 'any'
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        detailStatus:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De detail status van de kandidaat.'
         status:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De status van de kandidaat.'
+        detailStatus:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De detail status van de kandidaat.'
         aantalKinderen:
           type: 'integer'
           format: 'int32'
@@ -2144,10 +2247,15 @@ components:
           format: 'float'
           description: 'Het EU verzamelinkomen van het huishouden van de kandidaat.'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
     Eenheid-sleutels:
       type: object
       properties:
@@ -2262,10 +2370,15 @@ components:
           items:
             $ref: '#/components/schemas/Kandidaten-Relatierol'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
     Kandidaten-Relatiegroep:
       allOf:
         - $ref: '#/components/schemas/Kandidaten-Relatie'
@@ -2312,20 +2425,20 @@ components:
         soort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort signaal. Bijvoorbeeld: Huurschuld, overlast of wietplantage.'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van de signalering. Bijvoorbeeld: Actief, vervallen of passief.'
+        detailStatus:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De detailstatus van de signalering. Bijvoorbeeld: Ontruiming, vertrokken.'
         begindatum:
           type: 'string'
           format: 'date-time'
           description: 'De begindatum van de signalering'
-        detailStatus:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De detailstatus van de signalering. Bijvoorbeeld: Ontruiming, vertrokken.'
         einddatum:
           type: 'string'
           format: 'date-time'
           description: 'De einddatum van de signalering'
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van de signalering. Bijvoorbeeld: Actief, vervallen of passief.'
     Overeenkomsten-Adres:
       type: object
       properties:
@@ -2410,6 +2523,9 @@ components:
         detailSoort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het detail soort overeenkomst. Bijvoorbeeld BOG (Bedrijfs Onroerend Goed).'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van een huurovereenkomst. Dit kan een waarde bevatten zoals: overeenkomst beëindigd en huurder is vertrokken, of overeenkomst is momenteel in gebruik.'
         begindatum:
           type: 'string'
           format: 'date'
@@ -2418,9 +2534,6 @@ components:
           type: 'string'
           format: 'date'
           description: 'De einddatum van de overeenkomst.'
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van een huurovereenkomst. Dit kan een waarde bevatten zoals: overeenkomst beëindigd en huurder is vertrokken, of overeenkomst is momenteel in gebruik.'
         redenOpzegging:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De reden van de voortijdige ontbinding van de overeenkomst.'
@@ -2430,10 +2543,15 @@ components:
           items:
             $ref: '#/components/schemas/Overeenkomsten-Relatie'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
     Overeenkomsten-Relatie:
       type: object
       properties:
@@ -2463,10 +2581,15 @@ components:
           items:
             $ref: '#/components/schemas/Overeenkomsten-Relatierol'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
     Overeenkomsten-RelatieAdres:
       type: object
       properties:
@@ -2622,20 +2745,20 @@ components:
           type: 'string'
           format: 'any'
           description: 'Het bouwnummer behorende bij de eenheid. Dit wordt aan een eenheid toegekend bij nieuwbouw van de eenheid. Vaak is op dat moment het adres van de eenheid nog niet bepaald.'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van de eenheid, bijvoorbeeld: Leegstand, Uit beheer, Renovatie, Verhuurd, Verkocht'
+        detailStatus:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De detailstatus (ook wel substatus) van een status. De detailstatus geeft een extra reden op van de eenheid status die de eenheid heeft. Bijvoorbeeld: de status is Renovatie, de detailstatus geeft aan dat het om planmatig onderhoud gaat.'
         beginBouwdatum:
           type: 'string'
           format: 'date'
           description: 'De begindatum van de bouw van de eenheid.'
-        detailStatus:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De detailstatus (ook wel substatus) van een status. De detailstatus geeft een extra reden op van de eenheid status die de eenheid heeft. Bijvoorbeeld: de status is Renovatie, de detailstatus geeft aan dat het om planmatig onderhoud gaat.'
         opleverdatum:
           type: 'string'
           format: 'date'
           description: 'De opleverdatum van de eenheid. De bouw van de eenheid is dan gereed of de eenheid is beschikbaar voor een volgende gebruiker.'
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van de eenheid, bijvoorbeeld: Leegstand, Uit beheer, Renovatie, Verhuurd, Verkocht'
         aantalOnzelfstandigeEenheden:
           type: 'integer'
           format: 'int32'
@@ -2832,10 +2955,15 @@ components:
           format: 'any'
           description: 'De omschrijving van de zorgfaciliteit behorende bij de eenheid.'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
     Publicaties-Eenheidadres:
       allOf:
         - $ref: '#/components/schemas/Publicaties-Adres'
@@ -3008,6 +3136,9 @@ components:
           type: 'string'
           format: 'any'
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van de publicatie.'
         begindatum:
           type: 'string'
           format: 'date-time'
@@ -3020,9 +3151,6 @@ components:
           type: 'string'
           format: 'date-time'
           description: 'De datum waarop de gepubliceerde eenheid kan worden betrokken.'
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van de publicatie.'
         aantalEenheden:
           type: 'integer'
           format: 'int32'
@@ -3091,10 +3219,15 @@ components:
           format: 'int32'
           description: 'De gemiddelde wachttijd in maanden voor mensen met voorrang.'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
     Publicaties-Punt:
       allOf:
         - $ref: '#/components/schemas/Publicaties-Geometrie'
@@ -3133,10 +3266,15 @@ components:
           items:
             $ref: '#/components/schemas/Publicaties-Relatierol'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
     Publicaties-Relatierol:
       type: object
       properties:
@@ -3292,10 +3430,15 @@ components:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het detail soort overeenkomst. Bijvoorbeeld BOG (Bedrijfs Onroerend Goed).'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
     Puntenberekeningen-Puntenberekening:
       type: object
       properties:
@@ -3303,14 +3446,14 @@ components:
           type: 'string'
           format: 'any'
           description: 'De primaire sleutel van het gegeven in het bronsysteem'
-        begindatum:
-          type: 'string'
-          format: 'date'
-          description: 'De begindatum van de puntenberekening.'
         datum:
           type: 'string'
           format: 'date'
           description: 'De datum waarop gebeurtenis heeft plaatsgevonden.'
+        begindatum:
+          type: 'string'
+          format: 'date'
+          description: 'De begindatum van de puntenberekening.'
         einddatum:
           type: 'string'
           format: 'date'
@@ -3336,10 +3479,15 @@ components:
           format: 'float'
           description: 'Het aantal punten dat aangeeft hoe actief men op zoek is naar een woning.'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
     Puntenberekeningen-Puntenmutatie:
       type: object
       properties:
@@ -3687,10 +3835,15 @@ components:
           items:
             $ref: '#/components/schemas/Relaties-Relatierol'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
     Relaties-RelatieAdres:
       type: object
       properties:
@@ -3832,14 +3985,14 @@ components:
         soort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort gebeurtenis. Bijv. Niet aanwezig op bevestige bezichtiging.'
-        begindatum:
-          type: 'string'
-          format: 'date'
-          description: 'De begindatum van de gebeurtenis.'
         datum:
           type: 'string'
           format: 'date'
           description: 'De datum waarop gebeurtenis heeft plaatsgevonden.'
+        begindatum:
+          type: 'string'
+          format: 'date'
+          description: 'De begindatum van de gebeurtenis.'
         einddatum:
           type: 'string'
           format: 'date'
@@ -3855,10 +4008,15 @@ components:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De vestiging van de vastgoedaanbieder die de woning heeft aangeboden.'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
     Sancties-Overeenkomst:
       type: object
       properties:
@@ -3881,10 +4039,15 @@ components:
           format: 'date'
           description: 'De einddatum van de overeenkomst.'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
     Sancties-Sanctie:
       type: object
       properties:
@@ -3899,6 +4062,9 @@ components:
           type: 'string'
           format: 'any'
           description: 'De omschrijving van de sanctie, wat de oorzaak is en welke gevolgen dit heeft voor iemands puntenopbouw.'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van een sanctie. Bijv. Definitief toegekend, Ingetrokken etc.'
         begindatum:
           type: 'string'
           format: 'date'
@@ -3907,9 +4073,6 @@ components:
           type: 'string'
           format: 'date'
           description: 'De einddatum van de sanctie.'
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van een sanctie. Bijv. Definitief toegekend, Ingetrokken etc.'
         gebeurtenissen:
           description: 'De geberutenissen die hebben geleid tot de sanctie.'
           type: array
@@ -3919,10 +4082,15 @@ components:
           $ref: '#/components/schemas/Sancties-Overeenkomst'
           description: 'De inschrijving waarop de sacntie van toepassing is.'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
     Sancties-Serviceovereenkomst:
       allOf:
         - $ref: '#/components/schemas/Sancties-Overeenkomst'
@@ -3972,12 +4140,12 @@ components:
           type: 'string'
           format: 'any'
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        detailStatus:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De detail status van de kandidaat.'
         status:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De status van de kandidaat.'
+        detailStatus:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De detail status van de kandidaat.'
         aantalKinderen:
           type: 'integer'
           format: 'int32'
@@ -4002,10 +4170,15 @@ components:
           format: 'float'
           description: 'Het EU verzamelinkomen van het huishouden van de kandidaat.'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
     Toewijzingen-NatuurlijkPersoon:
       allOf:
         - $ref: '#/components/schemas/Toewijzingen-Relatie'
@@ -4114,10 +4287,15 @@ components:
           format: 'uri'
           description: 'Referentie naar Prijscomponent in de vorm: vera/v4/prijscomponenten/12345'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
     Toewijzingen-Relatie:
       type: object
       properties:
@@ -4138,10 +4316,15 @@ components:
           items:
             $ref: '#/components/schemas/Toewijzingen-Relatierol'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
     Toewijzingen-Relatierol:
       type: object
       properties:
@@ -4174,20 +4357,20 @@ components:
         soort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort signaal. Bijvoorbeeld: Huurschuld, overlast of wietplantage.'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van de signalering. Bijvoorbeeld: Actief, vervallen of passief.'
+        detailStatus:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De detailstatus van de signalering. Bijvoorbeeld: Ontruiming, vertrokken.'
         begindatum:
           type: 'string'
           format: 'date-time'
           description: 'De begindatum van de signalering'
-        detailStatus:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De detailstatus van de signalering. Bijvoorbeeld: Ontruiming, vertrokken.'
         einddatum:
           type: 'string'
           format: 'date-time'
           description: 'De einddatum van de signalering'
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van de signalering. Bijvoorbeeld: Actief, vervallen of passief.'
     Toewijzingen-Toewijzing:
       type: object
       properties:
@@ -4236,10 +4419,15 @@ components:
           items:
             $ref: '#/components/schemas/Toewijzingen-Voorrangsregeling'
         extra-attributen:
-          description: 'Toegevoegde sleutel/waarde-paren'
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
     Toewijzingen-Voorrangsregeling:
       type: object
       properties:
@@ -4325,17 +4513,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Referentiedata'
-    ExtraAttribuut:
-      type: object
-      properties:
-        naam:
-          type: 'string'
-          format: 'any'
-          description: 'De naam van het niet bestaande attribuut. Bijv. Huurprognose.'
-        waarde:
-          type: 'string'
-          format: 'any'
-          description: 'De waarde van het niet bestaande attribuut. Bijv. €850,-.'
     Foutbericht:
       type: 'object'
       properties:
