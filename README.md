@@ -35,7 +35,7 @@ Zie ook de toeliching hieronder.
 
 
 ## Toelichting
-VERA heeft een alles omvattend gegevensmodel en gegevensmodellen per Ketenproces. De gegevensmodellen per proces bevatten alleen die entiteiten, en per entiteit alleen die attributen, die een rol spelen binnen de procescontext.
+VERA heeft een alles omvattend gegevensmodel en gegevensmodellen per Ketenproces. De gegevensmodellen per Ketenproces bevatten alleen die entiteiten - en per entiteit alleen die attributen - uit het alles omvattende model, die een rol spelen binnen de procescontext.
 De entiteiten uit alle modellen zijn onderverdeeld in Informatiedomeinen. Een Informatiemodel bevat functies met een sterk onderlinge cohesie.​
 
 ![alt text](matrix-proces-informatiedomein.png)
