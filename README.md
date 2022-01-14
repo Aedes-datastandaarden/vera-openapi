@@ -22,16 +22,16 @@ Zie ook de toeliching hieronder.
 > :bulb: **Tip:** in Markdown worden links niet in een nieuwe pagina geopend. Als je een view opent, navigeer dan terug om weer op deze pagina te komen.
 
 ### Ketenprocessen
-- [BDO](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BDO.html)
-- [BFG](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BFG.html)
-- [BOG](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BOG.html)
-- [BRG](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BRG.html)
-- [BVG](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BVG.html)
-- [INC](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/INC.html)
-- [KMT](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/KMT.html)
-- [OHD](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/OHD.html)
-- [VHE](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/VHE.html)
-- [WRV](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/WRV.html)
+- [Casemanagement](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BDO.html)
+- [Beheer Financiële gegevens](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BFG.html)
+- [Beheer Overeenkomstgegevens](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BOG.html)
+- [Beheer Relatiegegevens](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BRG.html)
+- [Beheer Vastgoedgegevens](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BVG.html)
+- [Incasso](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/INC.html)
+- [Kwaliteitsmanagement](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/KMT.html)
+- [Onderhouden Eenheden](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/OHD.html)
+- [Verhuren Eenheden](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/VHE.html)
+- [Woonruimteverdeling](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/WRV.html)
 
 
 ## Toelichting
