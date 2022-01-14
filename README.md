@@ -17,7 +17,7 @@ Er kunnen derhalve geen rechten aan ontleend worden. Opmerkingen zijn hartelijk 
 
 ## Viewers
 Hieronder staan links naar SwaggerUI views op de API's. 
-Let op: de API's voor de **Informatiedomeinen** zijn afgeleid van het **horizontale** gegevensmodel. De API's voor de **Ketenprocessen** horen bij de **verticale** gegevensmodellen.
+Er zijn API's voor de gevensmodellen horend bij **Informatiedomeinen** en **Ketenprocessen**.
 Zie ook de toeliching hieronder.
 > :bulb: **Tip:** in Markdown worden links niet in een nieuwe pagina geopend. Als je een view opent, navigeer dan terug om weer op deze pagina te komen.
 
@@ -35,27 +35,26 @@ Zie ook de toeliching hieronder.
 
 
 ## Toelichting
-Het gegevensmodel van VERA kent verticale modellen en een horizontaal model. Het horizontale model is de meest rijke verzameling aan klassen en velden per klasse (klassen en velden worden binnen Novius aangeduid met: entiteitstypes en attribuuttypes, dat nemen we hier over). De verticale modellen richten zich op specifieke ketenprocessen en bevatten alleen die entiteiten en attributen die relevant zijn binnen een proces. Ze bevatten een selectie van entiteiten uit de horizontale verzameling, en per entiteit vaak weer een selectie aan attributen. ​
-
-De entiteiten uit alle modellen (zowel de verticale als horizontale) zijn verdeeld in Informatiedomeinen. Een Informatiedomein is een clustering op basis van een Bedrijfsfunctie. Een Bedrijfsfunctie heeft een 1 op 1 relatie met een Afdeling waarbinnen deze Bedrijfsfuncie valt, en daarmee met een Informatiemodel. Een Informatiemodel bevat dus functies met een sterk onderlinge cohesie.​
+VERA heeft een alles omvattend gegevensmodel en gegevensmodellen per Ketenproces. De gegevensmodellen per Ketenproces bevatten alleen die entiteiten - en per entiteit alleen die attributen - uit het alles omvattende model, die een rol spelen binnen de procescontext.
+De entiteiten uit alle modellen zijn onderverdeeld in Informatiedomeinen. Een Informatiemodel bevat functies met een sterk onderlinge cohesie.​
 
 ![alt text](matrix-proces-informatiedomein.png)
 
-We leveren OpenAPI-specificaties op voor zowel de Informatiedomeinen als voor de ketenprocessen. Hiervoor hanteren we onderstaande regels: ​
+We leveren OpenAPI-specificaties op voor zowel de Informatiedomeinen als voor de Ketenprocessen. Hiervoor hanteren we onderstaande regels: ​
 
 - We gebruiken OpenApi 3.0 om overerving (OO) op te lossen (oneOf/allOf). Afgeleide klassen zijn alleen opvraagbaar via de basis-entiteit (ook wel aangeduid met superentiteit). ​
 
-- Voor de verticale modellen (ketenprocessen) leveren we per model een API-specificatie.​
+- Voor de Ketenprocessen leveren we per model een API-specificatie.​
 
-- Voor het horizontale model leveren we per Informatiedomein een API-specificatie.​
+- Voor het alles omvattende model leveren we per Informatiedomein een API-specificatie.​Hierin zijn alle entiteiten een bericht.
 
-- Zelfde entiteitstypen kunnen binnen hetzelfde verticale model per resource (bericht) een verschillende definitie hebben.​
+- Zelfde entiteitstypen kunnen binnen hetzelfde Ketenprocesmodel per bericht een andere definitie hebben.​
 
-- In een API-specificatie voor een ketenproces zijn voor de berichten alle definities van afhankelijke entiteitstypen opgenomen, ongeacht het informatiedomein waartoe ze horen. Entiteiten uit de horizontale modellen zijn als URI opgenomen met uitzondering voor entiteiten uit Algemeen (Referentiedata en Sturingslabels), die worden wel embbedded opgenomen.
+- In de API-specificatie van een Ketenproces worden alle afhankelijkheden opgenomen, ongeacht het Informatiedomein waartoe ze horen, met uitzondering van entiteiten uit Informatiedomein-API's die zonder restrictie gebruikt worden. Die worden als referentie (URI) opgenomen en moeten dus met apparte calls opgehaald worden. Uitzondering hierop vormen de entiteiten uit Informatiedomein Algemeen (Referentiedata, Sturingslabels, etc.), die worden wel opgenomen in iedere API.
 
 - Voor een API-specificatie van een Informatiedomein geldt dat verwijzingen naar resources uit andere Informatiedomeinen niet embedded opgenomen worden, maar als referentie (URI). Hiervoor geldt het architectuurprincipe dat systemen uit verschillende Informatiedomeinen zich via API’s verbinden.​
 
-- In de API-specificaties worden voor sleutelvelden van een entiteitstype (de kerngegevens) nieuwe entiteitstypen gegenereerd met als naam de daam van de entiteit gevolgd door '-sleutels'. Deze zitten dus alleen in de API-specificaties en zijn niet het canonieke model terug te vinden.
+- In de API-specificaties worden voor sleutelvelden van een entiteitstype (de kerngegevens) nieuwe entiteitstypen gegenereerd met als naam de naam van de entiteit gevolgd door '-sleutels'.
 
 - Ook Informatiedomein Algemeen heeft een eigen API-specificatie.​
 
@@ -67,16 +66,14 @@ We leveren OpenAPI-specificaties op voor zowel de Informatiedomeinen als voor de
 
 ![alt text](openapi-per-model.png)
 
-- in de verticale API's worden de entiteiten geprefixt met de naam van de resource
-
-- in de horizontale API's worden entiteiten zonder prefix opgenomen
+- in de API's worden entiteiten geprefixt met de naam van de resource
 
 
 ## Toepassing
 
-Binnen Informatiedomeinen bevinden zich applicaties/systemen met functies die sterk onderling verwand zijn. Dit worden ook wel kernpakketten genoemd. Bijvoorbeeld een relatiebeheerpakket. Voor deze kernpakketten zijn er de horizontale API's.
+Volgens de definitie bevinden systemen met functies die sterk onderling verwand zijn zich binnen een Informatiedomein. Deze systemen worden ook wel kernpakketten genoemd. Bijvoorbeeld een Relatiebeheerpakket. Hiervoor zijn de API's bedoeld van de Informatiedomeinen.
 
-De verticale API's zijn voor (sub)systemen die een ketenproces implementeren. Deze subsystemen agregeren (mogelijk) informatie uit kernpakketten via horizontale API's.
+De Ketenproces-API's zijn voor (sub)systemen die een ketenproces implementeren. Deze subsystemen agregeren (mogelijk) informatie uit kernpakketten via een Informatiedomein-API's.
 
 ![alt text](matrix-apis.png)
 
