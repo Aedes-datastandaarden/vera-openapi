@@ -12,8 +12,6 @@
 De mappen **Informatiedomeinen** en **Ketenprocessen** bevatten alle OpenAPI-specificaties (YAML).
 Alle overige bestanden in deze repo (in de root en in map 'docs') zijn enkel bedoeld voor documentatie en horen niet bij de opleverset.
 Op deze pagina staat een toelichting op de totstandkoming en toepassing van de API's.
-> :warning: **LET OP:** deze publicatie is geen officiële release, maar een aanloop naar VERA 4.0. 
-Er kunnen derhalve geen rechten aan ontleend worden. Opmerkingen zijn hartelijk welkom. Graag hiervoor een 'Issue' aanmaken (zie 2e menu links-boven).
 
 ## Viewers
 Hieronder staan links naar SwaggerUI views op de API's. 
