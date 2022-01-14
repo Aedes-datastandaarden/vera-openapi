@@ -48,7 +48,7 @@ We leveren OpenAPI-specificaties op voor zowel de Informatiedomeinen als voor de
 
 - Zelfde entiteitstypen kunnen binnen hetzelfde Ketenprocesmodel per bericht een andere definitie hebben.​
 
-- In de API-specificatie van een Ketenproces worden alle afhankelijkheden opgenomen, ongeacht het Informatiedomein waartoe ze horen, met uitzondering van entiteiten uit Informatiedomein-API's die zonder restrictie gebruikt worden. Die worden als referentie (URI) opgenomen en moeten dus met apparte calls opgehaald worden. Uitzondering hierop vormen de entiteiten uit Informatiedomein Algemeen (Referentiedata, Sturingslabels, etc.), die worden wel opgenomen in iedere API.
+- In de API-specificatie van een Ketenproces worden alle afhankelijkheden opgenomen, ongeacht het Informatiedomein waartoe ze horen, met uitzondering van entiteiten uit Informatiedomein-API's die zonder restrictie gebruikt worden. Die worden als referentie (URI) opgenomen en moeten dus met aparte calls opgehaald worden. Uitzondering hierop vormen de entiteiten uit Informatiedomein Algemeen (Referentiedata, Sturingslabels, etc.), die worden wel opgenomen in iedere API.
 
 - Voor een API-specificatie van een Informatiedomein geldt dat verwijzingen naar resources uit andere Informatiedomeinen niet embedded opgenomen worden, maar als referentie (URI). Hiervoor geldt het architectuurprincipe dat systemen uit verschillende Informatiedomeinen zich via API’s verbinden.​
 
@@ -56,7 +56,8 @@ We leveren OpenAPI-specificaties op voor zowel de Informatiedomeinen als voor de
 
 - Ook Informatiedomein Algemeen heeft een eigen API-specificatie.​
 
-- Enumaraties: de wens is om referentiedata voor soorten van afgeleide klassen als enumeratie op te nemen (bijvoorbeeld: relatie.soort overeenkomst.soort)
+- Enumaraties: de wens is om referentiedata voor soorten van afgeleide klassen als enumeratie op te nemen (bijvoorbeeld: relatie.soort, overeenkomst.soort)
+
 - Metadata (limiet aantal entiteiten in response, verzendende organisatie, tijdstip bericht, etc.) zit niet in de 'payload' maar wordt in de header meegestuurd.
 
 
