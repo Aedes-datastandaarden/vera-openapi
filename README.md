@@ -1,4 +1,4 @@
-# VERA-openapi
+# VERA-OpenAPI
 
 #### Inhoud
 
