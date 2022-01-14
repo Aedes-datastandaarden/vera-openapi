@@ -74,7 +74,7 @@ We leveren OpenAPI-specificaties op voor zowel de Informatiedomeinen als voor de
 
 Volgens de definitie bevinden systemen met functies die sterk onderling verwand zijn zich binnen een Informatiedomein. Deze systemen worden ook wel kernpakketten genoemd. Bijvoorbeeld een Relatiebeheerpakket. Hiervoor zijn de API's bedoeld van de Informatiedomeinen.
 
-De Ketenproces-API's zijn voor (sub)systemen die een ketenproces implementeren. Deze subsystemen agregeren (mogelijk) informatie uit kernpakketten via horizontale API's.
+De Ketenproces-API's zijn voor (sub)systemen die een ketenproces implementeren. Deze subsystemen agregeren (mogelijk) informatie uit kernpakketten via een Informatiedomein-API's.
 
 ![alt text](matrix-apis.png)
 
