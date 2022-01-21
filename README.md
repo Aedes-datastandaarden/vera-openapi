@@ -20,16 +20,16 @@ Zie ook de toeliching hieronder.
 > :bulb: **Tip:** in Markdown worden links niet in een nieuwe pagina geopend. Als je een view opent, navigeer dan terug om weer op deze pagina te komen.
 
 ### Ketenprocessen
-- [Casemanagement](https://htmlpreview.github.io/?https://raw.githubusercontent.com/vereniging-corponet/vera-openapi/hotfix/docs/Ketenprocessen/BDO.html)
-- [Beheer Financiële gegevens](https://htmlpreview.github.io/?https://raw.githubusercontent.com/vereniging-corponet/vera-openapi/hotfix/docs/Ketenprocessen/BFG.html)
-- [Beheer Overeenkomstgegevens](https://htmlpreview.github.io/?https://raw.githubusercontent.com/vereniging-corponet/vera-openapi/hotfix/docs/Ketenprocessen/BOG.html)
-- [Beheer Relatiegegevens](https://htmlpreview.github.io/?https://raw.githubusercontent.com/vereniging-corponet/vera-openapi/hotfix/docs/Ketenprocessen/BRG.html)
-- [Beheer Vastgoedgegevens](https://htmlpreview.github.io/?https://raw.githubusercontent.com/vereniging-corponet/vera-openapi/hotfix/docs/Ketenprocessen/BVG.html)
-- [Incasso](https://htmlpreview.github.io/?https://raw.githubusercontent.com/vereniging-corponet/vera-openapi/hotfix/docs/Ketenprocessen/INC.html)
-- [Kwaliteitsmanagement](https://htmlpreview.github.io/?https://raw.githubusercontent.com/vereniging-corponet/vera-openapi/hotfix/docs/Ketenprocessen/KMT.html)
-- [Onderhouden Eenheden](https://htmlpreview.github.io/?https://raw.githubusercontent.com/vereniging-corponet/vera-openapi/hotfix/docs/Ketenprocessen/OHD.html)
-- [Verhuren Eenheden](https://htmlpreview.github.io/?https://raw.githubusercontent.com/vereniging-corponet/vera-openapi/hotfix/docs/Ketenprocessen/VHE.html)
-- [Woonruimteverdeling](https://htmlpreview.github.io/?https://raw.githubusercontent.com/vereniging-corponet/vera-openapi/hotfix/docs/Ketenprocessen/WRV.html)
+- [Casemanagement](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BDO.html)
+- [Beheer Financiële gegevens](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BFG.html)
+- [Beheer Overeenkomstgegevens](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BOG.html)
+- [Beheer Relatiegegevens](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BRG.html)
+- [Beheer Vastgoedgegevens](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BVG.html)
+- [Incasso](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/INC.html)
+- [Kwaliteitsmanagement](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/KMT.html)
+- [Onderhouden Eenheden](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/OHD.html)
+- [Verhuren Eenheden](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/VHE.html)
+- [Woonruimteverdeling](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/WRV.html)
 
 
 ## Toelichting
@@ -78,15 +78,15 @@ De Ketenproces-API's zijn voor (sub)systemen die een ketenproces implementeren. 
 
 
 ### Informatiedomeinen
-- [Algemeen](https://htmlpreview.github.io/?https://raw.githubusercontent.com/vereniging-corponet/vera-openapi/hotfix/docs/Informatiedomeinen/Algemeen.html)
-- [Dossier](https://htmlpreview.github.io/?https://raw.githubusercontent.com/vereniging-corponet/vera-openapi/hotfix/docs/Informatiedomeinen/Dossier.html)
-- [Financien](https://htmlpreview.github.io/?https://raw.githubusercontent.com/vereniging-corponet/vera-openapi/hotfix/docs/Informatiedomeinen/Financien.html)
-- [Kwaliteit](https://htmlpreview.github.io/?https://raw.githubusercontent.com/vereniging-corponet/vera-openapi/hotfix/docs/Informatiedomeinen/Kwaliteit.html)
-- [Onderhoud](https://htmlpreview.github.io/?https://raw.githubusercontent.com/vereniging-corponet/vera-openapi/hotfix/docs/Informatiedomeinen/Onderhoud.html)
-- [Overeenkomsten](https://htmlpreview.github.io/?https://raw.githubusercontent.com/vereniging-corponet/vera-openapi/hotfix/docs/Informatiedomeinen/Overeenkomsten.html)
-- [Projectontwikkeling](https://htmlpreview.github.io/?https://raw.githubusercontent.com/vereniging-corponet/vera-openapi/hotfix/docs/Informatiedomeinen/Projectontwikkeling.html)
-- [Relaties](https://htmlpreview.github.io/?https://raw.githubusercontent.com/vereniging-corponet/vera-openapi/hotfix/docs/Informatiedomeinen/Relaties.html)
-- [Vastgoed](https://htmlpreview.github.io/?https://raw.githubusercontent.com/vereniging-corponet/vera-openapi/hotfix/docs/Informatiedomeinen/Vastgoed.html)
-- [Woonruimteverdeling](https://htmlpreview.github.io/?https://raw.githubusercontent.com/vereniging-corponet/vera-openapi/hotfix/docs/Informatiedomeinen/Woonruimteverdeling.html)
+- [Algemeen](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Algemeen.html)
+- [Dossier](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Dossier.html)
+- [Financien](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Financien.html)
+- [Kwaliteit](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Kwaliteit.html)
+- [Onderhoud](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Onderhoud.html)
+- [Overeenkomsten](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Overeenkomsten.html)
+- [Projectontwikkeling](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Projectontwikkeling.html)
+- [Relaties](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Relaties.html)
+- [Vastgoed](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Vastgoed.html)
+- [Woonruimteverdeling](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Woonruimteverdeling.html)
 
 
