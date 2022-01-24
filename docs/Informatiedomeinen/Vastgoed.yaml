@@ -2,14 +2,13 @@ openapi: '3.0.0'
 info:
   title: 'VERA-Vastgoed'
   description: API-specificatie van informatiedomein Vastgoed
-  termsOfService: 'https://www.stichting-vera.nl/voorwaarden/'
   contact:
     name: 'VERA'
     url: 'https://cora.wikixl.nl/index.php/VERA_Standaard'
     email: 'info@stichting-vera.nl'
   license:
-    name: European Union Public License, version 1.2 (EUPL-1.2)
-    url: https://eupl.eu/1.2/nl/
+    name: 'Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0.'
+    url: https://creativecommons.org/licenses/by/4.0/deed.nl
   version: '4.0'
 servers:
   - url: https://vastgoed.vera.io:{port}/{basePath}
@@ -65,7 +64,7 @@ tags:
   description: 'Operaties met betrekking tot een Gebouw'
 - name: 'Gemeenten'
   description: 'Operaties met betrekking tot een Gemeente'
-- name: 'Geometrieën'
+- name: 'Geometrieen'
   description: 'Operaties met betrekking tot een Geometrie'
 - name: 'KadasterPercelen'
   description: 'Operaties met betrekking tot een KadasterPerceel'
@@ -145,7 +144,7 @@ tags:
   description: 'Operaties met betrekking tot een Gebouw'
 - name: 'Gemeenten'
   description: 'Operaties met betrekking tot een Gemeente'
-- name: 'Geometrieën'
+- name: 'Geometrieen'
   description: 'Operaties met betrekking tot een Geometrie'
 - name: 'KadasterPercelen'
   description: 'Operaties met betrekking tot een KadasterPerceel'
@@ -210,10 +209,7 @@ paths:
         style: 'form'
         explode: true
         schema:
-          oneOf:
-            - $ref: '#/components/schemas/BuitenlandsAdres'
-            - $ref: '#/components/schemas/Eenheidadres'
-            - $ref: '#/components/schemas/Postadres'
+          $ref: '#/components/schemas/Adres'
       responses:
         '200':
           description: 'Adres response'
@@ -222,10 +218,7 @@ paths:
               schema:
                 type: 'array'
                 items:
-                  oneOf:
-                    - $ref: '#/components/schemas/BuitenlandsAdres'
-                    - $ref: '#/components/schemas/Eenheidadres'
-                    - $ref: '#/components/schemas/Postadres'
+                  $ref: '#/components/schemas/Adres'
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -244,10 +237,7 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/BuitenlandsAdres'
-                - $ref: '#/components/schemas/Eenheidadres'
-                - $ref: '#/components/schemas/Postadres'
+              $ref: '#/components/schemas/Adres'
       responses:
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
@@ -272,10 +262,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: '#/components/schemas/BuitenlandsAdres'
-                  - $ref: '#/components/schemas/Eenheidadres'
-                  - $ref: '#/components/schemas/Postadres'
+                $ref: '#/components/schemas/Adres'
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -301,10 +288,7 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/BuitenlandsAdres'
-                - $ref: '#/components/schemas/Eenheidadres'
-                - $ref: '#/components/schemas/Postadres'
+              $ref: '#/components/schemas/Adres'
       responses:
         '200':
           description: 'Adres succesvol vervangen'
@@ -333,10 +317,7 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/BuitenlandsAdres'
-                - $ref: '#/components/schemas/Eenheidadres'
-                - $ref: '#/components/schemas/Postadres'
+              $ref: '#/components/schemas/Adres'
       responses:
         '200':
           description: 'Adres succesvol gewijzigd'
@@ -2988,20 +2969,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /geometrieën:
+  /geometrieen:
     get:
       tags:
-      - 'Geometrieën'
-      description: 'Ophalen van Geometrieën'
-      operationId: 'listGeometrieën'
+      - 'Geometrieen'
+      description: 'Ophalen van Geometrieen'
+      operationId: 'listGeometrieen'
       parameters:
       - name: 'params'
         in: 'query'
         style: 'form'
         explode: true
         schema:
-          oneOf:
-            - $ref: '#/components/schemas/Punt'
+          $ref: '#/components/schemas/Geometrie'
       responses:
         '200':
           description: 'Geometrie response'
@@ -3010,8 +2990,7 @@ paths:
               schema:
                 type: 'array'
                 items:
-                  oneOf:
-                    - $ref: '#/components/schemas/Punt'
+                  $ref: '#/components/schemas/Geometrie'
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -3022,7 +3001,7 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     post:
       tags:
-      - 'Geometrieën'
+      - 'Geometrieen'
       description: 'Voegt een nieuw(e) Geometrie toe.'
       operationId: 'createGeometrie'
       requestBody:
@@ -3030,17 +3009,16 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/Punt'
+              $ref: '#/components/schemas/Geometrie'
       responses:
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         '405':
           description: 'Foutieve invoer'
-  /geometrieën/{id}:
+  /geometrieen/{id}:
     get:
       tags:
-      - 'Geometrieën'
+      - 'Geometrieen'
       description: 'Retourneert een Geometrie met de gegeven identifier'
       operationId: 'readGeometrie'
       parameters:
@@ -3056,8 +3034,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: '#/components/schemas/Punt'
+                $ref: '#/components/schemas/Geometrie'
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -3068,7 +3045,7 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
-      - 'Geometrieën'
+      - 'Geometrieen'
       description: 'Vervangen van een Geometrie'
       operationId: 'replaceGeometrie'
       parameters:
@@ -3083,8 +3060,7 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/Punt'
+              $ref: '#/components/schemas/Geometrie'
       responses:
         '200':
           description: 'Geometrie succesvol vervangen'
@@ -3098,7 +3074,7 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     patch:
       tags:
-      - 'Geometrieën'
+      - 'Geometrieen'
       description: 'Wijzigen van een Geometrie'
       operationId: 'updateGeometrie'
       parameters:
@@ -3113,8 +3089,7 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/Punt'
+              $ref: '#/components/schemas/Geometrie'
       responses:
         '200':
           description: 'Geometrie succesvol gewijzigd'
@@ -5616,6 +5591,10 @@ components:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
+      oneOf:
+      - $ref: '#/components/schemas/BuitenlandsAdres'
+      - $ref: '#/components/schemas/Eenheidadres'
+      - $ref: '#/components/schemas/Postadres'
     Referentiedata:
       type: object
       properties:
@@ -5757,7 +5736,7 @@ components:
           format: 'any'
           description: 'De fase van de levenscyclus van een standplaats, ligplaats of verblijfsobject waarin het betreffende object zich bevindt.'
         geometrie:
-          $ref: '#/components/schemas/Punt'
+          $ref: '#/components/schemas/Geometrie'
           description: 'De geometrie van het adresseerbaar object uit de basisregistratie.'
         extra-attributen:
           description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
@@ -5812,7 +5791,7 @@ components:
           $ref: '#/components/schemas/Gebouw'
           description: 'Het gebouw behorend bij het pand.'
         geometrie:
-          $ref: '#/components/schemas/Punt'
+          $ref: '#/components/schemas/Geometrie'
           description: 'De geometrie van het pand.'
         kavelOppervlakte:
           type: 'number'
@@ -5913,7 +5892,7 @@ components:
           description: 'De bouwdelen behorend bij het bouwdeel, zodat een bouwdeel kan bestaan uit bouwdelen.'
           type: array
           items:
-            $ref: '#/components/schemas/Bouwdeel'
+            $ref: '#/components/schemas/Bouwdeel-sleutels'
         bouwkundigeElementen:
           description: 'De bouwkundige elementen behorend bij het bouwdeel.'
           type: array
@@ -5944,6 +5923,25 @@ components:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
+    Bouwdeel-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.'
+        idExtern:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.'
+        idGegevensbeheerder:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
     BouwkundigElement:
       type: object
       properties:
@@ -6125,7 +6123,7 @@ components:
           items:
             $ref: '#/components/schemas/Garantie'
         geometrie:
-          $ref: '#/components/schemas/Punt'
+          $ref: '#/components/schemas/Geometrie'
           description: 'De geometrie van de cluster.'
         relaties:
           type: 'string'
@@ -6182,6 +6180,9 @@ components:
           type: 'string'
           format: 'any'
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Bijvoorbeeld: fietsenstalling, galerij, lift etc.'
         naam:
           type: 'string'
           format: 'any'
@@ -6886,7 +6887,7 @@ components:
           items:
             $ref: '#/components/schemas/Gebouw'
         geometrie:
-          $ref: '#/components/schemas/Punt'
+          $ref: '#/components/schemas/Geometrie'
           description: 'De geometrie van de buurt.'
         relaties:
           type: 'string'
@@ -6904,28 +6905,43 @@ components:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
-    Punt:
-      allOf:
-        - $ref: '#/components/schemas/Geometrie'
-        - type: object
-          properties:
-            breedtegraad:
-              type: 'number'
-              format: 'float'
-              description: 'De breedtegraad.'
-            lengtegraad:
-              type: 'number'
-              format: 'float'
-              description: 'De lengtegraad.'
-            extra-attributen:
-              description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
-              type: array
-              items:
-                $ref: '#/components/schemas/ExtraAttribuut'
-            informatieobjecten:
-              type: 'string'
-              format: 'uri'
-              description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
+    Geometrie:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.'
+        idExtern:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.'
+        idGegevensbeheerder:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'soort Geometrie: punt of omtrek'
+        omschrijving:
+          type: 'string'
+          format: 'any'
+          description: 'De omschrijving van de geometrie. Bijvoorbeeld: Lindelaan 3'
+        extra-attributen:
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          type: 'string'
+          format: 'uri'
+          description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
+      oneOf:
+      - $ref: '#/components/schemas/Punt'
     Wijk:
       type: object
       properties:
@@ -6971,41 +6987,6 @@ components:
         woonplaats:
           $ref: '#/components/schemas/Woonplaats'
           description: 'De woonplaats waar de wijk deel uit van maakt.'
-        extra-attributen:
-          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttribuut'
-        informatieobjecten:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
-    Geometrie:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.'
-        idExtern:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.'
-        idGegevensbeheerder:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-        soort:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'soort Geometrie: punt of omtrek'
-        omschrijving:
-          type: 'string'
-          format: 'any'
-          description: 'De omschrijving van de geometrie. Bijvoorbeeld: Lindelaan 3'
         extra-attributen:
           description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
@@ -7082,7 +7063,7 @@ components:
           format: 'any'
           description: 'De naam van de gemeente.'
         geometrie:
-          $ref: '#/components/schemas/Punt'
+          $ref: '#/components/schemas/Geometrie'
           description: 'De geometrie van de gemeente.'
         provincie:
           $ref: '#/components/schemas/Referentiedata'
@@ -7883,7 +7864,7 @@ components:
               $ref: '#/components/schemas/Gemeente'
               description: 'De gemeente behorend bij het adres.'
             geometrie:
-              $ref: '#/components/schemas/Punt'
+              $ref: '#/components/schemas/Geometrie'
               description: 'De geometrie van het adres.'
             land:
               $ref: '#/components/schemas/Referentiedata'
@@ -8004,6 +7985,28 @@ components:
               type: 'string'
               format: 'uri'
               description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
+    Punt:
+      allOf:
+        - $ref: '#/components/schemas/Geometrie'
+        - type: object
+          properties:
+            breedtegraad:
+              type: 'number'
+              format: 'float'
+              description: 'De breedtegraad.'
+            lengtegraad:
+              type: 'number'
+              format: 'float'
+              description: 'De lengtegraad.'
+            extra-attributen:
+              description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
+              type: array
+              items:
+                $ref: '#/components/schemas/ExtraAttribuut'
+            informatieobjecten:
+              type: 'string'
+              format: 'uri'
+              description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
     Adres-sleutels:
       type: object
       properties:
@@ -8100,25 +8103,6 @@ components:
           format: 'any'
           description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
     Beleidswaarde-sleutels:
-      type: object
-      properties:
-        id:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.'
-        idExtern:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.'
-        idGegevensbeheerder:
-          type: 'string'
-          format: 'any'
-          description: 'De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.'
-        code:
-          type: 'string'
-          format: 'any'
-          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
-    Bouwdeel-sleutels:
       type: object
       properties:
         id:

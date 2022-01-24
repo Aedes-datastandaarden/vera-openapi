@@ -2,14 +2,13 @@ openapi: '3.0.0'
 info:
   title: 'VERA-Beheer Relatiegegevens'
   description: API-specificatie van ketenproces "Beheer Relatiegegevens". Deze specificatie is gebaseerd op VERA versie 4.0
-  termsOfService: 'https://www.stichting-vera.nl/voorwaarden/'
   contact:
     name: 'VERA'
     url: 'https://cora.wikixl.nl/index.php/VERA_Standaard'
     email: 'info@stichting-vera.nl'
   license:
-    name: European Union Public License, version 1.2 (EUPL-1.2)
-    url: https://eupl.eu/1.2/nl/
+    name: 'Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0.'
+    url: https://creativecommons.org/licenses/by/4.0/deed.nl
   version: '1.0'
 servers:
   - url: https://brg.vera.io:{port}/{basePath}
@@ -322,10 +321,7 @@ paths:
         style: 'form'
         explode: true
         schema:
-          oneOf:
-            - $ref: '#/components/schemas/Relaties-NatuurlijkPersoon'
-            - $ref: '#/components/schemas/Relaties-Rechtspersoon'
-            - $ref: '#/components/schemas/Relaties-Relatiegroep'
+          $ref: '#/components/schemas/Relaties-Relatie'
       responses:
         '200':
           description: 'Relatie response'
@@ -334,10 +330,7 @@ paths:
               schema:
                 type: 'array'
                 items:
-                  oneOf:
-                    - $ref: '#/components/schemas/Relaties-NatuurlijkPersoon'
-                    - $ref: '#/components/schemas/Relaties-Rechtspersoon'
-                    - $ref: '#/components/schemas/Relaties-Relatiegroep'
+                  $ref: '#/components/schemas/Relaties-Relatie'
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -356,10 +349,7 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/Relaties-NatuurlijkPersoon'
-                - $ref: '#/components/schemas/Relaties-Rechtspersoon'
-                - $ref: '#/components/schemas/Relaties-Relatiegroep'
+              $ref: '#/components/schemas/Relaties-Relatie'
       responses:
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
@@ -384,10 +374,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: '#/components/schemas/Relaties-NatuurlijkPersoon'
-                  - $ref: '#/components/schemas/Relaties-Rechtspersoon'
-                  - $ref: '#/components/schemas/Relaties-Relatiegroep'
+                $ref: '#/components/schemas/Relaties-Relatie'
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -413,10 +400,7 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/Relaties-NatuurlijkPersoon'
-                - $ref: '#/components/schemas/Relaties-Rechtspersoon'
-                - $ref: '#/components/schemas/Relaties-Relatiegroep'
+              $ref: '#/components/schemas/Relaties-Relatie'
       responses:
         '200':
           description: 'Relatie succesvol vervangen'
@@ -445,10 +429,7 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/Relaties-NatuurlijkPersoon'
-                - $ref: '#/components/schemas/Relaties-Rechtspersoon'
-                - $ref: '#/components/schemas/Relaties-Relatiegroep'
+              $ref: '#/components/schemas/Relaties-Relatie'
       responses:
         '200':
           description: 'Relatie succesvol gewijzigd'
@@ -886,6 +867,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Eenheid-sleutels'
+        incassomoment:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het moment waarop de incasso wordt gedaan.'
+        incassowijze:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De wijze van incasso waarop de huurovereenkomst wordt betaald.'
     Eenheid-sleutels:
       type: object
       properties:
@@ -1182,6 +1169,10 @@ components:
           type: 'string'
           format: 'any'
           description: 'De straatnaam behorend bij het adres.'
+      oneOf:
+      - $ref: '#/components/schemas/Relaties-BuitenlandsAdres'
+      - $ref: '#/components/schemas/Relaties-Eenheidadres'
+      - $ref: '#/components/schemas/Relaties-Postadres'
     Relaties-BuitenlandsAdres:
       allOf:
         - $ref: '#/components/schemas/Relaties-Adres'
@@ -1430,6 +1421,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Informatieobject'
+      oneOf:
+      - $ref: '#/components/schemas/Relaties-NatuurlijkPersoon'
+      - $ref: '#/components/schemas/Relaties-Rechtspersoon'
+      - $ref: '#/components/schemas/Relaties-Relatiegroep'
     Relaties-RelatieAdres:
       type: object
       properties:
@@ -1526,8 +1521,30 @@ components:
           items:
             $ref: '#/components/schemas/Relaties-RelatieAdres'
         rolRelatie:
-          $ref: '#/components/schemas/Relaties-Relatie'
+          $ref: '#/components/schemas/Relatie-sleutels'
           description: 'De relatie die aangeeft waar de relatie en rol koppeling van toepassing is. Dit attribuut geeft aan dat de aangegeven relatie de rol binnen bijvoorbeeld een relatiegroep heeft. Het attribuut relatie is dan bijvoorbeeld een persoon uit een huishouden en de rolRelatie is dan bijvoorbeeld de relatiegroep die het huishouden voorstelt.'
+    Relatie-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.'
+        idExtern:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.'
+        idGegevensbeheerder:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
     Relaties-Woonplaats:
       type: object
       properties:

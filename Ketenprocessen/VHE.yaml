@@ -2,14 +2,13 @@ openapi: '3.0.0'
 info:
   title: 'VERA-Verhuren Eenheden'
   description: API-specificatie van ketenproces "Verhuren Eenheden". Deze specificatie is gebaseerd op VERA versie 4.0
-  termsOfService: 'https://www.stichting-vera.nl/voorwaarden/'
   contact:
     name: 'VERA'
     url: 'https://cora.wikixl.nl/index.php/VERA_Standaard'
     email: 'info@stichting-vera.nl'
   license:
-    name: European Union Public License, version 1.2 (EUPL-1.2)
-    url: https://eupl.eu/1.2/nl/
+    name: 'Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0.'
+    url: https://creativecommons.org/licenses/by/4.0/deed.nl
   version: '1.0'
 servers:
   - url: https://vhe.vera.io:{port}/{basePath}
@@ -546,7 +545,7 @@ components:
           items:
             $ref: '#/components/schemas/Clusters-Eenheid'
         geometrie:
-          $ref: '#/components/schemas/Clusters-Punt'
+          $ref: '#/components/schemas/Clusters-Geometrie'
           description: 'De geometrie van de cluster.'
         relaties:
           description: 'De relaties die een speciale rol spelen voor het cluster bijvoorbeeld een Vereniging van eigenaren, een onderhoudsbedrijf, projectleider etc.'
@@ -719,6 +718,8 @@ components:
         soort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'soort Geometrie: punt of omtrek'
+      oneOf:
+      - $ref: '#/components/schemas/Clusters-Punt'
     Clusters-Punt:
       allOf:
         - $ref: '#/components/schemas/Clusters-Geometrie'
@@ -831,6 +832,8 @@ components:
           type: 'string'
           format: 'any'
           description: 'De straatnaam behorend bij het adres.'
+      oneOf:
+      - $ref: '#/components/schemas/Eenheden-Eenheidadres'
     Eenheden-Afspraakverzoek:
       type: object
       properties:
@@ -1002,9 +1005,10 @@ components:
           items:
             $ref: '#/components/schemas/Eenheden-Cluster'
         collectieveObjecten:
-          type: 'string'
-          format: 'uri'
-          description: 'Referentie naar CollectiefObject in de vorm: vera/v4/collectiefobjecten/12345'
+          description: 'De collectieve objecten behorend bij de eenheid.'
+          type: array
+          items:
+            $ref: '#/components/schemas/CollectiefObject-sleutels'
         doelgroep:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De doelgroep waarvoor de eenheid bestemd is, bijv. zorgwoning, jongerenwoning, seniorenwoning, eengezinswoning, starterswoning etc. Eventueel te gebruiken in combinatie met aanvullendeDoelgroep.'
@@ -1176,6 +1180,25 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Informatieobject'
+    CollectiefObject-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.'
+        idExtern:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.'
+        idGegevensbeheerder:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
     Eenheden-Eenheidadres:
       allOf:
         - $ref: '#/components/schemas/Eenheden-Adres'
@@ -1569,6 +1592,8 @@ components:
           type: 'string'
           format: 'any'
           description: 'De straatnaam behorend bij het adres.'
+      oneOf:
+      - $ref: '#/components/schemas/Huuropzeggingen-Eenheidadres'
     Huuropzeggingen-Afspraak:
       type: object
       properties:

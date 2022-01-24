@@ -2,14 +2,13 @@ openapi: '3.0.0'
 info:
   title: 'VERA-Overeenkomsten'
   description: API-specificatie van informatiedomein Overeenkomsten
-  termsOfService: 'https://www.stichting-vera.nl/voorwaarden/'
   contact:
     name: 'VERA'
     url: 'https://cora.wikixl.nl/index.php/VERA_Standaard'
     email: 'info@stichting-vera.nl'
   license:
-    name: European Union Public License, version 1.2 (EUPL-1.2)
-    url: https://eupl.eu/1.2/nl/
+    name: 'Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0.'
+    url: https://creativecommons.org/licenses/by/4.0/deed.nl
   version: '4.0'
 servers:
   - url: https://overeenkomsten.vera.io:{port}/{basePath}
@@ -1286,11 +1285,7 @@ paths:
         style: 'form'
         explode: true
         schema:
-          oneOf:
-            - $ref: '#/components/schemas/Huurovereenkomst'
-            - $ref: '#/components/schemas/Koopovereenkomst'
-            - $ref: '#/components/schemas/Onderhoudsovereenkomst'
-            - $ref: '#/components/schemas/Serviceovereenkomst'
+          $ref: '#/components/schemas/Overeenkomst'
       responses:
         '200':
           description: 'Overeenkomst response'
@@ -1299,11 +1294,7 @@ paths:
               schema:
                 type: 'array'
                 items:
-                  oneOf:
-                    - $ref: '#/components/schemas/Huurovereenkomst'
-                    - $ref: '#/components/schemas/Koopovereenkomst'
-                    - $ref: '#/components/schemas/Onderhoudsovereenkomst'
-                    - $ref: '#/components/schemas/Serviceovereenkomst'
+                  $ref: '#/components/schemas/Overeenkomst'
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -1322,11 +1313,7 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/Huurovereenkomst'
-                - $ref: '#/components/schemas/Koopovereenkomst'
-                - $ref: '#/components/schemas/Onderhoudsovereenkomst'
-                - $ref: '#/components/schemas/Serviceovereenkomst'
+              $ref: '#/components/schemas/Overeenkomst'
       responses:
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
@@ -1351,11 +1338,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: '#/components/schemas/Huurovereenkomst'
-                  - $ref: '#/components/schemas/Koopovereenkomst'
-                  - $ref: '#/components/schemas/Onderhoudsovereenkomst'
-                  - $ref: '#/components/schemas/Serviceovereenkomst'
+                $ref: '#/components/schemas/Overeenkomst'
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -1381,11 +1364,7 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/Huurovereenkomst'
-                - $ref: '#/components/schemas/Koopovereenkomst'
-                - $ref: '#/components/schemas/Onderhoudsovereenkomst'
-                - $ref: '#/components/schemas/Serviceovereenkomst'
+              $ref: '#/components/schemas/Overeenkomst'
       responses:
         '200':
           description: 'Overeenkomst succesvol vervangen'
@@ -1414,11 +1393,7 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: '#/components/schemas/Huurovereenkomst'
-                - $ref: '#/components/schemas/Koopovereenkomst'
-                - $ref: '#/components/schemas/Onderhoudsovereenkomst'
-                - $ref: '#/components/schemas/Serviceovereenkomst'
+              $ref: '#/components/schemas/Overeenkomst'
       responses:
         '200':
           description: 'Overeenkomst succesvol gewijzigd'
@@ -2019,6 +1994,12 @@ components:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar Garantie in de vorm: vera/v4/garanties/12345'
+        incassomoment:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het moment waarop de incasso wordt gedaan.'
+        incassowijze:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De wijze van incasso waarop de huurovereenkomst wordt betaald.'
         onderhoudsverzoeken:
           type: 'string'
           format: 'uri'
@@ -2058,6 +2039,11 @@ components:
           type: 'string'
           format: 'uri'
           description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
+      oneOf:
+      - $ref: '#/components/schemas/Huurovereenkomst'
+      - $ref: '#/components/schemas/Koopovereenkomst'
+      - $ref: '#/components/schemas/Onderhoudsovereenkomst'
+      - $ref: '#/components/schemas/Serviceovereenkomst'
     Prijscomponent:
       type: object
       properties:
@@ -2274,12 +2260,6 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Huurtoeslag'
-            incassomoment:
-              $ref: '#/components/schemas/Referentiedata'
-              description: 'Het moment waarop de incasso wordt gedaan.'
-            incassowijze:
-              $ref: '#/components/schemas/Referentiedata'
-              description: 'De wijze van incasso waarop de huurovereenkomst wordt betaald.'
             maatschappelijkLabel:
               $ref: '#/components/schemas/Referentiedata'
               description: 'Het label waarmee het maatschappelijk en economisch  belang van de dienstverlening wordt aangegeven bij de verhuring: DAEB of niet-DAEB. Het label op de huurovereenkomst kan afwijken van het maatschappelijk label van de eenheid. Hiermee kan worden aangegeven dat een eenheid die behoort tot de niet-DAEB tak als DAEB-verhuring verantwoord moet worden.'
