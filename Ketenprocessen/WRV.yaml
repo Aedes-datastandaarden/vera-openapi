@@ -30,6 +30,8 @@ tags:
   description: 'Operaties met betrekking tot een Kandidaat'
 - name: 'Overeenkomsten'
   description: 'Operaties met betrekking tot een Overeenkomst'
+- name: 'Overeenkomstkoppelingen'
+  description: 'Operaties met betrekking tot een Overeenkomst'
 - name: 'Publicaties'
   description: 'Operaties met betrekking tot een Publicatie'
 - name: 'Puntenberekeningen'
@@ -572,6 +574,138 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Overeenkomsten-Overeenkomst'
+      responses:
+        '200':
+          description: 'Overeenkomst succesvol gewijzigd'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /overeenkomstkoppelingen:
+    get:
+      tags:
+      - 'Overeenkomstkoppelingen'
+      description: 'Ophalen van Overeenkomstkoppelingen'
+      operationId: 'listOvereenkomstkoppelingen'
+      parameters:
+      - name: 'params'
+        in: 'query'
+        style: 'form'
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Overeenkomstkoppelingen-Overeenkomst'
+      responses:
+        '200':
+          description: 'Overeenkomst response'
+          content:
+            'application/json':
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Overeenkomstkoppelingen-Overeenkomst'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Overeenkomstkoppelingen'
+      description: 'Voegt een nieuw(e) Overeenkomst toe.'
+      operationId: 'createOvereenkomst'
+      requestBody:
+        description: 'Overeenkomst om toe te voegen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Overeenkomstkoppelingen-Overeenkomst'
+      responses:
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '405':
+          description: 'Foutieve invoer'
+  /overeenkomstkoppelingen/{id}:
+    get:
+      tags:
+      - 'Overeenkomstkoppelingen'
+      description: 'Retourneert een Overeenkomst met de gegeven identifier'
+      operationId: 'readOvereenkomst'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Overeenkomst om op te halen'
+        required: true
+        schema:
+          type: 'string'
+      responses:
+        '200':
+          description: 'Overeenkomst response'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Overeenkomstkoppelingen-Overeenkomst'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Overeenkomstkoppelingen'
+      description: 'Vervangen van een Overeenkomst'
+      operationId: 'replaceOvereenkomst'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Overeenkomst om te vervangen'
+        required: true
+        schema:
+          type: 'string'
+      requestBody:
+        description: 'Overeenkomst om te vervangen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Overeenkomstkoppelingen-Overeenkomst'
+      responses:
+        '200':
+          description: 'Overeenkomst succesvol vervangen'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: 'Onverwachte fout'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Overeenkomstkoppelingen'
+      description: 'Wijzigen van een Overeenkomst'
+      operationId: 'updateOvereenkomst'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: 'Id van Overeenkomst om te wijzigen'
+        required: true
+        schema:
+          type: 'integer'
+      requestBody:
+        description: 'Overeenkomst om te wijzigen'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Overeenkomstkoppelingen-Overeenkomst'
       responses:
         '200':
           description: 'Overeenkomst succesvol gewijzigd'
@@ -2582,7 +2716,93 @@ components:
           type: 'string'
           format: 'date-time'
           description: 'De einddatum van de signalering.'
-    Overeenkomsten-Adres:
+    Overeenkomsten-Overeenkomst:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.'
+        idExtern:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.'
+        idGegevensbeheerder:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn.'
+        detailSoort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het detail soort overeenkomst. Bijvoorbeeld BOG (Bedrijfs Onroerend Goed).'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van een huurovereenkomst. Dit kan een waarde bevatten zoals: overeenkomst beëindigd en huurder is vertrokken, of overeenkomst is momenteel in gebruik.'
+        begindatum:
+          type: 'string'
+          format: 'date'
+          description: 'De begindatum van de overeenkomst.'
+        einddatum:
+          type: 'string'
+          format: 'date'
+          description: 'De einddatum van de overeenkomst.'
+        redenOpzegging:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De reden van de voortijdige ontbinding van de overeenkomst.'
+        relaties:
+          description: 'De relaties behorend bij de overeenkomst. Dit kan de hoofdhuurder zijn maar ook de makelaar van de verkopende partij. Deze rollen zijn binnen Relatierol beschikbaar'
+          type: array
+          items:
+            $ref: '#/components/schemas/Relatie-sleutels'
+        extra-attributen:
+          description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: 'Mogelijkheid om het bericht uit te breiden met documentatie'
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
+      oneOf:
+      - $ref: '#/components/schemas/Overeenkomsten-Serviceovereenkomst'
+    Relatie-sleutels:
+      type: object
+      properties:
+        id:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.'
+        idExtern:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.'
+        idGegevensbeheerder:
+          type: 'string'
+          format: 'any'
+          description: 'De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.'
+        code:
+          type: 'string'
+          format: 'any'
+          description: 'De unieke code (Bijvoorbeeld om te tonen of te zoeken)'
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
+    Overeenkomsten-Serviceovereenkomst:
+      allOf:
+        - $ref: '#/components/schemas/Overeenkomsten-Overeenkomst'
+        - type: object
+          properties:
+            samenwerkingsverband:
+              $ref: '#/components/schemas/Referentiedata'
+              description: 'Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc.'
+            aantalPersonenHuishouden:
+              type: 'integer'
+              format: 'int32'
+              description: 'Het aantal personen van het huishouden dat meeverhuist.'
+    Overeenkomstkoppelingen-Adres:
       type: object
       properties:
         id:
@@ -2628,9 +2848,9 @@ components:
           type: 'string'
           format: 'any'
           description: 'De straatnaam behorend bij het adres.'
-    Overeenkomsten-NatuurlijkPersoon:
+    Overeenkomstkoppelingen-NatuurlijkPersoon:
       allOf:
-        - $ref: '#/components/schemas/Overeenkomsten-Relatie'
+        - $ref: '#/components/schemas/Overeenkomstkoppelingen-Relatie'
         - type: object
           properties:
             geboortedatum:
@@ -2661,7 +2881,7 @@ components:
               type: 'string'
               format: 'any'
               description: 'Een voorletter is een afkorting van een voornaam, die in adressering veel wordt gebruikt. De voorletters geven in combinatie met de achternaam meestal een duidelijk onderscheid tussen leden van hetzelfde gezin of dezelfde familie. Indien iemand meerdere voornamen heeft dan worden de voorletters door een punt gescheiden.'
-    Overeenkomsten-Overeenkomst:
+    Overeenkomstkoppelingen-Overeenkomst:
       type: object
       properties:
         id:
@@ -2700,7 +2920,7 @@ components:
           description: 'De relaties behorend bij de overeenkomst. Dit kan de hoofdhuurder zijn maar ook de makelaar van de verkopende partij. Deze rollen zijn binnen Relatierol beschikbaar'
           type: array
           items:
-            $ref: '#/components/schemas/Overeenkomsten-Relatie'
+            $ref: '#/components/schemas/Overeenkomstkoppelingen-Relatie'
         extra-attributen:
           description: 'Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn'
           type: array
@@ -2712,8 +2932,8 @@ components:
           items:
             $ref: '#/components/schemas/Informatieobject'
       oneOf:
-      - $ref: '#/components/schemas/Overeenkomsten-Serviceovereenkomst'
-    Overeenkomsten-Relatie:
+      - $ref: '#/components/schemas/Overeenkomstkoppelingen-Serviceovereenkomst'
+    Overeenkomstkoppelingen-Relatie:
       type: object
       properties:
         id:
@@ -2739,7 +2959,7 @@ components:
           description: 'De adressen behorend bij de relatie.'
           type: array
           items:
-            $ref: '#/components/schemas/Overeenkomsten-RelatieAdres'
+            $ref: '#/components/schemas/Overeenkomstkoppelingen-RelatieAdres'
         huishoudledenAantal:
           type: 'integer'
           format: 'int32'
@@ -2748,19 +2968,19 @@ components:
           description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
           type: array
           items:
-            $ref: '#/components/schemas/Overeenkomsten-Relatierol'
+            $ref: '#/components/schemas/Overeenkomstkoppelingen-Relatierol'
       oneOf:
-      - $ref: '#/components/schemas/Overeenkomsten-NatuurlijkPersoon'
-    Overeenkomsten-RelatieAdres:
+      - $ref: '#/components/schemas/Overeenkomstkoppelingen-NatuurlijkPersoon'
+    Overeenkomstkoppelingen-RelatieAdres:
       type: object
       properties:
         soort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort adres van de relatie. Bijvoorbeeld: Woonadres, postadres, bezoekadres en factuuradres.'
         adres:
-          $ref: '#/components/schemas/Overeenkomsten-Adres'
+          $ref: '#/components/schemas/Overeenkomstkoppelingen-Adres'
           description: 'Het adres behorend bij de relatie.'
-    Overeenkomsten-Relatierol:
+    Overeenkomstkoppelingen-Relatierol:
       type: object
       properties:
         soort:
@@ -2770,9 +2990,9 @@ components:
           type: 'string'
           format: 'any'
           description: 'De naam van de relatie rol.'
-    Overeenkomsten-Serviceovereenkomst:
+    Overeenkomstkoppelingen-Serviceovereenkomst:
       allOf:
-        - $ref: '#/components/schemas/Overeenkomsten-Overeenkomst'
+        - $ref: '#/components/schemas/Overeenkomstkoppelingen-Overeenkomst'
         - type: object
           properties:
             samenwerkingsverband:
