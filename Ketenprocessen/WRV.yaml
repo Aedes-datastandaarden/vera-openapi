@@ -2995,6 +2995,10 @@ components:
         - $ref: '#/components/schemas/Gebeurtenissen-Adres'
         - type: object
           properties:
+            bouwnummer:
+              type: string
+              format: any
+              description: Het bouwnummer van de eenheid.
             gemeente:
               $ref: '#/components/schemas/Gebeurtenissen-Gemeente'
               description: De gemeente behorend bij het adres.
@@ -3553,6 +3557,25 @@ components:
               type: integer
               format: int32
               description: Het aantal personen van het huishouden dat meeverhuist.
+    Overeenkomstkoppelingen-Account:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        gebruikersnaam:
+          type: string
+          format: any
+          description: De gebruikersnaam van het account.
     Overeenkomstkoppelingen-Adres:
       type: object
       properties:
@@ -3612,6 +3635,9 @@ components:
               type: string
               format: any
               description: De voornaam van de natuurlijk persoon.
+            account:
+              $ref: '#/components/schemas/Overeenkomstkoppelingen-Account'
+              description: link
             achternaam:
               type: string
               format: any
@@ -4763,6 +4789,18 @@ components:
         adressen:
           $ref: '#/components/schemas/Puntenberekeningen-Adres'
           description: De adressen waar de gebeurtenis heeft plaatsgevonden die onderdeel was van de puntenmutatie
+        situatiepunten:
+          type: number
+          format: float
+          description: Het aantal punten voor dringende omstandigheden die niet binnen gemeentelijk urgentiebeleid vallen.
+        startpunten:
+          type: number
+          format: float
+          description: Het aantal punten dat men krijgt voor voorrang binnen de eigen gemeente.
+        zoekpunten:
+          type: number
+          format: float
+          description: Het aantal punten dat aangeeft hoe actief men op zoek is naar een woning.
     Puntenberekeningen-Serviceovereenkomst:
       allOf:
         - $ref: '#/components/schemas/Puntenberekeningen-Overeenkomst'
@@ -4972,7 +5010,7 @@ components:
           description: De relaties behorend bij het inkomen. Bijv. de woningzoekende, huurder, controleur etc.
           type: array
           items:
-            $ref: '#/components/schemas/Relaties-Relatie'
+            $ref: '#/components/schemas/Relatie-sleutels'
     Relaties-NatuurlijkPersoon:
       allOf:
         - $ref: '#/components/schemas/Relaties-Relatie'
@@ -5099,7 +5137,7 @@ components:
               description: De contactpersonen behorend bij de rechtspersoon.
               type: array
               items:
-                $ref: '#/components/schemas/Relaties-Relatie'
+                $ref: '#/components/schemas/Relatie-sleutels'
     Relaties-Relatie:
       type: object
       properties:
@@ -5136,7 +5174,7 @@ components:
           description: De relatiegroepen waar de relatie toe behoort.
           type: array
           items:
-            $ref: '#/components/schemas/Relaties-Relatiegroep'
+            $ref: '#/components/schemas/Relatiegroep-sleutels'
         rollen:
           description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
           type: array
@@ -5156,6 +5194,32 @@ components:
       - $ref: '#/components/schemas/Relaties-NatuurlijkPersoon'
       - $ref: '#/components/schemas/Relaties-Rechtspersoon'
       - $ref: '#/components/schemas/Relaties-Relatiegroep'
+    Relatiegroep-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
+        rollen:
+          type: string
+          format: uri
+          description: 'Referentie (URI) naar Relatierol , bijvoorbeeld: https://relaties.vera.io/v4/relatierollen/12345'
     Relaties-RelatieAdres:
       type: object
       properties:
