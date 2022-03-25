@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Onderhoud
-  description: API-specificatie van ketenproces 'Onderhoud'. Deze specificatie is gebaseerd op VERA versie 4.0.6+220316.1
+  description: API-specificatie van ketenproces 'Onderhoud'. Deze specificatie is gebaseerd op VERA versie 4.0.7+220325.5
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '2.0.6+220316.1'
+  version: '2.0.7+220325.5'
 servers:
   - url: https://ohd.vera.io:{port}/{basePath}
     description: Productieserver
@@ -2035,17 +2035,23 @@ components:
           type: string
           format: date-time
           description: De datum en tijd die het eind van een blok markeert waarbinnen de afspraak bij voorkeur start.
+        afspraak:
+          $ref: '#/components/schemas/Afspraak-sleutels'
+          description: ''
+        duur:
+          type: string
+          format: duration
+          description: De verwachte duur van de afspraak die gemaakt moet worden.
+          pattern: '^(-?)P(?=\d|T\d)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)([DW]))?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?)?$'
         locatie:
           $ref: '#/components/schemas/AfspraakOpties-Adres'
           description: De locatie waar de afspraak moet plaatsvindt.
         onderhoudsorder:
-          type: string
-          format: uri
-          description: 'Referentie (URI) naar Onderhoudsorder , bijvoorbeeld: https://onderhoud.vera.io/v4/onderhoudsorders/12345'
+          $ref: '#/components/schemas/Onderhoudsorder-sleutels'
+          description: ''
         onderhoudstaak:
-          type: string
-          format: uri
-          description: 'Referentie (URI) naar Onderhoudstaak , bijvoorbeeld: https://onderhoud.vera.io/v4/onderhoudstaken/12345'
+          $ref: '#/components/schemas/Onderhoudstaak-sleutels'
+          description: ''
         planningscore:
           type: number
           format: float
@@ -2067,6 +2073,63 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Informatieobject'
+    Afspraak-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Onderhoudsorder-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Onderhoudstaak-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
     ExtraAttribuut:
       type: object
       properties:
@@ -2414,44 +2477,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Informatieobject'
-    Onderhoudsorder-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-    Onderhoudstaak-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
     Onderhoudsverzoek-sleutels:
       type: object
       properties:
@@ -3843,6 +3868,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Offertes-Offerteregel'
+        Onderhoudsorder:
+          $ref: '#/components/schemas/Onderhoudsorder-sleutels'
+          description: De onderhoudsorder waarvoor de offerte is opgesteld.
         relaties:
           description: Betrokken relaties bij de offerte. Bijv. de opdrachtgever of de opdrachtnemer.
           type: array

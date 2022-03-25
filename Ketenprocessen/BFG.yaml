@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Beheer Financiele Gegevens
-  description: API-specificatie van ketenproces 'Beheer Financiele Gegevens'. Deze specificatie is gebaseerd op VERA versie 4.0.6+220316.1
+  description: API-specificatie van ketenproces 'Beheer Financiele Gegevens'. Deze specificatie is gebaseerd op VERA versie 4.0.7+220325.5
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '1.0.6+220316.1'
+  version: '1.0.7+220325.5'
 servers:
   - url: https://bfg.vera.io:{port}/{basePath}
     description: Productieserver
@@ -691,9 +691,10 @@ components:
           format: any
           description: Betalingskenmerk van bijvoorbeeld acceptgiro of kwitantienummer.
         betalingsregelingen:
-          type: string
-          format: uri
-          description: 'Referentie (URI) naar Betalingsregeling , bijvoorbeeld: https://financien.vera.io/v4/betalingsregelingen/12345'
+          description: Betalingsregeling waar de boeking onderdeel van kan zijn.
+          type: array
+          items:
+            $ref: '#/components/schemas/Betalingsregeling-sleutels'
         boekingdetails:
           description: De boekingdetails behorende bij de boeking.
           type: array
@@ -707,9 +708,10 @@ components:
           $ref: '#/components/schemas/Boekingen-Debiteur'
           description: De debiteur van de boeking.
         externeIncassos:
-          type: string
-          format: uri
-          description: 'Referentie (URI) naar ExterneIncasso , bijvoorbeeld: https://financien.vera.io/v4/externeincassos/12345'
+          description: Externe incasso waar de boeking onderdeel van kan zijn.
+          type: array
+          items:
+            $ref: '#/components/schemas/ExterneIncasso-sleutels'
         huurgeschil:
           $ref: '#/components/schemas/Huurgeschil-sleutels'
           description: Huurgeschil waaraan de boeking gekoppeld kan zijn.
@@ -733,6 +735,44 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Informatieobject'
+    Betalingsregeling-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    ExterneIncasso-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
     Huurgeschil-sleutels:
       type: object
       properties:
