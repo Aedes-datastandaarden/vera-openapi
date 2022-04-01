@@ -31,6 +31,14 @@ Zie ook de toeliching hieronder.
 - [Verhuren Eenheden](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/VHE.html)
 - [Woonruimteverdeling](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/WRV.html)
 
+### Gebruik VERA OpenAPI - Ketenproces Onderhouden Eenheden
+Het ketenproces Onderhouden Eenheden is samen met [Ketenstandaard](www.ketenstandaard.nl) uitgewerkt en uitgebreid beschreven op de [WIKI](https://cora.wikixl.nl/index.php/Id-b5f5fed0-475c-8199-a2af-befed93eb48d) van Corponet. Dit ketenproces vormt de basis voor de berichten zoals opgenomen in de VERA OpenAPI-specificatie. Door de bundeling van kennis van beide organisaties is een proces tot stand gekomen die zowel voor de interne organisatie van de corporatie hanteerbaar is als ook in samenwerking met externe partijen zoals aannemers en onderhoudsbedrijven. 
+
+De VERA OpenAPI-specificaties zijn bedoeld voor de uitwisseling van data tussen de **interne** systemen van de corporatie. Het bedrijfsproces Klantbediening binnen de corporatie kan bijvoorbeeld ingevuld zijn door een systeem die data uitwisseld met het onderhoudsysteem van de corporatie. Ook zijn er corporaties met een eigen onderhoudsdienst met vakmannen die (een deel van) het onderhoud van het eigen bezit verzorgen. In alle gevallen dat er uitwisseling plaatsvindt tussen de interne systemen van de corporatie kan dus gebruik gemaakt worden van VERA OpenAPI. 
+
+Voor berichtuitwisseling met **externe** systemen van leveranciers zal gebruik gemaakt moeten worden van de DICO-berichten welke door Ketenstandaard wordt uitgegeven. Samen met VERA worden nieuwe DICO-berichten uitgewerkt die in lijn worden gebracht met de VERA OpenAPI-berichten zodat beide standaarden op elkaar aansluiten en compatibel met elkaar zijn. 
+Voor de beschikbaarheid van de DICO-berichten verwijzen we naar de site van Ketenstandaard: https://ketenstandaard.nl/standaard/dico/ 
+<br/><img width="128" src="dico-digital-standard.svg">
 
 ## Toelichting
 VERA heeft een alles omvattend gegevensmodel en gegevensmodellen per Ketenproces. De gegevensmodellen per Ketenproces bevatten alleen die entiteiten - en per entiteit alleen die attributen - uit het alles omvattende model, die een rol spelen binnen de procescontext.
