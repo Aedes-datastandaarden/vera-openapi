@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Incasso
-  description: API-specificatie van ketenproces 'Incasso'. Deze specificatie is gebaseerd op VERA versie 4.0.8+220401.7
+  description: API-specificatie van ketenproces 'Incasso'. Deze specificatie is gebaseerd op VERA versie 4.0.9+220429.16
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '1.0.8+220401.7'
+  version: '1.0.9+220429.16'
 servers:
   - url: https://inc.vera.io:{port}/{basePath}
     description: Productieserver
@@ -24,6 +24,8 @@ servers:
 tags:
 - name: Betalingsregelingen
   description: Operaties met betrekking tot een Betalingsregeling
+- name: ExterneIncassos
+  description: Operaties met betrekking tot een ExterneIncasso
 paths:
   /ping:
     get:
@@ -236,6 +238,209 @@ paths:
            $ref: '#/components/responses/NietGeautoriseerd'
         '404':
            description: Betalingsregeling met id niet gevonden
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /externe-incassos:
+    get:
+      tags:
+      - 'ExterneIncassos'
+      description: Ophalen van ExterneIncassos
+      operationId: listExterneIncassos
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/ExterneIncassos-ExterneIncasso'
+      responses:
+        '200':
+          description: ExterneIncasso response
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExterneIncassos-ExterneIncasso'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'ExterneIncassos'
+      description: Voegt een nieuw(e) ExterneIncasso toe.
+      operationId: createExterneIncasso
+      requestBody:
+        description: ExterneIncasso
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExterneIncassos-ExterneIncasso'
+      responses:
+        '200':
+          description: ExterneIncasso succesvol toegevoegd
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'ExterneIncassos'
+      description: |
+        Vervangen van een ExterneIncasso op basis van overeenkomstige sleutelvelden.
+      operationId: replaceExterneIncasso
+      requestBody:
+        description: Entiteit ExterneIncasso
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExterneIncassos-ExterneIncasso'
+      responses:
+        '200':
+          description: ExterneIncasso succesvol vervangen
+        '400':
+           description: |
+             Fout in request.
+             ExterneIncasso bevat geen sleutelveld(en).
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: ExterneIncasso met gegeven sleutelveld(en) niet gevonden
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'ExterneIncassos'
+      description: |
+        Wijzigen van afzonderlijke attributen van een ExterneIncasso. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateExterneIncasso
+      requestBody:
+        description: Entiteit ExterneIncasso
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExterneIncassos-ExterneIncasso'
+      responses:
+        '200':
+          description: ExterneIncasso succesvol gewijzigd
+        '400':
+           description: |
+             Fout in request.
+             ExterneIncasso bevat geen sleutelveld(en).
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: ExterneIncasso met gegeven sleutelveld(en) niet gevonden
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /externe-incassos/{id}:
+    get:
+      tags:
+      - 'ExterneIncassos'
+      description: Retourneert een ExterneIncasso met de gegeven identifier
+      operationId: readExterneIncassoById
+      parameters:
+      - name: id
+        in: path
+        description: Id van ExterneIncasso om op te halen
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ExterneIncasso response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExterneIncassos-ExterneIncasso'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: ExterneIncasso met id niet gevonden
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'ExterneIncassos'
+      description: Vervangen van een ExterneIncasso
+      operationId: replaceExterneIncassoById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van ExterneIncasso om te vervangen
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Entiteit ExterneIncasso
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExterneIncassos-ExterneIncasso'
+      responses:
+        '200':
+          description: ExterneIncasso succesvol vervangen
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: ExterneIncasso met id niet gevonden
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'ExterneIncassos'
+      description: Wijzigen van een ExterneIncasso
+      operationId: updateExterneIncassoById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van ExterneIncasso om te wijzigen
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Entiteit ExterneIncasso
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExterneIncassos-ExterneIncasso'
+      responses:
+        '200':
+          description: ExterneIncasso succesvol gewijzigd
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: ExterneIncasso met id niet gevonden
         default:
           description: Onverwachte fout
           content:
@@ -652,6 +857,165 @@ components:
         overeenkomst:
           $ref: '#/components/schemas/Overeenkomst-sleutels'
           description: Overeenkomst waaraan de boeking gekoppeld is.
+    ExterneIncassos-Debiteur:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        relatie:
+          $ref: '#/components/schemas/Relatie-sleutels'
+          description: Relatie gekoppeld aan de debiteur.
+    ExterneIncassos-ExterneIncasso:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Soort externe incasso. Bijvoorbeeld: deurwaarder, incassobureau.'
+        omschrijving:
+          type: string
+          format: any
+          description: Omschrijving van het gegeven.
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Status van de externe incasso. Bijvoorbeeld: lopend, afgesloten, bevroren.'
+        begindatum:
+          type: string
+          format: date
+          description: Datum waarop het is gestart.
+        einddatum:
+          type: string
+          format: date
+          description: Datum waarop het is afgesloten.
+        overdrachtsdatum:
+          type: string
+          format: date
+          description: Datum waarop is overgedragen.
+        bedrag:
+          type: number
+          format: float
+          description: Het bedrag dat is overgedragen.
+        boekingen:
+          description: De boekingen behorende bij de externe incasso.
+          type: array
+          items:
+            $ref: '#/components/schemas/Boeking-sleutels'
+        debiteur:
+          $ref: '#/components/schemas/ExterneIncassos-Debiteur'
+          description: De debiteur waaraan de boeking gekoppeld is.
+        externeincassoacties:
+          description: De externe incasso acties behorende bij de externe incasso
+          type: array
+          items:
+            $ref: '#/components/schemas/ExterneIncassos-ExterneIncassoActie'
+        overeenkomst:
+          $ref: '#/components/schemas/Overeenkomst-sleutels'
+          description: Overeenkomst waaraan de externe incasso gekoppeld is.
+        relatie:
+          $ref: '#/components/schemas/Relatie-sleutels'
+          description: Bureau of deurwaarder die de externe incasso uitvoert.
+        saldo:
+          type: number
+          format: float
+          description: Het saldo of openstaande bedrag.
+        extra-attributen:
+          description: Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: Mogelijkheid om het bericht uit te breiden met documentatie
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
+    Boeking-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    ExterneIncassos-ExterneIncassoActie:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: Soort actie.
+        omschrijving:
+          type: string
+          format: any
+          description: Omschrijving van het gegeven.
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: Status van de actie.
+        begindatum:
+          type: string
+          format: date
+          description: Datum en tijd waarop de actie is gestart.
+        einddatum:
+          type: string
+          format: date
+          description: Datum en tijd waarop de actie is beeindigd.
+        relatie:
+          $ref: '#/components/schemas/Relatie-sleutels'
+          description: Relatie die de actie heeft ondernomen.
     Foutbericht:
       type: object
       properties:
