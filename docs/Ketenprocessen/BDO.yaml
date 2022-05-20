@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Casemanagement
-  description: API-specificatie van ketenproces 'Casemanagement'. Deze specificatie is gebaseerd op VERA versie 4.0.9+220429.16
+  description: API-specificatie van ketenproces 'Casemanagement'. Deze specificatie is gebaseerd op VERA versie 4.0.10+220520.16
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '1.0.9+220429.16'
+  version: '1.0.10+220520.16'
 servers:
   - url: https://bdo.vera.io:{port}/{basePath}
     description: Productieserver
@@ -56,6 +56,49 @@ paths:
         explode: true
         schema:
           $ref: '#/components/schemas/Dossiers-Dossier'
+      - name: cursor
+        in: query
+        schema:
+          type: string
+        description: |
+          De cursor (bijv. GUID) waarmee de volgende pagina van resultaten opgehaald kan worden.
+          Zie ook: X-Parameters-Cursor.
+        example: 241d66b1-fcdb-4266-b908-01aeec18781e
+      - name: pagina
+        in: query
+        schema:
+          type: string
+        description: |
+          De opgrevraagde pagina
+        example: 21
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Parameters-PeiltijdstipMaterieel
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Parameters-PeiltijdstipMaterieel'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - name: X-Parameters-AantalPerPagina
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Parameters-AantalPerPagina'           
+      - name: X-Parameters-Pagina
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Parameters-Pagina'
       responses:
         '200':
           description: Dossier response
@@ -65,6 +108,19 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Dossiers-Dossier'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+                $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+            X-Stuurgegevens-Referentienummer:
+                $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+            X-Parameters-Aantal:
+                $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+                $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+                $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+                $ref: '#/components/headers/X-Parameters-Cursor'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -78,6 +134,23 @@ paths:
       - 'Dossiers'
       description: Voegt een nieuw(e) Dossier toe.
       operationId: createDossier
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
       requestBody:
         description: Dossier
         content:
@@ -87,20 +160,46 @@ paths:
       responses:
         '200':
           description: Dossier succesvol toegevoegd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     put:
       tags:
       - 'Dossiers'
       description: |
         Vervangen van een Dossier op basis van overeenkomstige sleutelvelden.
       operationId: replaceDossier
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
       requestBody:
         description: Entiteit Dossier
         content:
@@ -110,20 +209,35 @@ paths:
       responses:
         '200':
           description: Dossier succesvol vervangen
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '400':
-           description: |
-             Fout in request.
-             Dossier bevat geen sleutelveld(en).
+          description: |
+            Fout in request.
+            Dossier bevat geen sleutelveld(en).
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
-           description: Dossier met gegeven sleutelveld(en) niet gevonden
+          description: Dossier met gegeven sleutelveld(en) niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     patch:
       tags:
       - 'Dossiers'
@@ -131,6 +245,23 @@ paths:
         Wijzigen van afzonderlijke attributen van een Dossier. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
       operationId: updateDossier
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
       requestBody:
         description: Entiteit Dossier
         content:
@@ -140,20 +271,35 @@ paths:
       responses:
         '200':
           description: Dossier succesvol gewijzigd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '400':
-           description: |
-             Fout in request.
-             Dossier bevat geen sleutelveld(en).
+          description: |
+            Fout in request.
+            Dossier bevat geen sleutelveld(en).
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
+           headers:
+             X-Stuurgegevens-Referentienummer:
+               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
            description: Dossier met gegeven sleutelveld(en) niet gevonden
+           headers:
+             X-Stuurgegevens-Referentienummer:
+               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
   /dossiers/{id}:
     get:
       tags:
@@ -167,6 +313,22 @@ paths:
         required: true
         schema:
           type: string
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
       responses:
         '200':
           description: Dossier response
@@ -174,16 +336,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Dossiers-Dossier'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
-           description: Dossier met id niet gevonden
+          description: Dossier met id niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     put:
       tags:
       - 'Dossiers'
@@ -196,6 +370,22 @@ paths:
         required: true
         schema:
           type: string
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
       requestBody:
         description: Entiteit Dossier
         content:
@@ -205,16 +395,28 @@ paths:
       responses:
         '200':
           description: Dossier succesvol vervangen
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
-           description: Dossier met id niet gevonden
+          description: Dossier met id niet gevonden
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     patch:
       tags:
       - 'Dossiers'
@@ -227,6 +429,22 @@ paths:
         required: true
         schema:
           type: integer
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
       requestBody:
         description: Entiteit Dossier
         content:
@@ -236,16 +454,28 @@ paths:
       responses:
         '200':
           description: Dossier succesvol gewijzigd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
-           description: Dossier met id niet gevonden
+          description: Dossier met id niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
   /informatieobjecten:
     get:
       tags:
@@ -259,6 +489,49 @@ paths:
         explode: true
         schema:
           $ref: '#/components/schemas/Informatieobjecten-Informatieobject'
+      - name: cursor
+        in: query
+        schema:
+          type: string
+        description: |
+          De cursor (bijv. GUID) waarmee de volgende pagina van resultaten opgehaald kan worden.
+          Zie ook: X-Parameters-Cursor.
+        example: 241d66b1-fcdb-4266-b908-01aeec18781e
+      - name: pagina
+        in: query
+        schema:
+          type: string
+        description: |
+          De opgrevraagde pagina
+        example: 21
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Parameters-PeiltijdstipMaterieel
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Parameters-PeiltijdstipMaterieel'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - name: X-Parameters-AantalPerPagina
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Parameters-AantalPerPagina'           
+      - name: X-Parameters-Pagina
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Parameters-Pagina'
       responses:
         '200':
           description: Informatieobject response
@@ -268,6 +541,19 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Informatieobjecten-Informatieobject'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+                $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+            X-Stuurgegevens-Referentienummer:
+                $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+            X-Parameters-Aantal:
+                $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+                $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+                $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+                $ref: '#/components/headers/X-Parameters-Cursor'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -281,6 +567,23 @@ paths:
       - 'Informatieobjecten'
       description: Voegt een nieuw(e) Informatieobject toe.
       operationId: createInformatieobject
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
       requestBody:
         description: Informatieobject
         content:
@@ -290,20 +593,46 @@ paths:
       responses:
         '200':
           description: Informatieobject succesvol toegevoegd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     put:
       tags:
       - 'Informatieobjecten'
       description: |
         Vervangen van een Informatieobject op basis van overeenkomstige sleutelvelden.
       operationId: replaceInformatieobject
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
       requestBody:
         description: Entiteit Informatieobject
         content:
@@ -313,20 +642,35 @@ paths:
       responses:
         '200':
           description: Informatieobject succesvol vervangen
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '400':
-           description: |
-             Fout in request.
-             Informatieobject bevat geen sleutelveld(en).
+          description: |
+            Fout in request.
+            Informatieobject bevat geen sleutelveld(en).
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
-           description: Informatieobject met gegeven sleutelveld(en) niet gevonden
+          description: Informatieobject met gegeven sleutelveld(en) niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     patch:
       tags:
       - 'Informatieobjecten'
@@ -334,6 +678,23 @@ paths:
         Wijzigen van afzonderlijke attributen van een Informatieobject. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
       operationId: updateInformatieobject
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
       requestBody:
         description: Entiteit Informatieobject
         content:
@@ -343,20 +704,35 @@ paths:
       responses:
         '200':
           description: Informatieobject succesvol gewijzigd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '400':
-           description: |
-             Fout in request.
-             Informatieobject bevat geen sleutelveld(en).
+          description: |
+            Fout in request.
+            Informatieobject bevat geen sleutelveld(en).
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
+           headers:
+             X-Stuurgegevens-Referentienummer:
+               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
            description: Informatieobject met gegeven sleutelveld(en) niet gevonden
+           headers:
+             X-Stuurgegevens-Referentienummer:
+               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
   /informatieobjecten/{id}:
     get:
       tags:
@@ -370,6 +746,22 @@ paths:
         required: true
         schema:
           type: string
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
       responses:
         '200':
           description: Informatieobject response
@@ -377,16 +769,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Informatieobjecten-Informatieobject'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
-           description: Informatieobject met id niet gevonden
+          description: Informatieobject met id niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     put:
       tags:
       - 'Informatieobjecten'
@@ -399,6 +803,22 @@ paths:
         required: true
         schema:
           type: string
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
       requestBody:
         description: Entiteit Informatieobject
         content:
@@ -408,16 +828,28 @@ paths:
       responses:
         '200':
           description: Informatieobject succesvol vervangen
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
-           description: Informatieobject met id niet gevonden
+          description: Informatieobject met id niet gevonden
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     patch:
       tags:
       - 'Informatieobjecten'
@@ -430,6 +862,22 @@ paths:
         required: true
         schema:
           type: integer
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
       requestBody:
         description: Entiteit Informatieobject
         content:
@@ -439,16 +887,28 @@ paths:
       responses:
         '200':
           description: Informatieobject succesvol gewijzigd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
-           description: Informatieobject met id niet gevonden
+          description: Informatieobject met id niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
   /zaken:
     get:
       tags:
@@ -462,6 +922,49 @@ paths:
         explode: true
         schema:
           $ref: '#/components/schemas/Zaken-Zaak'
+      - name: cursor
+        in: query
+        schema:
+          type: string
+        description: |
+          De cursor (bijv. GUID) waarmee de volgende pagina van resultaten opgehaald kan worden.
+          Zie ook: X-Parameters-Cursor.
+        example: 241d66b1-fcdb-4266-b908-01aeec18781e
+      - name: pagina
+        in: query
+        schema:
+          type: string
+        description: |
+          De opgrevraagde pagina
+        example: 21
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Parameters-PeiltijdstipMaterieel
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Parameters-PeiltijdstipMaterieel'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - name: X-Parameters-AantalPerPagina
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Parameters-AantalPerPagina'           
+      - name: X-Parameters-Pagina
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Parameters-Pagina'
       responses:
         '200':
           description: Zaak response
@@ -471,6 +974,19 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Zaken-Zaak'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+                $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+            X-Stuurgegevens-Referentienummer:
+                $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+            X-Parameters-Aantal:
+                $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+                $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+                $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+                $ref: '#/components/headers/X-Parameters-Cursor'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -484,6 +1000,23 @@ paths:
       - 'Zaken'
       description: Voegt een nieuw(e) Zaak toe.
       operationId: createZaak
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
       requestBody:
         description: Zaak
         content:
@@ -493,20 +1026,46 @@ paths:
       responses:
         '200':
           description: Zaak succesvol toegevoegd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     put:
       tags:
       - 'Zaken'
       description: |
         Vervangen van een Zaak op basis van overeenkomstige sleutelvelden.
       operationId: replaceZaak
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
       requestBody:
         description: Entiteit Zaak
         content:
@@ -516,20 +1075,35 @@ paths:
       responses:
         '200':
           description: Zaak succesvol vervangen
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '400':
-           description: |
-             Fout in request.
-             Zaak bevat geen sleutelveld(en).
+          description: |
+            Fout in request.
+            Zaak bevat geen sleutelveld(en).
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
-           description: Zaak met gegeven sleutelveld(en) niet gevonden
+          description: Zaak met gegeven sleutelveld(en) niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     patch:
       tags:
       - 'Zaken'
@@ -537,6 +1111,23 @@ paths:
         Wijzigen van afzonderlijke attributen van een Zaak. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
       operationId: updateZaak
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
       requestBody:
         description: Entiteit Zaak
         content:
@@ -546,20 +1137,35 @@ paths:
       responses:
         '200':
           description: Zaak succesvol gewijzigd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '400':
-           description: |
-             Fout in request.
-             Zaak bevat geen sleutelveld(en).
+          description: |
+            Fout in request.
+            Zaak bevat geen sleutelveld(en).
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
+           headers:
+             X-Stuurgegevens-Referentienummer:
+               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
            description: Zaak met gegeven sleutelveld(en) niet gevonden
+           headers:
+             X-Stuurgegevens-Referentienummer:
+               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
   /zaken/{id}:
     get:
       tags:
@@ -573,6 +1179,22 @@ paths:
         required: true
         schema:
           type: string
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
       responses:
         '200':
           description: Zaak response
@@ -580,16 +1202,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Zaken-Zaak'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
-           description: Zaak met id niet gevonden
+          description: Zaak met id niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     put:
       tags:
       - 'Zaken'
@@ -602,6 +1236,22 @@ paths:
         required: true
         schema:
           type: string
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
       requestBody:
         description: Entiteit Zaak
         content:
@@ -611,16 +1261,28 @@ paths:
       responses:
         '200':
           description: Zaak succesvol vervangen
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
-           description: Zaak met id niet gevonden
+          description: Zaak met id niet gevonden
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     patch:
       tags:
       - 'Zaken'
@@ -633,6 +1295,22 @@ paths:
         required: true
         schema:
           type: integer
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
       requestBody:
         description: Entiteit Zaak
         content:
@@ -642,16 +1320,28 @@ paths:
       responses:
         '200':
           description: Zaak succesvol gewijzigd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
-           description: Zaak met id niet gevonden
+          description: Zaak met id niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
 security:
   - ApiKeyAuth: []
 components:
@@ -686,13 +1376,20 @@ components:
     X-Parameters-AantalPerPagina:
       schema:
         type: integer
-        description: Miximum aantal entiteiten per pagina
+        description: Maximum aantal resultaten per pagina
         example: 20
     X-Parameters-Pagina:
       schema:
         type: integer
         description: Huidige paginanummer
         example: 3
+    X-Parameters-Cursor:
+      schema:
+        type: string
+        description: |
+          De cursor (bijv. GUID) wanneer het aantal resultaten groter is dan het maximum aantal resultaten per pagina.
+          Deze dient als query parameter ('?cursor=<guid>') te worden meegestuurd bij het ophalen van de volgende pagina.
+        example: 241d66b1-fcdb-4266-b908-01aeec18781e
     X-Parameters-PeiltijdstipMaterieel:
       schema:
         type: string
@@ -742,7 +1439,7 @@ components:
           description: Beknopte omschrijving van het dossier.
         status:
           $ref: '#/components/schemas/Referentiedata'
-          description: De fase waarin het dossier zich vanuit het perspectief van afhandeling en archivering bevindt (Bijvoorbeeld "Gearchiveerd").
+          description: De fase waarin het dossier zich vanuit het perspectief van afhandeling en archivering bevindt (Bijvoorbeeld 'Gearchiveerd').
         detailStatus:
           $ref: '#/components/schemas/Referentiedata'
           description: Detaillering van de fase waarin het dossier zich vanuit het perspectief van afhandeling en archivering bevindt.
