@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Onderhoud
-  description: API-specificatie van ketenproces 'Onderhoud'. Deze specificatie is gebaseerd op VERA versie 4.0.10+220520.16
+  description: API-specificatie van ketenproces 'Onderhoud'. Deze specificatie is gebaseerd op VERA versie 4.0.11+220617.9
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '2.0.10+220520.16'
+  version: '2.0.11+220617.9'
 servers:
   - url: https://ohd.vera.io:{port}/{basePath}
     description: Productieserver
@@ -81,7 +81,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -514,7 +514,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -947,7 +947,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -1380,7 +1380,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -1813,7 +1813,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -2246,7 +2246,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -2679,7 +2679,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -3112,7 +3112,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -3545,7 +3545,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -4018,7 +4018,7 @@ components:
           schema:
             type: string
   schemas:
-    AfspraakOpties-Adres:
+    AfspraakOpties-Adres-basis:
       type: object
       properties:
         id:
@@ -4064,8 +4064,6 @@ components:
           type: string
           format: any
           description: De straatnaam behorend bij het adres.
-      oneOf:
-      - $ref: '#/components/schemas/AfspraakOpties-Eenheidadres'
     Referentiedata:
       type: object
       properties:
@@ -4077,6 +4075,10 @@ components:
           type: string
           format: any
           description: De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.
+    AfspraakOpties-Adres:
+      oneOf:
+        - $ref: '#/components/schemas/AfspraakOpties-Eenheidadres'
+        - $ref: '#/components/schemas/AfspraakOpties-Adres-basis'
     AfspraakOpties-AfspraakOptie:
       type: object
       properties:
@@ -4298,20 +4300,20 @@ components:
           $ref: '#/components/schemas/Referentiedata'
           description: De classificatie van het vertrouwelijkheidsniveau van het informatieobject.
     AfspraakOpties-Eenheidadres:
+      type: object
       allOf:
-        - $ref: '#/components/schemas/AfspraakOpties-Adres'
-        - type: object
-          properties:
-            geometrie:
-              $ref: '#/components/schemas/AfspraakOpties-Geometrie'
-              description: De geometrie van het adres.
-            land:
-              $ref: '#/components/schemas/Referentiedata'
-              description: Het land waarin het adres zich bevindt.
-            woonplaats:
-              $ref: '#/components/schemas/AfspraakOpties-Woonplaats'
-              description: De woonplaats waarin het adres zich bevindt.
-    AfspraakOpties-Geometrie:
+        - $ref: '#/components/schemas/AfspraakOpties-Adres-basis'
+      properties:
+        geometrie:
+          $ref: '#/components/schemas/AfspraakOpties-Geometrie'
+          description: De geometrie van het adres.
+        land:
+          $ref: '#/components/schemas/Referentiedata'
+          description: Het land waarin het adres zich bevindt.
+        woonplaats:
+          $ref: '#/components/schemas/AfspraakOpties-Woonplaats'
+          description: De woonplaats waarin het adres zich bevindt.
+    AfspraakOpties-Geometrie-basis:
       type: object
       properties:
         id:
@@ -4337,55 +4339,57 @@ components:
           type: string
           format: any
           description: 'De omschrijving van de geometrie. Bijvoorbeeld: Lindelaan 3'
+    AfspraakOpties-Geometrie:
       oneOf:
-      - $ref: '#/components/schemas/AfspraakOpties-Punt'
+        - $ref: '#/components/schemas/AfspraakOpties-Punt'
+        - $ref: '#/components/schemas/AfspraakOpties-Geometrie-basis'
     AfspraakOpties-NatuurlijkPersoon:
+      type: object
       allOf:
-        - $ref: '#/components/schemas/AfspraakOpties-Relatie'
-        - type: object
-          properties:
-            aanhef:
-              type: string
-              format: any
-              description: De aanhef van de natuurlijkpersoon. Bijv Mevrouw, De heer, etc.
-            achternaam:
-              type: string
-              format: any
-              description: De achternaam van de natuurlijk persoon.
-            initialen:
-              type: string
-              format: any
-              description: De initialen van de natuurlijk persoon.
-            roepnaam:
-              type: string
-              format: any
-              description: De roepnaam van de natuurlijk persoon.
-            tussenvoegsels:
-              type: string
-              format: any
-              description: De tussenvoegsels behorende bij de naam.
-            voorletters:
-              type: string
-              format: any
-              description: De Voorletters van de natuurlijkpersoon.
-            voornaam:
-              type: string
-              format: any
-              description: De voornaam van de natuurlijk persoon.
+        - $ref: '#/components/schemas/AfspraakOpties-Relatie-basis'
+      properties:
+        aanhef:
+          type: string
+          format: any
+          description: De aanhef van de natuurlijkpersoon. Bijv Mevrouw, De heer, etc.
+        achternaam:
+          type: string
+          format: any
+          description: De achternaam van de natuurlijk persoon.
+        initialen:
+          type: string
+          format: any
+          description: De initialen van de natuurlijk persoon.
+        roepnaam:
+          type: string
+          format: any
+          description: De roepnaam van de natuurlijk persoon.
+        tussenvoegsels:
+          type: string
+          format: any
+          description: De tussenvoegsels behorende bij de naam.
+        voorletters:
+          type: string
+          format: any
+          description: De Voorletters van de natuurlijkpersoon.
+        voornaam:
+          type: string
+          format: any
+          description: De voornaam van de natuurlijk persoon.
     AfspraakOpties-Punt:
+      type: object
       allOf:
-        - $ref: '#/components/schemas/AfspraakOpties-Geometrie'
-        - type: object
-          properties:
-            lengtegraad:
-              type: number
-              format: float
-              description: De lengtegraad.
-            breedtegraad:
-              type: number
-              format: float
-              description: De breedtegraad.
-    AfspraakOpties-Relatie:
+        - $ref: '#/components/schemas/AfspraakOpties-Geometrie-basis'
+      properties:
+        lengtegraad:
+          type: number
+          format: float
+          description: De lengtegraad.
+        breedtegraad:
+          type: number
+          format: float
+          description: De breedtegraad.
+    AfspraakOpties-Relatie-basis:
       type: object
       properties:
         id:
@@ -4407,8 +4411,10 @@ components:
         soort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
+    AfspraakOpties-Relatie:
       oneOf:
-      - $ref: '#/components/schemas/AfspraakOpties-NatuurlijkPersoon'
+        - $ref: '#/components/schemas/AfspraakOpties-NatuurlijkPersoon'
+        - $ref: '#/components/schemas/AfspraakOpties-Relatie-basis'
     AfspraakOpties-Woonplaats:
       type: object
       properties:
@@ -4432,7 +4438,7 @@ components:
           type: string
           format: any
           description: De naam van de woonplaats.
-    Afspraken-Adres:
+    Afspraken-Adres-basis:
       type: object
       properties:
         id:
@@ -4478,8 +4484,10 @@ components:
           type: string
           format: any
           description: De straatnaam behorend bij het adres.
+    Afspraken-Adres:
       oneOf:
-      - $ref: '#/components/schemas/Afspraken-Eenheidadres'
+        - $ref: '#/components/schemas/Afspraken-Eenheidadres'
+        - $ref: '#/components/schemas/Afspraken-Adres-basis'
     Afspraken-Afspraak:
       type: object
       properties:
@@ -4573,7 +4581,7 @@ components:
           type: string
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-    Afspraken-Contactgegeven:
+    Afspraken-Contactgegeven-basis:
       type: object
       properties:
         id:
@@ -4611,8 +4619,10 @@ components:
           type: string
           format: any
           description: 'De aard van het contactgegeven. Dit kan de waarde zijn van een telefoonnummer, emailadres, of twitteradres. Bijvoorbeeld: 020-1234563 '
+    Afspraken-Contactgegeven:
       oneOf:
-      - $ref: '#/components/schemas/Afspraken-Telefoonnummer'
+        - $ref: '#/components/schemas/Afspraken-Telefoonnummer'
+        - $ref: '#/components/schemas/Afspraken-Contactgegeven-basis'
     Afspraken-Defect:
       type: object
       properties:
@@ -4773,74 +4783,76 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
     Afspraken-Eenheidadres:
+      type: object
       allOf:
-        - $ref: '#/components/schemas/Afspraken-Adres'
-        - type: object
-          properties:
-            geometrie:
-              $ref: '#/components/schemas/Afspraken-Geometrie'
-              description: De geometrie van het adres.
-            land:
-              $ref: '#/components/schemas/Referentiedata'
-              description: Het land waarin het adres zich bevindt.
-            woonplaats:
-              $ref: '#/components/schemas/Afspraken-Woonplaats'
-              description: De woonplaats waarin het adres zich bevindt.
-    Afspraken-Geometrie:
+        - $ref: '#/components/schemas/Afspraken-Adres-basis'
+      properties:
+        geometrie:
+          $ref: '#/components/schemas/Afspraken-Geometrie'
+          description: De geometrie van het adres.
+        land:
+          $ref: '#/components/schemas/Referentiedata'
+          description: Het land waarin het adres zich bevindt.
+        woonplaats:
+          $ref: '#/components/schemas/Afspraken-Woonplaats'
+          description: De woonplaats waarin het adres zich bevindt.
+    Afspraken-Geometrie-basis:
       type: object
       properties:
         soort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'soort Geometrie: punt of omtrek'
+    Afspraken-Geometrie:
       oneOf:
-      - $ref: '#/components/schemas/Afspraken-Punt'
+        - $ref: '#/components/schemas/Afspraken-Punt'
+        - $ref: '#/components/schemas/Afspraken-Geometrie-basis'
     Afspraken-NatuurlijkPersoon:
+      type: object
       allOf:
-        - $ref: '#/components/schemas/Afspraken-Relatie'
-        - type: object
-          properties:
-            voornaam:
-              type: string
-              format: any
-              description: De voornaam van de natuurlijk persoon.
-            initialen:
-              type: string
-              format: any
-              description: De initialen van de natuurlijk persoon.
-            aanhef:
-              type: string
-              format: any
-              description: De aanhef van de natuurlijkpersoon. Bijv Mevrouw, De heer, etc.
-            achternaam:
-              type: string
-              format: any
-              description: De achternaam van de natuurlijk persoon.
-            roepnaam:
-              type: string
-              format: any
-              description: De roepnaam van de natuurlijk persoon.
-            tussenvoegsels:
-              type: string
-              format: any
-              description: De tussenvoegsels behorende bij de naam.
-            voorletters:
-              type: string
-              format: any
-              description: De Voorletters van de natuurlijkpersoon.
+        - $ref: '#/components/schemas/Afspraken-Relatie-basis'
+      properties:
+        voornaam:
+          type: string
+          format: any
+          description: De voornaam van de natuurlijk persoon.
+        initialen:
+          type: string
+          format: any
+          description: De initialen van de natuurlijk persoon.
+        aanhef:
+          type: string
+          format: any
+          description: De aanhef van de natuurlijkpersoon. Bijv Mevrouw, De heer, etc.
+        achternaam:
+          type: string
+          format: any
+          description: De achternaam van de natuurlijk persoon.
+        roepnaam:
+          type: string
+          format: any
+          description: De roepnaam van de natuurlijk persoon.
+        tussenvoegsels:
+          type: string
+          format: any
+          description: De tussenvoegsels behorende bij de naam.
+        voorletters:
+          type: string
+          format: any
+          description: De Voorletters van de natuurlijkpersoon.
     Afspraken-Punt:
+      type: object
       allOf:
-        - $ref: '#/components/schemas/Afspraken-Geometrie'
-        - type: object
-          properties:
-            lengtegraad:
-              type: number
-              format: float
-              description: De lengtegraad.
-            breedtegraad:
-              type: number
-              format: float
-              description: De breedtegraad.
-    Afspraken-Relatie:
+        - $ref: '#/components/schemas/Afspraken-Geometrie-basis'
+      properties:
+        lengtegraad:
+          type: number
+          format: float
+          description: De lengtegraad.
+        breedtegraad:
+          type: number
+          format: float
+          description: De breedtegraad.
+    Afspraken-Relatie-basis:
       type: object
       properties:
         id:
@@ -4867,34 +4879,36 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Afspraken-Contactgegeven'
+    Afspraken-Relatie:
       oneOf:
-      - $ref: '#/components/schemas/Afspraken-NatuurlijkPersoon'
+        - $ref: '#/components/schemas/Afspraken-NatuurlijkPersoon'
+        - $ref: '#/components/schemas/Afspraken-Relatie-basis'
     Afspraken-Telefoonnummer:
+      type: object
       allOf:
-        - $ref: '#/components/schemas/Afspraken-Contactgegeven'
-        - type: object
-          properties:
-            landnummer:
-              type: string
-              format: any
-              description: Het landnummer van het telefoonnummer.
-            netnummer:
-              type: string
-              format: any
-              description: Het netnummer van het telefoonnummer.
-            abonneenummer:
-              type: string
-              format: any
-              description: Het abonneenummer van het telefoonnummer.
-            dagdelen:
-              description: De dagdelen waarop er gebruikt gemaakt kan worden van het telefoonnummer.
-              type: array
-              items:
-                $ref: '#/components/schemas/Referentiedata'
-            extensie:
-              type: string
-              format: any
-              description: De extensie van het telefoonnummer.
+        - $ref: '#/components/schemas/Afspraken-Contactgegeven-basis'
+      properties:
+        landnummer:
+          type: string
+          format: any
+          description: Het landnummer van het telefoonnummer.
+        netnummer:
+          type: string
+          format: any
+          description: Het netnummer van het telefoonnummer.
+        abonneenummer:
+          type: string
+          format: any
+          description: Het abonneenummer van het telefoonnummer.
+        dagdelen:
+          description: De dagdelen waarop er gebruikt gemaakt kan worden van het telefoonnummer.
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
+        extensie:
+          type: string
+          format: any
+          description: De extensie van het telefoonnummer.
     Afspraken-Woonplaats:
       type: object
       properties:
@@ -4994,34 +5008,34 @@ components:
           $ref: '#/components/schemas/BouwkundigElementen-Relatie'
           description: De leverancier die het product of dienst heeft geleverd.
     BouwkundigElementen-Rechtspersoon:
+      type: object
       allOf:
-        - $ref: '#/components/schemas/BouwkundigElementen-Relatie'
-        - type: object
-          properties:
-            globaalLocatienummer:
-              type: string
-              format: any
-              description: Een wereldwijd nummer ter identificatie van een partij of locatie. Het dertiencijferige nummer (GLN) wordt uitgegeven door GS1.
-            naam:
-              type: string
-              format: any
-              description: De naam de rechtspersoon.
-            btwNummer:
-              type: string
-              format: any
-              description: Het BTW nummer van de rechtspersoon.
-            kvkNummer:
-              type: string
-              format: any
-              description: Het KVK nummer van de rechtspersoon.
-            organisatievorm:
-              $ref: '#/components/schemas/Referentiedata'
-              description: 'De organisatievorm van de rechtspersoon. Bijvoorbeeld: BV, NV, stichting of vereniging. Ook wel rechtsvorm genoemd.'
-            relaties:
-              description: De contactpersonen behorend bij de rechtspersoon.
-              type: array
-              items:
-                $ref: '#/components/schemas/Relatie-sleutels'
+        - $ref: '#/components/schemas/BouwkundigElementen-Relatie-basis'
+      properties:
+        globaalLocatienummer:
+          type: string
+          format: any
+          description: Een wereldwijd nummer ter identificatie van een partij of locatie. Het dertiencijferige nummer (GLN) wordt uitgegeven door GS1.
+        naam:
+          type: string
+          format: any
+          description: De naam de rechtspersoon.
+        btwNummer:
+          type: string
+          format: any
+          description: Het BTW nummer van de rechtspersoon.
+        kvkNummer:
+          type: string
+          format: any
+          description: Het KVK nummer van de rechtspersoon.
+        organisatievorm:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De organisatievorm van de rechtspersoon. Bijvoorbeeld: BV, NV, stichting of vereniging. Ook wel rechtsvorm genoemd.'
+        relaties:
+          description: De contactpersonen behorend bij de rechtspersoon.
+          type: array
+          items:
+            $ref: '#/components/schemas/Relatie-sleutels'
     Relatie-sleutels:
       type: object
       properties:
@@ -5048,10 +5062,11 @@ components:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon.'
         rollen:
-          type: string
-          format: uri
-          description: 'Referentie (URI) naar Relatierol , bijvoorbeeld: https://relaties.vera.io/v4/relatierollen/12345'
-    BouwkundigElementen-Relatie:
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Relatierol in de vorm: {endpoint Relaties}/v4/relatierollen/{id}'
+    BouwkundigElementen-Relatie-basis:
       type: object
       properties:
         id:
@@ -5074,16 +5089,19 @@ components:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
         contactgegevens:
-          type: string
-          format: uri
-          description: 'Referentie (URI) naar Contactgegeven , bijvoorbeeld: https://relaties.vera.io/v4/contactgegevens/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Contactgegeven in de vorm: {endpoint Relaties}/v4/contactgegevens/{id}'
         rollen:
           description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
           type: array
           items:
             $ref: '#/components/schemas/BouwkundigElementen-Relatierol'
+    BouwkundigElementen-Relatie:
       oneOf:
-      - $ref: '#/components/schemas/BouwkundigElementen-Rechtspersoon'
+        - $ref: '#/components/schemas/BouwkundigElementen-Rechtspersoon'
+        - $ref: '#/components/schemas/BouwkundigElementen-Relatie-basis'
     BouwkundigElementen-Relatierol:
       type: object
       properties:
@@ -5110,7 +5128,7 @@ components:
           type: string
           format: any
           description: De naam van de relatie rol.
-    CollectiefObjecten-Adres:
+    CollectiefObjecten-Adres-basis:
       type: object
       properties:
         id:
@@ -5156,8 +5174,10 @@ components:
           type: string
           format: any
           description: De straatnaam behorend bij het adres.
+    CollectiefObjecten-Adres:
       oneOf:
-      - $ref: '#/components/schemas/CollectiefObjecten-Eenheidadres'
+        - $ref: '#/components/schemas/CollectiefObjecten-Eenheidadres'
+        - $ref: '#/components/schemas/CollectiefObjecten-Adres-basis'
     CollectiefObjecten-Cluster:
       type: object
       properties:
@@ -5260,16 +5280,16 @@ components:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het type van de eenheid. Bijvoorbeeld: Hoekwoning, Tussenwoning, Flat, Maisonnette. Hiervoor wordt de lijst van de waarderingskamer als uitgangspunt genomen.'
     CollectiefObjecten-Eenheidadres:
+      type: object
       allOf:
-        - $ref: '#/components/schemas/CollectiefObjecten-Adres'
-        - type: object
-          properties:
-            land:
-              $ref: '#/components/schemas/Referentiedata'
-              description: Het land waarin het adres zich bevindt.
-            woonplaats:
-              $ref: '#/components/schemas/CollectiefObjecten-Woonplaats'
-              description: De woonplaats waarin het adres zich bevindt.
+        - $ref: '#/components/schemas/CollectiefObjecten-Adres-basis'
+      properties:
+        land:
+          $ref: '#/components/schemas/Referentiedata'
+          description: Het land waarin het adres zich bevindt.
+        woonplaats:
+          $ref: '#/components/schemas/CollectiefObjecten-Woonplaats'
+          description: De woonplaats waarin het adres zich bevindt.
     CollectiefObjecten-Woonplaats:
       type: object
       properties:
@@ -5372,13 +5392,15 @@ components:
           format: date
           description: Datum waarop het tarief voorhet type eindigt.
         boekingdetails:
-          type: string
-          format: uri
-          description: 'Referentie (URI) naar Boekingdetail , bijvoorbeeld: https://financien.vera.io/v4/boekingdetails/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Boekingdetail in de vorm: {endpoint Financien}/v4/boekingdetails/{id}'
         grootboekmutaties:
-          type: string
-          format: uri
-          description: 'Referentie (URI) naar Grootboekmutatie , bijvoorbeeld: https://financien.vera.io/v4/grootboekmutaties/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Grootboekmutatie in de vorm: {endpoint Financien}/v4/grootboekmutaties/{id}'
         inkoopfactuurregels:
           description: De btw tarieven van de inkoopfactuurregels.
           type: array
@@ -6118,7 +6140,7 @@ components:
           type: string
           format: any
           description: De naam van de relatie rol.
-    Onderhoudsorders-Adres:
+    Onderhoudsorders-Adres-basis:
       type: object
       properties:
         id:
@@ -6164,8 +6186,10 @@ components:
           type: string
           format: any
           description: De straatnaam behorend bij het adres.
+    Onderhoudsorders-Adres:
       oneOf:
-      - $ref: '#/components/schemas/Onderhoudsorders-Eenheidadres'
+        - $ref: '#/components/schemas/Onderhoudsorders-Eenheidadres'
+        - $ref: '#/components/schemas/Onderhoudsorders-Adres-basis'
     Onderhoudsorders-Afspraak:
       type: object
       properties:
@@ -6216,7 +6240,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Onderhoudsorders-Relatie'
-    Onderhoudsorders-Contactgegeven:
+    Onderhoudsorders-Contactgegeven-basis:
       type: object
       properties:
         id:
@@ -6254,8 +6278,10 @@ components:
           type: string
           format: any
           description: 'De aard van het contactgegeven. Dit kan de waarde zijn van een telefoonnummer, emailadres, of twitteradres. Bijvoorbeeld: 020-1234563 '
+    Onderhoudsorders-Contactgegeven:
       oneOf:
-      - $ref: '#/components/schemas/Onderhoudsorders-Telefoonnummer'
+        - $ref: '#/components/schemas/Onderhoudsorders-Telefoonnummer'
+        - $ref: '#/components/schemas/Onderhoudsorders-Contactgegeven-basis'
     Onderhoudsorders-Defect:
       type: object
       properties:
@@ -6319,53 +6345,53 @@ components:
           items:
             $ref: '#/components/schemas/Onderhoudsorders-Relatie'
     Onderhoudsorders-Eenheidadres:
+      type: object
       allOf:
-        - $ref: '#/components/schemas/Onderhoudsorders-Adres'
-        - type: object
-          properties:
-            geometrie:
-              type: string
-              format: uri
-              description: 'Referentie (URI) naar Geometrie , bijvoorbeeld: https://vastgoed.vera.io/v4/geometrieen/12345'
-            land:
-              $ref: '#/components/schemas/Referentiedata'
-              description: Het land waarin het adres zich bevindt.
-            woonplaats:
-              $ref: '#/components/schemas/Onderhoudsorders-Woonplaats'
-              description: De woonplaats waarin het adres zich bevindt.
+        - $ref: '#/components/schemas/Onderhoudsorders-Adres-basis'
+      properties:
+        geometrie:
+          type: string
+          format: uri
+          description: 'Referentie naar Geometrie in de vorm: {endpoint Vastgoed}/v4/geometrieen/{id}'
+        land:
+          $ref: '#/components/schemas/Referentiedata'
+          description: Het land waarin het adres zich bevindt.
+        woonplaats:
+          $ref: '#/components/schemas/Onderhoudsorders-Woonplaats'
+          description: De woonplaats waarin het adres zich bevindt.
     Onderhoudsorders-NatuurlijkPersoon:
+      type: object
       allOf:
-        - $ref: '#/components/schemas/Onderhoudsorders-Relatie'
-        - type: object
-          properties:
-            voornaam:
-              type: string
-              format: any
-              description: De voornaam van de natuurlijk persoon.
-            initialen:
-              type: string
-              format: any
-              description: De initialen van de natuurlijk persoon.
-            aanhef:
-              type: string
-              format: any
-              description: De aanhef van de natuurlijkpersoon. Bijv Mevrouw, De heer, etc.
-            achternaam:
-              type: string
-              format: any
-              description: De achternaam van de natuurlijk persoon.
-            roepnaam:
-              type: string
-              format: any
-              description: De roepnaam van de natuurlijk persoon.
-            tussenvoegsels:
-              type: string
-              format: any
-              description: De tussenvoegsels behorende bij de naam.
-            voorletters:
-              type: string
-              format: any
-              description: De Voorletters van de natuurlijkpersoon.
+        - $ref: '#/components/schemas/Onderhoudsorders-Relatie-basis'
+      properties:
+        voornaam:
+          type: string
+          format: any
+          description: De voornaam van de natuurlijk persoon.
+        initialen:
+          type: string
+          format: any
+          description: De initialen van de natuurlijk persoon.
+        aanhef:
+          type: string
+          format: any
+          description: De aanhef van de natuurlijkpersoon. Bijv Mevrouw, De heer, etc.
+        achternaam:
+          type: string
+          format: any
+          description: De achternaam van de natuurlijk persoon.
+        roepnaam:
+          type: string
+          format: any
+          description: De roepnaam van de natuurlijk persoon.
+        tussenvoegsels:
+          type: string
+          format: any
+          description: De tussenvoegsels behorende bij de naam.
+        voorletters:
+          type: string
+          format: any
+          description: De Voorletters van de natuurlijkpersoon.
     Onderhoudsorders-Onderhoudsbesteding:
       type: object
       properties:
@@ -6481,7 +6507,7 @@ components:
           description: Datum (en tijdstip) waarop de opdracht is verstrekt aan het (extern) onderhoudsbedrijf of de interne vakgroep voor de uitvoering van de werkzaamheden.
         afrekenwijze:
           $ref: '#/components/schemas/Referentiedata'
-          description: 'De wijze waarop de onderhoudsorder wordt afgerekend (of niet). Bijvoorbeeld: Nacalculatie regie, Nacalculatie eenheidsprijzen, Vaste prijs, Afkoop, Garantie.'
+          description: 'De wijze waarop de onderhoudsorder wordt afgerekend (of niet). Bijvoorbeeld: Nacalculatie regie, Nacalculatie eenheidsprijzen, Vaste prijs, Afkoop, Garantie. De afrekenwijze bepaalt ook welke soorten onderhoudsbestedingen gebruikt moeten worden (Bij eenheidsprijzen gebruik je bijvoorbeeld bestedingsoort Vaste taakprijs)'
         afspraken:
           description: De afspraken behorend bij de onderhoudsorder.
           type: array
@@ -6683,7 +6709,7 @@ components:
         standaardprijs:
           $ref: '#/components/schemas/Onderhoudsorders-Standaardprijs'
           description: Verwijzing naar een standaard (eenheids- of taak-) prijs die past bij de bestedingssoort, of die geldt voor de onderhoudstaak als geheel.
-    Onderhoudsorders-Relatie:
+    Onderhoudsorders-Relatie-basis:
       type: object
       properties:
         id:
@@ -6715,8 +6741,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Onderhoudsorders-Relatierol'
+    Onderhoudsorders-Relatie:
       oneOf:
-      - $ref: '#/components/schemas/Onderhoudsorders-NatuurlijkPersoon'
+        - $ref: '#/components/schemas/Onderhoudsorders-NatuurlijkPersoon'
+        - $ref: '#/components/schemas/Onderhoudsorders-Relatie-basis'
     Onderhoudsorders-Relatierol:
       type: object
       properties:
@@ -6778,31 +6806,31 @@ components:
           $ref: '#/components/schemas/Referentiedata'
           description: De meeteenheid waarin de eenheden wordt gemeten. Bijv. uur, liter, stuks, etc. 
     Onderhoudsorders-Telefoonnummer:
+      type: object
       allOf:
-        - $ref: '#/components/schemas/Onderhoudsorders-Contactgegeven'
-        - type: object
-          properties:
-            landnummer:
-              type: string
-              format: any
-              description: Het landnummer van het telefoonnummer.
-            netnummer:
-              type: string
-              format: any
-              description: Het netnummer van het telefoonnummer.
-            abonneenummer:
-              type: string
-              format: any
-              description: Het abonneenummer van het telefoonnummer.
-            dagdelen:
-              description: De dagdelen waarop er gebruikt gemaakt kan worden van het telefoonnummer.
-              type: array
-              items:
-                $ref: '#/components/schemas/Referentiedata'
-            extensie:
-              type: string
-              format: any
-              description: De extensie van het telefoonnummer.
+        - $ref: '#/components/schemas/Onderhoudsorders-Contactgegeven-basis'
+      properties:
+        landnummer:
+          type: string
+          format: any
+          description: Het landnummer van het telefoonnummer.
+        netnummer:
+          type: string
+          format: any
+          description: Het netnummer van het telefoonnummer.
+        abonneenummer:
+          type: string
+          format: any
+          description: Het abonneenummer van het telefoonnummer.
+        dagdelen:
+          description: De dagdelen waarop er gebruikt gemaakt kan worden van het telefoonnummer.
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
+        extensie:
+          type: string
+          format: any
+          description: De extensie van het telefoonnummer.
     Onderhoudsorders-Woonplaats:
       type: object
       properties:
@@ -6858,7 +6886,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Onderhoudsverzoeken-Relatie'
-    Onderhoudsverzoeken-Contactgegeven:
+    Onderhoudsverzoeken-Contactgegeven-basis:
       type: object
       properties:
         id:
@@ -6896,8 +6924,10 @@ components:
           type: string
           format: any
           description: 'De aard van het contactgegeven. Dit kan de waarde zijn van een telefoonnummer, emailadres, of twitteradres. Bijvoorbeeld: 020-1234563 '
+    Onderhoudsverzoeken-Contactgegeven:
       oneOf:
-      - $ref: '#/components/schemas/Onderhoudsverzoeken-Telefoonnummer'
+        - $ref: '#/components/schemas/Onderhoudsverzoeken-Telefoonnummer'
+        - $ref: '#/components/schemas/Onderhoudsverzoeken-Contactgegeven-basis'
     Onderhoudsverzoeken-Contactmoment:
       type: object
       properties:
@@ -6999,38 +7029,38 @@ components:
           items:
             $ref: '#/components/schemas/Onderhoudsverzoeken-Relatie'
     Onderhoudsverzoeken-NatuurlijkPersoon:
+      type: object
       allOf:
-        - $ref: '#/components/schemas/Onderhoudsverzoeken-Relatie'
-        - type: object
-          properties:
-            voornaam:
-              type: string
-              format: any
-              description: De voornaam van de natuurlijk persoon.
-            initialen:
-              type: string
-              format: any
-              description: De initialen van de natuurlijk persoon.
-            aanhef:
-              type: string
-              format: any
-              description: De aanhef van de natuurlijkpersoon. Bijv Mevrouw, De heer, etc.
-            achternaam:
-              type: string
-              format: any
-              description: De achternaam van de natuurlijk persoon.
-            roepnaam:
-              type: string
-              format: any
-              description: De roepnaam van de natuurlijk persoon.
-            tussenvoegsels:
-              type: string
-              format: any
-              description: De tussenvoegsels behorende bij de naam.
-            voorletters:
-              type: string
-              format: any
-              description: De Voorletters van de natuurlijkpersoon.
+        - $ref: '#/components/schemas/Onderhoudsverzoeken-Relatie-basis'
+      properties:
+        voornaam:
+          type: string
+          format: any
+          description: De voornaam van de natuurlijk persoon.
+        initialen:
+          type: string
+          format: any
+          description: De initialen van de natuurlijk persoon.
+        aanhef:
+          type: string
+          format: any
+          description: De aanhef van de natuurlijkpersoon. Bijv Mevrouw, De heer, etc.
+        achternaam:
+          type: string
+          format: any
+          description: De achternaam van de natuurlijk persoon.
+        roepnaam:
+          type: string
+          format: any
+          description: De roepnaam van de natuurlijk persoon.
+        tussenvoegsels:
+          type: string
+          format: any
+          description: De tussenvoegsels behorende bij de naam.
+        voorletters:
+          type: string
+          format: any
+          description: De Voorletters van de natuurlijkpersoon.
     Onderhoudsverzoeken-Onderhoudsbesteding:
       type: object
       properties:
@@ -7268,7 +7298,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Informatieobject'
-    Onderhoudsverzoeken-Relatie:
+    Onderhoudsverzoeken-Relatie-basis:
       type: object
       properties:
         id:
@@ -7300,8 +7330,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Onderhoudsverzoeken-Relatierol'
+    Onderhoudsverzoeken-Relatie:
       oneOf:
-      - $ref: '#/components/schemas/Onderhoudsverzoeken-NatuurlijkPersoon'
+        - $ref: '#/components/schemas/Onderhoudsverzoeken-NatuurlijkPersoon'
+        - $ref: '#/components/schemas/Onderhoudsverzoeken-Relatie-basis'
     Onderhoudsverzoeken-Relatierol:
       type: object
       properties:
@@ -7363,31 +7395,31 @@ components:
           $ref: '#/components/schemas/Referentiedata'
           description: De meeteenheid waarin de eenheden wordt gemeten. Bijv. uur, liter, stuks, etc. 
     Onderhoudsverzoeken-Telefoonnummer:
+      type: object
       allOf:
-        - $ref: '#/components/schemas/Onderhoudsverzoeken-Contactgegeven'
-        - type: object
-          properties:
-            landnummer:
-              type: string
-              format: any
-              description: Het landnummer van het telefoonnummer.
-            netnummer:
-              type: string
-              format: any
-              description: Het netnummer van het telefoonnummer.
-            abonneenummer:
-              type: string
-              format: any
-              description: Het abonneenummer van het telefoonnummer.
-            dagdelen:
-              description: De dagdelen waarop er gebruikt gemaakt kan worden van het telefoonnummer.
-              type: array
-              items:
-                $ref: '#/components/schemas/Referentiedata'
-            extensie:
-              type: string
-              format: any
-              description: De extensie van het telefoonnummer.
+        - $ref: '#/components/schemas/Onderhoudsverzoeken-Contactgegeven-basis'
+      properties:
+        landnummer:
+          type: string
+          format: any
+          description: Het landnummer van het telefoonnummer.
+        netnummer:
+          type: string
+          format: any
+          description: Het netnummer van het telefoonnummer.
+        abonneenummer:
+          type: string
+          format: any
+          description: Het abonneenummer van het telefoonnummer.
+        dagdelen:
+          description: De dagdelen waarop er gebruikt gemaakt kan worden van het telefoonnummer.
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
+        extensie:
+          type: string
+          format: any
+          description: De extensie van het telefoonnummer.
     Foutbericht:
       type: object
       properties:

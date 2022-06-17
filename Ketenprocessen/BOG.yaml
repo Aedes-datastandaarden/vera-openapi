@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Beheer Overeenkomstgegevens
-  description: API-specificatie van ketenproces 'Beheer Overeenkomstgegevens'. Deze specificatie is gebaseerd op VERA versie 4.0.10+220520.16
+  description: API-specificatie van ketenproces 'Beheer Overeenkomstgegevens'. Deze specificatie is gebaseerd op VERA versie 4.0.11+220617.9
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '1.0.10+220520.16'
+  version: '1.0.11+220617.9'
 servers:
   - url: https://bog.vera.io:{port}/{basePath}
     description: Productieserver
@@ -65,7 +65,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -656,9 +656,10 @@ components:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon.'
         rollen:
-          type: string
-          format: uri
-          description: 'Referentie (URI) naar Relatierol , bijvoorbeeld: https://relaties.vera.io/v4/relatierollen/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Relatierol in de vorm: {endpoint Relaties}/v4/relatierollen/{id}'
     Overeenkomsten-Betaalwijze:
       type: object
       properties:
@@ -687,144 +688,144 @@ components:
         incassomachtiging:
           type: string
           format: uri
-          description: 'Referentie (URI) naar Incassomachtiging , bijvoorbeeld: https://financien.vera.io/v4/incassomachtigingen/12345'
+          description: 'Referentie naar Incassomachtiging in de vorm: {endpoint Financien}/v4/incassomachtigingen/{id}'
         incassomoment:
           $ref: '#/components/schemas/Referentiedata'
           description: Het moment waarop de incasso wordt gedaan.
     Overeenkomsten-Huurovereenkomst:
+      type: object
       allOf:
-        - $ref: '#/components/schemas/Overeenkomsten-Overeenkomst'
-        - type: object
-          properties:
-            afwijkendeBetaler:
-              $ref: '#/components/schemas/Overeenkomsten-Relatie'
-              description: De relatie die betaalt in het geval de huurder niet zelf de overeenkomst betaalt. OBSOLETE.
-              deprecated: true
-            afwijkendeBetalerIncassowijze:
-              $ref: '#/components/schemas/Referentiedata'
-              description: De wijze van incasso waarop de huurovereenkomst wordt betaald door de afwijkende betaler. OBSOLETE.
-              deprecated: true
-            bepaaldeTijd:
-              type: boolean
-              description: De waarde die aangeeft of er sprake is van een tijdelijke huurovereenkomst.
-            bewakingsstatus:
-              $ref: '#/components/schemas/Referentiedata'
-              description: ''
-            bijzondereDoelgroep:
-              $ref: '#/components/schemas/Referentiedata'
-              description: ''
-            brutohuur:
-              type: number
-              format: float
-              description: De brutohuur = netto huur + servicekosten. De brutohuurprijs is inclusief BTW.
-            btw:
-              type: boolean
-              description: De waarde geeft aan of er BTW wordt geheven over de overeenkomst.
-            huurHerzieningsdatum:
-              type: string
-              format: date
-              description: De datum dat de huurprijs van de huurovereenkomst is aangepast.
-            maatschappelijkLabel:
-              $ref: '#/components/schemas/Referentiedata'
-              description: 'Het label waarmee het maatschappelijk en economisch  belang van de dienstverlening wordt aangegeven bij de verhuring: DAEB of niet-DAEB. Het label op de huurovereenkomst kan afwijken van het maatschappelijk label van de eenheid. Hiermee kan worden aangegeven dat een eenheid die behoort tot de niet-DAEB tak als DAEB-verhuring verantwoord moet worden.'
-            prolongatieInterval:
-              type: string
-              format: duration
-              description: De interval die aangeeft na hoeveel tijd er wordt geprolongeerd op de overeenkomst.
-              pattern: '^(-?)P(?=\d|T\d)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)([DW]))?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?)?$'
-            prolongatieTotDatum:
-              type: string
-              format: date
-              description: De overeenkomst is geprolongeerd tot deze datum
-            rekenhuur:
-              type: number
-              format: float
-              description: Het huurbedrag waarvoor een huurder huurtoeslag mag aanvragen.
-            startBrutohuur:
-              type: number
-              format: float
-              description: De bruto huur (bruto huurprijs) bij aanvang huurovereenkomst in euro's.
-            startBrutoJaarinkomen:
-              type: number
-              format: float
-              description: De hoogte van het bruto inkomen bij aanvang huurovereenkomst in euro's. Dit is het inkomen van de hoofdhuurder waaraan bijvoorbeeld de BBSH (Besluit Beheer Sociale Huursector) normen kunnen worden getoetst.
-            startLeeftijd:
-              type: integer
-              format: int32
-              description: De leeftijd van de hoofdhuurder bij aanvang huurovereenkomst in jaren.
-            vervaltermijnInterval:
-              type: string
-              format: duration
-              description: De interval van de incasso vervaltermijn.
-              pattern: '^(-?)P(?=\d|T\d)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)([DW]))?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?)?$'
-            waarborgsom:
-              type: number
-              format: float
-              description: 'De hoogte van de waarborgsom op de overeenkomst. Bijvoorbeeld: voor een studentenkamer is de borg €103 voor een vrije sector woning is de borg 1 maand huur. '
-            waarborgsomRente:
-              type: number
-              format: float
-              description: De rente van de waarborgsom op de overeenkomst. Deze waarde wordt in Euro's aangegeven en is cumulatief over de volledige looptijd van de huurovereenkomst.
+        - $ref: '#/components/schemas/Overeenkomsten-Overeenkomst-basis'
+      properties:
+        afwijkendeBetaler:
+          $ref: '#/components/schemas/Overeenkomsten-Relatie'
+          description: De relatie die betaalt in het geval de huurder niet zelf de overeenkomst betaalt. OBSOLETE.
+          deprecated: true
+        afwijkendeBetalerIncassowijze:
+          $ref: '#/components/schemas/Referentiedata'
+          description: De wijze van incasso waarop de huurovereenkomst wordt betaald door de afwijkende betaler. OBSOLETE.
+          deprecated: true
+        bepaaldeTijd:
+          type: boolean
+          description: De waarde die aangeeft of er sprake is van een tijdelijke huurovereenkomst.
+        bewakingsstatus:
+          $ref: '#/components/schemas/Referentiedata'
+          description: ''
+        bijzondereDoelgroep:
+          $ref: '#/components/schemas/Referentiedata'
+          description: ''
+        brutohuur:
+          type: number
+          format: float
+          description: De brutohuur = netto huur + servicekosten. De brutohuurprijs is inclusief BTW.
+        btw:
+          type: boolean
+          description: De waarde geeft aan of er BTW wordt geheven over de overeenkomst.
+        huurHerzieningsdatum:
+          type: string
+          format: date
+          description: De datum dat de huurprijs van de huurovereenkomst is aangepast.
+        maatschappelijkLabel:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het label waarmee het maatschappelijk en economisch  belang van de dienstverlening wordt aangegeven bij de verhuring: DAEB of niet-DAEB. Het label op de huurovereenkomst kan afwijken van het maatschappelijk label van de eenheid. Hiermee kan worden aangegeven dat een eenheid die behoort tot de niet-DAEB tak als DAEB-verhuring verantwoord moet worden.'
+        prolongatieInterval:
+          type: string
+          format: duration
+          description: De interval die aangeeft na hoeveel tijd er wordt geprolongeerd op de overeenkomst.
+          pattern: '^(-?)P(?=\d|T\d)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)([DW]))?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?)?$'
+        prolongatieTotDatum:
+          type: string
+          format: date
+          description: De overeenkomst is geprolongeerd tot deze datum
+        rekenhuur:
+          type: number
+          format: float
+          description: Het huurbedrag waarvoor een huurder huurtoeslag mag aanvragen.
+        startBrutohuur:
+          type: number
+          format: float
+          description: De bruto huur (bruto huurprijs) bij aanvang huurovereenkomst in euro's.
+        startBrutoJaarinkomen:
+          type: number
+          format: float
+          description: De hoogte van het bruto inkomen bij aanvang huurovereenkomst in euro's. Dit is het inkomen van de hoofdhuurder waaraan bijvoorbeeld de BBSH (Besluit Beheer Sociale Huursector) normen kunnen worden getoetst.
+        startLeeftijd:
+          type: integer
+          format: int32
+          description: De leeftijd van de hoofdhuurder bij aanvang huurovereenkomst in jaren.
+        vervaltermijnInterval:
+          type: string
+          format: duration
+          description: De interval van de incasso vervaltermijn.
+          pattern: '^(-?)P(?=\d|T\d)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)([DW]))?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?)?$'
+        waarborgsom:
+          type: number
+          format: float
+          description: 'De hoogte van de waarborgsom op de overeenkomst. Bijvoorbeeld: voor een studentenkamer is de borg €103 voor een vrije sector woning is de borg 1 maand huur. '
+        waarborgsomRente:
+          type: number
+          format: float
+          description: De rente van de waarborgsom op de overeenkomst. Deze waarde wordt in Euro's aangegeven en is cumulatief over de volledige looptijd van de huurovereenkomst.
     Overeenkomsten-Koopovereenkomst:
+      type: object
       allOf:
-        - $ref: '#/components/schemas/Overeenkomsten-Overeenkomst'
-        - type: object
-          properties:
-            koopsom:
-              type: number
-              format: float
-              description: De koopsom van de verkochte eenheid in euro's.
-            koopsomTotaal:
-              type: number
-              format: float
-              description: De totale volledige koopsom van de verkochte eenheid in euro's.
-            kortingspercentage:
-              type: number
-              format: float
-              description: Het kortingspercentage dat de klant heeft gekregen op de overeenkomst in procenten.
-            oudHuurder:
-              type: boolean
-              description: De waarde die aangeeft of de verkoopovereenkomst is afgesloten met de oud huurder.
-            prijs:
-              type: number
-              format: float
-              description: De uiteindelijke aankoop- of verkoopprijs in euro's. (kosten koper)
-            transportdatum:
-              type: string
-              format: date-time
-              description: De datum waarop de akte gepasseerd zal worden bij de notaris. Deze datum is wordt ook passeerdatum genoemd.
-            vveBijdrage:
-              type: number
-              format: float
-              description: Het bedrag dat de koper betaald aan VVE inclusief BTW. De koper heeft geen recht op VVE als er geen bedrag is ingevuld.
+        - $ref: '#/components/schemas/Overeenkomsten-Overeenkomst-basis'
+      properties:
+        koopsom:
+          type: number
+          format: float
+          description: De koopsom van de verkochte eenheid in euro's.
+        koopsomTotaal:
+          type: number
+          format: float
+          description: De totale volledige koopsom van de verkochte eenheid in euro's.
+        kortingspercentage:
+          type: number
+          format: float
+          description: Het kortingspercentage dat de klant heeft gekregen op de overeenkomst in procenten.
+        oudHuurder:
+          type: boolean
+          description: De waarde die aangeeft of de verkoopovereenkomst is afgesloten met de oud huurder.
+        prijs:
+          type: number
+          format: float
+          description: De uiteindelijke aankoop- of verkoopprijs in euro's. (kosten koper)
+        transportdatum:
+          type: string
+          format: date-time
+          description: De datum waarop de akte gepasseerd zal worden bij de notaris. Deze datum is wordt ook passeerdatum genoemd.
+        vveBijdrage:
+          type: number
+          format: float
+          description: Het bedrag dat de koper betaald aan VVE inclusief BTW. De koper heeft geen recht op VVE als er geen bedrag is ingevuld.
     Overeenkomsten-Onderhoudsovereenkomst:
+      type: object
       allOf:
-        - $ref: '#/components/schemas/Overeenkomsten-Overeenkomst'
-        - type: object
-          properties:
-            omschrijving:
-              type: string
-              format: any
-              description: Omschrijving van welke werkzaamheden wel en niet onder de overeenkomst vallen.
-            bouwkundigElement:
-              $ref: '#/components/schemas/BouwkundigElement-sleutels'
-              description: Het bouwkundige element waarop een onderhoudsovereenkomst van toepassing is.
-            cluster:
-              $ref: '#/components/schemas/Cluster-sleutels'
-              description: De cluster waarop een onderhoudsovereenkomst van toepassing is.
-            collectiefObject:
-              $ref: '#/components/schemas/CollectiefObject-sleutels'
-              description: Het collectief object waarop een onderhoudsovereenkomst van toepassing is.
-            orders:
-              description: De onderhoudsorders die op basis van deze overeenkomst zijn toegekend.
-              type: array
-              items:
-                $ref: '#/components/schemas/Onderhoudsorder-sleutels'
-            specialismen:
-              description: Het specialismen die de opdrachtnemer kan uitvoeren. Voorbeelden zijn Timmerman, Loodgieter, etc.
-              type: array
-              items:
-                $ref: '#/components/schemas/Referentiedata'
+        - $ref: '#/components/schemas/Overeenkomsten-Overeenkomst-basis'
+      properties:
+        omschrijving:
+          type: string
+          format: any
+          description: Omschrijving van welke werkzaamheden wel en niet onder de overeenkomst vallen.
+        bouwkundigElement:
+          $ref: '#/components/schemas/BouwkundigElement-sleutels'
+          description: Het bouwkundige element waarop een onderhoudsovereenkomst van toepassing is.
+        cluster:
+          $ref: '#/components/schemas/Cluster-sleutels'
+          description: De cluster waarop een onderhoudsovereenkomst van toepassing is.
+        collectiefObject:
+          $ref: '#/components/schemas/CollectiefObject-sleutels'
+          description: Het collectief object waarop een onderhoudsovereenkomst van toepassing is.
+        orders:
+          description: De onderhoudsorders die op basis van deze overeenkomst zijn toegekend.
+          type: array
+          items:
+            $ref: '#/components/schemas/Onderhoudsorder-sleutels'
+        specialismen:
+          description: Het specialismen die de opdrachtnemer kan uitvoeren. Voorbeelden zijn Timmerman, Loodgieter, etc.
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
     BouwkundigElement-sleutels:
       type: object
       properties:
@@ -905,7 +906,7 @@ components:
           type: string
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-    Overeenkomsten-Overeenkomst:
+    Overeenkomsten-Overeenkomst-basis:
       type: object
       properties:
         id:
@@ -982,9 +983,10 @@ components:
           $ref: '#/components/schemas/Referentiedata'
           description: De reden voor beëindiging van de overeenkomst.
         garanties:
-          type: string
-          format: uri
-          description: 'Referentie (URI) naar Garantie , bijvoorbeeld: https://vastgoed.vera.io/v4/garanties/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Garantie in de vorm: {endpoint Vastgoed}/v4/garanties/{id}'
         onderhoudsverzoeken:
           description: De uitgevoerde en lopende onderhoudsverzoeken binnen de contractperiode van de overeenkomst. Onder andere een onderhoudsverzoek voor de uitvoering van de mutatiewerkzaamheden (en de inspectieorder)
           type: array
@@ -1020,11 +1022,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Informatieobject'
-      oneOf:
-      - $ref: '#/components/schemas/Overeenkomsten-Huurovereenkomst'
-      - $ref: '#/components/schemas/Overeenkomsten-Koopovereenkomst'
-      - $ref: '#/components/schemas/Overeenkomsten-Onderhoudsovereenkomst'
-      - $ref: '#/components/schemas/Overeenkomsten-Serviceovereenkomst'
     Contactmoment-sleutels:
       type: object
       properties:
@@ -1172,6 +1169,13 @@ components:
         vertrouwelijkheid:
           $ref: '#/components/schemas/Referentiedata'
           description: De classificatie van het vertrouwelijkheidsniveau van het informatieobject.
+    Overeenkomsten-Overeenkomst:
+      oneOf:
+        - $ref: '#/components/schemas/Overeenkomsten-Huurovereenkomst'
+        - $ref: '#/components/schemas/Overeenkomsten-Koopovereenkomst'
+        - $ref: '#/components/schemas/Overeenkomsten-Onderhoudsovereenkomst'
+        - $ref: '#/components/schemas/Overeenkomsten-Serviceovereenkomst'
+        - $ref: '#/components/schemas/Overeenkomsten-Overeenkomst-basis'
     Overeenkomsten-Prijscomponent:
       type: object
       properties:
@@ -1283,17 +1287,17 @@ components:
           format: date
           description: einddatum van de rol
     Overeenkomsten-Serviceovereenkomst:
+      type: object
       allOf:
-        - $ref: '#/components/schemas/Overeenkomsten-Overeenkomst'
-        - type: object
-          properties:
-            bedrag:
-              type: number
-              format: float
-              description: Het bedrag inclusief BTW in euro's dat betaald dient te worden voor de serviceovereenkomst. Naast huurders, kunnen ook andere relaties een serviceovereenkomst afsluiten met de woningcorporatie. Dit veld geeft het bedrag aan dat de relatie voor de dienstverlening betaalt.
-            samenwerkingsverband:
-              $ref: '#/components/schemas/Referentiedata'
-              description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc.
+        - $ref: '#/components/schemas/Overeenkomsten-Overeenkomst-basis'
+      properties:
+        bedrag:
+          type: number
+          format: float
+          description: Het bedrag inclusief BTW in euro's dat betaald dient te worden voor de serviceovereenkomst. Naast huurders, kunnen ook andere relaties een serviceovereenkomst afsluiten met de woningcorporatie. Dit veld geeft het bedrag aan dat de relatie voor de dienstverlening betaalt.
+        samenwerkingsverband:
+          $ref: '#/components/schemas/Referentiedata'
+          description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc.
     Foutbericht:
       type: object
       properties:

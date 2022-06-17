@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '4.0.10+220520.16'
+  version: '4.0.11+220617.9'
 servers:
   - url: https://projectontwikkeling.vera.io:{port}/{basePath}
     description: Productieserver
@@ -22,24 +22,6 @@ servers:
        basePath:
          default: v4
 tags:
-- name: Projecten
-  description: Operaties met betrekking tot een Project
-- name: Projectbestedingen
-  description: Operaties met betrekking tot een Projectbesteding
-- name: Projectbudgetregels
-  description: Operaties met betrekking tot een Projectbudgetregel
-- name: Projectdoelstellingen
-  description: Operaties met betrekking tot een Projectdoelstelling
-- name: Projectfasen
-  description: Operaties met betrekking tot een Projectfase
-- name: Projectfasebesluiten
-  description: Operaties met betrekking tot een Projectfasebesluit
-- name: Projectorders
-  description: Operaties met betrekking tot een Projectorder
-- name: Projectrollen
-  description: Operaties met betrekking tot een Projectrol
-- name: Projecttaken
-  description: Operaties met betrekking tot een Projecttaak
 - name: Projecten
   description: Operaties met betrekking tot een Project
 - name: Projectbestedingen
@@ -99,7 +81,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -532,7 +514,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -965,7 +947,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -1398,7 +1380,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -1831,7 +1813,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -2264,7 +2246,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -2697,7 +2679,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -3130,7 +3112,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -3563,7 +3545,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -4081,33 +4063,37 @@ components:
           format: date-time
           description: De einddatum van het project.
         aanbestedingen:
-          type: string
-          format: uri
-          description: 'Referentie naar Aanbesteding in de vorm: vera/v4/aanbestedingen/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Aanbesteding in de vorm: {endpoint Financien}/vera/v4/aanbestedingen/{id}'
         clusters:
-          type: string
-          format: uri
-          description: 'Referentie naar Cluster in de vorm: vera/v4/clusters/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Cluster in de vorm: {endpoint Vastgoed}/vera/v4/clusters/{id}'
         doelstelling:
           $ref: '#/components/schemas/Projectdoelstelling'
           description: De set criteria die samen de doelstelling van het project en de kaders waarbinnen het project gerealiseerd moet worden, representeert.
         dossier:
           type: string
           format: uri
-          description: 'Referentie naar Dossier in de vorm: vera/v4/dossiers/12345'
+          description: 'Referentie naar Dossier in de vorm: {endpoint Dossier}/vera/v4/dossiers/{id}'
         eenheden:
-          type: string
-          format: uri
-          description: 'Referentie naar Eenheid in de vorm: vera/v4/eenheden/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Eenheid in de vorm: {endpoint Vastgoed}/vera/v4/eenheden/{id}'
         fasen:
           description: De fasen die het project doorloopt of heeft doorlopen. Omdat iedere fase een begin- en een einddatum heeft, kan op ieder moment worden bepaald in welke fase het project bevindt. Een project bevindt zich bijvoorbeeld in de Initiatieffase of in de Realisatiefase.
           type: array
           items:
             $ref: '#/components/schemas/Projectfase'
         percelen:
-          type: string
-          format: uri
-          description: 'Referentie naar KadasterPerceel in de vorm: vera/v4/kadasterpercelen/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar KadasterPerceel in de vorm: {endpoint Vastgoed}/vera/v4/kadasterpercelen/{id}'
         regiesoort:
           $ref: '#/components/schemas/Referentiedata'
           description: De regiekeuze voor de uitvoering van het te starten project. Bijv. turnkey, bouwteam.
@@ -4122,9 +4108,10 @@ components:
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
         informatieobjecten:
-          type: string
-          format: uri
-          description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Informatieobject in de vorm: {endpoint Dossier}/vera/v4/informatieobjecten/{id}'
     Referentiedata:
       type: object
       properties:
@@ -4262,7 +4249,7 @@ components:
         beleidswaarde:
           type: string
           format: uri
-          description: 'Referentie naar Beleidswaarde in de vorm: vera/v4/beleidswaarden/12345'
+          description: 'Referentie naar Beleidswaarde in de vorm: {endpoint Vastgoed}/vera/v4/beleidswaarden/{id}'
         brutoAanvangsrendement:
           type: number
           format: float
@@ -4306,7 +4293,7 @@ components:
         marktwaarde:
           type: string
           format: uri
-          description: 'Referentie naar Marktwaarde in de vorm: vera/v4/marktwaarden/12345'
+          description: 'Referentie naar Marktwaarde in de vorm: {endpoint Vastgoed}/vera/v4/marktwaarden/{id}'
         nettoAanvangsrendement:
           type: number
           format: float
@@ -4320,9 +4307,10 @@ components:
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
         informatieobjecten:
-          type: string
-          format: uri
-          description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Informatieobject in de vorm: {endpoint Dossier}/vera/v4/informatieobjecten/{id}'
     Projectbudgetregel:
       type: object
       properties:
@@ -4386,7 +4374,7 @@ components:
         btwTarief:
           type: string
           format: uri
-          description: 'Referentie naar BtwTarief in de vorm: vera/v4/btwtarieven/12345'
+          description: 'Referentie naar BtwTarief in de vorm: {endpoint Financien}/vera/v4/btwtarieven/{id}'
         doelstelling:
           $ref: '#/components/schemas/Projectdoelstelling'
           description: De (financiële) kaders waarbinnen het project gerealiseerd moet worden. Afhankelijk van het soort project kan dit op hoog aggregatieniveau (een of enkele budgetregels met totalen) of in meer details (uitgesplitst in meer detailregels in een hiërarchische structuur).
@@ -4399,7 +4387,7 @@ components:
         grootboekrekening:
           type: string
           format: uri
-          description: 'Referentie naar Grootboekrekening in de vorm: vera/v4/grootboekrekeningen/12345'
+          description: 'Referentie naar Grootboekrekening in de vorm: {endpoint Financien}/vera/v4/grootboekrekeningen/{id}'
         order:
           $ref: '#/components/schemas/Projectorder'
           description: De inkooporder die is verstrekt met een verwijzing naar de projectbudgetregel. De kosten van de order zullen, met andere woorden, ten laste komen van de budgetregel.
@@ -4409,9 +4397,10 @@ components:
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
         informatieobjecten:
-          type: string
-          format: uri
-          description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Informatieobject in de vorm: {endpoint Dossier}/vera/v4/informatieobjecten/{id}'
     Projectbudgetregel-sleutels:
       type: object
       properties:
@@ -4500,9 +4489,10 @@ components:
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
         informatieobjecten:
-          type: string
-          format: uri
-          description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Informatieobject in de vorm: {endpoint Dossier}/vera/v4/informatieobjecten/{id}'
     Projectorder:
       type: object
       properties:
@@ -4535,11 +4525,11 @@ components:
         inkoopopdracht:
           type: string
           format: uri
-          description: 'Referentie naar Inkoopopdracht in de vorm: vera/v4/inkoopopdrachten/12345'
+          description: 'Referentie naar Inkoopopdracht in de vorm: {endpoint Financien}/vera/v4/inkoopopdrachten/{id}'
         overeenkomst:
           type: string
           format: uri
-          description: 'Referentie naar Overeenkomst in de vorm: vera/v4/overeenkomsten/12345'
+          description: 'Referentie naar Overeenkomst in de vorm: {endpoint Overeenkomsten}/vera/v4/overeenkomsten/{id}'
         taak:
           $ref: '#/components/schemas/Projecttaak'
           description: De taak die de werkzaamheden omschrijft waarvoor de projectorder is verstrekt.
@@ -4549,9 +4539,10 @@ components:
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
         informatieobjecten:
-          type: string
-          format: uri
-          description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Informatieobject in de vorm: {endpoint Dossier}/vera/v4/informatieobjecten/{id}'
     Projecttaak:
       type: object
       properties:
@@ -4603,29 +4594,33 @@ components:
           items:
             $ref: '#/components/schemas/Projectbesteding'
         clusters:
-          type: string
-          format: uri
-          description: 'Referentie naar Cluster in de vorm: vera/v4/clusters/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Cluster in de vorm: {endpoint Vastgoed}/vera/v4/clusters/{id}'
         eenheden:
-          type: string
-          format: uri
-          description: 'Referentie naar Eenheid in de vorm: vera/v4/eenheden/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Eenheid in de vorm: {endpoint Vastgoed}/vera/v4/eenheden/{id}'
         fase:
           $ref: '#/components/schemas/Projectfase'
           description: De fase waarbinnen de taak wordt uitgevoerd.
         kwaliteitsmetingen:
-          type: string
-          format: uri
-          description: 'Referentie naar Kwaliteitsmetingsverzoek in de vorm: vera/v4/kwaliteitsmetingsverzoeken/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Kwaliteitsmetingsverzoek in de vorm: {endpoint Kwaliteit}/vera/v4/kwaliteitsmetingsverzoeken/{id}'
         orders:
           description: De order(s) die is of zijn verstrekt tijdens of als gevolg van het uitvoeren van de taak.
           type: array
           items:
             $ref: '#/components/schemas/Projectorder'
         percelen:
-          type: string
-          format: uri
-          description: 'Referentie naar KadasterPerceel in de vorm: vera/v4/kadasterpercelen/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar KadasterPerceel in de vorm: {endpoint Vastgoed}/vera/v4/kadasterpercelen/{id}'
         rollen:
           description: De projectrol (i.c. een relatie die in de context van de taak een bepaalde rol vervult) die bij uitvoering van de taak een functie heeft.
           type: array
@@ -4637,9 +4632,10 @@ components:
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
         informatieobjecten:
-          type: string
-          format: uri
-          description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Informatieobject in de vorm: {endpoint Dossier}/vera/v4/informatieobjecten/{id}'
     Projectfase:
       type: object
       properties:
@@ -4709,9 +4705,10 @@ components:
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
         informatieobjecten:
-          type: string
-          format: uri
-          description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Informatieobject in de vorm: {endpoint Dossier}/vera/v4/informatieobjecten/{id}'
     Projectfasebesluit:
       type: object
       properties:
@@ -4756,9 +4753,10 @@ components:
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
         informatieobjecten:
-          type: string
-          format: uri
-          description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Informatieobject in de vorm: {endpoint Dossier}/vera/v4/informatieobjecten/{id}'
     ExtraAttribuut:
       type: object
       properties:
@@ -4814,7 +4812,7 @@ components:
         relatie:
           type: string
           format: uri
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+          description: 'Referentie naar Relatie in de vorm: {endpoint Relaties}/vera/v4/relaties/{id}'
         taken:
           description: De taak of taken waarbij de projectrol (i.c. een relatie die in de context van de taak een bepaalde rol vervult) een functie heeft.
           type: array
@@ -4826,9 +4824,10 @@ components:
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
         informatieobjecten:
-          type: string
-          format: uri
-          description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Informatieobject in de vorm: {endpoint Dossier}/vera/v4/informatieobjecten/{id}'
     Projectbesteding-sleutels:
       type: object
       properties:

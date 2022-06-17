@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Verhuren Eenheden
-  description: API-specificatie van ketenproces 'Verhuren Eenheden'. Deze specificatie is gebaseerd op VERA versie 4.0.10+220520.16
+  description: API-specificatie van ketenproces 'Verhuren Eenheden'. Deze specificatie is gebaseerd op VERA versie 4.0.11+220617.9
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '1.0.10+220520.16'
+  version: '1.0.11+220617.9'
 servers:
   - url: https://vhe.vera.io:{port}/{basePath}
     description: Productieserver
@@ -69,7 +69,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -502,7 +502,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -935,7 +935,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -1621,27 +1621,29 @@ components:
         detailSoort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het type van de eenheid. Bijvoorbeeld: Hoekwoning, Tussenwoning, Flat, Maisonnette. Hiervoor wordt de lijst van de waarderingskamer als uitgangspunt genomen.'
-    Clusters-Geometrie:
+    Clusters-Geometrie-basis:
       type: object
       properties:
         soort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'soort Geometrie: punt of omtrek'
+    Clusters-Geometrie:
       oneOf:
-      - $ref: '#/components/schemas/Clusters-Punt'
+        - $ref: '#/components/schemas/Clusters-Punt'
+        - $ref: '#/components/schemas/Clusters-Geometrie-basis'
     Clusters-Punt:
+      type: object
       allOf:
-        - $ref: '#/components/schemas/Clusters-Geometrie'
-        - type: object
-          properties:
-            breedtegraad:
-              type: number
-              format: float
-              description: De breedtegraad.
-            lengtegraad:
-              type: number
-              format: float
-              description: De lengtegraad.
+        - $ref: '#/components/schemas/Clusters-Geometrie-basis'
+      properties:
+        breedtegraad:
+          type: number
+          format: float
+          description: De breedtegraad.
+        lengtegraad:
+          type: number
+          format: float
+          description: De lengtegraad.
     Clusters-Relatie:
       type: object
       properties:
@@ -1695,7 +1697,7 @@ components:
           type: string
           format: any
           description: De naam van de relatie rol.
-    Eenheden-Adres:
+    Eenheden-Adres-basis:
       type: object
       properties:
         id:
@@ -1741,8 +1743,10 @@ components:
           type: string
           format: any
           description: De straatnaam behorend bij het adres.
+    Eenheden-Adres:
       oneOf:
-      - $ref: '#/components/schemas/Eenheden-Eenheidadres'
+        - $ref: '#/components/schemas/Eenheden-Eenheidadres'
+        - $ref: '#/components/schemas/Eenheden-Adres-basis'
     Eenheden-Afspraakverzoek:
       type: object
       properties:
@@ -2114,25 +2118,25 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
     Eenheden-Eenheidadres:
+      type: object
       allOf:
-        - $ref: '#/components/schemas/Eenheden-Adres'
-        - type: object
-          properties:
-            buurt:
-              $ref: '#/components/schemas/Eenheden-Buurt'
-              description: De buurt behorend bij het adres.
-            gemeente:
-              $ref: '#/components/schemas/Eenheden-Gemeente'
-              description: De gemeente behorend bij het adres.
-            land:
-              $ref: '#/components/schemas/Referentiedata'
-              description: Het land waarin het adres zich bevindt.
-            wijk:
-              $ref: '#/components/schemas/Eenheden-Wijk'
-              description: De wijk behorend bij het adres.
-            woonplaats:
-              $ref: '#/components/schemas/Eenheden-Woonplaats'
-              description: De woonplaats waarin het adres zich bevindt.
+        - $ref: '#/components/schemas/Eenheden-Adres-basis'
+      properties:
+        buurt:
+          $ref: '#/components/schemas/Eenheden-Buurt'
+          description: De buurt behorend bij het adres.
+        gemeente:
+          $ref: '#/components/schemas/Eenheden-Gemeente'
+          description: De gemeente behorend bij het adres.
+        land:
+          $ref: '#/components/schemas/Referentiedata'
+          description: Het land waarin het adres zich bevindt.
+        wijk:
+          $ref: '#/components/schemas/Eenheden-Wijk'
+          description: De wijk behorend bij het adres.
+        woonplaats:
+          $ref: '#/components/schemas/Eenheden-Woonplaats'
+          description: De woonplaats waarin het adres zich bevindt.
     Eenheden-EenheidVoorwaarden:
       type: object
       properties:
@@ -2474,7 +2478,7 @@ components:
           type: string
           format: any
           description: De naam van de woonplaats.
-    Huuropzeggingen-Adres:
+    Huuropzeggingen-Adres-basis:
       type: object
       properties:
         id:
@@ -2520,8 +2524,10 @@ components:
           type: string
           format: any
           description: De straatnaam behorend bij het adres.
+    Huuropzeggingen-Adres:
       oneOf:
-      - $ref: '#/components/schemas/Huuropzeggingen-Eenheidadres'
+        - $ref: '#/components/schemas/Huuropzeggingen-Eenheidadres'
+        - $ref: '#/components/schemas/Huuropzeggingen-Adres-basis'
     Huuropzeggingen-Afspraak:
       type: object
       properties:
@@ -2577,16 +2583,16 @@ components:
           items:
             $ref: '#/components/schemas/Huuropzeggingen-Relatie'
     Huuropzeggingen-Eenheidadres:
+      type: object
       allOf:
-        - $ref: '#/components/schemas/Huuropzeggingen-Adres'
-        - type: object
-          properties:
-            land:
-              $ref: '#/components/schemas/Referentiedata'
-              description: Het land waarin het adres zich bevindt.
-            woonplaats:
-              $ref: '#/components/schemas/Huuropzeggingen-Woonplaats'
-              description: De woonplaats waarin het adres zich bevindt.
+        - $ref: '#/components/schemas/Huuropzeggingen-Adres-basis'
+      properties:
+        land:
+          $ref: '#/components/schemas/Referentiedata'
+          description: Het land waarin het adres zich bevindt.
+        woonplaats:
+          $ref: '#/components/schemas/Huuropzeggingen-Woonplaats'
+          description: De woonplaats waarin het adres zich bevindt.
     Huuropzeggingen-Huuropzegging:
       type: object
       properties:
@@ -2793,9 +2799,10 @@ components:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon.'
         rollen:
-          type: string
-          format: uri
-          description: 'Referentie (URI) naar Relatierol , bijvoorbeeld: https://relaties.vera.io/v4/relatierollen/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Relatierol in de vorm: {endpoint Relaties}/v4/relatierollen/{id}'
     Huuropzeggingen-Relatierol:
       type: object
       properties:

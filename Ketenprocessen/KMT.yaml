@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Kwaliteitsmeting
-  description: API-specificatie van ketenproces 'Kwaliteitsmeting'. Deze specificatie is gebaseerd op VERA versie 4.0.10+220520.16
+  description: API-specificatie van ketenproces 'Kwaliteitsmeting'. Deze specificatie is gebaseerd op VERA versie 4.0.11+220617.9
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '1.0.10+220520.16'
+  version: '1.0.11+220617.9'
 servers:
   - url: https://kmt.vera.io:{port}/{basePath}
     description: Productieserver
@@ -71,7 +71,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -504,7 +504,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -937,7 +937,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -1370,7 +1370,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -2165,9 +2165,10 @@ components:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon.'
         rollen:
-          type: string
-          format: uri
-          description: 'Referentie (URI) naar Relatierol , bijvoorbeeld: https://relaties.vera.io/v4/relatierollen/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Relatierol in de vorm: {endpoint Relaties}/v4/relatierollen/{id}'
     Kwaliteitsmetingsverzoeken-Eenheid:
       type: object
       properties:
@@ -2267,23 +2268,23 @@ components:
           format: any
           description: De naam van de gemeente.
     Kwaliteitsmetingsverzoeken-Huurovereenkomst:
+      type: object
       allOf:
-        - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Overeenkomst'
-        - type: object
-          properties:
-            status:
-              $ref: '#/components/schemas/Referentiedata'
-              description: 'De status van een huurovereenkomst. Dit kan een waarde bevatten zoals: overeenkomst beëindigd en huurder is vertrokken, of overeenkomst is momenteel in gebruik.'
-            opzegdatum:
-              type: string
-              format: date
-              description: De datum dat de overeenkomst is opgezegd door de huurder.
-            eindeReden:
-              $ref: '#/components/schemas/Referentiedata'
-              description: De reden voor beëindiging van de huurovereenkomst.
-            maatschappelijkLabel:
-              $ref: '#/components/schemas/Referentiedata'
-              description: 'Het label waarmee het maatschappelijk en economisch  belang van de dienstverlening wordt aangegeven bij de verhuring: DAEB of niet-DAEB. Het label op de huurovereenkomst kan afwijken van het maatschappelijk label van de eenheid. Hiermee kan worden aangegeven dat een eenheid die behoort tot de niet-DAEB tak als DAEB-verhuring verantwoord moet worden.'
+        - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Overeenkomst-basis'
+      properties:
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van een huurovereenkomst. Dit kan een waarde bevatten zoals: overeenkomst beëindigd en huurder is vertrokken, of overeenkomst is momenteel in gebruik.'
+        opzegdatum:
+          type: string
+          format: date
+          description: De datum dat de overeenkomst is opgezegd door de huurder.
+        eindeReden:
+          $ref: '#/components/schemas/Referentiedata'
+          description: De reden voor beëindiging van de huurovereenkomst.
+        maatschappelijkLabel:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het label waarmee het maatschappelijk en economisch  belang van de dienstverlening wordt aangegeven bij de verhuring: DAEB of niet-DAEB. Het label op de huurovereenkomst kan afwijken van het maatschappelijk label van de eenheid. Hiermee kan worden aangegeven dat een eenheid die behoort tot de niet-DAEB tak als DAEB-verhuring verantwoord moet worden.'
     Kwaliteitsmetingsverzoeken-Kwaliteitsmetingsverzoek:
       type: object
       properties:
@@ -2347,42 +2348,42 @@ components:
           items:
             $ref: '#/components/schemas/Informatieobject'
     Kwaliteitsmetingsverzoeken-NatuurlijkPersoon:
+      type: object
       allOf:
-        - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Relatie'
-        - type: object
-          properties:
-            voornaam:
-              type: string
-              format: any
-              description: De voornaam van de natuurlijk persoon.
-            initialen:
-              type: string
-              format: any
-              description: De initialen van de natuurlijk persoon.
-            aanhef:
-              type: string
-              format: any
-              description: De aanhef of aanspreking is een (meestal vriendelijke) introducerende zin van een brief of e-mail. Het gaat doorgaans om standaardformuleringen waarmee de schrijver zich tot de geadresseerde richt.
-            achternaam:
-              type: string
-              format: any
-              description: De achternaam van de natuurlijk persoon.
-            geboortedatum:
-              type: string
-              format: date
-              description: De geboortedatum van de natuurlijk persoon.
-            overlijdensdatum:
-              type: string
-              format: date
-              description: De datum van overlijden van de natuurlijk persoon.
-            tussenvoegsels:
-              type: string
-              format: any
-              description: De tussenvoegsels behorende bij de naam.
-            voorletters:
-              type: string
-              format: any
-              description: Een voorletter is een afkorting van een voornaam, die in adressering veel wordt gebruikt. De voorletters geven in combinatie met de achternaam meestal een duidelijk onderscheid tussen leden van hetzelfde gezin of dezelfde familie. Indien iemand meerdere voornamen heeft dan worden de voorletters door een punt gescheiden.
+        - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Relatie-basis'
+      properties:
+        voornaam:
+          type: string
+          format: any
+          description: De voornaam van de natuurlijk persoon.
+        initialen:
+          type: string
+          format: any
+          description: De initialen van de natuurlijk persoon.
+        aanhef:
+          type: string
+          format: any
+          description: De aanhef of aanspreking is een (meestal vriendelijke) introducerende zin van een brief of e-mail. Het gaat doorgaans om standaardformuleringen waarmee de schrijver zich tot de geadresseerde richt.
+        achternaam:
+          type: string
+          format: any
+          description: De achternaam van de natuurlijk persoon.
+        geboortedatum:
+          type: string
+          format: date
+          description: De geboortedatum van de natuurlijk persoon.
+        overlijdensdatum:
+          type: string
+          format: date
+          description: De datum van overlijden van de natuurlijk persoon.
+        tussenvoegsels:
+          type: string
+          format: any
+          description: De tussenvoegsels behorende bij de naam.
+        voorletters:
+          type: string
+          format: any
+          description: Een voorletter is een afkorting van een voornaam, die in adressering veel wordt gebruikt. De voorletters geven in combinatie met de achternaam meestal een duidelijk onderscheid tussen leden van hetzelfde gezin of dezelfde familie. Indien iemand meerdere voornamen heeft dan worden de voorletters door een punt gescheiden.
     Kwaliteitsmetingsverzoeken-Onderhoudsverzoek:
       type: object
       properties:
@@ -2421,7 +2422,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Relatie-sleutels'
-    Kwaliteitsmetingsverzoeken-Overeenkomst:
+    Kwaliteitsmetingsverzoeken-Overeenkomst-basis:
       type: object
       properties:
         id:
@@ -2454,18 +2455,20 @@ components:
           type: string
           format: date
           description: De einddatum van de overeenkomst.
+    Kwaliteitsmetingsverzoeken-Overeenkomst:
       oneOf:
-      - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Huurovereenkomst'
+        - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Huurovereenkomst'
+        - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Overeenkomst-basis'
     Kwaliteitsmetingsverzoeken-Rechtspersoon:
+      type: object
       allOf:
-        - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Relatie'
-        - type: object
-          properties:
-            naam:
-              type: string
-              format: any
-              description: De naam de rechtspersoon.
-    Kwaliteitsmetingsverzoeken-Relatie:
+        - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Relatie-basis'
+      properties:
+        naam:
+          type: string
+          format: any
+          description: De naam de rechtspersoon.
+    Kwaliteitsmetingsverzoeken-Relatie-basis:
       type: object
       properties:
         id:
@@ -2497,9 +2500,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Relatierol'
+    Kwaliteitsmetingsverzoeken-Relatie:
       oneOf:
-      - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-NatuurlijkPersoon'
-      - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Rechtspersoon'
+        - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-NatuurlijkPersoon'
+        - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Rechtspersoon'
+        - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Relatie-basis'
     Kwaliteitsmetingsverzoeken-Relatierol:
       type: object
       properties:
@@ -2639,7 +2644,7 @@ components:
           type: string
           format: any
           description: Een beknopte omschrijving van de aard van de zaak en van het zaaktype.
-    Onderzoeksopdrachten-Adres:
+    Onderzoeksopdrachten-Adres-basis:
       type: object
       properties:
         id:
@@ -2685,8 +2690,10 @@ components:
           type: string
           format: any
           description: De straatnaam behorend bij het adres.
+    Onderzoeksopdrachten-Adres:
       oneOf:
-      - $ref: '#/components/schemas/Onderzoeksopdrachten-Postadres'
+        - $ref: '#/components/schemas/Onderzoeksopdrachten-Postadres'
+        - $ref: '#/components/schemas/Onderzoeksopdrachten-Adres-basis'
     Onderzoeksopdrachten-Contactgegeven:
       type: object
       properties:
@@ -2780,21 +2787,21 @@ components:
           items:
             $ref: '#/components/schemas/Informatieobject'
     Onderzoeksopdrachten-Postadres:
+      type: object
       allOf:
-        - $ref: '#/components/schemas/Onderzoeksopdrachten-Adres'
-        - type: object
-          properties:
-            antwoordnummer:
-              type: string
-              format: any
-              description: Het antwoordnummer behorende bij het adres.
-            postbusnummer:
-              type: string
-              format: any
-              description: Het postbusnummer behorende bij het adres.
-            woonplaats:
-              $ref: '#/components/schemas/Onderzoeksopdrachten-Woonplaats'
-              description: De woonplaats waarin het adres zich bevindt.
+        - $ref: '#/components/schemas/Onderzoeksopdrachten-Adres-basis'
+      properties:
+        antwoordnummer:
+          type: string
+          format: any
+          description: Het antwoordnummer behorende bij het adres.
+        postbusnummer:
+          type: string
+          format: any
+          description: Het postbusnummer behorende bij het adres.
+        woonplaats:
+          $ref: '#/components/schemas/Onderzoeksopdrachten-Woonplaats'
+          description: De woonplaats waarin het adres zich bevindt.
     Onderzoeksopdrachten-Relatie:
       type: object
       properties:

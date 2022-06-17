@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '4.0.10+220520.16'
+  version: '4.0.11+220617.9'
 servers:
   - url: https://onderhoud.vera.io:{port}/{basePath}
     description: Productieserver
@@ -22,22 +22,6 @@ servers:
        basePath:
          default: v4
 tags:
-- name: Defecten
-  description: Operaties met betrekking tot een Defect
-- name: Inspectierapporten
-  description: Operaties met betrekking tot een Inspectierapport
-- name: Onderhoudsbestedingen
-  description: Operaties met betrekking tot een Onderhoudsbesteding
-- name: Onderhoudsorders
-  description: Operaties met betrekking tot een Onderhoudsorder
-- name: Onderhoudstaken
-  description: Operaties met betrekking tot een Onderhoudstaak
-- name: Onderhoudstaakvoorcalculaties
-  description: Operaties met betrekking tot een Onderhoudstaakvoorcalculatie
-- name: Onderhoudsverzoeken
-  description: Operaties met betrekking tot een Onderhoudsverzoek
-- name: Standaardprijzen
-  description: Operaties met betrekking tot een Standaardprijs
 - name: Defecten
   description: Operaties met betrekking tot een Defect
 - name: Inspectierapporten
@@ -95,7 +79,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -528,7 +512,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -961,7 +945,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -1394,7 +1378,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -1827,7 +1811,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -2260,7 +2244,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -2693,7 +2677,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -3126,7 +3110,7 @@ paths:
         schema:
           type: string
         description: |
-          De opgrevraagde pagina
+          De opgevraagde pagina
         example: 21
       - name: X-Stuurgegevens-Zender-Organisatie
         in: header
@@ -3638,19 +3622,19 @@ components:
         bouwkundigElement:
           type: string
           format: uri
-          description: 'Referentie naar BouwkundigElement in de vorm: vera/v4/bouwkundigelementen/12345'
+          description: 'Referentie naar BouwkundigElement in de vorm: {endpoint Vastgoed}/vera/v4/bouwkundigelementen/{id}'
         cluster:
           type: string
           format: uri
-          description: 'Referentie naar Cluster in de vorm: vera/v4/clusters/12345'
+          description: 'Referentie naar Cluster in de vorm: {endpoint Vastgoed}/vera/v4/clusters/{id}'
         collectiefObject:
           type: string
           format: uri
-          description: 'Referentie naar CollectiefObject in de vorm: vera/v4/collectiefobjecten/12345'
+          description: 'Referentie naar CollectiefObject in de vorm: {endpoint Vastgoed}/vera/v4/collectiefobjecten/{id}'
         eenheid:
           type: string
           format: uri
-          description: 'Referentie naar Eenheid in de vorm: vera/v4/eenheden/12345'
+          description: 'Referentie naar Eenheid in de vorm: {endpoint Vastgoed}/vera/v4/eenheden/{id}'
         inspectierapport:
           $ref: '#/components/schemas/Inspectierapport'
           description: Het inspectierapport waarmee het defect is gemeld.
@@ -3666,18 +3650,20 @@ components:
           $ref: '#/components/schemas/Referentiedata'
           description: De oorzaak van het defect zoals initieel bij het melden van het defect is vastgelegd. Dit is vaak de oorzaak die de huurder aangeeft bij de melding.
         relaties:
-          type: string
-          format: uri
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Relatie in de vorm: {endpoint Relaties}/vera/v4/relaties/{id}'
         extra-attributen:
           description: Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
         informatieobjecten:
-          type: string
-          format: uri
-          description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Informatieobject in de vorm: {endpoint Dossier}/vera/v4/informatieobjecten/{id}'
     Referentiedata:
       type: object
       properties:
@@ -3784,9 +3770,10 @@ components:
           $ref: '#/components/schemas/Onderhoudsorder'
           description: De inspectieorder waardoor de inspectie heeft plaatsgevonden.
         relaties:
-          type: string
-          format: uri
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Relatie in de vorm: {endpoint Relaties}/vera/v4/relaties/{id}'
         voorgesteldeOnderhoudstaken:
           description: In de situatie dat de inspecteur ook uit te voeren onderhoudstaken vaststelt tijdens de inspectie kunnen deze als voorgestelde onderhoudstaken opgenomen worden bij het inspectierapport
           type: array
@@ -3798,9 +3785,10 @@ components:
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
         informatieobjecten:
-          type: string
-          format: uri
-          description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Informatieobject in de vorm: {endpoint Dossier}/vera/v4/informatieobjecten/{id}'
     Onderhoudsorder:
       type: object
       properties:
@@ -3858,23 +3846,24 @@ components:
           description: Datum (en tijdstip) waarop de opdracht is verstrekt aan het (extern) onderhoudsbedrijf of de interne vakgroep voor de uitvoering van de werkzaamheden.
         afrekenwijze:
           $ref: '#/components/schemas/Referentiedata'
-          description: 'De wijze waarop de onderhoudsorder wordt afgerekend (of niet). Bijvoorbeeld: Nacalculatie regie, Nacalculatie eenheidsprijzen, Vaste prijs, Afkoop, Garantie.'
+          description: 'De wijze waarop de onderhoudsorder wordt afgerekend (of niet). Bijvoorbeeld: Nacalculatie regie, Nacalculatie eenheidsprijzen, Vaste prijs, Afkoop, Garantie. De afrekenwijze bepaalt ook welke soorten onderhoudsbestedingen gebruikt moeten worden (Bij eenheidsprijzen gebruik je bijvoorbeeld bestedingsoort Vaste taakprijs)'
         afspraken:
-          type: string
-          format: uri
-          description: 'Referentie naar Afspraak in de vorm: vera/v4/afspraken/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Afspraak in de vorm: {endpoint Relaties}/vera/v4/afspraken/{id}'
         cluster:
           type: string
           format: uri
-          description: 'Referentie naar Cluster in de vorm: vera/v4/clusters/12345'
+          description: 'Referentie naar Cluster in de vorm: {endpoint Vastgoed}/vera/v4/clusters/{id}'
         collectiefObject:
           type: string
           format: uri
-          description: 'Referentie naar CollectiefObject in de vorm: vera/v4/collectiefobjecten/12345'
+          description: 'Referentie naar CollectiefObject in de vorm: {endpoint Vastgoed}/vera/v4/collectiefobjecten/{id}'
         debiteur:
           type: string
           format: uri
-          description: 'Referentie naar Debiteur in de vorm: vera/v4/debiteuren/12345'
+          description: 'Referentie naar Debiteur in de vorm: {endpoint Financien}/vera/v4/debiteuren/{id}'
         defecten:
           description: De defecten die via het verzoek of het inspectierapport zijn gemeld.
           type: array
@@ -3883,15 +3872,16 @@ components:
         eenheid:
           type: string
           format: uri
-          description: 'Referentie naar Eenheid in de vorm: vera/v4/eenheden/12345'
+          description: 'Referentie naar Eenheid in de vorm: {endpoint Vastgoed}/vera/v4/eenheden/{id}'
         financieelGereeddatum:
           type: string
           format: date-time
           description: De datum waarop de order financieel beëindigd is.
         offertes:
-          type: string
-          format: uri
-          description: 'Referentie naar Offerte in de vorm: vera/v4/offertes/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Offerte in de vorm: {endpoint Financien}/vera/v4/offertes/{id}'
         onderhoudstaken:
           description: De onderhoudstaken behorend bij de onderhoudsorder.
           type: array
@@ -3905,11 +3895,12 @@ components:
         overeenkomst:
           type: string
           format: uri
-          description: 'Referentie naar Overeenkomst in de vorm: vera/v4/overeenkomsten/12345'
+          description: 'Referentie naar Overeenkomst in de vorm: {endpoint Overeenkomsten}/vera/v4/overeenkomsten/{id}'
         relaties:
-          type: string
-          format: uri
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Relatie in de vorm: {endpoint Relaties}/vera/v4/relaties/{id}'
         technischGereeddatum:
           type: string
           format: date-time
@@ -3923,9 +3914,10 @@ components:
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
         informatieobjecten:
-          type: string
-          format: uri
-          description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Informatieobject in de vorm: {endpoint Dossier}/vera/v4/informatieobjecten/{id}'
     Onderhoudsorder-sleutels:
       type: object
       properties:
@@ -3975,9 +3967,10 @@ components:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De detail status van de onderhoudstaak. Bijvoorbeeld: Klant niet aanwezig'
         afspraken:
-          type: string
-          format: uri
-          description: 'Referentie naar Afspraak in de vorm: vera/v4/afspraken/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Afspraak in de vorm: {endpoint Relaties}/vera/v4/afspraken/{id}'
         defecten:
           description: De geconstateerde defecten die met de onderhoudstaak worden verholpen
           type: array
@@ -3995,9 +3988,10 @@ components:
           $ref: '#/components/schemas/Onderhoudsverzoek'
           description: Het onderhoudsverzoek behorend bij de onderhoudstaak. Ook als er (nog) geen onderhoudsorder is bij de onderhoudstaak, kan op deze manier het bijbehorende onderhoudsverzoek worden gevonden.
         relaties:
-          type: string
-          format: uri
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Relatie in de vorm: {endpoint Relaties}/vera/v4/relaties/{id}'
         specialisme:
           $ref: '#/components/schemas/Referentiedata'
           description: Het specialisme dat nodig is om de taak uit te voeren. Voorbeelden zijn Timmerman, Loodgieter, etc.
@@ -4012,9 +4006,10 @@ components:
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
         informatieobjecten:
-          type: string
-          format: uri
-          description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Informatieobject in de vorm: {endpoint Dossier}/vera/v4/informatieobjecten/{id}'
     Onderhoudsbesteding:
       type: object
       properties:
@@ -4036,7 +4031,7 @@ components:
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
           $ref: '#/components/schemas/Referentiedata'
-          description: Het soort besteding voor de onderhoudstaak.
+          description: Het soort besteding voor de onderhoudstaak. Afhankelijk van de afrekenwijze kunnen hier verschillende bestedingsoorten gebruikt worden zoals vaste taakprijs bij nacalculatie eenheidsprijzen en werktijd bij nacalculatie
         omschrijving:
           type: string
           format: any
@@ -4078,9 +4073,10 @@ components:
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
         informatieobjecten:
-          type: string
-          format: uri
-          description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Informatieobject in de vorm: {endpoint Dossier}/vera/v4/informatieobjecten/{id}'
     ExtraAttribuut:
       type: object
       properties:
@@ -4130,9 +4126,10 @@ components:
           format: any
           description: Tekstveld waarin contactgegevens van een alternatieve contactpersoon opgenomen kunnen worden. Voorbeeld is het verzoek van een huurder (student) waarbij hij aangeeft contact op te nemen met zijn ouders voor de afhandeling van het verzoek.
         contactmomenten:
-          type: string
-          format: uri
-          description: 'Referentie naar Contactmoment in de vorm: vera/v4/contactmomenten/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Contactmoment in de vorm: {endpoint Relaties}/vera/v4/contactmomenten/{id}'
         defecten:
           description: De defecten die via zijn gemeld en gekoppeld aan het onderhoudsverzoek.
           type: array
@@ -4154,22 +4151,25 @@ components:
           items:
             $ref: '#/components/schemas/Onderhoudsverzoek-sleutels'
         relaties:
-          type: string
-          format: uri
-          description: 'Referentie naar Relatie in de vorm: vera/v4/relaties/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Relatie in de vorm: {endpoint Relaties}/vera/v4/relaties/{id}'
         voorkeurAfspraken:
-          type: string
-          format: uri
-          description: 'Referentie naar Afspraak in de vorm: vera/v4/afspraken/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Afspraak in de vorm: {endpoint Relaties}/vera/v4/afspraken/{id}'
         extra-attributen:
           description: Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn
           type: array
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
         informatieobjecten:
-          type: string
-          format: uri
-          description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Informatieobject in de vorm: {endpoint Dossier}/vera/v4/informatieobjecten/{id}'
     Onderhoudsverzoek-sleutels:
       type: object
       properties:
@@ -4238,9 +4238,10 @@ components:
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
         informatieobjecten:
-          type: string
-          format: uri
-          description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Informatieobject in de vorm: {endpoint Dossier}/vera/v4/informatieobjecten/{id}'
     Standaardprijs:
       type: object
       properties:
@@ -4286,9 +4287,10 @@ components:
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
         informatieobjecten:
-          type: string
-          format: uri
-          description: 'Referentie naar Informatieobject in de vorm: vera/v4/informatieobjecten/12345'
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Informatieobject in de vorm: {endpoint Dossier}/vera/v4/informatieobjecten/{id}'
     Defect-sleutels:
       type: object
       properties:
