@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '4.0.11+220617.9'
+  version: '4.0.11+220620.2'
 servers:
   - url: https://relaties.vera.io:{port}/{basePath}
     description: Productieserver
@@ -40,6 +40,8 @@ tags:
   description: Operaties met betrekking tot een Inkomen
 - name: NatuurlijkPersonen
   description: Operaties met betrekking tot een NatuurlijkPersoon
+- name: Onderhoudsleveranciers
+  description: Operaties met betrekking tot een Onderhoudsleverancier
 - name: Opleidingen
   description: Operaties met betrekking tot een Opleiding
 - name: Rechtspersonen
@@ -3968,6 +3970,439 @@ paths:
           headers:
             X-Stuurgegevens-Referentienummer:
               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+  /onderhoudsleveranciers:
+    get:
+      tags:
+      - 'Onderhoudsleveranciers'
+      description: Ophalen van Onderhoudsleveranciers
+      operationId: listOnderhoudsleveranciers
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Onderhoudsleverancier'
+      - name: cursor
+        in: query
+        schema:
+          type: string
+        description: |
+          De cursor (bijv. GUID) waarmee de volgende pagina van resultaten opgehaald kan worden.
+          Zie ook: X-Parameters-Cursor.
+        example: 241d66b1-fcdb-4266-b908-01aeec18781e
+      - name: pagina
+        in: query
+        schema:
+          type: string
+        description: |
+          De opgevraagde pagina
+        example: 21
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Parameters-PeiltijdstipMaterieel
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Parameters-PeiltijdstipMaterieel'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - name: X-Parameters-AantalPerPagina
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Parameters-AantalPerPagina'           
+      - name: X-Parameters-Pagina
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Parameters-Pagina'
+      responses:
+        '200':
+          description: Onderhoudsleverancier response
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Onderhoudsleverancier'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+                $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+            X-Stuurgegevens-Referentienummer:
+                $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+            X-Parameters-Aantal:
+                $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+                $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+                $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+                $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Onderhoudsleveranciers'
+      description: Voegt een nieuw(e) Onderhoudsleverancier toe.
+      operationId: createOnderhoudsleverancier
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Onderhoudsleverancier
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Onderhoudsleverancier'
+      responses:
+        '200':
+          description: Onderhoudsleverancier succesvol toegevoegd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    put:
+      tags:
+      - 'Onderhoudsleveranciers'
+      description: |
+        Vervangen van een Onderhoudsleverancier op basis van overeenkomstige sleutelvelden.
+      operationId: replaceOnderhoudsleverancier
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit Onderhoudsleverancier
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Onderhoudsleverancier'
+      responses:
+        '200':
+          description: Onderhoudsleverancier succesvol vervangen
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '400':
+          description: |
+            Fout in request.
+            Onderhoudsleverancier bevat geen sleutelveld(en).
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: Onderhoudsleverancier met gegeven sleutelveld(en) niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    patch:
+      tags:
+      - 'Onderhoudsleveranciers'
+      description: |
+        Wijzigen van afzonderlijke attributen van een Onderhoudsleverancier. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateOnderhoudsleverancier
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit Onderhoudsleverancier
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Onderhoudsleverancier'
+      responses:
+        '200':
+          description: Onderhoudsleverancier succesvol gewijzigd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '400':
+          description: |
+            Fout in request.
+            Onderhoudsleverancier bevat geen sleutelveld(en).
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+           headers:
+             X-Stuurgegevens-Referentienummer:
+               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+           description: Onderhoudsleverancier met gegeven sleutelveld(en) niet gevonden
+           headers:
+             X-Stuurgegevens-Referentienummer:
+               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+  /onderhoudsleveranciers/{id}:
+    get:
+      tags:
+      - 'Onderhoudsleveranciers'
+      description: Retourneert een Onderhoudsleverancier met de gegeven identifier
+      operationId: readOnderhoudsleverancierById
+      parameters:
+      - name: id
+        in: path
+        description: Id van Onderhoudsleverancier om op te halen
+        required: true
+        schema:
+          type: string
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      responses:
+        '200':
+          description: Onderhoudsleverancier response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Onderhoudsleverancier'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: Onderhoudsleverancier met id niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    put:
+      tags:
+      - 'Onderhoudsleveranciers'
+      description: Vervangen van een Onderhoudsleverancier
+      operationId: replaceOnderhoudsleverancierById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Onderhoudsleverancier om te vervangen
+        required: true
+        schema:
+          type: string
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit Onderhoudsleverancier
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Onderhoudsleverancier'
+      responses:
+        '200':
+          description: Onderhoudsleverancier succesvol vervangen
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: Onderhoudsleverancier met id niet gevonden
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    patch:
+      tags:
+      - 'Onderhoudsleveranciers'
+      description: Wijzigen van een Onderhoudsleverancier
+      operationId: updateOnderhoudsleverancierById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Onderhoudsleverancier om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit Onderhoudsleverancier
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Onderhoudsleverancier'
+      responses:
+        '200':
+          description: Onderhoudsleverancier succesvol gewijzigd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: Onderhoudsleverancier met id niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
   /opleidingen:
     get:
       tags:
@@ -7757,7 +8192,6 @@ components:
         - $ref: '#/components/schemas/NatuurlijkPersoon'
         - $ref: '#/components/schemas/Rechtspersoon'
         - $ref: '#/components/schemas/Relatiegroep'
-        - $ref: '#/components/schemas/Relatie-basis'
     ExtraAttribuut:
       type: object
       properties:
@@ -8517,7 +8951,17 @@ components:
           items:
             format: uri
             description: 'Referentie naar Informatieobject in de vorm: {endpoint Dossier}/vera/v4/informatieobjecten/{id}'
-    Rechtspersoon:
+    Onderhoudsleverancier:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Rechtspersoon-basis'
+      properties:
+        specialismen:
+          description: Het specialismen die de opdrachtnemer kan uitvoeren. Voorbeelden zijn Timmerman, Loodgieter, etc.
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
+    Rechtspersoon-basis:
       type: object
       allOf:
         - $ref: '#/components/schemas/Relatie-basis'
@@ -8546,6 +8990,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Relatie'
+    Rechtspersoon:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Relatie-basis'
     Telefoonnummer:
       type: object
       allOf:
