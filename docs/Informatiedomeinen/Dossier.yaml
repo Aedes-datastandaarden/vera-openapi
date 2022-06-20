@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '4.0.11+220617.9'
+  version: '4.0.11+220620.2'
 servers:
   - url: https://dossier.vera.io:{port}/{basePath}
     description: Productieserver
@@ -38,6 +38,8 @@ tags:
   description: Operaties met betrekking tot een Zaak
 - name: Zaakkenmerken
   description: Operaties met betrekking tot een Zaakkenmerk
+- name: Zaakobjecten
+  description: Operaties met betrekking tot een Zaakobject
 - name: Zaakrollen
   description: Operaties met betrekking tot een Zaakrol
 - name: Zaakstatussen
@@ -3523,6 +3525,439 @@ paths:
           headers:
             X-Stuurgegevens-Referentienummer:
               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+  /zaakobjecten:
+    get:
+      tags:
+      - 'Zaakobjecten'
+      description: Ophalen van Zaakobjecten
+      operationId: listZaakobjecten
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Zaakobject'
+      - name: cursor
+        in: query
+        schema:
+          type: string
+        description: |
+          De cursor (bijv. GUID) waarmee de volgende pagina van resultaten opgehaald kan worden.
+          Zie ook: X-Parameters-Cursor.
+        example: 241d66b1-fcdb-4266-b908-01aeec18781e
+      - name: pagina
+        in: query
+        schema:
+          type: string
+        description: |
+          De opgevraagde pagina
+        example: 21
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Parameters-PeiltijdstipMaterieel
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Parameters-PeiltijdstipMaterieel'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - name: X-Parameters-AantalPerPagina
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Parameters-AantalPerPagina'           
+      - name: X-Parameters-Pagina
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Parameters-Pagina'
+      responses:
+        '200':
+          description: Zaakobject response
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Zaakobject'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+                $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+            X-Stuurgegevens-Referentienummer:
+                $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+            X-Parameters-Aantal:
+                $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+                $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+                $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+                $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Zaakobjecten'
+      description: Voegt een nieuw(e) Zaakobject toe.
+      operationId: createZaakobject
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Zaakobject
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Zaakobject'
+      responses:
+        '200':
+          description: Zaakobject succesvol toegevoegd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    put:
+      tags:
+      - 'Zaakobjecten'
+      description: |
+        Vervangen van een Zaakobject op basis van overeenkomstige sleutelvelden.
+      operationId: replaceZaakobject
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit Zaakobject
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Zaakobject'
+      responses:
+        '200':
+          description: Zaakobject succesvol vervangen
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '400':
+          description: |
+            Fout in request.
+            Zaakobject bevat geen sleutelveld(en).
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: Zaakobject met gegeven sleutelveld(en) niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    patch:
+      tags:
+      - 'Zaakobjecten'
+      description: |
+        Wijzigen van afzonderlijke attributen van een Zaakobject. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateZaakobject
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit Zaakobject
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Zaakobject'
+      responses:
+        '200':
+          description: Zaakobject succesvol gewijzigd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '400':
+          description: |
+            Fout in request.
+            Zaakobject bevat geen sleutelveld(en).
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+           headers:
+             X-Stuurgegevens-Referentienummer:
+               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+           description: Zaakobject met gegeven sleutelveld(en) niet gevonden
+           headers:
+             X-Stuurgegevens-Referentienummer:
+               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+  /zaakobjecten/{id}:
+    get:
+      tags:
+      - 'Zaakobjecten'
+      description: Retourneert een Zaakobject met de gegeven identifier
+      operationId: readZaakobjectById
+      parameters:
+      - name: id
+        in: path
+        description: Id van Zaakobject om op te halen
+        required: true
+        schema:
+          type: string
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      responses:
+        '200':
+          description: Zaakobject response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zaakobject'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: Zaakobject met id niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    put:
+      tags:
+      - 'Zaakobjecten'
+      description: Vervangen van een Zaakobject
+      operationId: replaceZaakobjectById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Zaakobject om te vervangen
+        required: true
+        schema:
+          type: string
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit Zaakobject
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Zaakobject'
+      responses:
+        '200':
+          description: Zaakobject succesvol vervangen
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: Zaakobject met id niet gevonden
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    patch:
+      tags:
+      - 'Zaakobjecten'
+      description: Wijzigen van een Zaakobject
+      operationId: updateZaakobjectById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Zaakobject om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit Zaakobject
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Zaakobject'
+      responses:
+        '200':
+          description: Zaakobject succesvol gewijzigd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: Zaakobject met id niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
   /zaakrollen:
     get:
       tags:
@@ -5694,6 +6129,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Zaakkenmerk'
+        objecten:
+          description: De gegevensobjecten die bij de zaak horen. Kan iedere klasse uit ons model zijn. Bijv. Overeenkomst, Onderhoudsverzoek etc. 
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaakobject'
         onderhoudsverzoeken:
           type: array
           items:
@@ -5705,7 +6145,7 @@ components:
             format: uri
             description: 'Referentie naar Overeenkomst in de vorm: {endpoint Overeenkomsten}/vera/v4/overeenkomsten/{id}'
         processen:
-          description: De zaak is gekoppeld aan/heeft betrekking op proces(sen).
+          description: De zaak is gekoppeld aan/heeft betrekking op proces(sen). 
           type: array
           items:
             $ref: '#/components/schemas/Proces'
@@ -5806,6 +6246,30 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Zaak'
+        extra-attributen:
+          description: Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: Mogelijkheid om het bericht uit te breiden met documentatie
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
+    Zaakobject:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: Het soort gegevensobject. Kan iedere klasse uit ons model zijn. Bijv. Overeenkomst, Onderhoudsverzoek etc.
         extra-attributen:
           description: Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn
           type: array
@@ -6156,6 +6620,17 @@ components:
           type: string
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Zaakobject-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
     Zaakrol-sleutels:
       type: object
       properties:

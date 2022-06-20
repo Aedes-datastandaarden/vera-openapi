@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Casemanagement
-  description: API-specificatie van ketenproces 'Casemanagement'. Deze specificatie is gebaseerd op VERA versie 4.0.11+220617.9
+  description: API-specificatie van ketenproces 'Casemanagement'. Deze specificatie is gebaseerd op VERA versie 4.0.11+220620.2
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '1.0.11+220617.9'
+  version: '1.0.11+220620.2'
 servers:
   - url: https://bdo.vera.io:{port}/{basePath}
     description: Productieserver
@@ -1994,6 +1994,9 @@ components:
         soort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
+        detailSoort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon.'
         rollen:
           description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
           type: array
@@ -2004,7 +2007,6 @@ components:
         - $ref: '#/components/schemas/Dossiers-NatuurlijkPersoon'
         - $ref: '#/components/schemas/Dossiers-Rechtspersoon'
         - $ref: '#/components/schemas/Dossiers-Relatiegroep'
-        - $ref: '#/components/schemas/Dossiers-Relatie-basis'
     Dossiers-Relatiegroep:
       type: object
       allOf:
@@ -2478,6 +2480,9 @@ components:
         soort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
+        detailSoort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon.'
         rollen:
           description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
           type: array
@@ -2630,6 +2635,9 @@ components:
         soort:
           $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
+        detailSoort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon.'
         rollen:
           description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
           type: array
@@ -2640,7 +2648,6 @@ components:
         - $ref: '#/components/schemas/Zaken-NatuurlijkPersoon'
         - $ref: '#/components/schemas/Zaken-Rechtspersoon'
         - $ref: '#/components/schemas/Zaken-Relatiegroep'
-        - $ref: '#/components/schemas/Zaken-Relatie-basis'
     Zaken-Relatiegroep:
       type: object
       allOf:
@@ -2728,16 +2735,24 @@ components:
           type: string
           format: date-time
           description: De datum waarop de zaak uiterlijk dient afgehandeld te zijn.
+        archiefActiedatum:
+          type: string
+          format: date-time
+          description: De datum waarop het gearchiveerde zaakdossier vernietigd dient te worden dan wel overgebracht moet worden naar een archiefbewaarplaats.
         deelzaken:
           description: Specificeert de bijbehorende deelzaken.
           type: array
           items:
             $ref: '#/components/schemas/Zaak-sleutels'
+        dossier:
+          $ref: '#/components/schemas/Dossier-sleutels'
+          description: Het dossier dat aan de zaak gekoppeld is.
         eenheden:
-          description: De zaak is gekoppeld aan/heeft betrekking op eenheid(-en).
+          description: De zaak is gekoppeld aan/heeft betrekking op eenheid(-en). OBSOLETE.
           type: array
           items:
             $ref: '#/components/schemas/Eenheid-sleutels'
+            deprecated: true
         gerelateerdeZaken:
           description: Heeft één of meerdere gerelateerde interne of externe zaken.
           type: array
@@ -2746,11 +2761,22 @@ components:
         isDeelzaakVan:
           $ref: '#/components/schemas/Zaak-sleutels'
           description: Specificeert de bijbehorende hoofdzaak.
+        kenmerken:
+          description: Dit zijn eigenschappen behorend bij de zaak.
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaken-Zaakkenmerk'
+        objecten:
+          description: De gegevensobjecten die bij de zaak horen. Kan iedere klasse uit ons model zijn. Bijv. Overeenkomst, Onderhoudsverzoek etc. 
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaken-Zaakobject'
         overeenkomsten:
-          description: De zaak is gekoppeld aan/heeft betrekking op overeenkomst(en).
+          description: De zaak is gekoppeld aan/heeft betrekking op overeenkomst(en). OBSOLETE.
           type: array
           items:
             $ref: '#/components/schemas/Overeenkomst-sleutels'
+            deprecated: true
         relaties:
           description: De zaak is gekoppeld aan/heeft betrekking op relatie(s).
           type: array
@@ -2779,6 +2805,53 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Informatieobject'
+    Zaken-Zaakkenmerk:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        omschrijving:
+          type: string
+          format: any
+          description: De omschrijving van het zaakkenmerk.
+        waarde:
+          type: string
+          format: any
+          description: De waarde van het zaakkenmerk.
+        datatype:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het datatype van de waarde. Bijvoorbeeld: string, decimal, integer.'
+        groep:
+          $ref: '#/components/schemas/Referentiedata'
+          description: De groep van kenmerken behorend bij het zaakkenmerk.
+    Zaken-Zaakobject:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: Het soort gegevensobject. Kan iederee klasse uit ons model zijn. Bijv. Overeenkomst, Onderhoudsverzoek etc..
     Zaken-Zaakrol:
       type: object
       properties:
