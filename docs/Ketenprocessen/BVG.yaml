@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Beheer Vastgoedgegevens
-  description: API-specificatie van ketenproces 'Beheer Vastgoedgegevens'. Deze specificatie is gebaseerd op VERA versie 4.0.11+220620.2
+  description: API-specificatie van ketenproces 'Beheer Vastgoedgegevens'. Deze specificatie is gebaseerd op VERA versie 4.0.12+220720.5
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '1.0.11+220620.2'
+  version: '1.0.12+220720.5'
 servers:
   - url: https://bvg.vera.io:{port}/{basePath}
     description: Productieserver
@@ -51,7 +51,7 @@ paths:
         style: form
         explode: true
         schema:
-          $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaat'
+          $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaat-bericht'
       - name: cursor
         in: query
         schema:
@@ -103,7 +103,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaat'
+                  $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaat-bericht'
           headers:
             X-Stuurgegevens-TijdstipBericht:
                 $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
@@ -152,7 +152,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaat'
+              $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaat-bericht'
       responses:
         '200':
           description: WoningwaarderingResultaat succesvol toegevoegd
@@ -201,7 +201,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaat'
+              $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaat-bericht'
       responses:
         '200':
           description: WoningwaarderingResultaat succesvol vervangen
@@ -263,7 +263,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaat'
+              $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaat-bericht'
       responses:
         '200':
           description: WoningwaarderingResultaat succesvol gewijzigd
@@ -331,7 +331,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaat'
+                $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaat-bericht'
           headers:
             X-Stuurgegevens-Referentienummer:
               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
@@ -387,7 +387,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaat'
+              $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaat-bericht'
       responses:
         '200':
           description: WoningwaarderingResultaat succesvol vervangen
@@ -446,7 +446,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaat'
+              $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaat-bericht'
       responses:
         '200':
           description: WoningwaarderingResultaat succesvol gewijzigd
@@ -688,6 +688,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WoningwaarderingResultaten-Woningwaardering'
+    WoningwaarderingResultaten-WoningwaarderingResultaat-bericht:
+      allOf:
+        - $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaat'
+        - $ref: '#/components/schemas/Bericht-basis'
     WoningwaarderingResultaten-WoningwaarderingResultaat:
       type: object
       properties:
@@ -735,16 +739,6 @@ components:
           type: number
           format: float
           description: Het aantal woningwaarderingsstelsel punten dat is toegekend.
-        extra-attributen:
-          description: Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttribuut'
-        informatieobjecten:
-          description: Mogelijkheid om het bericht uit te breiden met documentatie
-          type: array
-          items:
-            $ref: '#/components/schemas/Informatieobject'
     Eenheid-sleutels:
       type: object
       properties:
@@ -764,6 +758,19 @@ components:
           type: string
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Bericht-basis:
+      type: object
+      properties:
+        extra-attributen:
+          description: Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: Mogelijkheid om het bericht uit te breiden met documentatie
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
     ExtraAttribuut:
       type: object
       properties:
@@ -859,6 +866,10 @@ components:
       properties:
         code:
           type: string
+          format: any
+          description: Foutcode
         omschrijving:
           type: string
+          format: any
+          description: Omschrijving van de fout
 

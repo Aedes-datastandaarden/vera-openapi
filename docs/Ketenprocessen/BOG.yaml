@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Beheer Overeenkomstgegevens
-  description: API-specificatie van ketenproces 'Beheer Overeenkomstgegevens'. Deze specificatie is gebaseerd op VERA versie 4.0.11+220620.2
+  description: API-specificatie van ketenproces 'Beheer Overeenkomstgegevens'. Deze specificatie is gebaseerd op VERA versie 4.0.12+220720.5
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '1.0.11+220620.2'
+  version: '1.0.12+220720.5'
 servers:
   - url: https://bog.vera.io:{port}/{basePath}
     description: Productieserver
@@ -24,6 +24,8 @@ servers:
 tags:
 - name: Overeenkomsten
   description: Operaties met betrekking tot een Overeenkomst
+- name: Prijscomponenten
+  description: Operaties met betrekking tot een Prijscomponent
 paths:
   /ping:
     get:
@@ -51,7 +53,7 @@ paths:
         style: form
         explode: true
         schema:
-          $ref: '#/components/schemas/Overeenkomsten-Overeenkomst'
+          $ref: '#/components/schemas/Overeenkomsten-Overeenkomst-bericht'
       - name: cursor
         in: query
         schema:
@@ -103,7 +105,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Overeenkomsten-Overeenkomst'
+                  $ref: '#/components/schemas/Overeenkomsten-Overeenkomst-bericht'
           headers:
             X-Stuurgegevens-TijdstipBericht:
                 $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
@@ -152,7 +154,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Overeenkomsten-Overeenkomst'
+              $ref: '#/components/schemas/Overeenkomsten-Overeenkomst-bericht'
       responses:
         '200':
           description: Overeenkomst succesvol toegevoegd
@@ -201,7 +203,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Overeenkomsten-Overeenkomst'
+              $ref: '#/components/schemas/Overeenkomsten-Overeenkomst-bericht'
       responses:
         '200':
           description: Overeenkomst succesvol vervangen
@@ -263,7 +265,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Overeenkomsten-Overeenkomst'
+              $ref: '#/components/schemas/Overeenkomsten-Overeenkomst-bericht'
       responses:
         '200':
           description: Overeenkomst succesvol gewijzigd
@@ -331,7 +333,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Overeenkomsten-Overeenkomst'
+                $ref: '#/components/schemas/Overeenkomsten-Overeenkomst-bericht'
           headers:
             X-Stuurgegevens-Referentienummer:
               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
@@ -387,7 +389,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Overeenkomsten-Overeenkomst'
+              $ref: '#/components/schemas/Overeenkomsten-Overeenkomst-bericht'
       responses:
         '200':
           description: Overeenkomst succesvol vervangen
@@ -446,7 +448,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Overeenkomsten-Overeenkomst'
+              $ref: '#/components/schemas/Overeenkomsten-Overeenkomst-bericht'
       responses:
         '200':
           description: Overeenkomst succesvol gewijzigd
@@ -460,6 +462,439 @@ paths:
               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Overeenkomst met id niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+  /prijscomponenten:
+    get:
+      tags:
+      - 'Prijscomponenten'
+      description: Ophalen van Prijscomponenten
+      operationId: listPrijscomponenten
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Prijscomponenten-Prijscomponent-bericht'
+      - name: cursor
+        in: query
+        schema:
+          type: string
+        description: |
+          De cursor (bijv. GUID) waarmee de volgende pagina van resultaten opgehaald kan worden.
+          Zie ook: X-Parameters-Cursor.
+        example: 241d66b1-fcdb-4266-b908-01aeec18781e
+      - name: pagina
+        in: query
+        schema:
+          type: string
+        description: |
+          De opgevraagde pagina
+        example: 21
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Parameters-PeiltijdstipMaterieel
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Parameters-PeiltijdstipMaterieel'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - name: X-Parameters-AantalPerPagina
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Parameters-AantalPerPagina'           
+      - name: X-Parameters-Pagina
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Parameters-Pagina'
+      responses:
+        '200':
+          description: Prijscomponent response
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Prijscomponenten-Prijscomponent-bericht'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+                $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+            X-Stuurgegevens-Referentienummer:
+                $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+            X-Parameters-Aantal:
+                $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+                $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+                $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+                $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Prijscomponenten'
+      description: Voegt een nieuw(e) Prijscomponent toe.
+      operationId: createPrijscomponent
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Prijscomponent
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Prijscomponenten-Prijscomponent-bericht'
+      responses:
+        '200':
+          description: Prijscomponent succesvol toegevoegd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    put:
+      tags:
+      - 'Prijscomponenten'
+      description: |
+        Vervangen van een Prijscomponent op basis van overeenkomstige sleutelvelden.
+      operationId: replacePrijscomponent
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit Prijscomponent
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Prijscomponenten-Prijscomponent-bericht'
+      responses:
+        '200':
+          description: Prijscomponent succesvol vervangen
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '400':
+          description: |
+            Fout in request.
+            Prijscomponent bevat geen sleutelveld(en).
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: Prijscomponent met gegeven sleutelveld(en) niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    patch:
+      tags:
+      - 'Prijscomponenten'
+      description: |
+        Wijzigen van afzonderlijke attributen van een Prijscomponent. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updatePrijscomponent
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit Prijscomponent
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Prijscomponenten-Prijscomponent-bericht'
+      responses:
+        '200':
+          description: Prijscomponent succesvol gewijzigd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '400':
+          description: |
+            Fout in request.
+            Prijscomponent bevat geen sleutelveld(en).
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+           headers:
+             X-Stuurgegevens-Referentienummer:
+               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+           description: Prijscomponent met gegeven sleutelveld(en) niet gevonden
+           headers:
+             X-Stuurgegevens-Referentienummer:
+               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+  /prijscomponenten/{id}:
+    get:
+      tags:
+      - 'Prijscomponenten'
+      description: Retourneert een Prijscomponent met de gegeven identifier
+      operationId: readPrijscomponentById
+      parameters:
+      - name: id
+        in: path
+        description: Id van Prijscomponent om op te halen
+        required: true
+        schema:
+          type: string
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      responses:
+        '200':
+          description: Prijscomponent response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prijscomponenten-Prijscomponent-bericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: Prijscomponent met id niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    put:
+      tags:
+      - 'Prijscomponenten'
+      description: Vervangen van een Prijscomponent
+      operationId: replacePrijscomponentById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Prijscomponent om te vervangen
+        required: true
+        schema:
+          type: string
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit Prijscomponent
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Prijscomponenten-Prijscomponent-bericht'
+      responses:
+        '200':
+          description: Prijscomponent succesvol vervangen
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: Prijscomponent met id niet gevonden
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    patch:
+      tags:
+      - 'Prijscomponenten'
+      description: Wijzigen van een Prijscomponent
+      operationId: updatePrijscomponentById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Prijscomponent om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit Prijscomponent
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Prijscomponenten-Prijscomponent-bericht'
+      responses:
+        '200':
+          description: Prijscomponent succesvol gewijzigd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: Prijscomponent met id niet gevonden
           headers:
             X-Stuurgegevens-Referentienummer:
               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
@@ -1012,16 +1447,6 @@ components:
           type: string
           format: any
           description: Het volgnummer van de overeenkomst.
-        extra-attributen:
-          description: Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn
-          type: array
-          items:
-            $ref: '#/components/schemas/ExtraAttribuut'
-        informatieobjecten:
-          description: Mogelijkheid om het bericht uit te breiden met documentatie
-          type: array
-          items:
-            $ref: '#/components/schemas/Informatieobject'
     Contactmoment-sleutels:
       type: object
       properties:
@@ -1079,96 +1504,10 @@ components:
           type: string
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-    ExtraAttribuut:
-      type: object
-      properties:
-        naam:
-          type: string
-          format: any
-          description: De naam van het niet bestaande attribuut. Bijv. Huurprognose.
-        waarde:
-          type: string
-          format: any
-          description: De waarde van het niet bestaande attribuut. Bijv. €850,-.
-    Informatieobject:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          $ref: '#/components/schemas/Referentiedata'
-          description: Specificatie van het documenttype. Bijvoorbeeld verslag, rapport etc.
-        detailSoort:
-          $ref: '#/components/schemas/Referentiedata'
-          description: Detail specificatie van het documenttype. Bijvoorbeeld notulen, adviesrapport etc.
-        onderwerp:
-          $ref: '#/components/schemas/Referentiedata'
-          description: Onderwerp van het informatieobject.
-        subonderwerp:
-          $ref: '#/components/schemas/Referentiedata'
-          description: Subonderwerp van het informatieobject.
-        titel:
-          type: string
-          format: any
-          description: Titel van het informatieobject.
-        beschrijving:
-          type: string
-          format: any
-          description: Beschrijving van het informatieobject.
-        bestand:
-          type: string
-          format: byte
-          description: De binaire representatie van het informatieobject.
-        bestandsgrootte:
-          type: integer
-          format: int32
-          description: Omvang van het bestand in bytes.
-        bestandslocatie:
-          type: string
-          format: uri
-          description: Een link (URI) naar de binaire representatie van het informatieobject.
-        bestandsnaam:
-          type: string
-          format: any
-          description: De naam van het fysieke bestand waarin de inhoud van het informatieobject is vastgelegd.
-        externePublicatie:
-          type: boolean
-          description: Aanduiding of dit informatieobject extern gepubliceerd dient te worden.
-        externePublicatietekst:
-          type: string
-          format: any
-          description: Tekstuele omschrijving ten behoeve van externe publicatie van dit informatieobject.
-        formaat:
-          $ref: '#/components/schemas/Referentiedata'
-          description: Het digitale formaat (IANA media type) van het informatieobject.
-        gebruiksrechten:
-          type: string
-          format: any
-          description: Informatie omtrent rechten die geassocieerd zijn met het informatieobject zoals intellectueel eigendom.
-        taal:
-          $ref: '#/components/schemas/Referentiedata'
-          description: De taal waarin het informatieobject is opgesteld.
-        versie:
-          type: number
-          format: float
-          description: Het versienummer van het informatieobject.
-        vertrouwelijkheid:
-          $ref: '#/components/schemas/Referentiedata'
-          description: De classificatie van het vertrouwelijkheidsniveau van het informatieobject.
+    Overeenkomsten-Overeenkomst-bericht:
+      allOf:
+        - $ref: '#/components/schemas/Overeenkomsten-Overeenkomst'
+        - $ref: '#/components/schemas/Bericht-basis'
     Overeenkomsten-Overeenkomst:
       oneOf:
         - $ref: '#/components/schemas/Overeenkomsten-Huurovereenkomst'
@@ -1300,11 +1639,201 @@ components:
         samenwerkingsverband:
           $ref: '#/components/schemas/Referentiedata'
           description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc.
+    Prijscomponenten-Prijscomponent-bericht:
+      allOf:
+        - $ref: '#/components/schemas/Prijscomponenten-Prijscomponent'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Prijscomponenten-Prijscomponent:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        naam:
+          type: string
+          format: any
+          description: De bedrijfsspecifieke naam van het prijscomponent
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: Geeft aan om welk soort prijscomponent het betreft. Bijvoorbeeld een component voor een eenheid, of een component voor een overeenkomst.
+        detailSoort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: Geeft aan om welk detail soort prijscomponent het betreft. Bijvoorbeeld of het om service kosten gaat.
+        subsidieSoort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: Geeft aan of het prijscomponent onderdeel kan zijn van een subsidieregeling. Vooralsnog alleen van toepassing op de wet op de huurtoeslag.
+        begindatum:
+          type: string
+          format: date-time
+          description: De begindatum van het prijscomponent. Dit is de datum waarop het prijscomponent van toepassing is.
+        einddatum:
+          type: string
+          format: date-time
+          description: De datum die aangeeft dat het prijscomponent niet meer van toepassing is. Er is dan een nieuwer prijscomponent van toepassing.
+        bedrag:
+          type: number
+          format: float
+          description: Het bedrag in euro's van het prijscomponent exclusief BTW.
+        bedragInclusiefBtw:
+          type: number
+          format: float
+          description: Het bedrag in euro's van het prijscomponent inclusief BTW.
+        btw:
+          $ref: '#/components/schemas/Referentiedata'
+          description: De BTW van het prijscomponent.
+        eenheid:
+          $ref: '#/components/schemas/Eenheid-sleutels'
+          description: De eenheid waaraan het prijscomponent is gekoppeld.
+        overeenkomst:
+          $ref: '#/components/schemas/Overeenkomst-sleutels'
+          description: De overeenkomst waaraan het prijscomponent.
+    Overeenkomst-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn.
+    Bericht-basis:
+      type: object
+      properties:
+        extra-attributen:
+          description: Mogelijkheid om het bericht uit te breiden met attributen die nog niet in het logisch datamodel beschikbaar zijn
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraAttribuut'
+        informatieobjecten:
+          description: Mogelijkheid om het bericht uit te breiden met documentatie
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject'
+    ExtraAttribuut:
+      type: object
+      properties:
+        naam:
+          type: string
+          format: any
+          description: De naam van het niet bestaande attribuut. Bijv. Huurprognose.
+        waarde:
+          type: string
+          format: any
+          description: De waarde van het niet bestaande attribuut. Bijv. €850,-.
+    Informatieobject:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: Specificatie van het documenttype. Bijvoorbeeld verslag, rapport etc.
+        detailSoort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: Detail specificatie van het documenttype. Bijvoorbeeld notulen, adviesrapport etc.
+        onderwerp:
+          $ref: '#/components/schemas/Referentiedata'
+          description: Onderwerp van het informatieobject.
+        subonderwerp:
+          $ref: '#/components/schemas/Referentiedata'
+          description: Subonderwerp van het informatieobject.
+        titel:
+          type: string
+          format: any
+          description: Titel van het informatieobject.
+        beschrijving:
+          type: string
+          format: any
+          description: Beschrijving van het informatieobject.
+        bestand:
+          type: string
+          format: byte
+          description: De binaire representatie van het informatieobject.
+        bestandsgrootte:
+          type: integer
+          format: int32
+          description: Omvang van het bestand in bytes.
+        bestandslocatie:
+          type: string
+          format: uri
+          description: Een link (URI) naar de binaire representatie van het informatieobject.
+        bestandsnaam:
+          type: string
+          format: any
+          description: De naam van het fysieke bestand waarin de inhoud van het informatieobject is vastgelegd.
+        externePublicatie:
+          type: boolean
+          description: Aanduiding of dit informatieobject extern gepubliceerd dient te worden.
+        externePublicatietekst:
+          type: string
+          format: any
+          description: Tekstuele omschrijving ten behoeve van externe publicatie van dit informatieobject.
+        formaat:
+          $ref: '#/components/schemas/Referentiedata'
+          description: Het digitale formaat (IANA media type) van het informatieobject.
+        gebruiksrechten:
+          type: string
+          format: any
+          description: Informatie omtrent rechten die geassocieerd zijn met het informatieobject zoals intellectueel eigendom.
+        taal:
+          $ref: '#/components/schemas/Referentiedata'
+          description: De taal waarin het informatieobject is opgesteld.
+        versie:
+          type: number
+          format: float
+          description: Het versienummer van het informatieobject.
+        vertrouwelijkheid:
+          $ref: '#/components/schemas/Referentiedata'
+          description: De classificatie van het vertrouwelijkheidsniveau van het informatieobject.
     Foutbericht:
       type: object
       properties:
         code:
           type: string
+          format: any
+          description: Foutcode
         omschrijving:
           type: string
+          format: any
+          description: Omschrijving van de fout
 
