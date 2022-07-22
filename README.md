@@ -20,8 +20,13 @@ Zie ook de toeliching hieronder.
 > :bulb: **Tip:** in Markdown worden links niet in een nieuwe pagina geopend. Als je een view opent, navigeer dan terug om weer op deze pagina te komen.
 
 ### Ketenprocessen
+|Ketenproces |Wiki pagina|
+|-----|--------|
+|[Casemanagement](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BDO.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-439fdb24-4b5d-645b-303f-c91fec03983c)||[Beheer Financiële gegevens](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BFG.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-9026c491-74a8-acea-c32a-00a765532ee0)|
+
+
 - [Casemanagement](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BDO.html)
-- [Wiki]https://cora.wikixl.nl/index.php/Id-439fdb24-4b5d-645b-303f-c91fec03983c
+- [Wiki](https://cora.wikixl.nl/index.php/Id-439fdb24-4b5d-645b-303f-c91fec03983c)
 - [Beheer Financiële gegevens](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BFG.html)
 - [Wiki]https://cora.wikixl.nl/index.php/Id-9026c491-74a8-acea-c32a-00a765532ee0
 - [Beheer Overeenkomstgegevens](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BOG.html)
