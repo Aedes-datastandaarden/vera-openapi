@@ -21,15 +21,47 @@ Zie ook de toeliching hieronder.
 
 ### Ketenprocessen
 - [Casemanagement](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BDO.html)
+- [Wiki]https://cora.wikixl.nl/index.php/Id-439fdb24-4b5d-645b-303f-c91fec03983c
 - [Beheer Financiële gegevens](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BFG.html)
+- [Wiki]https://cora.wikixl.nl/index.php/Id-9026c491-74a8-acea-c32a-00a765532ee0
 - [Beheer Overeenkomstgegevens](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BOG.html)
+- [Wiki]https://cora.wikixl.nl/index.php/Id-9026c491-74a8-acea-c32a-00a765532ee0
 - [Beheer Relatiegegevens](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BRG.html)
+- [Wiki]https://cora.wikixl.nl/index.php/Id-a30a9122-b51b-e5ea-0107-679aca55dc91
 - [Beheer Vastgoedgegevens](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/BVG.html)
+- [Wiki]https://cora.wikixl.nl/index.php/Id-782edca9-65cd-8619-9608-796b7a7acaa6
 - [Incasso](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/INC.html)
+- [Wiki]https://cora.wikixl.nl/index.php/Id-782edca9-65cd-8619-9608-796b7a7acaa6
 - [Kwaliteitsmanagement](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/KMT.html)
+- [Wiki]https://cora.wikixl.nl/index.php/Id-65dbf027-db8d-1c97-31a8-a2b93125bd51
 - [Onderhouden Eenheden](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/OHD.html)
+- [Wiki]https://cora.wikixl.nl/index.php/Id-b5f5fed0-475c-8199-a2af-befed93eb48d
 - [Verhuren Eenheden](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/VHE.html)
+- [Wiki]https://cora.wikixl.nl/index.php/Id-4a21e08f-afbf-c128-ac34-4e0b618e4fc9
 - [Woonruimteverdeling](https://vereniging-corponet.github.io/vera-openapi/Ketenprocessen/WRV.html)
+- [Wiki]https://cora.wikixl.nl/index.php/Id-b4fc946a-61bf-115b-104b-868e6daa6d05
+
+### Informatiedomeinen
+- [Algemeen](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Algemeen.html)
+- [Wiki]https://cora.wikixl.nl/index.php/Id-d4138613-f794-994f-0f7f-0b7de2fd3349
+- [Dossier](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Dossier.html)
+- [Wiki]https://cora.wikixl.nl/index.php/Id-d4138613-f794-994f-0f7f-0b7de2fd3349
+- [Financien](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Financien.html)
+- [Wiki]https://cora.wikixl.nl/index.php/Id-41fb1bd2-4b91-ea47-7dff-db574c9399e5
+- [Kwaliteit](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Kwaliteit.html)
+- [Wiki]https://cora.wikixl.nl/index.php/Id-692503e5-9a55-fd05-4fd4-a7b01bf700db
+- [Onderhoud](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Onderhoud.html)
+- [Wiki]https://cora.wikixl.nl/index.php/Id-183e19c4-6fae-3295-e6a0-3f419c3aea7c
+- [Overeenkomsten](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Overeenkomsten.html)
+- [Wiki]https://cora.wikixl.nl/index.php/Id-11081b07-fb8e-29e4-227e-3cf180cfdf64
+- [Projectontwikkeling](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Projectontwikkeling.html)
+- [Wiki]https://cora.wikixl.nl/index.php/Id-557722c5-12e2-e5db-49f9-ffae6d1003bb
+- [Relaties](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Relaties.html)
+- [Wiki]https://cora.wikixl.nl/index.php/Id-72b1bace-57ce-7032-b146-c8c79737baf3
+- [Vastgoed](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Vastgoed.html)
+- [Wiki]https://cora.wikixl.nl/index.php/Id-202f11ee-a256-58f4-c730-a824b06c4131
+- [Woonruimteverdeling](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Woonruimteverdeling.html)
+- [Wiki]https://cora.wikixl.nl/index.php/Id-ec3d5dd9-737d-411a-4bc7-a97df6951a0e
 
 ### Gebruik VERA OpenAPI - Ketenproces Onderhouden Eenheden
 Het ketenproces Onderhouden Eenheden is samen met [Ketenstandaard](www.ketenstandaard.nl) uitgewerkt en uitgebreid beschreven op de [WIKI](https://cora.wikixl.nl/index.php/Id-b5f5fed0-475c-8199-a2af-befed93eb48d) van Corponet. Dit ketenproces vormt de basis voor de berichten zoals opgenomen in de VERA OpenAPI-specificatie. Door de bundeling van kennis van beide organisaties is een proces tot stand gekomen die zowel voor de interne organisatie van de corporatie hanteerbaar is als ook in samenwerking met externe partijen zoals aannemers en onderhoudsbedrijven. 
@@ -66,7 +98,17 @@ We leveren OpenAPI-specificaties op voor zowel de Informatiedomeinen als voor de
 
 - Enumaraties: de wens is om referentiedata voor soorten van afgeleide klassen als enumeratie op te nemen (bijvoorbeeld: relatie.soort, overeenkomst.soort)
 
-- Metadata (limiet aantal entiteiten in response, verzendende organisatie, tijdstip bericht, etc.) zit niet in de 'payload' maar wordt in de header meegestuurd.
+- Metadata (limiet aantal entiteiten in response, verzendende organisatie, tijdstip bericht, etc.) zit niet in de 'payload' maar wordt in de header meegestuurd. De headers worden altijd met een prefix aangegeven namelijk met X-headernaam, bijv. 'X-Stuurgegevens-TijdstipBericht'.
+
+- Voor ophaal acties (GET operaties) op de verschillende klasses (bijv. Betalingsregeling) kunnen verschillende parameters meegestuurd worden om te kunnen sorteren op basis van het aantal (bijv. aantal betalingsregelingen) dat in het response wordt getoond. Dat kan met een parameter 'pagina' in de querystring of met de 'X-Parameters-Pagina' header. In beide gevallen kan een getal worden opgegeven om zo direct een specifieke pagina retour te krijgen. Afhankelijk van een optionele 'X-Parameters-AantalPerPagina' verschilt het aantal pagina's dat een verzoek teruggeeft. 
+
+Alle ophaal acties ondersteunen daarnaast een cursor als querystring parameter. Hiermee kan een volgende pagina opgehaald worden. Deze cursor is te onttrekken uit een eerder response op de API. In dat response zit een X-Parameters-Cursor header die gebruikt kan worden om een volgende pagina op te halen. 
+
+- In de VERA standaard en dus ook de VERA Open API is veel informatie aanwezig. Op de VERA Wiki is inzicht te vinden in deze informatie. Naast deze uitgebreide documentatie is middels onderstaande URL een Excel bestand te downloaden om eenvoudig als gebruiken te kunnen zoeken naar specifieke termen. De Excel bevat alle data over de verschillende informatiedomeinen, ketenprocessen en referentiedata. 
+
+https://github.com/vereniging-corponet/vera-openapi/blob/main/docs/brongegevens.xlsx
+
+- Voor de VERA API wordt aangesloten bij de Semantic versioning 2.0.0. Een gedetailleerde uitleg over de impact van de versies die uigebracht worden door VERA is hier te vinden: https://cora.wikixl.nl/index.php/VERA_Release_en_versiebeleid
 
 
 ## Definities
@@ -84,17 +126,8 @@ De Ketenproces-API's zijn voor (sub)systemen die een ketenproces implementeren. 
 
 ![alt text](matrix-apis.png)
 
+## Data API's
 
-### Informatiedomeinen
-- [Algemeen](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Algemeen.html)
-- [Dossier](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Dossier.html)
-- [Financien](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Financien.html)
-- [Kwaliteit](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Kwaliteit.html)
-- [Onderhoud](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Onderhoud.html)
-- [Overeenkomsten](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Overeenkomsten.html)
-- [Projectontwikkeling](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Projectontwikkeling.html)
-- [Relaties](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Relaties.html)
-- [Vastgoed](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Vastgoed.html)
-- [Woonruimteverdeling](https://vereniging-corponet.github.io/vera-openapi/Informatiedomeinen/Woonruimteverdeling.html)
+- In de VERA standaard en dus ook de VERA Open API is veel informatie (data) aanwezig. Op de VERA Wiki is inzicht te vinden in deze informatie. Naast deze uitgebreide documentatie is middels onderstaande URL een Excel bestand te downloaden om eenvoudig als gebruiken te kunnen zoeken naar specifieke termen. De Excel bevat alle data over de verschillende informatiedomeinen, ketenprocessen en referentiedata. Het bestand is de bron van de totstandkoming van alle API's. 
 
-
+https://github.com/vereniging-corponet/vera-openapi/blob/main/docs/brongegevens.xlsx
