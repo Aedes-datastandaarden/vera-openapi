@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Casemanagement
-  description: API-specificatie van ketenproces 'Casemanagement'. Deze specificatie is gebaseerd op VERA versie 4.0.12+220720.5
+  description: API-specificatie van ketenproces 'Casemanagement'. Deze specificatie is gebaseerd op VERA versie 4.0.13+220812.2
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '1.0.12+220720.5'
+  version: '1.0.13+220812.2'
 servers:
   - url: https://bdo.vera.io:{port}/{basePath}
     description: Productieserver
@@ -1448,15 +1448,17 @@ components:
           $ref: '#/components/schemas/Referentiedata'
           description: Detaillering van de fase waarin het dossier zich vanuit het perspectief van afhandeling en archivering bevindt.
         clusters:
-          description: Het dossier is gekoppeld aan/heeft betrekking op cluster(s). Bijvoorbeeld complexdossier.
+          description: Het dossier is gekoppeld aan/heeft betrekking op cluster(s). Bijvoorbeeld complexdossier. OBSOLETE
           type: array
           items:
             $ref: '#/components/schemas/Cluster-sleutels'
+            deprecated: true
         collectiefObjecten:
-          description: Het dossier is gekoppeld aan/heeft betrekking op collectief object(en).
+          description: Het dossier is gekoppeld aan/heeft betrekking op collectief object(en). OBSOLETE
           type: array
           items:
             $ref: '#/components/schemas/CollectiefObject-sleutels'
+            deprecated: true
         contactmomenten:
           description: De gegevens van de contactmomenten die in dit dossier zijn opgenomen.
           type: array
@@ -1468,33 +1470,43 @@ components:
           items:
             $ref: '#/components/schemas/Dossier-sleutels'
         eenheden:
-          description: Het dossier is gekoppeld aan/heeft betrekking op eenheid(-en). Bijvoorbeeld technisch dossier.
+          description: Het dossier is gekoppeld aan/heeft betrekking op eenheid(-en). Bijvoorbeeld technisch dossier. OBSOLETE
           type: array
           items:
             $ref: '#/components/schemas/Eenheid-sleutels'
+            deprecated: true
         inkoopfacturen:
-          description: Het dossier is gekoppeld aan/heeft betrekking op inkoopfactuur(-en). De relatie is niet gemodelleerd in het diagram conform richtlijn GT04 in verband met de leesbaarheid.
+          description: Het dossier is gekoppeld aan/heeft betrekking op inkoopfactuur(-en). De relatie is niet gemodelleerd in het diagram conform richtlijn GT04 in verband met de leesbaarheid. OBSOLETE
           type: array
           items:
             $ref: '#/components/schemas/Inkoopfactuur-sleutels'
+            deprecated: true
         inkoopopdrachten:
-          description: Het dossier is gekoppeld aan/heeft betrekking op inkoopopdracht(-en). De relatie is niet gemodelleerd in het diagram conform richtlijn GT04 in verband met de leesbaarheid.
+          description: Het dossier is gekoppeld aan/heeft betrekking op inkoopopdracht(-en). De relatie is niet gemodelleerd in het diagram conform richtlijn GT04 in verband met de leesbaarheid. OBSOLETE
           type: array
           items:
             $ref: '#/components/schemas/Inkoopopdracht-sleutels'
+            deprecated: true
+        objecten:
+          description: De gegevensobjecten die bij de zaak horen. Kan iedere klasse uit ons model zijn. Bijv. Overeenkomst, Onderhoudsverzoek etc.
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaakobject-sleutels'
         omvattendDossier:
           $ref: '#/components/schemas/Dossier-sleutels'
           description: Het dossier waarin dit dossier is opgenomen.
         onderhoudsverzoeken:
-          description: Het dossier is gekoppeld aan/heeft betrekking op een onderhoudsverzoek.
+          description: Het dossier is gekoppeld aan/heeft betrekking op een onderhoudsverzoek. OBSOLETE
           type: array
           items:
             $ref: '#/components/schemas/Onderhoudsverzoek-sleutels'
+            deprecated: true
         overeenkomsten:
-          description: Het dossier is gekoppeld aan/heeft betrekking op overeenkomst(en).
+          description: Het dossier is gekoppeld aan/heeft betrekking op overeenkomst(en). OBSOLETE
           type: array
           items:
             $ref: '#/components/schemas/Overeenkomst-sleutels'
+            deprecated: true
         processen:
           description: Het dossier is gekoppeld aan/heeft betrekking op proces(sen).
           type: array
@@ -1658,6 +1670,17 @@ components:
           type: string
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Zaakobject-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
     Onderhoudsverzoek-sleutels:
       type: object
       properties:
@@ -1737,7 +1760,7 @@ components:
           description: De aanhef of aanspreking is een (meestal vriendelijke) introducerende zin van een brief of e-mail. Het gaat doorgaans om standaardformuleringen waarmee de schrijver zich tot de geadresseerde richt.
         account:
           $ref: '#/components/schemas/Account-sleutels'
-          description: link
+          description: ''
         achternaam:
           type: string
           format: any
@@ -1748,14 +1771,14 @@ components:
           description: Het BSN (Burger Service Nummer) van de natuurlijk persoon.
         burgerlijkeStaat:
           $ref: '#/components/schemas/Referentiedata'
-          description: link
+          description: De burgerlijke staat van de natuurlijk persoon.
         geboortedatum:
           type: string
           format: date
           description: De geboortedatum van de natuurlijk persoon.
         geslacht:
           $ref: '#/components/schemas/Referentiedata'
-          description: link
+          description: Het geslacht van de natuurlijk persoon.
         inkomens:
           description: De inkomens van de natuurlijk persoon.
           type: array
@@ -1763,10 +1786,11 @@ components:
             $ref: '#/components/schemas/Inkomen-sleutels'
         nationaliteit:
           $ref: '#/components/schemas/Referentiedata'
-          description: link
+          description: De nationaliteit van de natuurlijk persoon.
         opleiding:
           $ref: '#/components/schemas/Opleiding-sleutels'
-          description: link
+          description: Het opleidingsgegeven van de natuurlijk persoon. OBSOLETE
+          deprecated: true
         overlijdensdatum:
           type: string
           format: date
@@ -2055,23 +2079,61 @@ components:
           items:
             $ref: '#/components/schemas/Overeenkomst-sleutels'
         rollen:
+          description: De rollen op basis waarvan relaties betrokken zijn bij de zaak.
           type: array
           items:
-            format: uri
-            description: 'Referentie naar Zaakrol in de vorm: {endpoint Dossier}/v4/zaakrollen/{id}'
+            $ref: '#/components/schemas/Zaakrol-sleutels'
         uiterlijkeEinddatum:
           type: string
           format: date-time
           description: De datum waarop de zaak uiterlijk dient afgehandeld te zijn.
         zaakstatussen:
+          description: De statussen die bereikt zijn gedurende de behandeling van de zaak.
           type: array
           items:
-            format: uri
-            description: 'Referentie naar Zaakstatus in de vorm: {endpoint Dossier}/v4/zaakstatussen/{id}'
+            $ref: '#/components/schemas/Zaakstatus-sleutels'
         zaaktype:
           $ref: '#/components/schemas/Zaaktype-sleutels'
           description: Zaaktype duidt de aard van de zaak aan en definieert daarmee de zaak.
     Zaak-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Zaakrol-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+    Zaakstatus-sleutels:
       type: object
       properties:
         id:
@@ -2247,15 +2309,17 @@ components:
           items:
             $ref: '#/components/schemas/Informatieobject-sleutels'
         clusters:
-          description: Het dossier is gekoppeld aan/heeft betrekking op cluster(s). Bijvoorbeeld complexdossier.
+          description: Het dossier is gekoppeld aan/heeft betrekking op cluster(s). Bijvoorbeeld complexdossier. OBSOLETE
           type: array
           items:
             $ref: '#/components/schemas/Cluster-sleutels'
+            deprecated: true
         collectiefObjecten:
-          description: Het informatieobject is gekoppeld aan/heeft betrekking op collectief object(en).
+          description: Het informatieobject is gekoppeld aan/heeft betrekking op collectief object(en). OBSOLETE
           type: array
           items:
             $ref: '#/components/schemas/CollectiefObject-sleutels'
+            deprecated: true
         contactmomenten:
           description: Het informatieobject is gekoppeld aan/heeft betrekking op proces(sen).
           type: array
@@ -2267,10 +2331,11 @@ components:
           items:
             $ref: '#/components/schemas/Dossier-sleutels'
         eenheden:
-          description: Het dossier is gekoppeld aan/heeft betrekking op eenheid(-en). Bijvoorbeeld technisch dossier.
+          description: Het dossier is gekoppeld aan/heeft betrekking op eenheid(-en). Bijvoorbeeld technisch dossier. OBSOLETE
           type: array
           items:
             $ref: '#/components/schemas/Eenheid-sleutels'
+            deprecated: true
         externePublicatie:
           type: boolean
           description: Aanduiding of dit informatieobject extern gepubliceerd dient te worden.
@@ -2286,23 +2351,31 @@ components:
           format: any
           description: Informatie omtrent rechten die geassocieerd zijn met het informatieobject zoals intellectueel eigendom.
         inkoopfacturen:
-          description: Het informatieobject is gekoppeld aan/heeft betrekking op/is verschijningsvorm van inkoopfactuur(-en). De relatie is niet gemodelleerd in het diagram conform richtlijn GT04 in verband met de leesbaarheid.
+          description: Het informatieobject is gekoppeld aan/heeft betrekking op/is verschijningsvorm van inkoopfactuur(-en). De relatie is niet gemodelleerd in het diagram conform richtlijn GT04 in verband met de leesbaarheid. OBSOLETE
           type: array
           items:
             $ref: '#/components/schemas/Inkoopfactuur-sleutels'
+            deprecated: true
         inkoopopdrachten:
-          description: Het informatieobject is gekoppeld aan/heeft betrekking op/is verschijningsvorm van inkoopopdracht(-en). De relatie is niet gemodelleerd in het diagram conform richtlijn GT04 in verband met de leesbaarheid.
+          description: Het informatieobject is gekoppeld aan/heeft betrekking op/is verschijningsvorm van inkoopopdracht(-en). De relatie is niet gemodelleerd in het diagram conform richtlijn GT04 in verband met de leesbaarheid. OBSOLETE
           type: array
           items:
             $ref: '#/components/schemas/Inkoopopdracht-sleutels'
+            deprecated: true
         isBijlageVan:
           $ref: '#/components/schemas/Informatieobject-sleutels'
           description: Geeft aan dat het informatieobject een bijlage is van een ander informatieobject.
+        objecten:
+          description: De gegevensobjecten die bij de zaak horen. Kan iedere klasse uit ons model zijn. Bijv. Overeenkomst, Onderhoudsverzoek etc. 
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaakobject-sleutels'
         onderhoudsverzoeken:
-          description: Het informatieobject is gekoppeld aan/heeft betrekking op een onderhoudsverzoek.
+          description: Het informatieobject is gekoppeld aan/heeft betrekking op een onderhoudsverzoek. OBSOLETE
           type: array
           items:
             $ref: '#/components/schemas/Onderhoudsverzoek-sleutels'
+            deprecated: true
         overeenkomsten:
           description: Het informatieobject is gekoppeld aan/heeft betrekking op/is verschijningsvorm van overeenkomst(en).
           type: array
@@ -2430,9 +2503,8 @@ components:
           format: any
           description: De aanhef of aanspreking is een (meestal vriendelijke) introducerende zin van een brief of e-mail. Het gaat doorgaans om standaardformuleringen waarmee de schrijver zich tot de geadresseerde richt.
         account:
-          type: string
-          format: uri
-          description: 'Referentie naar Account in de vorm: {endpoint Relaties}/v4/accounts/{id}'
+          $ref: '#/components/schemas/Account-sleutels'
+          description: ''
         achternaam:
           type: string
           format: any
@@ -2443,26 +2515,26 @@ components:
           description: Het BSN (Burger Service Nummer) van de natuurlijk persoon.
         burgerlijkeStaat:
           $ref: '#/components/schemas/Referentiedata'
-          description: link
+          description: De burgerlijke staat van de natuurlijk persoon.
         geboortedatum:
           type: string
           format: date
           description: De geboortedatum van de natuurlijk persoon.
         geslacht:
           $ref: '#/components/schemas/Referentiedata'
-          description: link
+          description: Het geslacht van de natuurlijk persoon.
         inkomens:
+          description: De inkomens van de natuurlijk persoon.
           type: array
           items:
-            format: uri
-            description: 'Referentie naar Inkomen in de vorm: {endpoint Relaties}/v4/inkomens/{id}'
+            $ref: '#/components/schemas/Inkomen-sleutels'
         nationaliteit:
           $ref: '#/components/schemas/Referentiedata'
-          description: link
+          description: De nationaliteit van de natuurlijk persoon.
         opleiding:
-          type: string
-          format: uri
-          description: 'Referentie naar Opleiding in de vorm: {endpoint Relaties}/v4/opleidingen/{id}'
+          $ref: '#/components/schemas/Opleiding-sleutels'
+          description: Het opleidingsgegeven van de natuurlijk persoon. OBSOLETE
+          deprecated: true
         overlijdensdatum:
           type: string
           format: date
@@ -2669,7 +2741,7 @@ components:
           items:
             $ref: '#/components/schemas/Zaken-Zaakkenmerk'
         objecten:
-          description: De gegevensobjecten die bij de zaak horen. Kan iedere klasse uit ons model zijn. Bijv. Overeenkomst, Onderhoudsverzoek etc. 
+          description: De gegevensobjecten die bij de zaak horen. Kan iedere klasse uit ons model zijn. Bijv. Overeenkomst, Onderhoudsverzoek etc.
           type: array
           items:
             $ref: '#/components/schemas/Zaken-Zaakobject'

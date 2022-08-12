@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Beheer Overeenkomstgegevens
-  description: API-specificatie van ketenproces 'Beheer Overeenkomstgegevens'. Deze specificatie is gebaseerd op VERA versie 4.0.12+220720.5
+  description: API-specificatie van ketenproces 'Beheer Overeenkomstgegevens'. Deze specificatie is gebaseerd op VERA versie 4.0.13+220812.2
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '1.0.12+220720.5'
+  version: '1.0.13+220812.2'
 servers:
   - url: https://bog.vera.io:{port}/{basePath}
     description: Productieserver
@@ -1121,12 +1121,30 @@ components:
           $ref: '#/components/schemas/Overeenkomsten-Betaalgegeven'
           description: Het betaalgegeven waarmee of waarnaar de overeenkomst wordt betaald. Dit kan bijvoorbeeld het rekeningnummer zijn van de relatie.
         incassomachtiging:
-          type: string
-          format: uri
-          description: 'Referentie naar Incassomachtiging in de vorm: {endpoint Financien}/v4/incassomachtigingen/{id}'
+          $ref: '#/components/schemas/Incassomachtiging-sleutels'
+          description: De digitale machtiging voor het uitvoeren van de incassoopdrachten. SEPA.
         incassomoment:
           $ref: '#/components/schemas/Referentiedata'
           description: Het moment waarop de incasso wordt gedaan.
+    Incassomachtiging-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
     Overeenkomsten-Huurovereenkomst:
       type: object
       allOf:
@@ -1366,6 +1384,9 @@ components:
         detailSoort:
           $ref: '#/components/schemas/Referentiedata'
           description: Het detail soort overeenkomst. Bijvoorbeeld BOG (Bedrijfs Onroerend Goed).
+        bovenliggendeOvereenkomst:
+          $ref: '#/components/schemas/Overeenkomst-sleutels'
+          description: De gerelateerde overeenkomst, bijvoorbeeld indien dit een betaalovereenkomst betreft voor een bovenliggende huurovereenkomst.
         status:
           $ref: '#/components/schemas/Referentiedata'
           description: 'De status van een huurovereenkomst. Dit kan een waarde bevatten zoals: overeenkomst beëindigd en huurder is vertrokken, of overeenkomst is momenteel in gebruik.'
@@ -1418,10 +1439,10 @@ components:
           $ref: '#/components/schemas/Referentiedata'
           description: De reden voor beëindiging van de overeenkomst.
         garanties:
+          description: De eventuele garantie die wordt gegeven door de leverancier behorende bij de overeenkomst.
           type: array
           items:
-            format: uri
-            description: 'Referentie naar Garantie in de vorm: {endpoint Vastgoed}/v4/garanties/{id}'
+            $ref: '#/components/schemas/Garantie-sleutels'
         onderhoudsverzoeken:
           description: De uitgevoerde en lopende onderhoudsverzoeken binnen de contractperiode van de overeenkomst. Onder andere een onderhoudsverzoek voor de uitvoering van de mutatiewerkzaamheden (en de inspectieorder)
           type: array
@@ -1447,6 +1468,28 @@ components:
           type: string
           format: any
           description: Het volgnummer van de overeenkomst.
+    Overeenkomst-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn.
     Contactmoment-sleutels:
       type: object
       properties:
@@ -1467,6 +1510,25 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
     Eenheid-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Garantie-sleutels:
       type: object
       properties:
         id:
@@ -1700,28 +1762,6 @@ components:
         overeenkomst:
           $ref: '#/components/schemas/Overeenkomst-sleutels'
           description: De overeenkomst waaraan het prijscomponent.
-    Overeenkomst-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          $ref: '#/components/schemas/Referentiedata'
-          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn.
     Bericht-basis:
       type: object
       properties:

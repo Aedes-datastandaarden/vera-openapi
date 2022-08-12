@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Verhuren Eenheden
-  description: API-specificatie van ketenproces 'Verhuren Eenheden'. Deze specificatie is gebaseerd op VERA versie 4.0.12+220720.5
+  description: API-specificatie van ketenproces 'Verhuren Eenheden'. Deze specificatie is gebaseerd op VERA versie 4.0.13+220812.2
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '1.0.12+220720.5'
+  version: '1.0.13+220812.2'
 servers:
   - url: https://vhe.vera.io:{port}/{basePath}
     description: Productieserver
@@ -1462,10 +1462,10 @@ components:
           $ref: '#/components/schemas/Clusters-Geometrie'
           description: De geometrie van de cluster.
         overeenkomsten:
+          description: De onderhoudsovereenkomsten die voor het cluster gelden.
           type: array
           items:
-            format: uri
-            description: 'Referentie naar Overeenkomst in de vorm: {endpoint Overeenkomsten}/v4/overeenkomsten/{id}'
+            $ref: '#/components/schemas/Overeenkomst-sleutels'
         relaties:
           description: De relaties die een speciale rol spelen voor het cluster bijvoorbeeld een Vereniging van eigenaren, een onderhoudsbedrijf, projectleider etc.
           type: array
@@ -1505,6 +1505,28 @@ components:
           type: string
           format: any
           description: De naam van de cluster.
+    Overeenkomst-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn.
     Clusters-Eenheid:
       type: object
       properties:
@@ -2160,6 +2182,9 @@ components:
         provincie:
           $ref: '#/components/schemas/Referentiedata'
           description: De provincie waar de gemeente onderdeel van is.
+        samenwerkingsverband:
+          $ref: '#/components/schemas/Referentiedata'
+          description: Het regionale samenwerkingsverband waarbinnen de gemeente deelneemt.
     Eenheden-Pand:
       type: object
       properties:
@@ -2575,28 +2600,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Huuropzeggingen-Relatie'
-    Overeenkomst-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          $ref: '#/components/schemas/Referentiedata'
-          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn.
     Onderhoudsverzoek-sleutels:
       type: object
       properties:

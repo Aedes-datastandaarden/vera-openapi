@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '4.0.12+220720.5'
+  version: '4.0.13+220812.2'
 servers:
   - url: https://financien.vera.io:{port}/{basePath}
     description: Productieserver
@@ -56,6 +56,12 @@ tags:
   description: Operaties met betrekking tot een BtwTarief
 - name: Crediteuren
   description: Operaties met betrekking tot een Crediteur
+- name: Creditfacturen
+  description: Operaties met betrekking tot een Creditfactuur
+- name: CreditfactuurRegels
+  description: Operaties met betrekking tot een CreditfactuurRegel
+- name: Debetfacturen
+  description: Operaties met betrekking tot een Debetfactuur
 - name: Debiteuren
   description: Operaties met betrekking tot een Debiteur
 - name: ExterneIncassos
@@ -64,6 +70,8 @@ tags:
   description: Operaties met betrekking tot een ExterneIncassoActie
 - name: Facturen
   description: Operaties met betrekking tot een Factuur
+- name: Factuurbetalingen
+  description: Operaties met betrekking tot een Factuurbetaling
 - name: Factuurregels
   description: Operaties met betrekking tot een Factuurregel
 - name: FinancieelBedrijven
@@ -7474,6 +7482,1305 @@ paths:
           headers:
             X-Stuurgegevens-Referentienummer:
               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+  /creditfacturen:
+    get:
+      tags:
+      - 'Creditfacturen'
+      description: Ophalen van Creditfacturen
+      operationId: listCreditfacturen
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Creditfactuur-bericht'
+      - name: cursor
+        in: query
+        schema:
+          type: string
+        description: |
+          De cursor (bijv. GUID) waarmee de volgende pagina van resultaten opgehaald kan worden.
+          Zie ook: X-Parameters-Cursor.
+        example: 241d66b1-fcdb-4266-b908-01aeec18781e
+      - name: pagina
+        in: query
+        schema:
+          type: string
+        description: |
+          De opgevraagde pagina
+        example: 21
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Parameters-PeiltijdstipMaterieel
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Parameters-PeiltijdstipMaterieel'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - name: X-Parameters-AantalPerPagina
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Parameters-AantalPerPagina'           
+      - name: X-Parameters-Pagina
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Parameters-Pagina'
+      responses:
+        '200':
+          description: Creditfactuur response
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Creditfactuur-bericht'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+                $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+            X-Stuurgegevens-Referentienummer:
+                $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+            X-Parameters-Aantal:
+                $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+                $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+                $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+                $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Creditfacturen'
+      description: Voegt een nieuw(e) Creditfactuur toe.
+      operationId: createCreditfactuur
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Creditfactuur
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Creditfactuur-bericht'
+      responses:
+        '200':
+          description: Creditfactuur succesvol toegevoegd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    put:
+      tags:
+      - 'Creditfacturen'
+      description: |
+        Vervangen van een Creditfactuur op basis van overeenkomstige sleutelvelden.
+      operationId: replaceCreditfactuur
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit Creditfactuur
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Creditfactuur-bericht'
+      responses:
+        '200':
+          description: Creditfactuur succesvol vervangen
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '400':
+          description: |
+            Fout in request.
+            Creditfactuur bevat geen sleutelveld(en).
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: Creditfactuur met gegeven sleutelveld(en) niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    patch:
+      tags:
+      - 'Creditfacturen'
+      description: |
+        Wijzigen van afzonderlijke attributen van een Creditfactuur. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateCreditfactuur
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit Creditfactuur
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Creditfactuur-bericht'
+      responses:
+        '200':
+          description: Creditfactuur succesvol gewijzigd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '400':
+          description: |
+            Fout in request.
+            Creditfactuur bevat geen sleutelveld(en).
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+           headers:
+             X-Stuurgegevens-Referentienummer:
+               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+           description: Creditfactuur met gegeven sleutelveld(en) niet gevonden
+           headers:
+             X-Stuurgegevens-Referentienummer:
+               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+  /creditfacturen/{id}:
+    get:
+      tags:
+      - 'Creditfacturen'
+      description: Retourneert een Creditfactuur met de gegeven identifier
+      operationId: readCreditfactuurById
+      parameters:
+      - name: id
+        in: path
+        description: Id van Creditfactuur om op te halen
+        required: true
+        schema:
+          type: string
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      responses:
+        '200':
+          description: Creditfactuur response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Creditfactuur-bericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: Creditfactuur met id niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    put:
+      tags:
+      - 'Creditfacturen'
+      description: Vervangen van een Creditfactuur
+      operationId: replaceCreditfactuurById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Creditfactuur om te vervangen
+        required: true
+        schema:
+          type: string
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit Creditfactuur
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Creditfactuur-bericht'
+      responses:
+        '200':
+          description: Creditfactuur succesvol vervangen
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: Creditfactuur met id niet gevonden
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    patch:
+      tags:
+      - 'Creditfacturen'
+      description: Wijzigen van een Creditfactuur
+      operationId: updateCreditfactuurById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Creditfactuur om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit Creditfactuur
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Creditfactuur-bericht'
+      responses:
+        '200':
+          description: Creditfactuur succesvol gewijzigd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: Creditfactuur met id niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+  /creditfactuur-regels:
+    get:
+      tags:
+      - 'CreditfactuurRegels'
+      description: Ophalen van CreditfactuurRegels
+      operationId: listCreditfactuurRegels
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/CreditfactuurRegel-bericht'
+      - name: cursor
+        in: query
+        schema:
+          type: string
+        description: |
+          De cursor (bijv. GUID) waarmee de volgende pagina van resultaten opgehaald kan worden.
+          Zie ook: X-Parameters-Cursor.
+        example: 241d66b1-fcdb-4266-b908-01aeec18781e
+      - name: pagina
+        in: query
+        schema:
+          type: string
+        description: |
+          De opgevraagde pagina
+        example: 21
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Parameters-PeiltijdstipMaterieel
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Parameters-PeiltijdstipMaterieel'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - name: X-Parameters-AantalPerPagina
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Parameters-AantalPerPagina'           
+      - name: X-Parameters-Pagina
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Parameters-Pagina'
+      responses:
+        '200':
+          description: CreditfactuurRegel response
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CreditfactuurRegel-bericht'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+                $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+            X-Stuurgegevens-Referentienummer:
+                $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+            X-Parameters-Aantal:
+                $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+                $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+                $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+                $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'CreditfactuurRegels'
+      description: Voegt een nieuw(e) CreditfactuurRegel toe.
+      operationId: createCreditfactuurRegel
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: CreditfactuurRegel
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreditfactuurRegel-bericht'
+      responses:
+        '200':
+          description: CreditfactuurRegel succesvol toegevoegd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    put:
+      tags:
+      - 'CreditfactuurRegels'
+      description: |
+        Vervangen van een CreditfactuurRegel op basis van overeenkomstige sleutelvelden.
+      operationId: replaceCreditfactuurRegel
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit CreditfactuurRegel
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreditfactuurRegel-bericht'
+      responses:
+        '200':
+          description: CreditfactuurRegel succesvol vervangen
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '400':
+          description: |
+            Fout in request.
+            CreditfactuurRegel bevat geen sleutelveld(en).
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: CreditfactuurRegel met gegeven sleutelveld(en) niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    patch:
+      tags:
+      - 'CreditfactuurRegels'
+      description: |
+        Wijzigen van afzonderlijke attributen van een CreditfactuurRegel. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateCreditfactuurRegel
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit CreditfactuurRegel
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreditfactuurRegel-bericht'
+      responses:
+        '200':
+          description: CreditfactuurRegel succesvol gewijzigd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '400':
+          description: |
+            Fout in request.
+            CreditfactuurRegel bevat geen sleutelveld(en).
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+           headers:
+             X-Stuurgegevens-Referentienummer:
+               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+           description: CreditfactuurRegel met gegeven sleutelveld(en) niet gevonden
+           headers:
+             X-Stuurgegevens-Referentienummer:
+               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+  /creditfactuur-regels/{id}:
+    get:
+      tags:
+      - 'CreditfactuurRegels'
+      description: Retourneert een CreditfactuurRegel met de gegeven identifier
+      operationId: readCreditfactuurRegelById
+      parameters:
+      - name: id
+        in: path
+        description: Id van CreditfactuurRegel om op te halen
+        required: true
+        schema:
+          type: string
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      responses:
+        '200':
+          description: CreditfactuurRegel response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditfactuurRegel-bericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: CreditfactuurRegel met id niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    put:
+      tags:
+      - 'CreditfactuurRegels'
+      description: Vervangen van een CreditfactuurRegel
+      operationId: replaceCreditfactuurRegelById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van CreditfactuurRegel om te vervangen
+        required: true
+        schema:
+          type: string
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit CreditfactuurRegel
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreditfactuurRegel-bericht'
+      responses:
+        '200':
+          description: CreditfactuurRegel succesvol vervangen
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: CreditfactuurRegel met id niet gevonden
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    patch:
+      tags:
+      - 'CreditfactuurRegels'
+      description: Wijzigen van een CreditfactuurRegel
+      operationId: updateCreditfactuurRegelById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van CreditfactuurRegel om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit CreditfactuurRegel
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreditfactuurRegel-bericht'
+      responses:
+        '200':
+          description: CreditfactuurRegel succesvol gewijzigd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: CreditfactuurRegel met id niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+  /debetfacturen:
+    get:
+      tags:
+      - 'Debetfacturen'
+      description: Ophalen van Debetfacturen
+      operationId: listDebetfacturen
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Debetfactuur-bericht'
+      - name: cursor
+        in: query
+        schema:
+          type: string
+        description: |
+          De cursor (bijv. GUID) waarmee de volgende pagina van resultaten opgehaald kan worden.
+          Zie ook: X-Parameters-Cursor.
+        example: 241d66b1-fcdb-4266-b908-01aeec18781e
+      - name: pagina
+        in: query
+        schema:
+          type: string
+        description: |
+          De opgevraagde pagina
+        example: 21
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Parameters-PeiltijdstipMaterieel
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Parameters-PeiltijdstipMaterieel'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - name: X-Parameters-AantalPerPagina
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Parameters-AantalPerPagina'           
+      - name: X-Parameters-Pagina
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Parameters-Pagina'
+      responses:
+        '200':
+          description: Debetfactuur response
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Debetfactuur-bericht'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+                $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+            X-Stuurgegevens-Referentienummer:
+                $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+            X-Parameters-Aantal:
+                $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+                $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+                $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+                $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Debetfacturen'
+      description: Voegt een nieuw(e) Debetfactuur toe.
+      operationId: createDebetfactuur
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Debetfactuur
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Debetfactuur-bericht'
+      responses:
+        '200':
+          description: Debetfactuur succesvol toegevoegd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    put:
+      tags:
+      - 'Debetfacturen'
+      description: |
+        Vervangen van een Debetfactuur op basis van overeenkomstige sleutelvelden.
+      operationId: replaceDebetfactuur
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit Debetfactuur
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Debetfactuur-bericht'
+      responses:
+        '200':
+          description: Debetfactuur succesvol vervangen
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '400':
+          description: |
+            Fout in request.
+            Debetfactuur bevat geen sleutelveld(en).
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: Debetfactuur met gegeven sleutelveld(en) niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    patch:
+      tags:
+      - 'Debetfacturen'
+      description: |
+        Wijzigen van afzonderlijke attributen van een Debetfactuur. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateDebetfactuur
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit Debetfactuur
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Debetfactuur-bericht'
+      responses:
+        '200':
+          description: Debetfactuur succesvol gewijzigd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '400':
+          description: |
+            Fout in request.
+            Debetfactuur bevat geen sleutelveld(en).
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+           headers:
+             X-Stuurgegevens-Referentienummer:
+               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+           description: Debetfactuur met gegeven sleutelveld(en) niet gevonden
+           headers:
+             X-Stuurgegevens-Referentienummer:
+               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+  /debetfacturen/{id}:
+    get:
+      tags:
+      - 'Debetfacturen'
+      description: Retourneert een Debetfactuur met de gegeven identifier
+      operationId: readDebetfactuurById
+      parameters:
+      - name: id
+        in: path
+        description: Id van Debetfactuur om op te halen
+        required: true
+        schema:
+          type: string
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      responses:
+        '200':
+          description: Debetfactuur response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Debetfactuur-bericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: Debetfactuur met id niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    put:
+      tags:
+      - 'Debetfacturen'
+      description: Vervangen van een Debetfactuur
+      operationId: replaceDebetfactuurById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Debetfactuur om te vervangen
+        required: true
+        schema:
+          type: string
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit Debetfactuur
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Debetfactuur-bericht'
+      responses:
+        '200':
+          description: Debetfactuur succesvol vervangen
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: Debetfactuur met id niet gevonden
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    patch:
+      tags:
+      - 'Debetfacturen'
+      description: Wijzigen van een Debetfactuur
+      operationId: updateDebetfactuurById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Debetfactuur om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit Debetfactuur
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Debetfactuur-bericht'
+      responses:
+        '200':
+          description: Debetfactuur succesvol gewijzigd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: Debetfactuur met id niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
   /debiteuren:
     get:
       tags:
@@ -9194,6 +10501,439 @@ paths:
               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Factuur met id niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+  /factuurbetalingen:
+    get:
+      tags:
+      - 'Factuurbetalingen'
+      description: Ophalen van Factuurbetalingen
+      operationId: listFactuurbetalingen
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Factuurbetaling-bericht'
+      - name: cursor
+        in: query
+        schema:
+          type: string
+        description: |
+          De cursor (bijv. GUID) waarmee de volgende pagina van resultaten opgehaald kan worden.
+          Zie ook: X-Parameters-Cursor.
+        example: 241d66b1-fcdb-4266-b908-01aeec18781e
+      - name: pagina
+        in: query
+        schema:
+          type: string
+        description: |
+          De opgevraagde pagina
+        example: 21
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Parameters-PeiltijdstipMaterieel
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Parameters-PeiltijdstipMaterieel'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - name: X-Parameters-AantalPerPagina
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Parameters-AantalPerPagina'           
+      - name: X-Parameters-Pagina
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Parameters-Pagina'
+      responses:
+        '200':
+          description: Factuurbetaling response
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Factuurbetaling-bericht'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+                $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+            X-Stuurgegevens-Referentienummer:
+                $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+            X-Parameters-Aantal:
+                $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+                $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+                $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+                $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Factuurbetalingen'
+      description: Voegt een nieuw(e) Factuurbetaling toe.
+      operationId: createFactuurbetaling
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Factuurbetaling
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Factuurbetaling-bericht'
+      responses:
+        '200':
+          description: Factuurbetaling succesvol toegevoegd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    put:
+      tags:
+      - 'Factuurbetalingen'
+      description: |
+        Vervangen van een Factuurbetaling op basis van overeenkomstige sleutelvelden.
+      operationId: replaceFactuurbetaling
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit Factuurbetaling
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Factuurbetaling-bericht'
+      responses:
+        '200':
+          description: Factuurbetaling succesvol vervangen
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '400':
+          description: |
+            Fout in request.
+            Factuurbetaling bevat geen sleutelveld(en).
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: Factuurbetaling met gegeven sleutelveld(en) niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    patch:
+      tags:
+      - 'Factuurbetalingen'
+      description: |
+        Wijzigen van afzonderlijke attributen van een Factuurbetaling. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateFactuurbetaling
+      parameters:
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit Factuurbetaling
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Factuurbetaling-bericht'
+      responses:
+        '200':
+          description: Factuurbetaling succesvol gewijzigd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '400':
+          description: |
+            Fout in request.
+            Factuurbetaling bevat geen sleutelveld(en).
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+           headers:
+             X-Stuurgegevens-Referentienummer:
+               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+           description: Factuurbetaling met gegeven sleutelveld(en) niet gevonden
+           headers:
+             X-Stuurgegevens-Referentienummer:
+               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+  /factuurbetalingen/{id}:
+    get:
+      tags:
+      - 'Factuurbetalingen'
+      description: Retourneert een Factuurbetaling met de gegeven identifier
+      operationId: readFactuurbetalingById
+      parameters:
+      - name: id
+        in: path
+        description: Id van Factuurbetaling om op te halen
+        required: true
+        schema:
+          type: string
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      responses:
+        '200':
+          description: Factuurbetaling response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Factuurbetaling-bericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: Factuurbetaling met id niet gevonden
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    put:
+      tags:
+      - 'Factuurbetalingen'
+      description: Vervangen van een Factuurbetaling
+      operationId: replaceFactuurbetalingById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Factuurbetaling om te vervangen
+        required: true
+        schema:
+          type: string
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit Factuurbetaling
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Factuurbetaling-bericht'
+      responses:
+        '200':
+          description: Factuurbetaling succesvol vervangen
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: Factuurbetaling met id niet gevonden
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+          headers:
+            X-Stuurgegevens-TijdstipBericht:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+    patch:
+      tags:
+      - 'Factuurbetalingen'
+      description: Wijzigen van een Factuurbetaling
+      operationId: updateFactuurbetalingById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Factuurbetaling om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - name: X-Stuurgegevens-Zender-Organisatie
+        in: header
+        schema:
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
+      - name: X-Stuurgegevens-Zender-Administratie
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
+      - name: X-Stuurgegevens-TijdstipBericht
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
+      - name: X-Stuurgegevens-Referentienummer
+        in: header
+        schema:    
+          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      requestBody:
+        description: Entiteit Factuurbetaling
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Factuurbetaling-bericht'
+      responses:
+        '200':
+          description: Factuurbetaling succesvol gewijzigd
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+          headers:
+            X-Stuurgegevens-Referentienummer:
+              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+        '404':
+          description: Factuurbetaling met id niet gevonden
           headers:
             X-Stuurgegevens-Referentienummer:
               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
@@ -16981,16 +18721,22 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Boeking'
+        factuurbetaling:
+          description: De inkoopfactuurbetalingen behorende bij deze bankafschriftregel.
+          type: array
+          items:
+            $ref: '#/components/schemas/Factuurbetaling'
         incassoOpdrachten:
           description: Incasso opdrachten waar de bankafschriftregel aan gekoppeld is.
           type: array
           items:
             $ref: '#/components/schemas/IncassoOpdracht'
         inkoopfactuurBetaling:
-          description: De inkoopfactuurbetalingen behorende bij deze bankafschriftregel.
+          description: De inkoopfactuurbetalingen behorende bij deze bankafschriftregel. OBSOLETE
           type: array
           items:
             $ref: '#/components/schemas/InkoopfactuurBetaling'
+            deprecated: true
         rekening:
           type: string
           format: uri
@@ -17105,16 +18851,22 @@ components:
           type: number
           format: float
           description: Totaal bedrag opdracht.
+        factuurbetaling:
+          description: De inkoopfactuurbetalingen behorende bij de betaalopdracht.
+          type: array
+          items:
+            $ref: '#/components/schemas/Factuurbetaling'
         grootboekmutaties:
           description: De grootboekmutaties behorende bij de betaalopdracht.
           type: array
           items:
             $ref: '#/components/schemas/Grootboekmutatie'
         inkoopfactuurBetaling:
-          description: De inkoopfactuurbetalingen behorende bij de betaalopdracht.
+          description: De inkoopfactuurbetalingen behorende bij de betaalopdracht. OBSOLETE
           type: array
           items:
             $ref: '#/components/schemas/InkoopfactuurBetaling'
+            deprecated: true
         postenAantal:
           type: integer
           format: int32
@@ -17123,11 +18875,11 @@ components:
           type: string
           format: uri
           description: 'Referentie naar Relatie in de vorm: {endpoint Relaties}/vera/v4/relaties/{id}'
-    Grootboekmutatie-bericht:
+    Factuurbetaling-bericht:
       allOf:
-        - $ref: '#/components/schemas/Grootboekmutatie'
+        - $ref: '#/components/schemas/Factuurbetaling'
         - $ref: '#/components/schemas/Bericht-basis'
-    Grootboekmutatie:
+    Factuurbetaling:
       type: object
       properties:
         id:
@@ -17150,263 +18902,50 @@ components:
           type: string
           format: any
           description: De omschrijving van het gegeven.
-        boekdatum:
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: Status van de betaling, bijvoorbeeld betaald of te verwerken.
+        datum:
           type: string
           format: date
-          description: De datum waarmee de mutatie in de boekhouding wordt ingeboekt.
-        betaalopdrachten:
-          description: De betaalopdracht behorende bij de grootboekmutatie.
-          type: array
-          items:
-            $ref: '#/components/schemas/Betaalopdracht'
-        boekingdetails:
-          description: De boekingdetails behorende bij de grootboekmutatie.
-          type: array
-          items:
-            $ref: '#/components/schemas/Boekingdetail'
-        boekingen:
-          description: De boekingen behorende bij de grootboekmutatie.
-          type: array
-          items:
-            $ref: '#/components/schemas/Boeking'
-        boekjaarPeriodesaldo:
-          $ref: '#/components/schemas/BoekjaarPeriodesaldo'
-          description: Het saldo van de periode waarop deze grootboekmutatie betrekking heeft.
-        boekstuknummer:
-          type: integer
-          format: int32
-          description: Nummer van het boekstuk waarin deze mutatie is ontstaan.
-        boekstuknummerCode:
-          type: string
-          format: any
-          description: Tijdelijke constructie om boekstuknummers door te geven die geen nummers zijn. In volgende major versie wordt dit opgeheven en veranderd attribuut boekstuknummer naar string.
-        boekstukregel:
-          type: integer
-          format: int32
-          description: Het regelnummer binnen het boekstuk waarin deze mutatie is ontstaan.
-        btwBedrag:
-          type: number
-          format: float
-          description: Btw-bedrag op de mutatie.
-        btwTarieven:
-          description: Btw-tarief dat op de mutatie van toepassing is, bijvoorbeeld;hoog, laag, geen, nul. 
-          type: array
-          items:
-            $ref: '#/components/schemas/BtwTarief'
-        creditbedrag:
-          type: number
-          format: float
-          description: Bedrag credit.
-        debetbedrag:
-          type: number
-          format: float
-          description: Bedrag debet.
-        grootboekrekening:
-          $ref: '#/components/schemas/Grootboekrekening'
-          description: De grootboekrekening waarop de mutatie wordt geboekt.
-        herkomst:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'Geeft de herkomst van de grootboekmutatie aan: memo, subadministratie etc.'
-        incassoOpdrachten:
-          description: De incasso opdrachten behorende bij de grootboekmutatie.
-          type: array
-          items:
-            $ref: '#/components/schemas/IncassoOpdracht'
-        inkoopfacturen:
-          description: De inkoopfacturen behorende bij de grootboekmutatie.
-          type: array
-          items:
-            $ref: '#/components/schemas/Inkoopfactuur'
-        inkoopfactuurBetalingen:
-          description: De inkoopfactuurbetalingen behorende bij de grootboekmutatie.
-          type: array
-          items:
-            $ref: '#/components/schemas/InkoopfactuurBetaling'
-        inkoopfactuurRegels:
-          description: De inkoopfactuurregels behorende bij de grootboekmutatie.
-          type: array
-          items:
-            $ref: '#/components/schemas/InkoopfactuurRegel'
-        inkoopopdrachten:
-          description: De inkoopopdrachten behorende bij de grootboekmutatie.
-          type: array
-          items:
-            $ref: '#/components/schemas/Inkoopopdracht'
-        inkoopopdrachtregels:
-          description: De inkoopopdrachtregels behorende bij de grootboekmutatie.
-          type: array
-          items:
-            $ref: '#/components/schemas/InkoopopdrachtRegel'
-        volgnummer:
-          type: integer
-          format: int32
-          description: Volgnummer van de grootboekmutatie.
-    Boekingdetail-bericht:
-      allOf:
-        - $ref: '#/components/schemas/Boekingdetail'
-        - $ref: '#/components/schemas/Bericht-basis'
-    Boekingdetail:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        omschrijving:
-          type: string
-          format: any
-          description: Omschrijving van het gegeven.
-        aantal:
-          type: integer
-          format: int32
-          description: Aantal
+          description: Datum van de betaling.
+        bankafschriftRegel:
+          $ref: '#/components/schemas/BankafschriftRegel'
+          description: De bankafschriftregel waarop deze factuurbetaling is vermeld.
         bedrag:
           type: number
           format: float
-          description: Bedrag
-        boeking:
-          $ref: '#/components/schemas/Boeking'
-          description: De boeking waartoe dit gegeven behoort.
-        btwAangiftebedrag:
-          type: number
-          format: float
-          description: Bedrag btw op deze regel
-        btwTarief:
-          $ref: '#/components/schemas/BtwTarief'
-          description: Het btw tarief van dit boekingdetail (hoog, laag, geen of nul)
+          description: Bedrag van de betaling.
+        betaalkenmerk:
+          type: string
+          format: any
+          description: Betalingskenmerk.
+        betaalopdracht:
+          $ref: '#/components/schemas/Betaalopdracht'
+          description: De betaalopdracht van deze factuurbetaling.
+        factuur:
+          $ref: '#/components/schemas/Factuur'
+          description: De factuur van deze factuurbetaling.
         grootboekmutatie:
           $ref: '#/components/schemas/Grootboekmutatie'
-          description: De grootboekmutatie behorende bij het boekingdetail.
-        grootboekrekening:
-          $ref: '#/components/schemas/Grootboekrekening'
-          description: Het rekeningnummer
-        meeteenheid:
-          $ref: '#/components/schemas/Referentiedata'
-          description: De meeteenheid waarmee de detaillering van de factuur wordt aangeduid. Bijvoorbeeld stuks, vierkante meters, etc.
-        prijsPerMeeteenheid:
+          description: De grootboekmutatie behorende bij de factuurbetaling.
+        kortingsbedrag:
           type: number
           format: float
-          description: Bedrag
-        verbijzondering:
-          $ref: '#/components/schemas/Verbijzondering'
-          description: Verbijzondering van de boekingdetail
-    BtwTarief-bericht:
-      allOf:
-        - $ref: '#/components/schemas/BtwTarief'
-        - $ref: '#/components/schemas/Bericht-basis'
-    BtwTarief:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        omschrijving:
-          type: string
-          format: any
-          description: Omschrijving van het tarief, bijvoorbeeld;hoog, laag, geen, nul. 
-        begindatum:
-          type: string
-          format: date
-          description: Datum waarop het tarief voorhet type ingaat.
-        einddatum:
-          type: string
-          format: date
-          description: Datum waarop het tarief voorhet type eindigt.
-        boekingdetails:
-          description: De btw tarieven van de boekingdetails.
-          type: array
-          items:
-            $ref: '#/components/schemas/Boekingdetail'
-        grootboekmutaties:
-          description: De btw tarieven van de grootboekmutaties.
-          type: array
-          items:
-            $ref: '#/components/schemas/Grootboekmutatie'
-        inkoopfactuurregels:
-          description: De btw tarieven van de inkoopfactuurregels.
-          type: array
-          items:
-            $ref: '#/components/schemas/InkoopfactuurRegel'
-        percentage:
-          type: number
-          format: float
-          description: Het btw percentage van het tarief.
-    InkoopfactuurRegel-bericht:
-      allOf:
-        - $ref: '#/components/schemas/InkoopfactuurRegel'
-        - $ref: '#/components/schemas/Bericht-basis'
-    InkoopfactuurRegel:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/Factuurregel-basis'
-      properties:
-        inkoopfactuur:
-          $ref: '#/components/schemas/Inkoopfactuur'
-          description: De inkoopfactuur van deze inkoopfactuurregel.
-        inkoopopdrachtregels:
-          description: De inkoopopdrachtregels waar deze inkoopfactuurregel aan gekoppeld is
-          type: array
-          items:
-            $ref: '#/components/schemas/InkoopopdrachtRegel'
-    Inkoopfactuur-bericht:
-      allOf:
-        - $ref: '#/components/schemas/Inkoopfactuur'
-        - $ref: '#/components/schemas/Bericht-basis'
-    Inkoopfactuur:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/Factuur-basis'
-      properties:
-        crediteur:
-          $ref: '#/components/schemas/Crediteur'
-          description: De crediteur van deze inkoopfactuur.
-        grootboekmutaties:
-          description: De grootboekmutaties behorende bij deze inkoopfactuur.
-          type: array
-          items:
-            $ref: '#/components/schemas/Grootboekmutatie'
-        inkoopfactuurBetaling:
-          description: De betalingen behorende bij de inkoop.
-          type: array
-          items:
-            $ref: '#/components/schemas/InkoopfactuurBetaling'
-        inkoopopdracht:
-          $ref: '#/components/schemas/Inkoopopdracht'
-          description: De inkoopopdracht waaraan deze factuur gekoppeld is.
+          description: Genomen korting.
         rekening:
           type: string
           format: uri
           description: 'Referentie naar Betaalgegeven in de vorm: {endpoint Relaties}/vera/v4/betaalgegevens/{id}'
-    Crediteur-bericht:
-      allOf:
-        - $ref: '#/components/schemas/Crediteur'
-        - $ref: '#/components/schemas/Bericht-basis'
-    Crediteur:
+        rekeningBetaling:
+          type: string
+          format: uri
+          description: 'Referentie naar Betaalgegeven in de vorm: {endpoint Relaties}/vera/v4/betaalgegevens/{id}'
+        volgnummerInBetaalopdracht:
+          type: integer
+          format: int32
+          description: Het volgnummer van de betaling binnen de betaalopdracht.
+    Factuur-basis:
       type: object
       properties:
         id:
@@ -17427,82 +18966,178 @@ components:
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
           $ref: '#/components/schemas/Referentiedata'
-          description: 'Soort crediteur: aannemer, architect, etc.'
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: Status van de crediteur, bijvoorbeeld;geblokkeerd, alleen voor betalen, etc. 
-        bedrijf:
-          $ref: '#/components/schemas/FinancieelBedrijf'
-          description: Het bedrijf van deze crediteur.
-        betaaldagen:
-          type: integer
-          format: int32
-          description: Aantal dagen waarbinnen normaliter een factuur moet worden betaald door de crediteur.
-        betalingsconditie:
-          type: integer
-          format: int32
-          description: Betalingsconditie, bijvoorbeeld 1 dag, 14 dagen, 30 dagen
-        btwVerlegd:
-          type: boolean
-          description: Is de btw verlegd ja/nee.
-        externDebiteurnummer:
+          description: 'Soort van de factuur: Debet of Credit.'
+        omschrijving:
           type: string
           format: any
-          description: Nummer waaronder de debiteur geregistreerd is bij de crediteur.
-        gRekening:
+          description: De omschrijving van het gegeven.
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: De status van de factuur. Bijv. Goedgekeurd, Geblokkeerd, Betaald etc.
+        ontvangstdatum:
           type: string
-          format: uri
-          description: 'Referentie naar Betaalgegeven in de vorm: {endpoint Relaties}/vera/v4/betaalgegevens/{id}'
-        gRekeningPercentage:
+          format: date
+          description: Datum waarop de factuur is ontvangen.
+        boekdatum:
+          type: string
+          format: date
+          description: Datum waarmee de mutatie in de boekhouding wordt ingeboekt.
+        factuurdatum:
+          type: string
+          format: date
+          description: Factuurdatum van de factuur.
+        plandatum:
+          type: string
+          format: date
+          description: Geplande datum voor betaling van de factuur.
+        vervaldatum:
+          type: string
+          format: date
+          description: De datum waarop de factuur uiterlijk betaald dient te zijn.
+        bedrag:
           type: number
           format: float
-          description: Het standaard percentage van het factuurbedrag dat op de G rekening moet worden betaald.
-        inkoopfacturen:
-          description: De inkoopfacturen van de crediteur.
+          description: Bedrag van de factuur.
+        betalingAkkoord:
+          type: boolean
+          description: Gefiatteerd voor betaling.
+        betalingskenmerk:
+          type: string
+          format: any
+          description: Betalingskenmerk van de factuur.
+        btwAangifte:
+          $ref: '#/components/schemas/BtwAangifte'
+          description: De btw aangifte behorend bij deze factuur
+        btwBedrag:
+          type: number
+          format: float
+          description: Totale btw bedrag op de factuur.
+        btwGeenGrondslagbedrag:
+          type: number
+          format: float
+          description: Bedrag van de opdracht waarover geen btw zal worden berekend.
+        btwHoogAangiftebedrag:
+          type: number
+          format: float
+          description: Bedrag btw hoog voor op aangifte btw.
+        btwHoogGrondslagbedrag:
+          type: number
+          format: float
+          description: Bedrag van de opdracht waarover hoog btw zal worden berekend.
+        btwLaagAangiftebedrag:
+          type: number
+          format: float
+          description: Bedrag btw laag voor op aangifte btw.
+        btwLaagGrondslagbedrag:
+          type: number
+          format: float
+          description: Bedrag van de opdracht waarover laag btw zal worden berekend.
+        btwNulGrondslagbedrag:
+          type: number
+          format: float
+          description: Bedrag van de opdracht waarover nul procent btw zal worden berekend.
+        btwTerugTeVorderen:
+          type: boolean
+          description: btw terug te vorderen ja/nee.
+        btwVerlegd:
+          type: boolean
+          description: btw verlegd ja/nee.
+        externFactuurnummer:
+          type: string
+          format: any
+          description: Extern factuurnummer van de factuur.
+        factuurGeblokkeerd:
+          type: boolean
+          description: Geblokkeerd ja/nee.
+        factuurregels:
+          description: De factuurregels behorende bij deze factuur.
           type: array
           items:
-            $ref: '#/components/schemas/Inkoopfactuur'
-        inkoopopdrachten:
-          description: De inkoopopdrachten van de crediteur.
+            $ref: '#/components/schemas/Factuurregel'
+        gRekeningbedrag:
+          type: number
+          format: float
+          description: Bedrag G rekening.
+        grootboekmutaties:
+          description: De grootboekmutaties behorende bij deze factuur.
           type: array
           items:
-            $ref: '#/components/schemas/Inkoopopdracht'
-        kortingdagen:
-          type: integer
-          format: int32
-          description: Aantal dagen waarbinnen normaliter de korting van de factuur mag worden genomen.
-        rekeningen:
-          type: array
-          items:
-            format: uri
-            description: 'Referentie naar Betaalgegeven in de vorm: {endpoint Relaties}/vera/v4/betaalgegevens/{id}'
+            $ref: '#/components/schemas/Grootboekmutatie'
+        korting:
+          $ref: '#/components/schemas/Prijsaanpassing'
+          description: Korting die wordt gegeven op het factuurregelbedrag
+        openstaandBedrag:
+          type: number
+          format: float
+          description: Bedrag dat nog openstaat op de factuur.
         relatie:
           type: string
           format: uri
           description: 'Referentie naar Relatie in de vorm: {endpoint Relaties}/vera/v4/relaties/{id}'
-        saldo:
-          type: number
-          format: float
-          description: Openstaand actueel saldo.
-        wkaBegindatum:
+        toeslag:
+          $ref: '#/components/schemas/Prijsaanpassing'
+          description: Toeslag die in rekening wordt gebracht op het factuurregelbedrag
+    BtwAangifte-bericht:
+      allOf:
+        - $ref: '#/components/schemas/BtwAangifte'
+        - $ref: '#/components/schemas/Bericht-basis'
+    BtwAangifte:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        omschrijving:
+          type: string
+          format: any
+          description: De omschrijving van het gegeven.
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: Status van de btw aangifte, bijvoorbeeld Voorlopig, In Behandeling.
+        datum:
           type: string
           format: date
-          description: De startdatum van de WKA afgifte.
-        wkaDatumBelastingdienst:
+          description: Datum aangifte.
+        begindatum:
           type: string
           format: date
-          description: Datum verklaring belastingsdienst WKA.
-        wkaDatumUitvoerendeInstantie:
+          description: Datum vanaf de btw op de aangifte wordt opgenomen.
+        einddatum:
           type: string
           format: date
-          description: Datum verklaring uitvoerende instantie WKA.
-        wkaEinddatum:
-          type: string
-          format: date
-          description: De einddatum van de WKA afgifte.
-        wkaRegeling:
-          type: boolean
-          description: Geeft aan of de crediteur onder de WKA regeling valt.
+          description: Datum tot en met de btw op de aangifte wordt opgenomen.
+        bedrijf:
+          $ref: '#/components/schemas/FinancieelBedrijf'
+          description: Het bedrijf van de btw aangifte.
+        boekingen:
+          description: De boekingen van de btw aangifte.
+          type: array
+          items:
+            $ref: '#/components/schemas/Boeking'
+        facturen:
+          description: De creditfacturen van de btw aangifte.
+          type: array
+          items:
+            $ref: '#/components/schemas/Factuur'
+        inkoopfacturen:
+          description: De inkoopfacturen van de btw aangifte. OBSOLETE
+          type: array
+          items:
+            $ref: '#/components/schemas/Inkoopfactuur'
+            deprecated: true
     FinancieelBedrijf-bericht:
       allOf:
         - $ref: '#/components/schemas/FinancieelBedrijf'
@@ -17809,6 +19444,257 @@ components:
           type: string
           format: any
           description: De verwijzing naar de code in het referentiegrootboekschema.
+    Boekingdetail-bericht:
+      allOf:
+        - $ref: '#/components/schemas/Boekingdetail'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Boekingdetail:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        omschrijving:
+          type: string
+          format: any
+          description: Omschrijving van het gegeven.
+        aantal:
+          type: integer
+          format: int32
+          description: Aantal
+        bedrag:
+          type: number
+          format: float
+          description: Bedrag
+        boeking:
+          $ref: '#/components/schemas/Boeking'
+          description: De boeking waartoe dit gegeven behoort.
+        btwAangiftebedrag:
+          type: number
+          format: float
+          description: Bedrag btw op deze regel
+        btwTarief:
+          $ref: '#/components/schemas/BtwTarief'
+          description: Het btw tarief van dit boekingdetail (hoog, laag, geen of nul)
+        grootboekmutatie:
+          $ref: '#/components/schemas/Grootboekmutatie'
+          description: De grootboekmutatie behorende bij het boekingdetail.
+        grootboekrekening:
+          $ref: '#/components/schemas/Grootboekrekening'
+          description: Het rekeningnummer
+        meeteenheid:
+          $ref: '#/components/schemas/Referentiedata'
+          description: De meeteenheid waarmee de detaillering van de factuur wordt aangeduid. Bijvoorbeeld stuks, vierkante meters, etc.
+        prijsPerMeeteenheid:
+          type: number
+          format: float
+          description: Bedrag
+        verbijzondering:
+          $ref: '#/components/schemas/Verbijzondering'
+          description: Verbijzondering van de boekingdetail
+    BtwTarief-bericht:
+      allOf:
+        - $ref: '#/components/schemas/BtwTarief'
+        - $ref: '#/components/schemas/Bericht-basis'
+    BtwTarief:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        omschrijving:
+          type: string
+          format: any
+          description: Omschrijving van het tarief, bijvoorbeeld;hoog, laag, geen, nul. 
+        begindatum:
+          type: string
+          format: date
+          description: Datum waarop het tarief voorhet type ingaat.
+        einddatum:
+          type: string
+          format: date
+          description: Datum waarop het tarief voorhet type eindigt.
+        boekingdetails:
+          description: De btw tarieven van de boekingdetails.
+          type: array
+          items:
+            $ref: '#/components/schemas/Boekingdetail'
+        grootboekmutaties:
+          description: De btw tarieven van de grootboekmutaties.
+          type: array
+          items:
+            $ref: '#/components/schemas/Grootboekmutatie'
+        inkoopfactuurregels:
+          description: De btw tarieven van de inkoopfactuurregels.
+          type: array
+          items:
+            $ref: '#/components/schemas/InkoopfactuurRegel'
+        percentage:
+          type: number
+          format: float
+          description: Het btw percentage van het tarief.
+    Grootboekmutatie-bericht:
+      allOf:
+        - $ref: '#/components/schemas/Grootboekmutatie'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Grootboekmutatie:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        omschrijving:
+          type: string
+          format: any
+          description: De omschrijving van het gegeven.
+        boekdatum:
+          type: string
+          format: date
+          description: De datum waarmee de mutatie in de boekhouding wordt ingeboekt.
+        betaalopdrachten:
+          description: De betaalopdracht behorende bij de grootboekmutatie.
+          type: array
+          items:
+            $ref: '#/components/schemas/Betaalopdracht'
+        boekingdetails:
+          description: De boekingdetails behorende bij de grootboekmutatie.
+          type: array
+          items:
+            $ref: '#/components/schemas/Boekingdetail'
+        boekingen:
+          description: De boekingen behorende bij de grootboekmutatie.
+          type: array
+          items:
+            $ref: '#/components/schemas/Boeking'
+        boekjaarPeriodesaldo:
+          $ref: '#/components/schemas/BoekjaarPeriodesaldo'
+          description: Het saldo van de periode waarop deze grootboekmutatie betrekking heeft.
+        boekstuknummer:
+          type: integer
+          format: int32
+          description: Nummer van het boekstuk waarin deze mutatie is ontstaan.
+        boekstuknummerCode:
+          type: string
+          format: any
+          description: Tijdelijke constructie om boekstuknummers door te geven die geen nummers zijn. In volgende major versie wordt dit opgeheven en veranderd attribuut boekstuknummer naar string.
+        boekstukregel:
+          type: integer
+          format: int32
+          description: Het regelnummer binnen het boekstuk waarin deze mutatie is ontstaan.
+        btwBedrag:
+          type: number
+          format: float
+          description: Btw-bedrag op de mutatie.
+        btwTarieven:
+          description: Btw-tarief dat op de mutatie van toepassing is, bijvoorbeeld;hoog, laag, geen, nul. 
+          type: array
+          items:
+            $ref: '#/components/schemas/BtwTarief'
+        creditbedrag:
+          type: number
+          format: float
+          description: Bedrag credit.
+        debetbedrag:
+          type: number
+          format: float
+          description: Bedrag debet.
+        facturen:
+          description: De creditfacturen behorende bij de grootboekmutatie.
+          type: array
+          items:
+            $ref: '#/components/schemas/Factuur'
+        factuurbetalingen:
+          description: De factuurbetalingen behorende bij de grootboekmutatie.
+          type: array
+          items:
+            $ref: '#/components/schemas/Factuurbetaling'
+        factuurregels:
+          description: De factuurregels behorende bij de grootboekmutatie.
+          type: array
+          items:
+            $ref: '#/components/schemas/Factuurregel'
+        grootboekrekening:
+          $ref: '#/components/schemas/Grootboekrekening'
+          description: De grootboekrekening waarop de mutatie wordt geboekt.
+        herkomst:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Geeft de herkomst van de grootboekmutatie aan: memo, subadministratie etc.'
+        incassoOpdrachten:
+          description: De incasso opdrachten behorende bij de grootboekmutatie.
+          type: array
+          items:
+            $ref: '#/components/schemas/IncassoOpdracht'
+        inkoopfacturen:
+          description: De inkoopfacturen behorende bij de grootboekmutatie. OBSOLETE
+          type: array
+          items:
+            $ref: '#/components/schemas/Inkoopfactuur'
+            deprecated: true
+        inkoopfactuurBetalingen:
+          description: De inkoopfactuurbetalingen behorende bij de grootboekmutatie. OBSOLETE
+          type: array
+          items:
+            $ref: '#/components/schemas/InkoopfactuurBetaling'
+            deprecated: true
+        inkoopfactuurRegels:
+          description: De inkoopfactuurregels behorende bij de grootboekmutatie. OBSOLETE
+          type: array
+          items:
+            $ref: '#/components/schemas/InkoopfactuurRegel'
+            deprecated: true
+        inkoopopdrachten:
+          description: De inkoopopdrachten behorende bij de grootboekmutatie.
+          type: array
+          items:
+            $ref: '#/components/schemas/Inkoopopdracht'
+        inkoopopdrachtregels:
+          description: De inkoopopdrachtregels behorende bij de grootboekmutatie.
+          type: array
+          items:
+            $ref: '#/components/schemas/InkoopopdrachtRegel'
+        volgnummer:
+          type: integer
+          format: int32
+          description: Volgnummer van de grootboekmutatie.
     BoekjaarPeriodesaldo-bericht:
       allOf:
         - $ref: '#/components/schemas/BoekjaarPeriodesaldo'
@@ -17934,6 +19820,429 @@ components:
         viaSubBoekenToestaan:
           type: boolean
           description: Boeking via sub toegestaan ja/nee.
+    InkoopfactuurRegel-bericht:
+      allOf:
+        - $ref: '#/components/schemas/InkoopfactuurRegel'
+        - $ref: '#/components/schemas/Bericht-basis'
+    InkoopfactuurRegel:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        omschrijving:
+          type: string
+          format: any
+          description: De omschrijving van het gegeven.
+        bedrag:
+          type: number
+          format: float
+          description: Bedrag.
+        btwAangiftebedrag:
+          type: number
+          format: float
+          description: Aangiftebedrag btw op deze regel.
+        btwTarief:
+          $ref: '#/components/schemas/BtwTarief'
+          description: Btw-tarief dat op de mutatie van toepassing is, bijvoorbeeld;hoog, laag, geen of nul. 
+        grootboekmutaties:
+          description: De grootboekmutaties behorende bij de factuurregel.
+          type: array
+          items:
+            $ref: '#/components/schemas/Grootboekmutatie'
+        grootboekrekening:
+          $ref: '#/components/schemas/Grootboekrekening'
+          description: Het rekeningnummer.
+        inkoopfactuur:
+          $ref: '#/components/schemas/Inkoopfactuur'
+          description: De inkoopfactuur van deze inkoopfactuurregel.
+        inkoopopdrachtregels:
+          description: De inkoopopdrachtregels waar deze inkoopfactuurregel aan gekoppeld is
+          type: array
+          items:
+            $ref: '#/components/schemas/InkoopopdrachtRegel'
+        korting:
+          $ref: '#/components/schemas/Prijsaanpassing'
+          description: Korting die wordt gegeven op het factuurbedrag.
+        toeslag:
+          $ref: '#/components/schemas/Prijsaanpassing'
+          description: Toeslag die in rekening wordt gebracht op het factuurbedrag.
+        verbijzonderingen:
+          description: Verbijzondering van de grootboekboeking.
+          type: array
+          items:
+            $ref: '#/components/schemas/Verbijzondering'
+    Inkoopfactuur-bericht:
+      allOf:
+        - $ref: '#/components/schemas/Inkoopfactuur'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Inkoopfactuur:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Soort van de factuur: Debet of Credit.'
+        omschrijving:
+          type: string
+          format: any
+          description: De omschrijving van het gegeven.
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: De status van de inkoopfactuur. Bijv. Goedgekeurd, Geblokkeerd, Betaald etc.
+        ontvangstdatum:
+          type: string
+          format: date
+          description: Datum waarop de inkoopfactuur is ontvangen.
+        boekdatum:
+          type: string
+          format: date
+          description: Datum waarmee de mutatie in de boekhouding wordt ingeboekt.
+        factuurdatum:
+          type: string
+          format: date
+          description: Factuurdatum van de inkoopfactuur.
+        plandatum:
+          type: string
+          format: date
+          description: Geplande datum voor betaling van de inkoopfactuur.
+        vervaldatum:
+          type: string
+          format: date
+          description: De datum waarop de factuur uiterlijk betaald dient te zijn.
+        bedrag:
+          type: number
+          format: float
+          description: Bedrag van de inkoopfactuur.
+        betalingAkkoord:
+          type: boolean
+          description: Gefiatteerd voor betaling.
+        betalingskenmerk:
+          type: string
+          format: any
+          description: Betalingskenmerk van de inkoopfactuur.
+        btwAangifte:
+          $ref: '#/components/schemas/BtwAangifte'
+          description: De btw aangifte behorend bij deze factuur
+        btwBedrag:
+          type: number
+          format: float
+          description: Totale btw bedrag op de inkoopfactuur.
+        btwGeenGrondslagbedrag:
+          type: number
+          format: float
+          description: Bedrag van de opdracht waarover geen btw zal worden berekend.
+        btwHoogAangiftebedrag:
+          type: number
+          format: float
+          description: Bedrag btw hoog voor op aangifte btw.
+        btwHoogGrondslagbedrag:
+          type: number
+          format: float
+          description: Bedrag van de opdracht waarover hoog btw zal worden berekend.
+        btwLaagAangiftebedrag:
+          type: number
+          format: float
+          description: Bedrag btw laag voor op aangifte btw.
+        btwLaagGrondslagbedrag:
+          type: number
+          format: float
+          description: Bedrag van de opdracht waarover laag btw zal worden berekend.
+        btwNulGrondslagbedrag:
+          type: number
+          format: float
+          description: Bedrag van de opdracht waarover nul procent btw zal worden berekend.
+        btwTerugTeVorderen:
+          type: boolean
+          description: btw terug te vorderen ja/nee.
+        btwVerlegd:
+          type: boolean
+          description: btw verlegd ja/nee.
+        crediteur:
+          $ref: '#/components/schemas/Crediteur'
+          description: De crediteur van deze inkoopfactuur.
+        externFactuurnummer:
+          type: string
+          format: any
+          description: Extern factuurnummer van de inkoopfactuur.
+        factuurGeblokkeerd:
+          type: boolean
+          description: Geblokkeerd ja/nee.
+        gRekeningbedrag:
+          type: number
+          format: float
+          description: Bedrag G rekening.
+        grootboekmutaties:
+          description: De grootboekmutaties behorende bij deze inkoopfactuur.
+          type: array
+          items:
+            $ref: '#/components/schemas/Grootboekmutatie'
+        inkoopfactuurBetaling:
+          description: De betalingen behorende bij de inkoop.
+          type: array
+          items:
+            $ref: '#/components/schemas/InkoopfactuurBetaling'
+        inkoopfactuurregels:
+          description: De inkoopfactuurregels behorende bij deze inkoopfactuur.
+          type: array
+          items:
+            $ref: '#/components/schemas/InkoopfactuurRegel'
+        inkoopopdracht:
+          $ref: '#/components/schemas/Inkoopopdracht'
+          description: De inkoopopdracht waaraan deze factuur gekoppeld is.
+        korting:
+          $ref: '#/components/schemas/Prijsaanpassing'
+          description: Korting die wordt gegeven op het factuurregelbedrag
+        openstaandBedrag:
+          type: number
+          format: float
+          description: Bedrag dat nog openstaat op de inkoopfactuur.
+        rekening:
+          type: string
+          format: uri
+          description: 'Referentie naar Betaalgegeven in de vorm: {endpoint Relaties}/vera/v4/betaalgegevens/{id}'
+        relatie:
+          type: string
+          format: uri
+          description: 'Referentie naar Relatie in de vorm: {endpoint Relaties}/vera/v4/relaties/{id}'
+        toeslag:
+          $ref: '#/components/schemas/Prijsaanpassing'
+          description: Toeslag die in rekening wordt gebracht op het factuurregelbedrag
+    Crediteur-bericht:
+      allOf:
+        - $ref: '#/components/schemas/Crediteur'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Crediteur:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Soort crediteur: aannemer, architect, etc.'
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: Status van de crediteur, bijvoorbeeld;geblokkeerd, alleen voor betalen, etc. 
+        bedrijf:
+          $ref: '#/components/schemas/FinancieelBedrijf'
+          description: Het bedrijf van deze crediteur.
+        betaaldagen:
+          type: integer
+          format: int32
+          description: Aantal dagen waarbinnen normaliter een factuur moet worden betaald door de crediteur.
+        betalingsconditie:
+          type: integer
+          format: int32
+          description: Betalingsconditie, bijvoorbeeld 1 dag, 14 dagen, 30 dagen
+        btwVerlegd:
+          type: boolean
+          description: Is de btw verlegd ja/nee.
+        externDebiteurnummer:
+          type: string
+          format: any
+          description: Nummer waaronder de debiteur geregistreerd is bij de crediteur.
+        facturen:
+          description: De creditfacturen van de crediteur.
+          type: array
+          items:
+            $ref: '#/components/schemas/Factuur'
+        gRekening:
+          type: string
+          format: uri
+          description: 'Referentie naar Betaalgegeven in de vorm: {endpoint Relaties}/vera/v4/betaalgegevens/{id}'
+        gRekeningPercentage:
+          type: number
+          format: float
+          description: Het standaard percentage van het factuurbedrag dat op de G rekening moet worden betaald.
+        inkoopfacturen:
+          description: De inkoopfacturen van de crediteur. OBSOLETE
+          type: array
+          items:
+            $ref: '#/components/schemas/Inkoopfactuur'
+            deprecated: true
+        inkoopopdrachten:
+          description: De inkoopopdrachten van de crediteur.
+          type: array
+          items:
+            $ref: '#/components/schemas/Inkoopopdracht'
+        kortingdagen:
+          type: integer
+          format: int32
+          description: Aantal dagen waarbinnen normaliter de korting van de factuur mag worden genomen.
+        rekeningen:
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Betaalgegeven in de vorm: {endpoint Relaties}/vera/v4/betaalgegevens/{id}'
+        relatie:
+          type: string
+          format: uri
+          description: 'Referentie naar Relatie in de vorm: {endpoint Relaties}/vera/v4/relaties/{id}'
+        saldo:
+          type: number
+          format: float
+          description: Openstaand actueel saldo.
+        wkaBegindatum:
+          type: string
+          format: date
+          description: De startdatum van de WKA afgifte.
+        wkaDatumBelastingdienst:
+          type: string
+          format: date
+          description: Datum verklaring belastingsdienst WKA.
+        wkaDatumUitvoerendeInstantie:
+          type: string
+          format: date
+          description: Datum verklaring uitvoerende instantie WKA.
+        wkaEinddatum:
+          type: string
+          format: date
+          description: De einddatum van de WKA afgifte.
+        wkaRegeling:
+          type: boolean
+          description: Geeft aan of de crediteur onder de WKA regeling valt.
+    Factuur-bericht:
+      allOf:
+        - $ref: '#/components/schemas/Factuur'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Factuur:
+      oneOf:
+        - $ref: '#/components/schemas/Creditfactuur'
+        - $ref: '#/components/schemas/Debetfactuur'
+        - $ref: '#/components/schemas/Factuur-basis'
+    Inkoopopdracht-bericht:
+      allOf:
+        - $ref: '#/components/schemas/Inkoopopdracht'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Inkoopopdracht:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        omschrijving:
+          type: string
+          format: any
+          description: De omschrijving van het gegeven.
+        status:
+          $ref: '#/components/schemas/Referentiedata'
+          description: De status van de inkoopopdracht.
+        opdrachtdatum:
+          type: string
+          format: date
+          description: De datum waarop de opdracht is verstrekt.
+        boekdatum:
+          type: string
+          format: date
+          description: De datum waarmee de mutatie in de boekhouding wordt ingeboekt.
+        btwGeenGrondslagbedrag:
+          type: number
+          format: float
+          description: Bedrag van de opdracht waarover geen btw zal worden berekend.
+        btwHoogGrondslagbedrag:
+          type: number
+          format: float
+          description: Bedrag van de opdracht waarover hoog btw zal worden berekend.
+        btwLaagGrondslagbedrag:
+          type: number
+          format: float
+          description: Bedrag van de opdracht waarover laag btw zal worden berekend.
+        btwNulGrondslagbedrag:
+          type: number
+          format: float
+          description: Bedrag van de opdracht waarover nul procent btw zal worden berekend.
+        crediteur:
+          $ref: '#/components/schemas/Crediteur'
+          description: De crediteur van deze inkoopopdracht.
+        facturen:
+          description: De creditfacturen behorende bij deze inkoopopdracht.
+          type: array
+          items:
+            $ref: '#/components/schemas/Factuur'
+        grootboekmutaties:
+          description: De grootboekmutaties behorende bij deze inkoopopdracht.
+          type: array
+          items:
+            $ref: '#/components/schemas/Grootboekmutatie'
+        inkoopfacturen:
+          description: De inkoopfacturen behorende bij deze inkoopopdracht. OBSOLETE
+          type: array
+          items:
+            $ref: '#/components/schemas/Inkoopfactuur'
+            deprecated: true
+        inkoopodrachtregels:
+          description: De inkoopopdrachtregels behorende bij deze inkoopopdracht.
+          type: array
+          items:
+            $ref: '#/components/schemas/InkoopopdrachtRegel'
+        onderhoudsorder:
+          type: string
+          format: uri
+          description: 'Referentie naar Onderhoudsorder in de vorm: {endpoint Onderhoud}/vera/v4/onderhoudsorders/{id}'
+        projectorders:
+          type: array
+          items:
+            format: uri
+            description: 'Referentie naar Projectorder in de vorm: {endpoint Projectontwikkeling}/vera/v4/projectorders/{id}'
+        relatie:
+          type: string
+          format: uri
+          description: 'Referentie naar Relatie in de vorm: {endpoint Relaties}/vera/v4/relaties/{id}'
     InkoopopdrachtRegel-bericht:
       allOf:
         - $ref: '#/components/schemas/InkoopopdrachtRegel'
@@ -17999,11 +20308,11 @@ components:
           type: string
           format: uri
           description: 'Referentie naar Onderhoudstaak in de vorm: {endpoint Onderhoud}/vera/v4/onderhoudstaken/{id}'
-    Inkoopopdracht-bericht:
+    InkoopfactuurBetaling-bericht:
       allOf:
-        - $ref: '#/components/schemas/Inkoopopdracht'
+        - $ref: '#/components/schemas/InkoopfactuurBetaling'
         - $ref: '#/components/schemas/Bericht-basis'
-    Inkoopopdracht:
+    InkoopfactuurBetaling:
       type: object
       properties:
         id:
@@ -18028,117 +20337,218 @@ components:
           description: De omschrijving van het gegeven.
         status:
           $ref: '#/components/schemas/Referentiedata'
-          description: De status van de inkoopopdracht.
-        opdrachtdatum:
+          description: Status van de betaling, bijvoorbeeld betaald of te verwerken.
+        datum:
           type: string
           format: date
-          description: De datum waarop de opdracht is verstrekt.
-        boekdatum:
+          description: Datum van de betaling.
+        bankafschriftRegel:
+          $ref: '#/components/schemas/BankafschriftRegel'
+          description: De bankafschriftregel waarop deze inkoopfactuurbetaling is vermeld.
+        bedrag:
+          type: number
+          format: float
+          description: Bedrag van de betaling.
+        betaalkenmerk:
           type: string
-          format: date
-          description: De datum waarmee de mutatie in de boekhouding wordt ingeboekt.
-        btwGeenGrondslagbedrag:
+          format: any
+          description: Betalingskenmerk.
+        betaalopdracht:
+          $ref: '#/components/schemas/Betaalopdracht'
+          description: De betaalopdracht van deze inkoopfactuurbetaling.
+        grootboekmutatie:
+          $ref: '#/components/schemas/Grootboekmutatie'
+          description: De grootboekmutatie behorende bij de inkoopfactuurbetaling.
+        inkoopfactuur:
+          $ref: '#/components/schemas/Inkoopfactuur'
+          description: De inkoopfactuur van deze inkoopfactuurbetaling.
+        kortingsbedrag:
           type: number
           format: float
-          description: Bedrag van de opdracht waarover geen btw zal worden berekend.
-        btwHoogGrondslagbedrag:
+          description: Genomen korting.
+        rekening:
+          type: string
+          format: uri
+          description: 'Referentie naar Betaalgegeven in de vorm: {endpoint Relaties}/vera/v4/betaalgegevens/{id}'
+        rekeningBetaling:
+          type: string
+          format: uri
+          description: 'Referentie naar Betaalgegeven in de vorm: {endpoint Relaties}/vera/v4/betaalgegevens/{id}'
+        volgnummerInBetaalopdracht:
+          type: integer
+          format: int32
+          description: Het volgnummer van de betaling binnen de betaalopdracht.
+    Prijsaanpassing-bericht:
+      allOf:
+        - $ref: '#/components/schemas/Prijsaanpassing'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Prijsaanpassing:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort prijsaanpassing: Korting of toeslag'
+        omschrijving:
+          type: string
+          format: any
+          description: Tekstveld met een omschrijving of nadere specificatie van het soort toeslag of korting.
+        bedrag:
           type: number
           format: float
-          description: Bedrag van de opdracht waarover hoog btw zal worden berekend.
-        btwLaagGrondslagbedrag:
+          description: Het bedrag dat extra in rekening wordt gebracht, of de korting die wordt gegeven, op het factuur(regel)bedrag.
+        percentage:
           type: number
           format: float
-          description: Bedrag van de opdracht waarover laag btw zal worden berekend.
-        btwNulGrondslagbedrag:
+          description: Getal waarmee de hoogte van de toeslag of korting wordt gespecificeerd in procenten van het totale regelbedrag of de totale regelhoeveelheid. Dit gegeven wordt alleen ter informatie meegegeven.
+    Factuurregel-basis:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        omschrijving:
+          type: string
+          format: any
+          description: De omschrijving van het gegeven.
+        bedrag:
           type: number
           format: float
-          description: Bedrag van de opdracht waarover nul procent btw zal worden berekend.
-        crediteur:
-          $ref: '#/components/schemas/Crediteur'
-          description: De crediteur van deze inkoopopdracht.
+          description: Bedrag.
+        btwAangiftebedrag:
+          type: number
+          format: float
+          description: Aangiftebedrag btw op deze regel.
+        btwTarief:
+          $ref: '#/components/schemas/BtwTarief'
+          description: Btw-tarief dat op de mutatie van toepassing is, bijvoorbeeld;hoog, laag, geen of nul. 
         grootboekmutaties:
-          description: De grootboekmutaties behorende bij deze inkoopopdracht.
+          description: De grootboekmutaties behorende bij de factuurregel.
           type: array
           items:
             $ref: '#/components/schemas/Grootboekmutatie'
-        inkoopfacturen:
-          description: De inkoopfacturen behorende bij deze inkoopopdracht.
+        grootboekrekening:
+          $ref: '#/components/schemas/Grootboekrekening'
+          description: Het rekeningnummer.
+        korting:
+          $ref: '#/components/schemas/Prijsaanpassing'
+          description: Korting die wordt gegeven op het factuurbedrag.
+        toeslag:
+          $ref: '#/components/schemas/Prijsaanpassing'
+          description: Toeslag die in rekening wordt gebracht op het factuurbedrag.
+        verbijzonderingen:
+          description: Verbijzondering van de grootboekboeking.
           type: array
           items:
-            $ref: '#/components/schemas/Inkoopfactuur'
-        inkoopodrachtregels:
-          description: De inkoopopdrachtregels behorende bij deze inkoopopdracht.
+            $ref: '#/components/schemas/Verbijzondering'
+    Factuurregel-bericht:
+      allOf:
+        - $ref: '#/components/schemas/Factuurregel'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Factuurregel:
+      oneOf:
+        - $ref: '#/components/schemas/CreditfactuurRegel'
+        - $ref: '#/components/schemas/Factuurregel-basis'
+    IncassoOpdracht-bericht:
+      allOf:
+        - $ref: '#/components/schemas/IncassoOpdracht'
+        - $ref: '#/components/schemas/Bericht-basis'
+    IncassoOpdracht:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        omschrijving:
+          type: string
+          format: any
+          description: Omschrijving van het gegeven.
+        aanmaakdatum:
+          type: string
+          format: date
+          description: Aanmaakdatum van de opdracht
+        fiatdatum:
+          type: string
+          format: date
+          description: Datum gefiatteerd voor verzenden
+        plandatum:
+          type: string
+          format: date
+          description: Plandatum van afschrijven
+        bankafschriftRegels:
+          description: De bankafschrift regels behorende bij de incasso opdracht
           type: array
           items:
-            $ref: '#/components/schemas/InkoopopdrachtRegel'
-        onderhoudsorder:
+            $ref: '#/components/schemas/BankafschriftRegel'
+        bedrag:
+          type: number
+          format: float
+          description: Totaalbedrag te ontvangen in deze opdracht.
+        boekingen:
+          description: De boekingen behorende bij de incasso opdracht
+          type: array
+          items:
+            $ref: '#/components/schemas/Boeking'
+        grootboekmutatie:
+          $ref: '#/components/schemas/Grootboekmutatie'
+          description: De grootboekmutatie behorende bij de incasso opdracht
+        postenAantal:
+          type: integer
+          format: int32
+          description: Aantal posten in deze opdracht
+        rekening:
           type: string
           format: uri
-          description: 'Referentie naar Onderhoudsorder in de vorm: {endpoint Onderhoud}/vera/v4/onderhoudsorders/{id}'
-        projectorders:
-          type: array
-          items:
-            format: uri
-            description: 'Referentie naar Projectorder in de vorm: {endpoint Projectontwikkeling}/vera/v4/projectorders/{id}'
+          description: 'Referentie naar Betaalgegeven in de vorm: {endpoint Relaties}/vera/v4/betaalgegevens/{id}'
         relatie:
           type: string
           format: uri
           description: 'Referentie naar Relatie in de vorm: {endpoint Relaties}/vera/v4/relaties/{id}'
-    BtwAangifte-bericht:
-      allOf:
-        - $ref: '#/components/schemas/BtwAangifte'
-        - $ref: '#/components/schemas/Bericht-basis'
-    BtwAangifte:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        omschrijving:
-          type: string
-          format: any
-          description: De omschrijving van het gegeven.
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: Status van de btw aangifte, bijvoorbeeld Voorlopig, In Behandeling.
-        datum:
-          type: string
-          format: date
-          description: Datum aangifte.
-        begindatum:
-          type: string
-          format: date
-          description: Datum vanaf de btw op de aangifte wordt opgenomen.
-        einddatum:
-          type: string
-          format: date
-          description: Datum tot en met de btw op de aangifte wordt opgenomen.
-        bedrijf:
-          $ref: '#/components/schemas/FinancieelBedrijf'
-          description: Het bedrijf van de btw aangifte.
-        boekingen:
-          description: De boekingen van de btw aangifte.
-          type: array
-          items:
-            $ref: '#/components/schemas/Boeking'
-        inkoopfacturen:
-          description: De inkoopfacturen van de btw aangifte.
-          type: array
-          items:
-            $ref: '#/components/schemas/Inkoopfactuur'
+        saldo:
+          type: number
+          format: float
+          description: Het (nog) niet ontvangen bedrag in deze opdracht.
     FinancieelBedrijf-sleutels:
       type: object
       properties:
@@ -18270,148 +20680,6 @@ components:
           type: string
           format: uri
           description: 'Referentie naar Betaalgegeven in de vorm: {endpoint Relaties}/vera/v4/betaalgegevens/{id}'
-    InkoopfactuurBetaling-bericht:
-      allOf:
-        - $ref: '#/components/schemas/InkoopfactuurBetaling'
-        - $ref: '#/components/schemas/Bericht-basis'
-    InkoopfactuurBetaling:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        omschrijving:
-          type: string
-          format: any
-          description: De omschrijving van het gegeven.
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: Status van de betaling, bijvoorbeeld betaald of te verwerken.
-        datum:
-          type: string
-          format: date
-          description: Datum van de betaling.
-        bankafschriftRegel:
-          $ref: '#/components/schemas/BankafschriftRegel'
-          description: De bankafschriftregel waarop deze inkoopfactuurbetaling is vermeld.
-        bedrag:
-          type: number
-          format: float
-          description: Bedrag van de betaling.
-        betaalkenmerk:
-          type: string
-          format: any
-          description: Betalingskenmerk.
-        betaalopdracht:
-          $ref: '#/components/schemas/Betaalopdracht'
-          description: De betaalopdracht van deze inkoopfactuurbetaling.
-        grootboekmutatie:
-          $ref: '#/components/schemas/Grootboekmutatie'
-          description: De grootboekmutatie behorende bij de inkoopfactuurbetaling.
-        inkoopfactuur:
-          $ref: '#/components/schemas/Inkoopfactuur'
-          description: De inkoopfactuur van deze inkoopfactuurbetaling.
-        kortingsbedrag:
-          type: number
-          format: float
-          description: Genomen korting.
-        rekening:
-          type: string
-          format: uri
-          description: 'Referentie naar Betaalgegeven in de vorm: {endpoint Relaties}/vera/v4/betaalgegevens/{id}'
-        rekeningBetaling:
-          type: string
-          format: uri
-          description: 'Referentie naar Betaalgegeven in de vorm: {endpoint Relaties}/vera/v4/betaalgegevens/{id}'
-        volgnummerInBetaalopdracht:
-          type: integer
-          format: int32
-          description: Het volgnummer van de betaling binnen de betaalopdracht.
-    IncassoOpdracht-bericht:
-      allOf:
-        - $ref: '#/components/schemas/IncassoOpdracht'
-        - $ref: '#/components/schemas/Bericht-basis'
-    IncassoOpdracht:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        omschrijving:
-          type: string
-          format: any
-          description: Omschrijving van het gegeven.
-        aanmaakdatum:
-          type: string
-          format: date
-          description: Aanmaakdatum van de opdracht
-        fiatdatum:
-          type: string
-          format: date
-          description: Datum gefiatteerd voor verzenden
-        plandatum:
-          type: string
-          format: date
-          description: Plandatum van afschrijven
-        bankafschriftRegels:
-          description: De bankafschrift regels behorende bij de incasso opdracht
-          type: array
-          items:
-            $ref: '#/components/schemas/BankafschriftRegel'
-        bedrag:
-          type: number
-          format: float
-          description: Totaalbedrag te ontvangen in deze opdracht.
-        boekingen:
-          description: De boekingen behorende bij de incasso opdracht
-          type: array
-          items:
-            $ref: '#/components/schemas/Boeking'
-        grootboekmutatie:
-          $ref: '#/components/schemas/Grootboekmutatie'
-          description: De grootboekmutatie behorende bij de incasso opdracht
-        postenAantal:
-          type: integer
-          format: int32
-          description: Aantal posten in deze opdracht
-        rekening:
-          type: string
-          format: uri
-          description: 'Referentie naar Betaalgegeven in de vorm: {endpoint Relaties}/vera/v4/betaalgegevens/{id}'
-        relatie:
-          type: string
-          format: uri
-          description: 'Referentie naar Relatie in de vorm: {endpoint Relaties}/vera/v4/relaties/{id}'
-        saldo:
-          type: number
-          format: float
-          description: Het (nog) niet ontvangen bedrag in deze opdracht.
     Betalingsregeling-bericht:
       allOf:
         - $ref: '#/components/schemas/Betalingsregeling'
@@ -18717,240 +20985,71 @@ components:
         incassomoment:
           $ref: '#/components/schemas/Referentiedata'
           description: Het moment waarop de incasso wordt gedaan.
-    Factuur-basis:
+    Creditfactuur-bericht:
+      allOf:
+        - $ref: '#/components/schemas/Creditfactuur'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Creditfactuur:
       type: object
+      allOf:
+        - $ref: '#/components/schemas/Factuur-basis'
       properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'Soort van de factuur: Debet of Credit.'
-        omschrijving:
-          type: string
-          format: any
-          description: De omschrijving van het gegeven.
-        status:
-          $ref: '#/components/schemas/Referentiedata'
-          description: De status van de inkoopfactuur. Bijv. Goedgekeurd, Geblokkeerd, Betaald etc.
         ontvangstdatum:
           type: string
           format: date
-          description: Datum waarop de inkoopfactuur is ontvangen.
-        boekdatum:
-          type: string
-          format: date
-          description: Datum waarmee de mutatie in de boekhouding wordt ingeboekt.
-        factuurdatum:
-          type: string
-          format: date
-          description: Factuurdatum van de inkoopfactuur.
-        plandatum:
-          type: string
-          format: date
-          description: Geplande datum voor betaling van de inkoopfactuur.
-        vervaldatum:
-          type: string
-          format: date
-          description: De datum waarop de factuur uiterlijk betaald dient te zijn.
-        bedrag:
-          type: number
-          format: float
-          description: Bedrag van de inkoopfactuur.
-        betalingAkkoord:
-          type: boolean
-          description: Gefiatteerd voor betaling.
-        betalingskenmerk:
-          type: string
-          format: any
-          description: Betalingskenmerk van de inkoopfactuur.
-        btwAangifte:
-          $ref: '#/components/schemas/BtwAangifte'
-          description: De btw aangifte behorend bij deze factuur
-        btwBedrag:
-          type: number
-          format: float
-          description: Totale btw bedrag op de inkoopfactuur.
-        btwGeenGrondslagbedrag:
-          type: number
-          format: float
-          description: Bedrag van de opdracht waarover geen btw zal worden berekend.
-        btwHoogAangiftebedrag:
-          type: number
-          format: float
-          description: Bedrag btw hoog voor op aangifte btw.
-        btwHoogGrondslagbedrag:
-          type: number
-          format: float
-          description: Bedrag van de opdracht waarover hoog btw zal worden berekend.
-        btwLaagAangiftebedrag:
-          type: number
-          format: float
-          description: Bedrag btw laag voor op aangifte btw.
-        btwLaagGrondslagbedrag:
-          type: number
-          format: float
-          description: Bedrag van de opdracht waarover laag btw zal worden berekend.
-        btwNulGrondslagbedrag:
-          type: number
-          format: float
-          description: Bedrag van de opdracht waarover nul procent btw zal worden berekend.
-        btwTerugTeVorderen:
-          type: boolean
-          description: btw terug te vorderen ja/nee.
-        btwVerlegd:
-          type: boolean
-          description: btw verlegd ja/nee.
-        externFactuurnummer:
-          type: string
-          format: any
-          description: Extern factuurnummer van de inkoopfactuur.
-        factuurGeblokkeerd:
-          type: boolean
-          description: Geblokkeerd ja/nee.
-        factuurregels:
-          description: De inkoopfactuurregels behorende bij deze inkoopfactuur.
+          description: Datum waarop de factuur is ontvangen.
+        crediteur:
+          $ref: '#/components/schemas/Crediteur'
+          description: De crediteur van deze factuur.
+        factuurbetaling:
+          description: De betalingen behorende bij de factuur.
           type: array
           items:
-            $ref: '#/components/schemas/Factuurregel'
-        gRekeningbedrag:
-          type: number
-          format: float
-          description: Bedrag G rekening.
-        korting:
-          $ref: '#/components/schemas/Prijsaanpassing'
-          description: Korting die wordt gegeven op het factuurregelbedrag
-        openstaandBedrag:
-          type: number
-          format: float
-          description: Bedrag dat nog openstaat op de inkoopfactuur.
-        relatie:
+            $ref: '#/components/schemas/Factuurbetaling'
+        inkoopopdracht:
+          $ref: '#/components/schemas/Inkoopopdracht'
+          description: De inkoopopdracht waaraan deze factuur gekoppeld is.
+        rekening:
           type: string
           format: uri
-          description: 'Referentie naar Relatie in de vorm: {endpoint Relaties}/vera/v4/relaties/{id}'
-        toeslag:
-          $ref: '#/components/schemas/Prijsaanpassing'
-          description: Toeslag die in rekening wordt gebracht op het factuurregelbedrag
-    Factuurregel-basis:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        omschrijving:
-          type: string
-          format: any
-          description: De omschrijving van het gegeven.
-        bedrag:
-          type: number
-          format: float
-          description: Bedrag.
-        btwAangiftebedrag:
-          type: number
-          format: float
-          description: Aangiftebedrag btw op deze regel.
-        btwTarief:
-          $ref: '#/components/schemas/BtwTarief'
-          description: Btw-tarief dat op de mutatie van toepassing is, bijvoorbeeld;hoog, laag, geen of nul. 
-        grootboekmutaties:
-          description: De grootboekmutaties behorende bij de factuurregel.
-          type: array
-          items:
-            $ref: '#/components/schemas/Grootboekmutatie'
-        grootboekrekening:
-          $ref: '#/components/schemas/Grootboekrekening'
-          description: Het rekeningnummer.
-        korting:
-          $ref: '#/components/schemas/Prijsaanpassing'
-          description: Korting die wordt gegeven op het factuurbedrag.
-        toeslag:
-          $ref: '#/components/schemas/Prijsaanpassing'
-          description: Toeslag die in rekening wordt gebracht op het factuurbedrag.
-        verbijzonderingen:
-          description: Verbijzondering van de grootboekboeking.
-          type: array
-          items:
-            $ref: '#/components/schemas/Verbijzondering'
-    Prijsaanpassing-bericht:
+          description: 'Referentie naar Betaalgegeven in de vorm: {endpoint Relaties}/vera/v4/betaalgegevens/{id}'
+    CreditfactuurRegel-bericht:
       allOf:
-        - $ref: '#/components/schemas/Prijsaanpassing'
+        - $ref: '#/components/schemas/CreditfactuurRegel'
         - $ref: '#/components/schemas/Bericht-basis'
-    Prijsaanpassing:
+    CreditfactuurRegel:
       type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort prijsaanpassing: Korting of toeslag'
-        omschrijving:
-          type: string
-          format: any
-          description: Tekstveld met een omschrijving of nadere specificatie van het soort toeslag of korting.
-        bedrag:
-          type: number
-          format: float
-          description: Het bedrag dat extra in rekening wordt gebracht, of de korting die wordt gegeven, op het factuur(regel)bedrag.
-        percentage:
-          type: number
-          format: float
-          description: Getal waarmee de hoogte van de toeslag of korting wordt gespecificeerd in procenten van het totale regelbedrag of de totale regelhoeveelheid. Dit gegeven wordt alleen ter informatie meegegeven.
-    Factuurregel-bericht:
       allOf:
-        - $ref: '#/components/schemas/Factuurregel'
-        - $ref: '#/components/schemas/Bericht-basis'
-    Factuurregel:
-      oneOf:
-        - $ref: '#/components/schemas/InkoopfactuurRegel'
         - $ref: '#/components/schemas/Factuurregel-basis'
-    Factuur-bericht:
+      properties:
+        factuur:
+          $ref: '#/components/schemas/Factuur'
+          description: De creditfactuur van deze factuurregel.
+        inkoopfactuur:
+          $ref: '#/components/schemas/Inkoopfactuur'
+          description: De inkoopfactuur van deze inkoopfactuurregel. OBSOLETE
+          deprecated: true
+        inkoopopdrachtregels:
+          description: De inkoopopdrachtregels waar deze inkoopfactuurregel aan gekoppeld is
+          type: array
+          items:
+            $ref: '#/components/schemas/InkoopopdrachtRegel'
+    Debetfactuur-bericht:
       allOf:
-        - $ref: '#/components/schemas/Factuur'
+        - $ref: '#/components/schemas/Debetfactuur'
         - $ref: '#/components/schemas/Bericht-basis'
-    Factuur:
-      oneOf:
-        - $ref: '#/components/schemas/Inkoopfactuur'
+    Debetfactuur:
+      type: object
+      allOf:
         - $ref: '#/components/schemas/Factuur-basis'
+      properties:
+        verzendatum:
+          type: string
+          format: date
+          description: Datum waarop de factuur is verzonden.
+        Debiteur:
+          $ref: '#/components/schemas/Debiteur'
+          description: De debiteur van deze factuur.
     Lening-bericht:
       allOf:
         - $ref: '#/components/schemas/Lening'
@@ -19519,6 +21618,63 @@ components:
           type: string
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Creditfactuur-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    CreditfactuurRegel-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Debetfactuur-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
     Debiteur-sleutels:
       type: object
       properties:
@@ -19577,6 +21733,25 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
     Factuur-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Factuurbetaling-sleutels:
       type: object
       properties:
         id:
