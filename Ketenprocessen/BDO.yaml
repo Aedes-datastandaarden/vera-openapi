@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Casemanagement
-  description: API-specificatie van ketenproces 'Casemanagement'. Deze specificatie is gebaseerd op VERA versie 4.0.13+220812.2
+  description: API-specificatie van ketenproces 'Casemanagement'. Deze specificatie is gebaseerd op VERA versie 4.0.14+220909.17
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '1.0.13+220812.2'
+  version: '1.0.14+220909.17'
 servers:
   - url: https://bdo.vera.io:{port}/{basePath}
     description: Productieserver
@@ -55,72 +55,33 @@ paths:
         style: form
         explode: true
         schema:
-          $ref: '#/components/schemas/Dossiers-Dossier-bericht'
-      - name: cursor
-        in: query
-        schema:
-          type: string
-        description: |
-          De cursor (bijv. GUID) waarmee de volgende pagina van resultaten opgehaald kan worden.
-          Zie ook: X-Parameters-Cursor.
-        example: 241d66b1-fcdb-4266-b908-01aeec18781e
-      - name: pagina
-        in: query
-        schema:
-          type: string
-        description: |
-          De opgevraagde pagina
-        example: 21
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Parameters-PeiltijdstipMaterieel
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Parameters-PeiltijdstipMaterieel'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
-      - name: X-Parameters-AantalPerPagina
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Parameters-AantalPerPagina'           
-      - name: X-Parameters-Pagina
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Parameters-Pagina'
+          $ref: '#/components/schemas/Dossiers-Dossierbericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
       responses:
         '200':
-          description: Dossier response
+          description: Zoekactie geslaagd
           content:
             'application/json':
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Dossiers-Dossier-bericht'
+                  $ref: '#/components/schemas/Dossiers-Dossierbericht'
           headers:
-            X-Stuurgegevens-TijdstipBericht:
-                $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-            X-Stuurgegevens-Referentienummer:
-                $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
             X-Parameters-Aantal:
-                $ref: '#/components/headers/X-Parameters-Aantal'
+              $ref: '#/components/headers/X-Parameters-Aantal'
             X-Parameters-AantalPerPagina:
-                $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
             X-Parameters-Pagina:
-                $ref: '#/components/headers/X-Parameters-Pagina'
+              $ref: '#/components/headers/X-Parameters-Pagina'
             X-Parameters-Cursor:
-                $ref: '#/components/headers/X-Parameters-Cursor'
+              $ref: '#/components/headers/X-Parameters-Cursor'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -135,48 +96,27 @@ paths:
       description: Voegt een nieuw(e) Dossier toe.
       operationId: createDossier
       parameters:
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Dossier
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Dossiers-Dossier-bericht'
+              $ref: '#/components/schemas/Dossiers-Dossierbericht'
       responses:
         '200':
           description: Dossier succesvol toegevoegd
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     put:
       tags:
       - 'Dossiers'
@@ -184,60 +124,33 @@ paths:
         Vervangen van een Dossier op basis van overeenkomstige sleutelvelden.
       operationId: replaceDossier
       parameters:
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Dossier
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Dossiers-Dossier-bericht'
+              $ref: '#/components/schemas/Dossiers-Dossierbericht'
       responses:
         '200':
           description: Dossier succesvol vervangen
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '400':
           description: |
             Fout in request.
             Dossier bevat geen sleutelveld(en).
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Dossier met gegeven sleutelveld(en) niet gevonden
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     patch:
       tags:
       - 'Dossiers'
@@ -246,60 +159,33 @@ paths:
         sleutelvelden aanwezig zijn.
       operationId: updateDossier
       parameters:
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Dossier
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Dossiers-Dossier-bericht'
+              $ref: '#/components/schemas/Dossiers-Dossierbericht'
       responses:
         '200':
           description: Dossier succesvol gewijzigd
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '400':
           description: |
             Fout in request.
             Dossier bevat geen sleutelveld(en).
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
-           headers:
-             X-Stuurgegevens-Referentienummer:
-               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
            description: Dossier met gegeven sleutelveld(en) niet gevonden
-           headers:
-             X-Stuurgegevens-Referentienummer:
-               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
   /dossiers/{id}:
     get:
       tags:
@@ -313,51 +199,27 @@ paths:
         required: true
         schema:
           type: string
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
           description: Dossier response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Dossiers-Dossier-bericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+                $ref: '#/components/schemas/Dossiers-Dossierbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Dossier met id niet gevonden
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     put:
       tags:
       - 'Dossiers'
@@ -370,53 +232,29 @@ paths:
         required: true
         schema:
           type: string
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Dossier
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Dossiers-Dossier-bericht'
+              $ref: '#/components/schemas/Dossiers-Dossierbericht'
       responses:
         '200':
           description: Dossier succesvol vervangen
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Dossier met id niet gevonden
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     patch:
       tags:
       - 'Dossiers'
@@ -429,53 +267,29 @@ paths:
         required: true
         schema:
           type: integer
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Dossier
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Dossiers-Dossier-bericht'
+              $ref: '#/components/schemas/Dossiers-Dossierbericht'
       responses:
         '200':
           description: Dossier succesvol gewijzigd
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Dossier met id niet gevonden
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
   /informatieobjecten:
     get:
       tags:
@@ -488,72 +302,33 @@ paths:
         style: form
         explode: true
         schema:
-          $ref: '#/components/schemas/Informatieobjecten-Informatieobject-bericht'
-      - name: cursor
-        in: query
-        schema:
-          type: string
-        description: |
-          De cursor (bijv. GUID) waarmee de volgende pagina van resultaten opgehaald kan worden.
-          Zie ook: X-Parameters-Cursor.
-        example: 241d66b1-fcdb-4266-b908-01aeec18781e
-      - name: pagina
-        in: query
-        schema:
-          type: string
-        description: |
-          De opgevraagde pagina
-        example: 21
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Parameters-PeiltijdstipMaterieel
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Parameters-PeiltijdstipMaterieel'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
-      - name: X-Parameters-AantalPerPagina
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Parameters-AantalPerPagina'           
-      - name: X-Parameters-Pagina
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Parameters-Pagina'
+          $ref: '#/components/schemas/Informatieobjecten-Informatieobjectbericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
       responses:
         '200':
-          description: Informatieobject response
+          description: Zoekactie geslaagd
           content:
             'application/json':
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Informatieobjecten-Informatieobject-bericht'
+                  $ref: '#/components/schemas/Informatieobjecten-Informatieobjectbericht'
           headers:
-            X-Stuurgegevens-TijdstipBericht:
-                $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-            X-Stuurgegevens-Referentienummer:
-                $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
             X-Parameters-Aantal:
-                $ref: '#/components/headers/X-Parameters-Aantal'
+              $ref: '#/components/headers/X-Parameters-Aantal'
             X-Parameters-AantalPerPagina:
-                $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
             X-Parameters-Pagina:
-                $ref: '#/components/headers/X-Parameters-Pagina'
+              $ref: '#/components/headers/X-Parameters-Pagina'
             X-Parameters-Cursor:
-                $ref: '#/components/headers/X-Parameters-Cursor'
+              $ref: '#/components/headers/X-Parameters-Cursor'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -568,48 +343,27 @@ paths:
       description: Voegt een nieuw(e) Informatieobject toe.
       operationId: createInformatieobject
       parameters:
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Informatieobject
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Informatieobjecten-Informatieobject-bericht'
+              $ref: '#/components/schemas/Informatieobjecten-Informatieobjectbericht'
       responses:
         '200':
           description: Informatieobject succesvol toegevoegd
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     put:
       tags:
       - 'Informatieobjecten'
@@ -617,60 +371,33 @@ paths:
         Vervangen van een Informatieobject op basis van overeenkomstige sleutelvelden.
       operationId: replaceInformatieobject
       parameters:
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Informatieobject
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Informatieobjecten-Informatieobject-bericht'
+              $ref: '#/components/schemas/Informatieobjecten-Informatieobjectbericht'
       responses:
         '200':
           description: Informatieobject succesvol vervangen
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '400':
           description: |
             Fout in request.
             Informatieobject bevat geen sleutelveld(en).
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Informatieobject met gegeven sleutelveld(en) niet gevonden
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     patch:
       tags:
       - 'Informatieobjecten'
@@ -679,60 +406,33 @@ paths:
         sleutelvelden aanwezig zijn.
       operationId: updateInformatieobject
       parameters:
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Informatieobject
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Informatieobjecten-Informatieobject-bericht'
+              $ref: '#/components/schemas/Informatieobjecten-Informatieobjectbericht'
       responses:
         '200':
           description: Informatieobject succesvol gewijzigd
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '400':
           description: |
             Fout in request.
             Informatieobject bevat geen sleutelveld(en).
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
-           headers:
-             X-Stuurgegevens-Referentienummer:
-               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
            description: Informatieobject met gegeven sleutelveld(en) niet gevonden
-           headers:
-             X-Stuurgegevens-Referentienummer:
-               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
   /informatieobjecten/{id}:
     get:
       tags:
@@ -746,51 +446,27 @@ paths:
         required: true
         schema:
           type: string
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
           description: Informatieobject response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Informatieobjecten-Informatieobject-bericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+                $ref: '#/components/schemas/Informatieobjecten-Informatieobjectbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Informatieobject met id niet gevonden
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     put:
       tags:
       - 'Informatieobjecten'
@@ -803,53 +479,29 @@ paths:
         required: true
         schema:
           type: string
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Informatieobject
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Informatieobjecten-Informatieobject-bericht'
+              $ref: '#/components/schemas/Informatieobjecten-Informatieobjectbericht'
       responses:
         '200':
           description: Informatieobject succesvol vervangen
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Informatieobject met id niet gevonden
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     patch:
       tags:
       - 'Informatieobjecten'
@@ -862,53 +514,29 @@ paths:
         required: true
         schema:
           type: integer
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Informatieobject
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Informatieobjecten-Informatieobject-bericht'
+              $ref: '#/components/schemas/Informatieobjecten-Informatieobjectbericht'
       responses:
         '200':
           description: Informatieobject succesvol gewijzigd
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Informatieobject met id niet gevonden
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
   /zaken:
     get:
       tags:
@@ -921,72 +549,33 @@ paths:
         style: form
         explode: true
         schema:
-          $ref: '#/components/schemas/Zaken-Zaak-bericht'
-      - name: cursor
-        in: query
-        schema:
-          type: string
-        description: |
-          De cursor (bijv. GUID) waarmee de volgende pagina van resultaten opgehaald kan worden.
-          Zie ook: X-Parameters-Cursor.
-        example: 241d66b1-fcdb-4266-b908-01aeec18781e
-      - name: pagina
-        in: query
-        schema:
-          type: string
-        description: |
-          De opgevraagde pagina
-        example: 21
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Parameters-PeiltijdstipMaterieel
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Parameters-PeiltijdstipMaterieel'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
-      - name: X-Parameters-AantalPerPagina
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Parameters-AantalPerPagina'           
-      - name: X-Parameters-Pagina
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Parameters-Pagina'
+          $ref: '#/components/schemas/Zaken-Zaakbericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
       responses:
         '200':
-          description: Zaak response
+          description: Zoekactie geslaagd
           content:
             'application/json':
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Zaken-Zaak-bericht'
+                  $ref: '#/components/schemas/Zaken-Zaakbericht'
           headers:
-            X-Stuurgegevens-TijdstipBericht:
-                $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-            X-Stuurgegevens-Referentienummer:
-                $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
             X-Parameters-Aantal:
-                $ref: '#/components/headers/X-Parameters-Aantal'
+              $ref: '#/components/headers/X-Parameters-Aantal'
             X-Parameters-AantalPerPagina:
-                $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
             X-Parameters-Pagina:
-                $ref: '#/components/headers/X-Parameters-Pagina'
+              $ref: '#/components/headers/X-Parameters-Pagina'
             X-Parameters-Cursor:
-                $ref: '#/components/headers/X-Parameters-Cursor'
+              $ref: '#/components/headers/X-Parameters-Cursor'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -1001,48 +590,27 @@ paths:
       description: Voegt een nieuw(e) Zaak toe.
       operationId: createZaak
       parameters:
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Zaak
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Zaken-Zaak-bericht'
+              $ref: '#/components/schemas/Zaken-Zaakbericht'
       responses:
         '200':
           description: Zaak succesvol toegevoegd
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     put:
       tags:
       - 'Zaken'
@@ -1050,60 +618,33 @@ paths:
         Vervangen van een Zaak op basis van overeenkomstige sleutelvelden.
       operationId: replaceZaak
       parameters:
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Zaak
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Zaken-Zaak-bericht'
+              $ref: '#/components/schemas/Zaken-Zaakbericht'
       responses:
         '200':
           description: Zaak succesvol vervangen
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '400':
           description: |
             Fout in request.
             Zaak bevat geen sleutelveld(en).
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Zaak met gegeven sleutelveld(en) niet gevonden
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     patch:
       tags:
       - 'Zaken'
@@ -1112,60 +653,33 @@ paths:
         sleutelvelden aanwezig zijn.
       operationId: updateZaak
       parameters:
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Zaak
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Zaken-Zaak-bericht'
+              $ref: '#/components/schemas/Zaken-Zaakbericht'
       responses:
         '200':
           description: Zaak succesvol gewijzigd
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '400':
           description: |
             Fout in request.
             Zaak bevat geen sleutelveld(en).
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
-           headers:
-             X-Stuurgegevens-Referentienummer:
-               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
            description: Zaak met gegeven sleutelveld(en) niet gevonden
-           headers:
-             X-Stuurgegevens-Referentienummer:
-               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
   /zaken/{id}:
     get:
       tags:
@@ -1179,51 +693,27 @@ paths:
         required: true
         schema:
           type: string
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
           description: Zaak response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Zaken-Zaak-bericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+                $ref: '#/components/schemas/Zaken-Zaakbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Zaak met id niet gevonden
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     put:
       tags:
       - 'Zaken'
@@ -1236,53 +726,29 @@ paths:
         required: true
         schema:
           type: string
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Zaak
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Zaken-Zaak-bericht'
+              $ref: '#/components/schemas/Zaken-Zaakbericht'
       responses:
         '200':
           description: Zaak succesvol vervangen
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Zaak met id niet gevonden
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     patch:
       tags:
       - 'Zaken'
@@ -1295,106 +761,55 @@ paths:
         required: true
         schema:
           type: integer
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Zaak
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Zaken-Zaak-bericht'
+              $ref: '#/components/schemas/Zaken-Zaakbericht'
       responses:
         '200':
           description: Zaak succesvol gewijzigd
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Zaak met id niet gevonden
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
 security:
   - ApiKeyAuth: []
 components:
   headers:
-    X-Stuurgegevens-TijdstipBericht:
-      schema:
-        type: string
-        format: data-time
-        description: Tijdstip waarop het bericht verzonden is
-    X-Stuurgegevens-Referentienummer:
-      schema:
-        type: string
-        format: any
-        description: Een unieke code voor correlatie
-    X-Stuurgegevens-Zender-Organisatie:
-      schema:
-        type: string
-        format: any
-        description: Naam van de verzendende organisatie
-    X-Stuurgegevens-Zender-Administratie:
-      schema:
-        type: string
-        format: any
-        description: |
-          Met het stuurgegeven Administratie kan onderscheid gemaakt worden tussen 
-          de verschillende gegevensverzamelingen die de verzendende organisatie beheert
     X-Parameters-Aantal:
+      description: Totaal aantal gevonden resultaten
       schema:
-        type: integer
-        description: Totaal aantal gevonden entiteiten
-        example: 135
+        $ref: '#/components/schemas/Aantal'
     X-Parameters-AantalPerPagina:
+      description: |
+        Het maximum aantal resultaten per pagina zoals dat in het request opgegeven is,
+        of de default waarde indien dit niet opgeven is.
+      example: 20
       schema:
-        type: integer
-        description: Maximum aantal resultaten per pagina
-        example: 20
+        $ref: '#/components/schemas/AantalPerPagina'
     X-Parameters-Pagina:
+      description: Het huidige paginanummer
       schema:
-        type: integer
-        description: Huidige paginanummer
-        example: 3
+        $ref: '#/components/schemas/Paginanummer'
     X-Parameters-Cursor:
+      description: |
+        Bij het ophalen van de volgende set van resultaten dient deze waarde 
+        als parameter (cursor) in de query meegestuurd te worden.
+      example: 241d66b1-fcdb-4266-b908-01aeec18781e
       schema:
-        type: string
-        description: |
-          De cursor (bijv. GUID) wanneer het aantal resultaten groter is dan het maximum aantal resultaten per pagina.
-          Deze dient als query parameter ('?cursor=<guid>') te worden meegestuurd bij het ophalen van de volgende pagina.
-        example: 241d66b1-fcdb-4266-b908-01aeec18781e
-    X-Parameters-PeiltijdstipMaterieel:
-      schema:
-        type: string
-        format: date-time
-        description: De peildatum. Indien leeg worden de actuele gegevens opgevraagd
+        $ref: '#/components/schemas/Cursor'
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
@@ -1408,7 +823,7 @@ components:
           schema:
             type: string
   schemas:
-    Dossiers-Dossier-bericht:
+    Dossiers-Dossierbericht:
       allOf:
         - $ref: '#/components/schemas/Dossiers-Dossier'
         - $ref: '#/components/schemas/Bericht-basis'
@@ -1432,33 +847,37 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Geeft het dossier type aan. Bijvoorbeeld mutatiedossier.
         detailSoort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Geeft het dossier detail type aan.
         omschrijving:
           type: string
           format: any
           description: Beknopte omschrijving van het dossier.
         status:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: De fase waarin het dossier zich vanuit het perspectief van afhandeling en archivering bevindt (Bijvoorbeeld 'Gearchiveerd').
         detailStatus:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Detaillering van de fase waarin het dossier zich vanuit het perspectief van afhandeling en archivering bevindt.
         clusters:
           description: Het dossier is gekoppeld aan/heeft betrekking op cluster(s). Bijvoorbeeld complexdossier. OBSOLETE
           type: array
           items:
             $ref: '#/components/schemas/Cluster-sleutels'
-            deprecated: true
+          deprecated: true
         collectiefObjecten:
           description: Het dossier is gekoppeld aan/heeft betrekking op collectief object(en). OBSOLETE
           type: array
           items:
             $ref: '#/components/schemas/CollectiefObject-sleutels'
-            deprecated: true
+          deprecated: true
         contactmomenten:
           description: De gegevens van de contactmomenten die in dit dossier zijn opgenomen.
           type: array
@@ -1474,39 +893,40 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Eenheid-sleutels'
-            deprecated: true
+          deprecated: true
         inkoopfacturen:
           description: Het dossier is gekoppeld aan/heeft betrekking op inkoopfactuur(-en). De relatie is niet gemodelleerd in het diagram conform richtlijn GT04 in verband met de leesbaarheid. OBSOLETE
           type: array
           items:
             $ref: '#/components/schemas/Inkoopfactuur-sleutels'
-            deprecated: true
+          deprecated: true
         inkoopopdrachten:
           description: Het dossier is gekoppeld aan/heeft betrekking op inkoopopdracht(-en). De relatie is niet gemodelleerd in het diagram conform richtlijn GT04 in verband met de leesbaarheid. OBSOLETE
           type: array
           items:
             $ref: '#/components/schemas/Inkoopopdracht-sleutels'
-            deprecated: true
+          deprecated: true
         objecten:
           description: De gegevensobjecten die bij de zaak horen. Kan iedere klasse uit ons model zijn. Bijv. Overeenkomst, Onderhoudsverzoek etc.
           type: array
           items:
             $ref: '#/components/schemas/Zaakobject-sleutels'
         omvattendDossier:
-          $ref: '#/components/schemas/Dossier-sleutels'
+          allOf:
+          - $ref: '#/components/schemas/Dossier-sleutels'
           description: Het dossier waarin dit dossier is opgenomen.
         onderhoudsverzoeken:
           description: Het dossier is gekoppeld aan/heeft betrekking op een onderhoudsverzoek. OBSOLETE
           type: array
           items:
             $ref: '#/components/schemas/Onderhoudsverzoek-sleutels'
-            deprecated: true
+          deprecated: true
         overeenkomsten:
           description: Het dossier is gekoppeld aan/heeft betrekking op overeenkomst(en). OBSOLETE
           type: array
           items:
             $ref: '#/components/schemas/Overeenkomst-sleutels'
-            deprecated: true
+          deprecated: true
         processen:
           description: Het dossier is gekoppeld aan/heeft betrekking op proces(sen).
           type: array
@@ -1720,7 +1140,8 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn.
     Proces-sleutels:
       type: object
@@ -1744,7 +1165,7 @@ components:
     Dossiers-NatuurlijkPersoon:
       type: object
       allOf:
-        - $ref: '#/components/schemas/Dossiers-Relatie-basis'
+      - $ref: '#/components/schemas/Dossiers-Relatie-basis'
       properties:
         voornaam:
           type: string
@@ -1759,7 +1180,8 @@ components:
           format: any
           description: De aanhef of aanspreking is een (meestal vriendelijke) introducerende zin van een brief of e-mail. Het gaat doorgaans om standaardformuleringen waarmee de schrijver zich tot de geadresseerde richt.
         account:
-          $ref: '#/components/schemas/Account-sleutels'
+          allOf:
+          - $ref: '#/components/schemas/Account-sleutels'
           description: ''
         achternaam:
           type: string
@@ -1770,14 +1192,16 @@ components:
           format: any
           description: Het BSN (Burger Service Nummer) van de natuurlijk persoon.
         burgerlijkeStaat:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: De burgerlijke staat van de natuurlijk persoon.
         geboortedatum:
           type: string
           format: date
           description: De geboortedatum van de natuurlijk persoon.
         geslacht:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Het geslacht van de natuurlijk persoon.
         inkomens:
           description: De inkomens van de natuurlijk persoon.
@@ -1785,10 +1209,12 @@ components:
           items:
             $ref: '#/components/schemas/Inkomen-sleutels'
         nationaliteit:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: De nationaliteit van de natuurlijk persoon.
         opleiding:
-          $ref: '#/components/schemas/Opleiding-sleutels'
+          allOf:
+          - $ref: '#/components/schemas/Opleiding-sleutels'
           description: Het opleidingsgegeven van de natuurlijk persoon. OBSOLETE
           deprecated: true
         overlijdensdatum:
@@ -1804,7 +1230,8 @@ components:
           format: any
           description: De tussenvoegsels behorende bij de naam.
         voorkeurstaal:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: De voorkeurstaal die de natuurlijk persoon voert.
         voorletters:
           type: string
@@ -1874,7 +1301,7 @@ components:
     Dossiers-Rechtspersoon:
       type: object
       allOf:
-        - $ref: '#/components/schemas/Dossiers-Relatie-basis'
+      - $ref: '#/components/schemas/Dossiers-Relatie-basis'
       properties:
         naam:
           type: string
@@ -1893,7 +1320,8 @@ components:
           format: any
           description: Het KVK nummer van de rechtspersoon.
         organisatievorm:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'De organisatievorm van de rechtspersoon. Bijvoorbeeld: BV, NV, stichting of vereniging. Ook wel rechtsvorm genoemd.'
         relaties:
           description: De contactpersonen behorend bij de rechtspersoon.
@@ -1920,10 +1348,12 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
         detailSoort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon.'
         rollen:
           description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
@@ -1938,7 +1368,7 @@ components:
     Dossiers-Relatiegroep:
       type: object
       allOf:
-        - $ref: '#/components/schemas/Dossiers-Relatie-basis'
+      - $ref: '#/components/schemas/Dossiers-Relatie-basis'
       properties:
         naam:
           type: string
@@ -1969,7 +1399,8 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Het soort rol van de relatie. Bijvoorbeeld Klant, Prospect, Leverancier, Medewerker, Team etc.
         naam:
           type: string
@@ -1980,7 +1411,8 @@ components:
           format: any
           description: De omschrijving van de relatie rol.
         rolRelatie:
-          $ref: '#/components/schemas/Relatie-sleutels'
+          allOf:
+          - $ref: '#/components/schemas/Relatie-sleutels'
           description: De relatie die aangeeft waar de relatie en rol koppeling van toepassing is. Dit attribuut geeft aan dat de aangegeven relatie de rol binnen bijvoorbeeld een relatiegroep heeft. Het attribuut relatie is dan bijvoorbeeld een persoon uit een huishouden en de rolRelatie is dan bijvoorbeeld de relatiegroep die het huishouden voorstelt.
     Relatie-sleutels:
       type: object
@@ -2002,16 +1434,19 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
         detailSoort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon.'
         rollen:
           type: array
           items:
+            type: string
             format: uri
-            description: 'Referentie naar Relatierol in de vorm: {endpoint Relaties}/v4/relatierollen/{id}'
+          description: Referentie naar Relatierol in bronsysteem Relaties
     Dossiers-Zaak:
       type: object
       properties:
@@ -2071,7 +1506,8 @@ components:
           items:
             $ref: '#/components/schemas/Zaak-sleutels'
         isDeelzaakVan:
-          $ref: '#/components/schemas/Zaak-sleutels'
+          allOf:
+          - $ref: '#/components/schemas/Zaak-sleutels'
           description: Specificeert de bijbehorende hoofdzaak.
         overeenkomsten:
           description: De zaak is gekoppeld aan/heeft betrekking op overeenkomst(en).
@@ -2093,7 +1529,8 @@ components:
           items:
             $ref: '#/components/schemas/Zaakstatus-sleutels'
         zaaktype:
-          $ref: '#/components/schemas/Zaaktype-sleutels'
+          allOf:
+          - $ref: '#/components/schemas/Zaaktype-sleutels'
           description: Zaaktype duidt de aard van de zaak aan en definieert daarmee de zaak.
     Zaak-sleutels:
       type: object
@@ -2199,10 +1636,12 @@ components:
           format: date-time
           description: De datum en tijd waarop contact is geweest.
         dossier:
-          $ref: '#/components/schemas/Dossier-sleutels'
+          allOf:
+          - $ref: '#/components/schemas/Dossier-sleutels'
           description: Het dossier waarbinnen het contactmoment is vastgelegd.
         kanaal:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Het kanaal via welke het contact heeft gelopen. Bijvoorbeeld: Telefoon, email, balie, internet.'
         relaties:
           description: De relaties met hun rollen die betrokken waren bij het contact. Bijv. de Huurder, Medewerker etc.
@@ -2210,12 +1649,14 @@ components:
           items:
             $ref: '#/components/schemas/Informatieobjecten-Relatie'
         richting:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'De communicatierichting behorend bij het contact. Bijvoorbeeld: Uitgaand of ingaand.'
         zaak:
-          $ref: '#/components/schemas/Zaak-sleutels'
+          allOf:
+          - $ref: '#/components/schemas/Zaak-sleutels'
           description: De zaak waarvoor het contactmoment heeft plaatsgevonden.
-    Informatieobjecten-Informatieobject-bericht:
+    Informatieobjecten-Informatieobjectbericht:
       allOf:
         - $ref: '#/components/schemas/Informatieobjecten-Informatieobject'
         - $ref: '#/components/schemas/Bericht-basis'
@@ -2239,16 +1680,20 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Specificatie van het documenttype. Bijvoorbeeld verslag, rapport etc.
         detailSoort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Detail specificatie van het documenttype. Bijvoorbeeld notulen, adviesrapport etc.
         onderwerp:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Onderwerp van het informatieobject.
         subonderwerp:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Subonderwerp van het informatieobject.
         titel:
           type: string
@@ -2259,10 +1704,12 @@ components:
           format: any
           description: Beschrijving van het informatieobject.
         status:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: De fase waarin het informatieobject zich vanuit het perspectief van archivering bevindt.
         detailStatus:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Detaillering van de fase waarin het informatieobject zich vanuit het perspectief van archivering bevindt.
         registratiedatum:
           type: string
@@ -2281,7 +1728,8 @@ components:
           format: date-time
           description: De datum waarop het gearchiveerde informatieobject vernietigd moet worden dan wel overgebracht moet worden naar een archiefbewaarplaats.
         archiefnominatie:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Aanduiding of het informatieobject blijvend bewaard of na een bepaalde termijn vernietigd moet worden.
         auteur:
           type: string
@@ -2313,13 +1761,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Cluster-sleutels'
-            deprecated: true
+          deprecated: true
         collectiefObjecten:
           description: Het informatieobject is gekoppeld aan/heeft betrekking op collectief object(en). OBSOLETE
           type: array
           items:
             $ref: '#/components/schemas/CollectiefObject-sleutels'
-            deprecated: true
+          deprecated: true
         contactmomenten:
           description: Het informatieobject is gekoppeld aan/heeft betrekking op proces(sen).
           type: array
@@ -2335,7 +1783,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Eenheid-sleutels'
-            deprecated: true
+          deprecated: true
         externePublicatie:
           type: boolean
           description: Aanduiding of dit informatieobject extern gepubliceerd dient te worden.
@@ -2344,7 +1792,8 @@ components:
           format: any
           description: Tekstuele omschrijving ten behoeve van externe publicatie van dit informatieobject.
         formaat:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Het digitale formaat (IANA media type) van het informatieobject.
         gebruiksrechten:
           type: string
@@ -2355,15 +1804,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Inkoopfactuur-sleutels'
-            deprecated: true
+          deprecated: true
         inkoopopdrachten:
           description: Het informatieobject is gekoppeld aan/heeft betrekking op/is verschijningsvorm van inkoopopdracht(-en). De relatie is niet gemodelleerd in het diagram conform richtlijn GT04 in verband met de leesbaarheid. OBSOLETE
           type: array
           items:
             $ref: '#/components/schemas/Inkoopopdracht-sleutels'
-            deprecated: true
+          deprecated: true
         isBijlageVan:
-          $ref: '#/components/schemas/Informatieobject-sleutels'
+          allOf:
+          - $ref: '#/components/schemas/Informatieobject-sleutels'
           description: Geeft aan dat het informatieobject een bijlage is van een ander informatieobject.
         objecten:
           description: De gegevensobjecten die bij de zaak horen. Kan iedere klasse uit ons model zijn. Bijv. Overeenkomst, Onderhoudsverzoek etc. 
@@ -2375,7 +1825,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Onderhoudsverzoek-sleutels'
-            deprecated: true
+          deprecated: true
         overeenkomsten:
           description: Het informatieobject is gekoppeld aan/heeft betrekking op/is verschijningsvorm van overeenkomst(en).
           type: array
@@ -2392,7 +1842,8 @@ components:
           items:
             $ref: '#/components/schemas/Relatie-sleutels'
         taal:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: De taal waarin het informatieobject is opgesteld.
         verantwoordelijkeOrganisatie:
           type: string
@@ -2403,7 +1854,8 @@ components:
           format: float
           description: Het versienummer van het informatieobject.
         vertrouwelijkheid:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: De classificatie van het vertrouwelijkheidsniveau van het informatieobject.
         zaken:
           description: Het informatieobject is gekoppeld aan/heeft betrekking op zaak(-en).
@@ -2449,10 +1901,12 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
         detailSoort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon.'
         rollen:
           description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
@@ -2479,7 +1933,8 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Het soort rol van de relatie. Bijvoorbeeld Klant, Prospect, Leverancier, Medewerker, Team etc.
         naam:
           type: string
@@ -2488,7 +1943,7 @@ components:
     Zaken-NatuurlijkPersoon:
       type: object
       allOf:
-        - $ref: '#/components/schemas/Zaken-Relatie-basis'
+      - $ref: '#/components/schemas/Zaken-Relatie-basis'
       properties:
         voornaam:
           type: string
@@ -2503,7 +1958,8 @@ components:
           format: any
           description: De aanhef of aanspreking is een (meestal vriendelijke) introducerende zin van een brief of e-mail. Het gaat doorgaans om standaardformuleringen waarmee de schrijver zich tot de geadresseerde richt.
         account:
-          $ref: '#/components/schemas/Account-sleutels'
+          allOf:
+          - $ref: '#/components/schemas/Account-sleutels'
           description: ''
         achternaam:
           type: string
@@ -2514,14 +1970,16 @@ components:
           format: any
           description: Het BSN (Burger Service Nummer) van de natuurlijk persoon.
         burgerlijkeStaat:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: De burgerlijke staat van de natuurlijk persoon.
         geboortedatum:
           type: string
           format: date
           description: De geboortedatum van de natuurlijk persoon.
         geslacht:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Het geslacht van de natuurlijk persoon.
         inkomens:
           description: De inkomens van de natuurlijk persoon.
@@ -2529,10 +1987,12 @@ components:
           items:
             $ref: '#/components/schemas/Inkomen-sleutels'
         nationaliteit:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: De nationaliteit van de natuurlijk persoon.
         opleiding:
-          $ref: '#/components/schemas/Opleiding-sleutels'
+          allOf:
+          - $ref: '#/components/schemas/Opleiding-sleutels'
           description: Het opleidingsgegeven van de natuurlijk persoon. OBSOLETE
           deprecated: true
         overlijdensdatum:
@@ -2548,7 +2008,8 @@ components:
           format: any
           description: De tussenvoegsels behorende bij de naam.
         voorkeurstaal:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: De voorkeurstaal die de natuurlijk persoon voert.
         voorletters:
           type: string
@@ -2557,7 +2018,7 @@ components:
     Zaken-Rechtspersoon:
       type: object
       allOf:
-        - $ref: '#/components/schemas/Zaken-Relatie-basis'
+      - $ref: '#/components/schemas/Zaken-Relatie-basis'
       properties:
         naam:
           type: string
@@ -2576,7 +2037,8 @@ components:
           format: any
           description: Het KVK nummer van de rechtspersoon.
         organisatievorm:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'De organisatievorm van de rechtspersoon. Bijvoorbeeld: BV, NV, stichting of vereniging. Ook wel rechtsvorm genoemd.'
         relaties:
           description: De contactpersonen behorend bij de rechtspersoon.
@@ -2603,10 +2065,12 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
         detailSoort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon.'
         rollen:
           description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
@@ -2621,7 +2085,7 @@ components:
     Zaken-Relatiegroep:
       type: object
       allOf:
-        - $ref: '#/components/schemas/Zaken-Relatie-basis'
+      - $ref: '#/components/schemas/Zaken-Relatie-basis'
       properties:
         naam:
           type: string
@@ -2652,13 +2116,14 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Het soort rol van de relatie. Bijvoorbeeld Klant, Prospect, Leverancier, Medewerker, Team etc.
         naam:
           type: string
           format: any
           description: De naam van de relatie rol.
-    Zaken-Zaak-bericht:
+    Zaken-Zaakbericht:
       allOf:
         - $ref: '#/components/schemas/Zaken-Zaak'
         - $ref: '#/components/schemas/Bericht-basis'
@@ -2719,21 +2184,23 @@ components:
           items:
             $ref: '#/components/schemas/Zaak-sleutels'
         dossier:
-          $ref: '#/components/schemas/Dossier-sleutels'
+          allOf:
+          - $ref: '#/components/schemas/Dossier-sleutels'
           description: Het dossier dat aan de zaak gekoppeld is.
         eenheden:
           description: De zaak is gekoppeld aan/heeft betrekking op eenheid(-en). OBSOLETE.
           type: array
           items:
             $ref: '#/components/schemas/Eenheid-sleutels'
-            deprecated: true
+          deprecated: true
         gerelateerdeZaken:
           description: Heeft één of meerdere gerelateerde interne of externe zaken.
           type: array
           items:
             $ref: '#/components/schemas/Zaak-sleutels'
         isDeelzaakVan:
-          $ref: '#/components/schemas/Zaak-sleutels'
+          allOf:
+          - $ref: '#/components/schemas/Zaak-sleutels'
           description: Specificeert de bijbehorende hoofdzaak.
         kenmerken:
           description: Dit zijn eigenschappen behorend bij de zaak.
@@ -2750,7 +2217,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Overeenkomst-sleutels'
-            deprecated: true
+          deprecated: true
         relaties:
           description: De zaak is gekoppeld aan/heeft betrekking op relatie(s).
           type: array
@@ -2767,7 +2234,8 @@ components:
           items:
             $ref: '#/components/schemas/Zaken-Zaakstatus'
         zaaktype:
-          $ref: '#/components/schemas/Zaken-Zaaktype'
+          allOf:
+          - $ref: '#/components/schemas/Zaken-Zaaktype'
           description: Zaaktype duidt de aard van de zaak aan en definieert daarmee de zaak.
     Zaken-Zaakkenmerk:
       type: object
@@ -2797,10 +2265,12 @@ components:
           format: any
           description: De waarde van het zaakkenmerk.
         datatype:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Het datatype van de waarde. Bijvoorbeeld: string, decimal, integer.'
         groep:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: De groep van kenmerken behorend bij het zaakkenmerk.
     Zaken-Zaakobject:
       type: object
@@ -2814,7 +2284,8 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Het soort gegevensobject. Kan iederee klasse uit ons model zijn. Bijv. Overeenkomst, Onderhoudsverzoek etc..
     Zaken-Zaakrol:
       type: object
@@ -2840,13 +2311,15 @@ components:
           format: any
           description: Een beknopte omschrijving van de aard van de rol.
         generiekeOmschrijving:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Algemeen gehanteerde benaming van de aard van de rol.
         indicatieGemachtigde:
           type: boolean
           description: Indicatie of de betrokkene in de rol bij de zaak optreedt als gemachtigde van een andere betrokkene bij die zaak.
         relatie:
-          $ref: '#/components/schemas/Zaken-Relatie'
+          allOf:
+          - $ref: '#/components/schemas/Zaken-Relatie'
           description: De relatie die de rol uitoefent. Bijvoorbeeld de medewerker, organisatorische eenheid, klant, leverancier etc.
         toelichtingRol:
           type: string
@@ -2872,7 +2345,8 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: De aanduiding van de status middels een statustype.
         toelichting:
           type: string
@@ -2906,10 +2380,12 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Categorisering van de aard van een zaak van dit zaaktype.
         detailSoort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Specificatie van de categorie ten aanzien van de aard van zaak van het zaaktype.
         omschrijving:
           type: string
@@ -2951,7 +2427,8 @@ components:
           format: int32
           description: De periode waarbinnen verwacht wordt dat een zaak van dit zaaktype afgerond wordt conform de geldende servicenormen van de zaakbehandelende organisatie.
         vertrouwelijkheid:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Aanduiding van de mate waarin zaakdossiers van een zaak van dit zaaktype voor de openbaarheid bestemd zijn.
     Bericht-basis:
       type: object
@@ -2997,16 +2474,20 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Specificatie van het documenttype. Bijvoorbeeld verslag, rapport etc.
         detailSoort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Detail specificatie van het documenttype. Bijvoorbeeld notulen, adviesrapport etc.
         onderwerp:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Onderwerp van het informatieobject.
         subonderwerp:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Subonderwerp van het informatieobject.
         titel:
           type: string
@@ -3040,21 +2521,24 @@ components:
           format: any
           description: Tekstuele omschrijving ten behoeve van externe publicatie van dit informatieobject.
         formaat:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Het digitale formaat (IANA media type) van het informatieobject.
         gebruiksrechten:
           type: string
           format: any
           description: Informatie omtrent rechten die geassocieerd zijn met het informatieobject zoals intellectueel eigendom.
         taal:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: De taal waarin het informatieobject is opgesteld.
         versie:
           type: number
           format: float
           description: Het versienummer van het informatieobject.
         vertrouwelijkheid:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: De classificatie van het vertrouwelijkheidsniveau van het informatieobject.
     Foutbericht:
       type: object
@@ -3067,4 +2551,95 @@ components:
           type: string
           format: any
           description: Omschrijving van de fout
+    TijdstipBericht:
+      type: string
+      format: date-time
+    Referentienummer:
+      type: string
+      format: any
+    ZenderOrganisatie:
+      type: string
+      format: any
+    ZenderAdministratie:
+      type: string
+      format: any
+    Aantal:
+      type: integer
+    AantalPerPagina:
+      type: integer
+    Paginanummer:
+      type: integer
+    Cursor:
+      type: string
+    PeiltijdstipMaterieel:
+      type: string
+      format: date-time
+  parameters:
+    Cursor:
+      in: query
+      name: cursor
+      description: |
+        De cursor uit de response dient te worden meegestuurd bij het opvragen van 
+        de volgende set van resultaten wanneer deze groter is dan het aantal resultaten per pagina.
+      example: ca73d9bc-f810-48bf-8950-ec3fd70b0159
+      required: false
+      schema:
+        $ref: '#/components/schemas/Cursor'
+    Pagina:
+      in: query
+      name: pagina
+      description: Opgevraagde paginanummer
+      example: 3
+      required: false
+      schema:
+        $ref: '#/components/schemas/Paginanummer'
+    StuurgegevensTijdstipBericht:
+      in: header
+      name: X-Stuurgegevens-Tijdstip-Bericht
+      description: Tijdstip van verzenden
+      example: 2022-07-21T17:32:28Z
+      required: false
+      schema:
+        $ref: '#/components/schemas/TijdstipBericht'
+    StuurgegevensReferentienummer:
+      in: header
+      name: X-Stuurgegevens-Referentienummer
+      description: | 
+        Code bedoeld voor correlatie
+      example: 05aa0347-fef9-486a-a1b0-4fd75f33e746
+      required: false
+      schema:
+        $ref: '#/components/schemas/Referentienummer'
+    StuurgegevensZenderOrganisatie:
+      in: header
+      name: X-Stuurgegevens-Zender-Organisatie
+      description: Naam van de verzendende organisatie
+      required: false
+      schema:
+        $ref: '#/components/schemas/ZenderOrganisatie'
+    StuurgegevensZenderAdministratie:
+      in: header
+      name: X-Stuurgegevens-Zender-Administratie
+      description: |
+        Met het stuurgegeven Administratie kan onderscheid gemaakt worden tussen 
+        de verschillende gegevensverzamelingen die de verzendende organisatie beheert
+      required: false
+      schema:
+        $ref: '#/components/schemas/ZenderAdministratie'
+    ParametersAantalPerPagina:
+      in: header
+      name: X-Parameters-AantalPerPagina
+      description: Maximaal aantal resultaten in de response
+      example: 20
+      required: false
+      schema:
+        $ref: '#/components/schemas/AantalPerPagina'
+    ParametersPeiltijdstipMaterieel:
+      in: header
+      name: X-Parameters-PeiltijdstipMaterieel
+      description: De peildatum. Indien leeg worden de actuele gegevens opgevraagd
+      example: 2022-04-14T12:00:00Z
+      required: false
+      schema:
+        $ref: '#/components/schemas/PeiltijdstipMaterieel'
 

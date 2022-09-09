@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Kwaliteitsmeting
-  description: API-specificatie van ketenproces 'Kwaliteitsmeting'. Deze specificatie is gebaseerd op VERA versie 4.0.13+220812.2
+  description: API-specificatie van ketenproces 'Kwaliteitsmeting'. Deze specificatie is gebaseerd op VERA versie 4.0.14+220909.17
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '1.0.13+220812.2'
+  version: '1.0.14+220909.17'
 servers:
   - url: https://kmt.vera.io:{port}/{basePath}
     description: Productieserver
@@ -57,72 +57,33 @@ paths:
         style: form
         explode: true
         schema:
-          $ref: '#/components/schemas/Kwaliteitsmetingsresultaten-Kwaliteitsmetingsresultaat-bericht'
-      - name: cursor
-        in: query
-        schema:
-          type: string
-        description: |
-          De cursor (bijv. GUID) waarmee de volgende pagina van resultaten opgehaald kan worden.
-          Zie ook: X-Parameters-Cursor.
-        example: 241d66b1-fcdb-4266-b908-01aeec18781e
-      - name: pagina
-        in: query
-        schema:
-          type: string
-        description: |
-          De opgevraagde pagina
-        example: 21
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Parameters-PeiltijdstipMaterieel
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Parameters-PeiltijdstipMaterieel'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
-      - name: X-Parameters-AantalPerPagina
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Parameters-AantalPerPagina'           
-      - name: X-Parameters-Pagina
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Parameters-Pagina'
+          $ref: '#/components/schemas/Kwaliteitsmetingsresultaten-Kwaliteitsmetingsresultaatbericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
       responses:
         '200':
-          description: Kwaliteitsmetingsresultaat response
+          description: Zoekactie geslaagd
           content:
             'application/json':
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Kwaliteitsmetingsresultaten-Kwaliteitsmetingsresultaat-bericht'
+                  $ref: '#/components/schemas/Kwaliteitsmetingsresultaten-Kwaliteitsmetingsresultaatbericht'
           headers:
-            X-Stuurgegevens-TijdstipBericht:
-                $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-            X-Stuurgegevens-Referentienummer:
-                $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
             X-Parameters-Aantal:
-                $ref: '#/components/headers/X-Parameters-Aantal'
+              $ref: '#/components/headers/X-Parameters-Aantal'
             X-Parameters-AantalPerPagina:
-                $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
             X-Parameters-Pagina:
-                $ref: '#/components/headers/X-Parameters-Pagina'
+              $ref: '#/components/headers/X-Parameters-Pagina'
             X-Parameters-Cursor:
-                $ref: '#/components/headers/X-Parameters-Cursor'
+              $ref: '#/components/headers/X-Parameters-Cursor'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -137,48 +98,27 @@ paths:
       description: Voegt een nieuw(e) Kwaliteitsmetingsresultaat toe.
       operationId: createKwaliteitsmetingsresultaat
       parameters:
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Kwaliteitsmetingsresultaat
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Kwaliteitsmetingsresultaten-Kwaliteitsmetingsresultaat-bericht'
+              $ref: '#/components/schemas/Kwaliteitsmetingsresultaten-Kwaliteitsmetingsresultaatbericht'
       responses:
         '200':
           description: Kwaliteitsmetingsresultaat succesvol toegevoegd
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     put:
       tags:
       - 'Kwaliteitsmetingsresultaten'
@@ -186,60 +126,33 @@ paths:
         Vervangen van een Kwaliteitsmetingsresultaat op basis van overeenkomstige sleutelvelden.
       operationId: replaceKwaliteitsmetingsresultaat
       parameters:
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Kwaliteitsmetingsresultaat
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Kwaliteitsmetingsresultaten-Kwaliteitsmetingsresultaat-bericht'
+              $ref: '#/components/schemas/Kwaliteitsmetingsresultaten-Kwaliteitsmetingsresultaatbericht'
       responses:
         '200':
           description: Kwaliteitsmetingsresultaat succesvol vervangen
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '400':
           description: |
             Fout in request.
             Kwaliteitsmetingsresultaat bevat geen sleutelveld(en).
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Kwaliteitsmetingsresultaat met gegeven sleutelveld(en) niet gevonden
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     patch:
       tags:
       - 'Kwaliteitsmetingsresultaten'
@@ -248,60 +161,33 @@ paths:
         sleutelvelden aanwezig zijn.
       operationId: updateKwaliteitsmetingsresultaat
       parameters:
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Kwaliteitsmetingsresultaat
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Kwaliteitsmetingsresultaten-Kwaliteitsmetingsresultaat-bericht'
+              $ref: '#/components/schemas/Kwaliteitsmetingsresultaten-Kwaliteitsmetingsresultaatbericht'
       responses:
         '200':
           description: Kwaliteitsmetingsresultaat succesvol gewijzigd
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '400':
           description: |
             Fout in request.
             Kwaliteitsmetingsresultaat bevat geen sleutelveld(en).
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
-           headers:
-             X-Stuurgegevens-Referentienummer:
-               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
            description: Kwaliteitsmetingsresultaat met gegeven sleutelveld(en) niet gevonden
-           headers:
-             X-Stuurgegevens-Referentienummer:
-               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
   /kwaliteitsmetingsresultaten/{id}:
     get:
       tags:
@@ -315,51 +201,27 @@ paths:
         required: true
         schema:
           type: string
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
           description: Kwaliteitsmetingsresultaat response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Kwaliteitsmetingsresultaten-Kwaliteitsmetingsresultaat-bericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+                $ref: '#/components/schemas/Kwaliteitsmetingsresultaten-Kwaliteitsmetingsresultaatbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Kwaliteitsmetingsresultaat met id niet gevonden
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     put:
       tags:
       - 'Kwaliteitsmetingsresultaten'
@@ -372,53 +234,29 @@ paths:
         required: true
         schema:
           type: string
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Kwaliteitsmetingsresultaat
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Kwaliteitsmetingsresultaten-Kwaliteitsmetingsresultaat-bericht'
+              $ref: '#/components/schemas/Kwaliteitsmetingsresultaten-Kwaliteitsmetingsresultaatbericht'
       responses:
         '200':
           description: Kwaliteitsmetingsresultaat succesvol vervangen
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Kwaliteitsmetingsresultaat met id niet gevonden
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     patch:
       tags:
       - 'Kwaliteitsmetingsresultaten'
@@ -431,53 +269,29 @@ paths:
         required: true
         schema:
           type: integer
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Kwaliteitsmetingsresultaat
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Kwaliteitsmetingsresultaten-Kwaliteitsmetingsresultaat-bericht'
+              $ref: '#/components/schemas/Kwaliteitsmetingsresultaten-Kwaliteitsmetingsresultaatbericht'
       responses:
         '200':
           description: Kwaliteitsmetingsresultaat succesvol gewijzigd
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Kwaliteitsmetingsresultaat met id niet gevonden
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
   /kwaliteitsmetingsverzoeken:
     get:
       tags:
@@ -490,72 +304,33 @@ paths:
         style: form
         explode: true
         schema:
-          $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Kwaliteitsmetingsverzoek-bericht'
-      - name: cursor
-        in: query
-        schema:
-          type: string
-        description: |
-          De cursor (bijv. GUID) waarmee de volgende pagina van resultaten opgehaald kan worden.
-          Zie ook: X-Parameters-Cursor.
-        example: 241d66b1-fcdb-4266-b908-01aeec18781e
-      - name: pagina
-        in: query
-        schema:
-          type: string
-        description: |
-          De opgevraagde pagina
-        example: 21
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Parameters-PeiltijdstipMaterieel
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Parameters-PeiltijdstipMaterieel'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
-      - name: X-Parameters-AantalPerPagina
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Parameters-AantalPerPagina'           
-      - name: X-Parameters-Pagina
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Parameters-Pagina'
+          $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Kwaliteitsmetingsverzoekbericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
       responses:
         '200':
-          description: Kwaliteitsmetingsverzoek response
+          description: Zoekactie geslaagd
           content:
             'application/json':
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Kwaliteitsmetingsverzoek-bericht'
+                  $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Kwaliteitsmetingsverzoekbericht'
           headers:
-            X-Stuurgegevens-TijdstipBericht:
-                $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-            X-Stuurgegevens-Referentienummer:
-                $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
             X-Parameters-Aantal:
-                $ref: '#/components/headers/X-Parameters-Aantal'
+              $ref: '#/components/headers/X-Parameters-Aantal'
             X-Parameters-AantalPerPagina:
-                $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
             X-Parameters-Pagina:
-                $ref: '#/components/headers/X-Parameters-Pagina'
+              $ref: '#/components/headers/X-Parameters-Pagina'
             X-Parameters-Cursor:
-                $ref: '#/components/headers/X-Parameters-Cursor'
+              $ref: '#/components/headers/X-Parameters-Cursor'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -570,48 +345,27 @@ paths:
       description: Voegt een nieuw(e) Kwaliteitsmetingsverzoek toe.
       operationId: createKwaliteitsmetingsverzoek
       parameters:
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Kwaliteitsmetingsverzoek
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Kwaliteitsmetingsverzoek-bericht'
+              $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Kwaliteitsmetingsverzoekbericht'
       responses:
         '200':
           description: Kwaliteitsmetingsverzoek succesvol toegevoegd
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     put:
       tags:
       - 'Kwaliteitsmetingsverzoeken'
@@ -619,60 +373,33 @@ paths:
         Vervangen van een Kwaliteitsmetingsverzoek op basis van overeenkomstige sleutelvelden.
       operationId: replaceKwaliteitsmetingsverzoek
       parameters:
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Kwaliteitsmetingsverzoek
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Kwaliteitsmetingsverzoek-bericht'
+              $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Kwaliteitsmetingsverzoekbericht'
       responses:
         '200':
           description: Kwaliteitsmetingsverzoek succesvol vervangen
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '400':
           description: |
             Fout in request.
             Kwaliteitsmetingsverzoek bevat geen sleutelveld(en).
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Kwaliteitsmetingsverzoek met gegeven sleutelveld(en) niet gevonden
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     patch:
       tags:
       - 'Kwaliteitsmetingsverzoeken'
@@ -681,60 +408,33 @@ paths:
         sleutelvelden aanwezig zijn.
       operationId: updateKwaliteitsmetingsverzoek
       parameters:
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Kwaliteitsmetingsverzoek
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Kwaliteitsmetingsverzoek-bericht'
+              $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Kwaliteitsmetingsverzoekbericht'
       responses:
         '200':
           description: Kwaliteitsmetingsverzoek succesvol gewijzigd
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '400':
           description: |
             Fout in request.
             Kwaliteitsmetingsverzoek bevat geen sleutelveld(en).
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
-           headers:
-             X-Stuurgegevens-Referentienummer:
-               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
            description: Kwaliteitsmetingsverzoek met gegeven sleutelveld(en) niet gevonden
-           headers:
-             X-Stuurgegevens-Referentienummer:
-               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
   /kwaliteitsmetingsverzoeken/{id}:
     get:
       tags:
@@ -748,51 +448,27 @@ paths:
         required: true
         schema:
           type: string
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
           description: Kwaliteitsmetingsverzoek response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Kwaliteitsmetingsverzoek-bericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+                $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Kwaliteitsmetingsverzoekbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Kwaliteitsmetingsverzoek met id niet gevonden
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     put:
       tags:
       - 'Kwaliteitsmetingsverzoeken'
@@ -805,53 +481,29 @@ paths:
         required: true
         schema:
           type: string
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Kwaliteitsmetingsverzoek
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Kwaliteitsmetingsverzoek-bericht'
+              $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Kwaliteitsmetingsverzoekbericht'
       responses:
         '200':
           description: Kwaliteitsmetingsverzoek succesvol vervangen
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Kwaliteitsmetingsverzoek met id niet gevonden
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     patch:
       tags:
       - 'Kwaliteitsmetingsverzoeken'
@@ -864,53 +516,29 @@ paths:
         required: true
         schema:
           type: integer
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Kwaliteitsmetingsverzoek
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Kwaliteitsmetingsverzoek-bericht'
+              $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Kwaliteitsmetingsverzoekbericht'
       responses:
         '200':
           description: Kwaliteitsmetingsverzoek succesvol gewijzigd
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Kwaliteitsmetingsverzoek met id niet gevonden
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
   /onderzoeksopdrachten:
     get:
       tags:
@@ -923,72 +551,33 @@ paths:
         style: form
         explode: true
         schema:
-          $ref: '#/components/schemas/Onderzoeksopdrachten-Onderzoeksopdracht-bericht'
-      - name: cursor
-        in: query
-        schema:
-          type: string
-        description: |
-          De cursor (bijv. GUID) waarmee de volgende pagina van resultaten opgehaald kan worden.
-          Zie ook: X-Parameters-Cursor.
-        example: 241d66b1-fcdb-4266-b908-01aeec18781e
-      - name: pagina
-        in: query
-        schema:
-          type: string
-        description: |
-          De opgevraagde pagina
-        example: 21
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Parameters-PeiltijdstipMaterieel
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Parameters-PeiltijdstipMaterieel'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
-      - name: X-Parameters-AantalPerPagina
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Parameters-AantalPerPagina'           
-      - name: X-Parameters-Pagina
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Parameters-Pagina'
+          $ref: '#/components/schemas/Onderzoeksopdrachten-Onderzoeksopdrachtbericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
       responses:
         '200':
-          description: Onderzoeksopdracht response
+          description: Zoekactie geslaagd
           content:
             'application/json':
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Onderzoeksopdrachten-Onderzoeksopdracht-bericht'
+                  $ref: '#/components/schemas/Onderzoeksopdrachten-Onderzoeksopdrachtbericht'
           headers:
-            X-Stuurgegevens-TijdstipBericht:
-                $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-            X-Stuurgegevens-Referentienummer:
-                $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
             X-Parameters-Aantal:
-                $ref: '#/components/headers/X-Parameters-Aantal'
+              $ref: '#/components/headers/X-Parameters-Aantal'
             X-Parameters-AantalPerPagina:
-                $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
             X-Parameters-Pagina:
-                $ref: '#/components/headers/X-Parameters-Pagina'
+              $ref: '#/components/headers/X-Parameters-Pagina'
             X-Parameters-Cursor:
-                $ref: '#/components/headers/X-Parameters-Cursor'
+              $ref: '#/components/headers/X-Parameters-Cursor'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -1003,48 +592,27 @@ paths:
       description: Voegt een nieuw(e) Onderzoeksopdracht toe.
       operationId: createOnderzoeksopdracht
       parameters:
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Onderzoeksopdracht
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Onderzoeksopdrachten-Onderzoeksopdracht-bericht'
+              $ref: '#/components/schemas/Onderzoeksopdrachten-Onderzoeksopdrachtbericht'
       responses:
         '200':
           description: Onderzoeksopdracht succesvol toegevoegd
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     put:
       tags:
       - 'Onderzoeksopdrachten'
@@ -1052,60 +620,33 @@ paths:
         Vervangen van een Onderzoeksopdracht op basis van overeenkomstige sleutelvelden.
       operationId: replaceOnderzoeksopdracht
       parameters:
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Onderzoeksopdracht
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Onderzoeksopdrachten-Onderzoeksopdracht-bericht'
+              $ref: '#/components/schemas/Onderzoeksopdrachten-Onderzoeksopdrachtbericht'
       responses:
         '200':
           description: Onderzoeksopdracht succesvol vervangen
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '400':
           description: |
             Fout in request.
             Onderzoeksopdracht bevat geen sleutelveld(en).
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Onderzoeksopdracht met gegeven sleutelveld(en) niet gevonden
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     patch:
       tags:
       - 'Onderzoeksopdrachten'
@@ -1114,60 +655,33 @@ paths:
         sleutelvelden aanwezig zijn.
       operationId: updateOnderzoeksopdracht
       parameters:
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Onderzoeksopdracht
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Onderzoeksopdrachten-Onderzoeksopdracht-bericht'
+              $ref: '#/components/schemas/Onderzoeksopdrachten-Onderzoeksopdrachtbericht'
       responses:
         '200':
           description: Onderzoeksopdracht succesvol gewijzigd
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '400':
           description: |
             Fout in request.
             Onderzoeksopdracht bevat geen sleutelveld(en).
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
-           headers:
-             X-Stuurgegevens-Referentienummer:
-               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
            description: Onderzoeksopdracht met gegeven sleutelveld(en) niet gevonden
-           headers:
-             X-Stuurgegevens-Referentienummer:
-               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
   /onderzoeksopdrachten/{id}:
     get:
       tags:
@@ -1181,51 +695,27 @@ paths:
         required: true
         schema:
           type: string
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
           description: Onderzoeksopdracht response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Onderzoeksopdrachten-Onderzoeksopdracht-bericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+                $ref: '#/components/schemas/Onderzoeksopdrachten-Onderzoeksopdrachtbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Onderzoeksopdracht met id niet gevonden
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     put:
       tags:
       - 'Onderzoeksopdrachten'
@@ -1238,53 +728,29 @@ paths:
         required: true
         schema:
           type: string
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Onderzoeksopdracht
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Onderzoeksopdrachten-Onderzoeksopdracht-bericht'
+              $ref: '#/components/schemas/Onderzoeksopdrachten-Onderzoeksopdrachtbericht'
       responses:
         '200':
           description: Onderzoeksopdracht succesvol vervangen
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Onderzoeksopdracht met id niet gevonden
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     patch:
       tags:
       - 'Onderzoeksopdrachten'
@@ -1297,53 +763,29 @@ paths:
         required: true
         schema:
           type: integer
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Onderzoeksopdracht
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Onderzoeksopdrachten-Onderzoeksopdracht-bericht'
+              $ref: '#/components/schemas/Onderzoeksopdrachten-Onderzoeksopdrachtbericht'
       responses:
         '200':
           description: Onderzoeksopdracht succesvol gewijzigd
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Onderzoeksopdracht met id niet gevonden
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
   /onderzoeksresultaten:
     get:
       tags:
@@ -1356,72 +798,33 @@ paths:
         style: form
         explode: true
         schema:
-          $ref: '#/components/schemas/Onderzoeksresultaten-Onderzoeksresultaat-bericht'
-      - name: cursor
-        in: query
-        schema:
-          type: string
-        description: |
-          De cursor (bijv. GUID) waarmee de volgende pagina van resultaten opgehaald kan worden.
-          Zie ook: X-Parameters-Cursor.
-        example: 241d66b1-fcdb-4266-b908-01aeec18781e
-      - name: pagina
-        in: query
-        schema:
-          type: string
-        description: |
-          De opgevraagde pagina
-        example: 21
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Parameters-PeiltijdstipMaterieel
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Parameters-PeiltijdstipMaterieel'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
-      - name: X-Parameters-AantalPerPagina
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Parameters-AantalPerPagina'           
-      - name: X-Parameters-Pagina
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Parameters-Pagina'
+          $ref: '#/components/schemas/Onderzoeksresultaten-Onderzoeksresultaatbericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
       responses:
         '200':
-          description: Onderzoeksresultaat response
+          description: Zoekactie geslaagd
           content:
             'application/json':
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Onderzoeksresultaten-Onderzoeksresultaat-bericht'
+                  $ref: '#/components/schemas/Onderzoeksresultaten-Onderzoeksresultaatbericht'
           headers:
-            X-Stuurgegevens-TijdstipBericht:
-                $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-            X-Stuurgegevens-Referentienummer:
-                $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
             X-Parameters-Aantal:
-                $ref: '#/components/headers/X-Parameters-Aantal'
+              $ref: '#/components/headers/X-Parameters-Aantal'
             X-Parameters-AantalPerPagina:
-                $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
             X-Parameters-Pagina:
-                $ref: '#/components/headers/X-Parameters-Pagina'
+              $ref: '#/components/headers/X-Parameters-Pagina'
             X-Parameters-Cursor:
-                $ref: '#/components/headers/X-Parameters-Cursor'
+              $ref: '#/components/headers/X-Parameters-Cursor'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -1436,48 +839,27 @@ paths:
       description: Voegt een nieuw(e) Onderzoeksresultaat toe.
       operationId: createOnderzoeksresultaat
       parameters:
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Onderzoeksresultaat
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Onderzoeksresultaten-Onderzoeksresultaat-bericht'
+              $ref: '#/components/schemas/Onderzoeksresultaten-Onderzoeksresultaatbericht'
       responses:
         '200':
           description: Onderzoeksresultaat succesvol toegevoegd
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     put:
       tags:
       - 'Onderzoeksresultaten'
@@ -1485,60 +867,33 @@ paths:
         Vervangen van een Onderzoeksresultaat op basis van overeenkomstige sleutelvelden.
       operationId: replaceOnderzoeksresultaat
       parameters:
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Onderzoeksresultaat
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Onderzoeksresultaten-Onderzoeksresultaat-bericht'
+              $ref: '#/components/schemas/Onderzoeksresultaten-Onderzoeksresultaatbericht'
       responses:
         '200':
           description: Onderzoeksresultaat succesvol vervangen
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '400':
           description: |
             Fout in request.
             Onderzoeksresultaat bevat geen sleutelveld(en).
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Onderzoeksresultaat met gegeven sleutelveld(en) niet gevonden
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     patch:
       tags:
       - 'Onderzoeksresultaten'
@@ -1547,60 +902,33 @@ paths:
         sleutelvelden aanwezig zijn.
       operationId: updateOnderzoeksresultaat
       parameters:
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Onderzoeksresultaat
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Onderzoeksresultaten-Onderzoeksresultaat-bericht'
+              $ref: '#/components/schemas/Onderzoeksresultaten-Onderzoeksresultaatbericht'
       responses:
         '200':
           description: Onderzoeksresultaat succesvol gewijzigd
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '400':
           description: |
             Fout in request.
             Onderzoeksresultaat bevat geen sleutelveld(en).
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
-           headers:
-             X-Stuurgegevens-Referentienummer:
-               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
            description: Onderzoeksresultaat met gegeven sleutelveld(en) niet gevonden
-           headers:
-             X-Stuurgegevens-Referentienummer:
-               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
   /onderzoeksresultaten/{id}:
     get:
       tags:
@@ -1614,51 +942,27 @@ paths:
         required: true
         schema:
           type: string
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
           description: Onderzoeksresultaat response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Onderzoeksresultaten-Onderzoeksresultaat-bericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+                $ref: '#/components/schemas/Onderzoeksresultaten-Onderzoeksresultaatbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Onderzoeksresultaat met id niet gevonden
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     put:
       tags:
       - 'Onderzoeksresultaten'
@@ -1671,53 +975,29 @@ paths:
         required: true
         schema:
           type: string
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Onderzoeksresultaat
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Onderzoeksresultaten-Onderzoeksresultaat-bericht'
+              $ref: '#/components/schemas/Onderzoeksresultaten-Onderzoeksresultaatbericht'
       responses:
         '200':
           description: Onderzoeksresultaat succesvol vervangen
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Onderzoeksresultaat met id niet gevonden
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     patch:
       tags:
       - 'Onderzoeksresultaten'
@@ -1730,106 +1010,55 @@ paths:
         required: true
         schema:
           type: integer
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit Onderzoeksresultaat
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Onderzoeksresultaten-Onderzoeksresultaat-bericht'
+              $ref: '#/components/schemas/Onderzoeksresultaten-Onderzoeksresultaatbericht'
       responses:
         '200':
           description: Onderzoeksresultaat succesvol gewijzigd
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: Onderzoeksresultaat met id niet gevonden
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
 security:
   - ApiKeyAuth: []
 components:
   headers:
-    X-Stuurgegevens-TijdstipBericht:
-      schema:
-        type: string
-        format: data-time
-        description: Tijdstip waarop het bericht verzonden is
-    X-Stuurgegevens-Referentienummer:
-      schema:
-        type: string
-        format: any
-        description: Een unieke code voor correlatie
-    X-Stuurgegevens-Zender-Organisatie:
-      schema:
-        type: string
-        format: any
-        description: Naam van de verzendende organisatie
-    X-Stuurgegevens-Zender-Administratie:
-      schema:
-        type: string
-        format: any
-        description: |
-          Met het stuurgegeven Administratie kan onderscheid gemaakt worden tussen 
-          de verschillende gegevensverzamelingen die de verzendende organisatie beheert
     X-Parameters-Aantal:
+      description: Totaal aantal gevonden resultaten
       schema:
-        type: integer
-        description: Totaal aantal gevonden entiteiten
-        example: 135
+        $ref: '#/components/schemas/Aantal'
     X-Parameters-AantalPerPagina:
+      description: |
+        Het maximum aantal resultaten per pagina zoals dat in het request opgegeven is,
+        of de default waarde indien dit niet opgeven is.
+      example: 20
       schema:
-        type: integer
-        description: Maximum aantal resultaten per pagina
-        example: 20
+        $ref: '#/components/schemas/AantalPerPagina'
     X-Parameters-Pagina:
+      description: Het huidige paginanummer
       schema:
-        type: integer
-        description: Huidige paginanummer
-        example: 3
+        $ref: '#/components/schemas/Paginanummer'
     X-Parameters-Cursor:
+      description: |
+        Bij het ophalen van de volgende set van resultaten dient deze waarde 
+        als parameter (cursor) in de query meegestuurd te worden.
+      example: 241d66b1-fcdb-4266-b908-01aeec18781e
       schema:
-        type: string
-        description: |
-          De cursor (bijv. GUID) wanneer het aantal resultaten groter is dan het maximum aantal resultaten per pagina.
-          Deze dient als query parameter ('?cursor=<guid>') te worden meegestuurd bij het ophalen van de volgende pagina.
-        example: 241d66b1-fcdb-4266-b908-01aeec18781e
-    X-Parameters-PeiltijdstipMaterieel:
-      schema:
-        type: string
-        format: date-time
-        description: De peildatum. Indien leeg worden de actuele gegevens opgevraagd
+        $ref: '#/components/schemas/Cursor'
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
@@ -1843,7 +1072,7 @@ components:
           schema:
             type: string
   schemas:
-    Kwaliteitsmetingsresultaten-Kwaliteitsmetingsresultaat-bericht:
+    Kwaliteitsmetingsresultaten-Kwaliteitsmetingsresultaatbericht:
       allOf:
         - $ref: '#/components/schemas/Kwaliteitsmetingsresultaten-Kwaliteitsmetingsresultaat'
         - $ref: '#/components/schemas/Bericht-basis'
@@ -1875,17 +1104,20 @@ components:
           format: date
           description: Datum waarop de resultaten van de onderzoeksopdracht zijn binnen gekomen (vóór de analyse).
         beoordelingsSchaal:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'De methodiek / schaal waarlangs de reactie van de relatie wordt gemeten. Voorbeelden: Lickert-scale, Positief/Negatief, Rapportcijfer 1-10.'
         beoordelingsWaarde:
           type: string
           format: any
           description: de waarde van de beoordeling op basis van de gespecificeerde beoordelingsSchaal.
         kwaliteitsmetingsverzoek:
-          $ref: '#/components/schemas/Kwaliteitsmetingsverzoek-sleutels'
+          allOf:
+          - $ref: '#/components/schemas/Kwaliteitsmetingsverzoek-sleutels'
           description: Het kwaliteitsmetingsverzoek behorende bij het resultaat.
         resultaatReactie:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Wordt aangegeven of de relatie de vragenlijst heeft ingevuld, of er opvolging gegeven moet worden aan de kwaliteitsmeting of dat de relatie niet heeft gereageerd. Deze laatste situatie kan ook gebruikt worden voor de situatie waarbij de relatie anoniem wil blijven. Mogelijke referentiedata: Volledig ingevuld, Deels ingevuld, Ingevuld met verzoek opvolging, Niet gereageerd.'
         toelichtingBeoordeling:
           type: string
@@ -1941,7 +1173,8 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Het soort adres. Bijv. eenheidadres, postadres of buitenlands adres.
         adres:
           type: string
@@ -1987,19 +1220,24 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort communicatie. Bijvoorbeeld: Telefoon, E-mail, .Social media etc.'
         detailSoort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort detail communicatie. Bijvoorbeeld: Mobiel, privé, werk.'
         status:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: De status van het contactgegeven. Bijv. Aangemaakt, Gevalideerd, Ongeldig etc.
         vertrouwelijkheid:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: De classificatie van het vertrouwelijkheidsniveau.
         voorkeur:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'De manier waarop de relatie contact wil krijgen door dit contactgegeven. Bijvoorbeeld: 1e voorkeur, 2e voorkeur.'
         waarde:
           type: string
@@ -2033,7 +1271,8 @@ components:
           format: date-time
           description: De datum en tijd waarop contact is geweest.
         kanaal:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Het kanaal via welke het contact heeft gelopen. Bijvoorbeeld: Telefoon, email, balie, internet.'
         relaties:
           description: De relatie waarmee contact is geweest. Bijv. een huurder, medewerker etc.
@@ -2041,7 +1280,8 @@ components:
           items:
             $ref: '#/components/schemas/Relatie-sleutels'
         richting:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'De communicatierichting behorend bij het contact. Bijvoorbeeld: Uitgaand of ingaand.'
     Relatie-sleutels:
       type: object
@@ -2063,16 +1303,19 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
         detailSoort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon.'
         rollen:
           type: array
           items:
+            type: string
             format: uri
-            description: 'Referentie naar Relatierol in de vorm: {endpoint Relaties}/v4/relatierollen/{id}'
+          description: Referentie naar Relatierol in bronsysteem Relaties
     Kwaliteitsmetingsverzoeken-Eenheid:
       type: object
       properties:
@@ -2093,27 +1336,32 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'De dienstverlening (soort) die geboden kan worden met de eenheid. Voorbeeld: Woonruimte, Bedrijfsruimte, Parkeergelegenheid.'
         detailSoort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Het type van de eenheid. Bijvoorbeeld: Hoekwoning, Tussenwoning, Flat, Maisonnette. Hiervoor wordt de lijst van de waarderingskamer als uitgangspunt genomen.'
         naam:
           type: string
           format: any
           description: De naam van de eenheid.
         status:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'De status van de eenheid, bijvoorbeeld: Leegstand, Uit beheer, Renovatie, Verhuurd, Verkocht'
         detailStatus:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'De detailstatus (ook wel substatus) van een status. De detailstatus geeft een extra reden op van de eenheid status die de eenheid heeft. Bijvoorbeeld: de status is Renovatie, de detailstatus geeft aan dat het om planmatig onderhoud gaat.'
         beginBouwdatum:
           type: string
           format: date
           description: De begindatum van de bouw van de eenheid.
         adres:
-          $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Adres'
+          allOf:
+          - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Adres'
           description: Het adres van de eenheid.
         clusters:
           description: De clusters waar de eenheid onderdeel van uitmaakt.
@@ -2172,27 +1420,31 @@ components:
           format: any
           description: De naam van de gemeente.
         samenwerkingsverband:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Het regionale samenwerkingsverband waarbinnen de gemeente deelneemt.
     Kwaliteitsmetingsverzoeken-Huurovereenkomst:
       type: object
       allOf:
-        - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Overeenkomst-basis'
+      - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Overeenkomst-basis'
       properties:
         status:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'De status van een huurovereenkomst. Dit kan een waarde bevatten zoals: overeenkomst beëindigd en huurder is vertrokken, of overeenkomst is momenteel in gebruik.'
         opzegdatum:
           type: string
           format: date
           description: De datum dat de overeenkomst is opgezegd door de huurder.
         eindeReden:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: De reden voor beëindiging van de huurovereenkomst.
         maatschappelijkLabel:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Het label waarmee het maatschappelijk en economisch  belang van de dienstverlening wordt aangegeven bij de verhuring: DAEB of niet-DAEB. Het label op de huurovereenkomst kan afwijken van het maatschappelijk label van de eenheid. Hiermee kan worden aangegeven dat een eenheid die behoort tot de niet-DAEB tak als DAEB-verhuring verantwoord moet worden.'
-    Kwaliteitsmetingsverzoeken-Kwaliteitsmetingsverzoek-bericht:
+    Kwaliteitsmetingsverzoeken-Kwaliteitsmetingsverzoekbericht:
       allOf:
         - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Kwaliteitsmetingsverzoek'
         - $ref: '#/components/schemas/Bericht-basis'
@@ -2216,29 +1468,36 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Geeft het verzoek type aan.
         omschrijving:
           type: string
           format: any
           description: Beknopte omschrijving van het kwaliteitsmetingverzoek.
         status:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: De status van het kwaliteitmetingsverzoek (Aangevraagd, In uitvoering, Geannuleerd, Afgerond).
         afgerondeZaak:
-          $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Zaak'
+          allOf:
+          - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Zaak'
           description: De afgeronde zaak op basis waarvan een kwaliteitsmeting wordt verzocht.
         contactmoment:
-          $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Contactmoment'
+          allOf:
+          - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Contactmoment'
           description: Het contactmoment op basis waarvan een kwaliteitsmeting wordt verzocht.
         eenheid:
-          $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Eenheid'
+          allOf:
+          - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Eenheid'
           description: De eenheid die betrekking heeft op het kwaliteitsmetingsverzoek.
         onderhoudsverzoek:
-          $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Onderhoudsverzoek'
+          allOf:
+          - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Onderhoudsverzoek'
           description: Het onderhoudsverzoek die betrekking heeft op het kwaliteitsmetingsverzoek.
         overeenkomst:
-          $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Overeenkomst'
+          allOf:
+          - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Overeenkomst'
           description: De overeenkomst die betrekking heeft op het kwaliteitsmetingsverzoek.
         relaties:
           description: De relaties die betrekking hebben op het kwaliteitsmetingsverzoek.
@@ -2246,12 +1505,13 @@ components:
           items:
             $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Relatie'
         teEnqueterenRelatie:
-          $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Relatie'
+          allOf:
+          - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Relatie'
           description: De relatie waar de kwaliteitsmeting moet worden uitgevoerd.
     Kwaliteitsmetingsverzoeken-NatuurlijkPersoon:
       type: object
       allOf:
-        - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Relatie-basis'
+      - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Relatie-basis'
       properties:
         voornaam:
           type: string
@@ -2309,10 +1569,12 @@ components:
           format: any
           description: 'De korte omschrijving van het verzoek. Bijvoorbeeld: Keuken: kraan lekt.'
         onderhoudSoort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort onderhoud dat wordt verzocht. Bijvoorbeeld: reparatie, mutatieonderhoud etc.'
         status:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'De status van het verzoek. Bijvoorbeeld: Geregistreerd, In behandeling, Geannuleerd, Afgehandeld'
         melddatum:
           type: string
@@ -2343,13 +1605,16 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn.
         detailSoort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Het detail soort overeenkomst. Bijvoorbeeld BOG (Bedrijfs Onroerend Goed).
         bovenliggendeOvereenkomst:
-          $ref: '#/components/schemas/Overeenkomst-sleutels'
+          allOf:
+          - $ref: '#/components/schemas/Overeenkomst-sleutels'
           description: De gerelateerde overeenkomst, bijvoorbeeld indien dit een betaalovereenkomst betreft voor een bovenliggende huurovereenkomst.
         begindatum:
           type: string
@@ -2379,7 +1644,8 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn.
     Kwaliteitsmetingsverzoeken-Overeenkomst:
       oneOf:
@@ -2387,7 +1653,7 @@ components:
     Kwaliteitsmetingsverzoeken-Rechtspersoon:
       type: object
       allOf:
-        - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Relatie-basis'
+      - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Relatie-basis'
       properties:
         naam:
           type: string
@@ -2413,10 +1679,12 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
         detailSoort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon.'
         contactgegevens:
           description: De contactgegevens van de relatie.
@@ -2452,7 +1720,8 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Het soort rol van de relatie. Bijvoorbeeld Klant, Prospect, Leverancier, Medewerker, Team etc.
         naam:
           type: string
@@ -2540,7 +1809,8 @@ components:
           format: date-time
           description: De datum waarop de uitvoering van de zaak afgerond is.
         zaaktype:
-          $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Zaaktype'
+          allOf:
+          - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Zaaktype'
           description: Zaaktype duidt de aard van de zaak aan en definieert daarmee de zaak.
     Kwaliteitsmetingsverzoeken-Zaaktype:
       type: object
@@ -2562,10 +1832,12 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Categorisering van de aard van een zaak van dit zaaktype.
         detailSoort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Specificatie van de categorie ten aanzien van de aard van zaak van het zaaktype.
         omschrijving:
           type: string
@@ -2591,7 +1863,8 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Het soort adres. Bijv. eenheidadres, postadres of buitenlands adres.
         adres:
           type: string
@@ -2641,25 +1914,30 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort communicatie. Bijvoorbeeld: Telefoon, E-mail, .Social media etc.'
         detailSoort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort detail communicatie. Bijvoorbeeld: Mobiel, privé, werk.'
         status:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: De status van het contactgegeven. Bijv. Aangemaakt, Gevalideerd, Ongeldig etc.
         vertrouwelijkheid:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: De classificatie van het vertrouwelijkheidsniveau.
         voorkeur:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'De manier waarop de relatie contact wil krijgen door dit contactgegeven. Bijvoorbeeld: 1e voorkeur, 2e voorkeur.'
         waarde:
           type: string
           format: any
           description: 'De aard van het contactgegeven. Dit kan de waarde zijn van een telefoonnummer, emailadres, of twitteradres. Bijvoorbeeld: 020-1234563 '
-    Onderzoeksopdrachten-Onderzoeksopdracht-bericht:
+    Onderzoeksopdrachten-Onderzoeksopdrachtbericht:
       allOf:
         - $ref: '#/components/schemas/Onderzoeksopdrachten-Onderzoeksopdracht'
         - $ref: '#/components/schemas/Bericht-basis'
@@ -2683,34 +1961,41 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Geeft het soort van de onderzoeksopdracht aan.
         omschrijving:
           type: string
           format: any
           description: Beknopte omschrijving van de onderzoeksopdracht.
         status:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'de status van de onderzoeksopdracht: enquete verstuurd, reminder verstuurd, antwoorden ontvangen, geen antwoord ontvangen en afgesloten, onderzoeksopdracht afgerond.'
         contactgegeven:
-          $ref: '#/components/schemas/Onderzoeksopdrachten-Contactgegeven'
+          allOf:
+          - $ref: '#/components/schemas/Onderzoeksopdrachten-Contactgegeven'
           description: Het contactgegeven die gebruikt moet worden bij het uit te voeren onderzoek.
         kanaal:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Het kanaal via welke het contact moet lopen. Bijvoorbeeld: Telefoon, email, schriftelijk.'
         postadres:
-          $ref: '#/components/schemas/Onderzoeksopdrachten-Adres'
+          allOf:
+          - $ref: '#/components/schemas/Onderzoeksopdrachten-Adres'
           description: 'Indien contact schriftelijk: adres waar de onderzoeksopdracht moet worden uitgevoerd.'
         relatie:
-          $ref: '#/components/schemas/Onderzoeksopdrachten-Relatie'
+          allOf:
+          - $ref: '#/components/schemas/Onderzoeksopdrachten-Relatie'
           description: De relatie die geenqueteerd moet worden.
         vragenlijst:
-          $ref: '#/components/schemas/Onderzoeksopdrachten-Vragenlijst'
+          allOf:
+          - $ref: '#/components/schemas/Onderzoeksopdrachten-Vragenlijst'
           description: De vragenlijst die gebruikt moet worden bij het uitvoeren van de onderzoeksopdracht.
     Onderzoeksopdrachten-Postadres:
       type: object
       allOf:
-        - $ref: '#/components/schemas/Onderzoeksopdrachten-Adres-basis'
+      - $ref: '#/components/schemas/Onderzoeksopdrachten-Adres-basis'
       properties:
         antwoordnummer:
           type: string
@@ -2721,7 +2006,8 @@ components:
           format: any
           description: Het postbusnummer behorende bij het adres.
         woonplaats:
-          $ref: '#/components/schemas/Onderzoeksopdrachten-Woonplaats'
+          allOf:
+          - $ref: '#/components/schemas/Onderzoeksopdrachten-Woonplaats'
           description: De woonplaats waarin het adres zich bevindt.
     Onderzoeksopdrachten-Relatie:
       type: object
@@ -2743,10 +2029,12 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
         detailSoort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon.'
     Onderzoeksopdrachten-Vragenlijst:
       type: object
@@ -2768,7 +2056,8 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Geeft het soort van de vragenlijst aan.
         omschrijving:
           type: string
@@ -2799,7 +2088,8 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Geeft het soort van de vraag aan: open vraag, ja/nee vraag, meerkeuzevraag, optie, NPS, cijferschaal, etc.'
         omschrijving:
           type: string
@@ -2837,7 +2127,7 @@ components:
           type: string
           format: any
           description: De naam van de woonplaats.
-    Onderzoeksresultaten-Onderzoeksresultaat-bericht:
+    Onderzoeksresultaten-Onderzoeksresultaatbericht:
       allOf:
         - $ref: '#/components/schemas/Onderzoeksresultaten-Onderzoeksresultaat'
         - $ref: '#/components/schemas/Bericht-basis'
@@ -2866,7 +2156,8 @@ components:
           items:
             $ref: '#/components/schemas/Onderzoeksresultaten-VragenlijstAntwoord'
         opdracht:
-          $ref: '#/components/schemas/Onderzoeksopdracht-sleutels'
+          allOf:
+          - $ref: '#/components/schemas/Onderzoeksopdracht-sleutels'
           description: De onderzoeksopdracht.
     Onderzoeksopdracht-sleutels:
       type: object
@@ -2915,10 +2206,12 @@ components:
           format: any
           description: Toelichting bij het antwoord
         vraag:
-          $ref: '#/components/schemas/Onderzoeksresultaten-VragenlijstRegel'
+          allOf:
+          - $ref: '#/components/schemas/Onderzoeksresultaten-VragenlijstRegel'
           description: De vraag die hoort bij het gegeven antwoord
         vragenlijst:
-          $ref: '#/components/schemas/Vragenlijst-sleutels'
+          allOf:
+          - $ref: '#/components/schemas/Vragenlijst-sleutels'
           description: De vraag die hoort bij het gegeven antwoord
     Vragenlijst-sleutels:
       type: object
@@ -2959,7 +2252,8 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: 'Geeft het soort van de vraag aan: open vraag, ja/nee vraag, meerkeuzevraag, optie, NPS, cijferschaal, etc.'
         omschrijving:
           type: string
@@ -3009,16 +2303,20 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Specificatie van het documenttype. Bijvoorbeeld verslag, rapport etc.
         detailSoort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Detail specificatie van het documenttype. Bijvoorbeeld notulen, adviesrapport etc.
         onderwerp:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Onderwerp van het informatieobject.
         subonderwerp:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Subonderwerp van het informatieobject.
         titel:
           type: string
@@ -3052,21 +2350,24 @@ components:
           format: any
           description: Tekstuele omschrijving ten behoeve van externe publicatie van dit informatieobject.
         formaat:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Het digitale formaat (IANA media type) van het informatieobject.
         gebruiksrechten:
           type: string
           format: any
           description: Informatie omtrent rechten die geassocieerd zijn met het informatieobject zoals intellectueel eigendom.
         taal:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: De taal waarin het informatieobject is opgesteld.
         versie:
           type: number
           format: float
           description: Het versienummer van het informatieobject.
         vertrouwelijkheid:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: De classificatie van het vertrouwelijkheidsniveau van het informatieobject.
     Foutbericht:
       type: object
@@ -3079,4 +2380,95 @@ components:
           type: string
           format: any
           description: Omschrijving van de fout
+    TijdstipBericht:
+      type: string
+      format: date-time
+    Referentienummer:
+      type: string
+      format: any
+    ZenderOrganisatie:
+      type: string
+      format: any
+    ZenderAdministratie:
+      type: string
+      format: any
+    Aantal:
+      type: integer
+    AantalPerPagina:
+      type: integer
+    Paginanummer:
+      type: integer
+    Cursor:
+      type: string
+    PeiltijdstipMaterieel:
+      type: string
+      format: date-time
+  parameters:
+    Cursor:
+      in: query
+      name: cursor
+      description: |
+        De cursor uit de response dient te worden meegestuurd bij het opvragen van 
+        de volgende set van resultaten wanneer deze groter is dan het aantal resultaten per pagina.
+      example: ca73d9bc-f810-48bf-8950-ec3fd70b0159
+      required: false
+      schema:
+        $ref: '#/components/schemas/Cursor'
+    Pagina:
+      in: query
+      name: pagina
+      description: Opgevraagde paginanummer
+      example: 3
+      required: false
+      schema:
+        $ref: '#/components/schemas/Paginanummer'
+    StuurgegevensTijdstipBericht:
+      in: header
+      name: X-Stuurgegevens-Tijdstip-Bericht
+      description: Tijdstip van verzenden
+      example: 2022-07-21T17:32:28Z
+      required: false
+      schema:
+        $ref: '#/components/schemas/TijdstipBericht'
+    StuurgegevensReferentienummer:
+      in: header
+      name: X-Stuurgegevens-Referentienummer
+      description: | 
+        Code bedoeld voor correlatie
+      example: 05aa0347-fef9-486a-a1b0-4fd75f33e746
+      required: false
+      schema:
+        $ref: '#/components/schemas/Referentienummer'
+    StuurgegevensZenderOrganisatie:
+      in: header
+      name: X-Stuurgegevens-Zender-Organisatie
+      description: Naam van de verzendende organisatie
+      required: false
+      schema:
+        $ref: '#/components/schemas/ZenderOrganisatie'
+    StuurgegevensZenderAdministratie:
+      in: header
+      name: X-Stuurgegevens-Zender-Administratie
+      description: |
+        Met het stuurgegeven Administratie kan onderscheid gemaakt worden tussen 
+        de verschillende gegevensverzamelingen die de verzendende organisatie beheert
+      required: false
+      schema:
+        $ref: '#/components/schemas/ZenderAdministratie'
+    ParametersAantalPerPagina:
+      in: header
+      name: X-Parameters-AantalPerPagina
+      description: Maximaal aantal resultaten in de response
+      example: 20
+      required: false
+      schema:
+        $ref: '#/components/schemas/AantalPerPagina'
+    ParametersPeiltijdstipMaterieel:
+      in: header
+      name: X-Parameters-PeiltijdstipMaterieel
+      description: De peildatum. Indien leeg worden de actuele gegevens opgevraagd
+      example: 2022-04-14T12:00:00Z
+      required: false
+      schema:
+        $ref: '#/components/schemas/PeiltijdstipMaterieel'
 

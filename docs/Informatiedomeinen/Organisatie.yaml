@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  title: VERA-Kwaliteit
-  description: API-specificatie van informatiedomein Kwaliteit
+  title: VERA-Organisatie
+  description: API-specificatie van informatiedomein Organisatie
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -11,7 +11,7 @@ info:
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
   version: '4.0.14+220909.17'
 servers:
-  - url: https://kwaliteit.vera.io:{port}/{basePath}
+  - url: https://organisatie.vera.io:{port}/{basePath}
     description: Productieserver
     variables:
        port:
@@ -22,20 +22,16 @@ servers:
        basePath:
          default: v4
 tags:
-- name: Kwaliteitsmetingsresultaten
-  description: Operaties met betrekking tot een Kwaliteitsmetingsresultaat
-- name: Kwaliteitsmetingsverzoeken
-  description: Operaties met betrekking tot een Kwaliteitsmetingsverzoek
-- name: Onderzoeksopdrachten
-  description: Operaties met betrekking tot een Onderzoeksopdracht
-- name: Onderzoeksresultaten
-  description: Operaties met betrekking tot een Onderzoeksresultaat
-- name: Vragenlijsten
-  description: Operaties met betrekking tot een Vragenlijst
-- name: VragenlijstAntwoorden
-  description: Operaties met betrekking tot een VragenlijstAntwoord
-- name: VragenlijstRegels
-  description: Operaties met betrekking tot een VragenlijstRegel
+- name: Medewerkers
+  description: Operaties met betrekking tot een Medewerker
+- name: Medewerkerrollen
+  description: Operaties met betrekking tot een Medewerkerrol
+- name: Organisaties
+  description: Operaties met betrekking tot een Organisatie
+- name: OrganisatorischeEenheden
+  description: Operaties met betrekking tot een OrganisatorischeEenheid
+- name: PersoneleFuncties
+  description: Operaties met betrekking tot een PersoneleFunctie
 paths:
   /ping:
     get:
@@ -51,19 +47,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /kwaliteitsmetingsresultaten:
+  /medewerkers:
     get:
       tags:
-      - 'Kwaliteitsmetingsresultaten'
-      description: Ophalen van Kwaliteitsmetingsresultaten
-      operationId: listKwaliteitsmetingsresultaten
+      - 'Medewerkers'
+      description: Ophalen van Medewerkers
+      operationId: listMedewerkers
       parameters:
       - name: params
         in: query
         style: form
         explode: true
         schema:
-          $ref: '#/components/schemas/Kwaliteitsmetingsresultaatbericht'
+          $ref: '#/components/schemas/Medewerkerbericht'
       - $ref: '#/components/parameters/Cursor'
       - $ref: '#/components/parameters/Pagina'
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
@@ -80,7 +76,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Kwaliteitsmetingsresultaatbericht'
+                  $ref: '#/components/schemas/Medewerkerbericht'
           headers:
             X-Parameters-Aantal:
               $ref: '#/components/headers/X-Parameters-Aantal'
@@ -100,23 +96,23 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     post:
       tags:
-      - 'Kwaliteitsmetingsresultaten'
-      description: Voegt een nieuw(e) Kwaliteitsmetingsresultaat toe.
-      operationId: createKwaliteitsmetingsresultaat
+      - 'Medewerkers'
+      description: Voegt een nieuw(e) Medewerker toe.
+      operationId: createMedewerker
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Kwaliteitsmetingsresultaat
+        description: Medewerker
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Kwaliteitsmetingsresultaatbericht'
+              $ref: '#/components/schemas/Medewerkerbericht'
       responses:
         '200':
-          description: Kwaliteitsmetingsresultaat succesvol toegevoegd
+          description: Medewerker succesvol toegevoegd
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -127,32 +123,32 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
-      - 'Kwaliteitsmetingsresultaten'
+      - 'Medewerkers'
       description: |
-        Vervangen van een Kwaliteitsmetingsresultaat op basis van overeenkomstige sleutelvelden.
-      operationId: replaceKwaliteitsmetingsresultaat
+        Vervangen van een Medewerker op basis van overeenkomstige sleutelvelden.
+      operationId: replaceMedewerker
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Kwaliteitsmetingsresultaat
+        description: Entiteit Medewerker
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Kwaliteitsmetingsresultaatbericht'
+              $ref: '#/components/schemas/Medewerkerbericht'
       responses:
         '200':
-          description: Kwaliteitsmetingsresultaat succesvol vervangen
+          description: Medewerker succesvol vervangen
         '400':
           description: |
             Fout in request.
-            Kwaliteitsmetingsresultaat bevat geen sleutelveld(en).
+            Medewerker bevat geen sleutelveld(en).
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Kwaliteitsmetingsresultaat met gegeven sleutelveld(en) niet gevonden
+          description: Medewerker met gegeven sleutelveld(en) niet gevonden
         default:
           description: Onverwachte fout
           content:
@@ -161,49 +157,49 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     patch:
       tags:
-      - 'Kwaliteitsmetingsresultaten'
+      - 'Medewerkers'
       description: |
-        Wijzigen van afzonderlijke attributen van een Kwaliteitsmetingsresultaat. In de meegestuurde entiteit moeten
+        Wijzigen van afzonderlijke attributen van een Medewerker. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
-      operationId: updateKwaliteitsmetingsresultaat
+      operationId: updateMedewerker
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Kwaliteitsmetingsresultaat
+        description: Entiteit Medewerker
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Kwaliteitsmetingsresultaatbericht'
+              $ref: '#/components/schemas/Medewerkerbericht'
       responses:
         '200':
-          description: Kwaliteitsmetingsresultaat succesvol gewijzigd
+          description: Medewerker succesvol gewijzigd
         '400':
           description: |
             Fout in request.
-            Kwaliteitsmetingsresultaat bevat geen sleutelveld(en).
+            Medewerker bevat geen sleutelveld(en).
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-           description: Kwaliteitsmetingsresultaat met gegeven sleutelveld(en) niet gevonden
+           description: Medewerker met gegeven sleutelveld(en) niet gevonden
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /kwaliteitsmetingsresultaten/{id}:
+  /medewerkers/{id}:
     get:
       tags:
-      - 'Kwaliteitsmetingsresultaten'
-      description: Retourneert een Kwaliteitsmetingsresultaat met de gegeven identifier
-      operationId: readKwaliteitsmetingsresultaatById
+      - 'Medewerkers'
+      description: Retourneert een Medewerker met de gegeven identifier
+      operationId: readMedewerkerById
       parameters:
       - name: id
         in: path
-        description: Id van Kwaliteitsmetingsresultaat om op te halen
+        description: Id van Medewerker om op te halen
         required: true
         schema:
           type: string
@@ -213,15 +209,15 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
-          description: Kwaliteitsmetingsresultaat response
+          description: Medewerker response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Kwaliteitsmetingsresultaatbericht'
+                $ref: '#/components/schemas/Medewerkerbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Kwaliteitsmetingsresultaat met id niet gevonden
+          description: Medewerker met id niet gevonden
         default:
           description: Onverwachte fout
           content:
@@ -230,13 +226,13 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
-      - 'Kwaliteitsmetingsresultaten'
-      description: Vervangen van een Kwaliteitsmetingsresultaat
-      operationId: replaceKwaliteitsmetingsresultaatById
+      - 'Medewerkers'
+      description: Vervangen van een Medewerker
+      operationId: replaceMedewerkerById
       parameters:
       - name: 'id'
         in: 'path'
-        description: Id van Kwaliteitsmetingsresultaat om te vervangen
+        description: Id van Medewerker om te vervangen
         required: true
         schema:
           type: string
@@ -245,18 +241,18 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Kwaliteitsmetingsresultaat
+        description: Entiteit Medewerker
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Kwaliteitsmetingsresultaatbericht'
+              $ref: '#/components/schemas/Medewerkerbericht'
       responses:
         '200':
-          description: Kwaliteitsmetingsresultaat succesvol vervangen
+          description: Medewerker succesvol vervangen
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Kwaliteitsmetingsresultaat met id niet gevonden
+          description: Medewerker met id niet gevonden
         default:
           description: Onverwachte fout
           content:
@@ -265,13 +261,13 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     patch:
       tags:
-      - 'Kwaliteitsmetingsresultaten'
-      description: Wijzigen van een Kwaliteitsmetingsresultaat
-      operationId: updateKwaliteitsmetingsresultaatById
+      - 'Medewerkers'
+      description: Wijzigen van een Medewerker
+      operationId: updateMedewerkerById
       parameters:
       - name: 'id'
         in: 'path'
-        description: Id van Kwaliteitsmetingsresultaat om te wijzigen
+        description: Id van Medewerker om te wijzigen
         required: true
         schema:
           type: integer
@@ -280,37 +276,37 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Kwaliteitsmetingsresultaat
+        description: Entiteit Medewerker
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Kwaliteitsmetingsresultaatbericht'
+              $ref: '#/components/schemas/Medewerkerbericht'
       responses:
         '200':
-          description: Kwaliteitsmetingsresultaat succesvol gewijzigd
+          description: Medewerker succesvol gewijzigd
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Kwaliteitsmetingsresultaat met id niet gevonden
+          description: Medewerker met id niet gevonden
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /kwaliteitsmetingsverzoeken:
+  /medewerkerrollen:
     get:
       tags:
-      - 'Kwaliteitsmetingsverzoeken'
-      description: Ophalen van Kwaliteitsmetingsverzoeken
-      operationId: listKwaliteitsmetingsverzoeken
+      - 'Medewerkerrollen'
+      description: Ophalen van Medewerkerrollen
+      operationId: listMedewerkerrollen
       parameters:
       - name: params
         in: query
         style: form
         explode: true
         schema:
-          $ref: '#/components/schemas/Kwaliteitsmetingsverzoekbericht'
+          $ref: '#/components/schemas/Medewerkerrolbericht'
       - $ref: '#/components/parameters/Cursor'
       - $ref: '#/components/parameters/Pagina'
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
@@ -327,7 +323,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Kwaliteitsmetingsverzoekbericht'
+                  $ref: '#/components/schemas/Medewerkerrolbericht'
           headers:
             X-Parameters-Aantal:
               $ref: '#/components/headers/X-Parameters-Aantal'
@@ -347,23 +343,23 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     post:
       tags:
-      - 'Kwaliteitsmetingsverzoeken'
-      description: Voegt een nieuw(e) Kwaliteitsmetingsverzoek toe.
-      operationId: createKwaliteitsmetingsverzoek
+      - 'Medewerkerrollen'
+      description: Voegt een nieuw(e) Medewerkerrol toe.
+      operationId: createMedewerkerrol
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Kwaliteitsmetingsverzoek
+        description: Medewerkerrol
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Kwaliteitsmetingsverzoekbericht'
+              $ref: '#/components/schemas/Medewerkerrolbericht'
       responses:
         '200':
-          description: Kwaliteitsmetingsverzoek succesvol toegevoegd
+          description: Medewerkerrol succesvol toegevoegd
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -374,32 +370,32 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
-      - 'Kwaliteitsmetingsverzoeken'
+      - 'Medewerkerrollen'
       description: |
-        Vervangen van een Kwaliteitsmetingsverzoek op basis van overeenkomstige sleutelvelden.
-      operationId: replaceKwaliteitsmetingsverzoek
+        Vervangen van een Medewerkerrol op basis van overeenkomstige sleutelvelden.
+      operationId: replaceMedewerkerrol
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Kwaliteitsmetingsverzoek
+        description: Entiteit Medewerkerrol
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Kwaliteitsmetingsverzoekbericht'
+              $ref: '#/components/schemas/Medewerkerrolbericht'
       responses:
         '200':
-          description: Kwaliteitsmetingsverzoek succesvol vervangen
+          description: Medewerkerrol succesvol vervangen
         '400':
           description: |
             Fout in request.
-            Kwaliteitsmetingsverzoek bevat geen sleutelveld(en).
+            Medewerkerrol bevat geen sleutelveld(en).
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Kwaliteitsmetingsverzoek met gegeven sleutelveld(en) niet gevonden
+          description: Medewerkerrol met gegeven sleutelveld(en) niet gevonden
         default:
           description: Onverwachte fout
           content:
@@ -408,49 +404,49 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     patch:
       tags:
-      - 'Kwaliteitsmetingsverzoeken'
+      - 'Medewerkerrollen'
       description: |
-        Wijzigen van afzonderlijke attributen van een Kwaliteitsmetingsverzoek. In de meegestuurde entiteit moeten
+        Wijzigen van afzonderlijke attributen van een Medewerkerrol. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
-      operationId: updateKwaliteitsmetingsverzoek
+      operationId: updateMedewerkerrol
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Kwaliteitsmetingsverzoek
+        description: Entiteit Medewerkerrol
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Kwaliteitsmetingsverzoekbericht'
+              $ref: '#/components/schemas/Medewerkerrolbericht'
       responses:
         '200':
-          description: Kwaliteitsmetingsverzoek succesvol gewijzigd
+          description: Medewerkerrol succesvol gewijzigd
         '400':
           description: |
             Fout in request.
-            Kwaliteitsmetingsverzoek bevat geen sleutelveld(en).
+            Medewerkerrol bevat geen sleutelveld(en).
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-           description: Kwaliteitsmetingsverzoek met gegeven sleutelveld(en) niet gevonden
+           description: Medewerkerrol met gegeven sleutelveld(en) niet gevonden
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /kwaliteitsmetingsverzoeken/{id}:
+  /medewerkerrollen/{id}:
     get:
       tags:
-      - 'Kwaliteitsmetingsverzoeken'
-      description: Retourneert een Kwaliteitsmetingsverzoek met de gegeven identifier
-      operationId: readKwaliteitsmetingsverzoekById
+      - 'Medewerkerrollen'
+      description: Retourneert een Medewerkerrol met de gegeven identifier
+      operationId: readMedewerkerrolById
       parameters:
       - name: id
         in: path
-        description: Id van Kwaliteitsmetingsverzoek om op te halen
+        description: Id van Medewerkerrol om op te halen
         required: true
         schema:
           type: string
@@ -460,15 +456,15 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
-          description: Kwaliteitsmetingsverzoek response
+          description: Medewerkerrol response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Kwaliteitsmetingsverzoekbericht'
+                $ref: '#/components/schemas/Medewerkerrolbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Kwaliteitsmetingsverzoek met id niet gevonden
+          description: Medewerkerrol met id niet gevonden
         default:
           description: Onverwachte fout
           content:
@@ -477,13 +473,13 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
-      - 'Kwaliteitsmetingsverzoeken'
-      description: Vervangen van een Kwaliteitsmetingsverzoek
-      operationId: replaceKwaliteitsmetingsverzoekById
+      - 'Medewerkerrollen'
+      description: Vervangen van een Medewerkerrol
+      operationId: replaceMedewerkerrolById
       parameters:
       - name: 'id'
         in: 'path'
-        description: Id van Kwaliteitsmetingsverzoek om te vervangen
+        description: Id van Medewerkerrol om te vervangen
         required: true
         schema:
           type: string
@@ -492,18 +488,18 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Kwaliteitsmetingsverzoek
+        description: Entiteit Medewerkerrol
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Kwaliteitsmetingsverzoekbericht'
+              $ref: '#/components/schemas/Medewerkerrolbericht'
       responses:
         '200':
-          description: Kwaliteitsmetingsverzoek succesvol vervangen
+          description: Medewerkerrol succesvol vervangen
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Kwaliteitsmetingsverzoek met id niet gevonden
+          description: Medewerkerrol met id niet gevonden
         default:
           description: Onverwachte fout
           content:
@@ -512,13 +508,13 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     patch:
       tags:
-      - 'Kwaliteitsmetingsverzoeken'
-      description: Wijzigen van een Kwaliteitsmetingsverzoek
-      operationId: updateKwaliteitsmetingsverzoekById
+      - 'Medewerkerrollen'
+      description: Wijzigen van een Medewerkerrol
+      operationId: updateMedewerkerrolById
       parameters:
       - name: 'id'
         in: 'path'
-        description: Id van Kwaliteitsmetingsverzoek om te wijzigen
+        description: Id van Medewerkerrol om te wijzigen
         required: true
         schema:
           type: integer
@@ -527,37 +523,37 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Kwaliteitsmetingsverzoek
+        description: Entiteit Medewerkerrol
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Kwaliteitsmetingsverzoekbericht'
+              $ref: '#/components/schemas/Medewerkerrolbericht'
       responses:
         '200':
-          description: Kwaliteitsmetingsverzoek succesvol gewijzigd
+          description: Medewerkerrol succesvol gewijzigd
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Kwaliteitsmetingsverzoek met id niet gevonden
+          description: Medewerkerrol met id niet gevonden
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /onderzoeksopdrachten:
+  /organisaties:
     get:
       tags:
-      - 'Onderzoeksopdrachten'
-      description: Ophalen van Onderzoeksopdrachten
-      operationId: listOnderzoeksopdrachten
+      - 'Organisaties'
+      description: Ophalen van Organisaties
+      operationId: listOrganisaties
       parameters:
       - name: params
         in: query
         style: form
         explode: true
         schema:
-          $ref: '#/components/schemas/Onderzoeksopdrachtbericht'
+          $ref: '#/components/schemas/Organisatiebericht'
       - $ref: '#/components/parameters/Cursor'
       - $ref: '#/components/parameters/Pagina'
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
@@ -574,7 +570,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Onderzoeksopdrachtbericht'
+                  $ref: '#/components/schemas/Organisatiebericht'
           headers:
             X-Parameters-Aantal:
               $ref: '#/components/headers/X-Parameters-Aantal'
@@ -594,23 +590,23 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     post:
       tags:
-      - 'Onderzoeksopdrachten'
-      description: Voegt een nieuw(e) Onderzoeksopdracht toe.
-      operationId: createOnderzoeksopdracht
+      - 'Organisaties'
+      description: Voegt een nieuw(e) Organisatie toe.
+      operationId: createOrganisatie
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Onderzoeksopdracht
+        description: Organisatie
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Onderzoeksopdrachtbericht'
+              $ref: '#/components/schemas/Organisatiebericht'
       responses:
         '200':
-          description: Onderzoeksopdracht succesvol toegevoegd
+          description: Organisatie succesvol toegevoegd
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -621,32 +617,32 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
-      - 'Onderzoeksopdrachten'
+      - 'Organisaties'
       description: |
-        Vervangen van een Onderzoeksopdracht op basis van overeenkomstige sleutelvelden.
-      operationId: replaceOnderzoeksopdracht
+        Vervangen van een Organisatie op basis van overeenkomstige sleutelvelden.
+      operationId: replaceOrganisatie
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Onderzoeksopdracht
+        description: Entiteit Organisatie
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Onderzoeksopdrachtbericht'
+              $ref: '#/components/schemas/Organisatiebericht'
       responses:
         '200':
-          description: Onderzoeksopdracht succesvol vervangen
+          description: Organisatie succesvol vervangen
         '400':
           description: |
             Fout in request.
-            Onderzoeksopdracht bevat geen sleutelveld(en).
+            Organisatie bevat geen sleutelveld(en).
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Onderzoeksopdracht met gegeven sleutelveld(en) niet gevonden
+          description: Organisatie met gegeven sleutelveld(en) niet gevonden
         default:
           description: Onverwachte fout
           content:
@@ -655,49 +651,49 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     patch:
       tags:
-      - 'Onderzoeksopdrachten'
+      - 'Organisaties'
       description: |
-        Wijzigen van afzonderlijke attributen van een Onderzoeksopdracht. In de meegestuurde entiteit moeten
+        Wijzigen van afzonderlijke attributen van een Organisatie. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
-      operationId: updateOnderzoeksopdracht
+      operationId: updateOrganisatie
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Onderzoeksopdracht
+        description: Entiteit Organisatie
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Onderzoeksopdrachtbericht'
+              $ref: '#/components/schemas/Organisatiebericht'
       responses:
         '200':
-          description: Onderzoeksopdracht succesvol gewijzigd
+          description: Organisatie succesvol gewijzigd
         '400':
           description: |
             Fout in request.
-            Onderzoeksopdracht bevat geen sleutelveld(en).
+            Organisatie bevat geen sleutelveld(en).
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-           description: Onderzoeksopdracht met gegeven sleutelveld(en) niet gevonden
+           description: Organisatie met gegeven sleutelveld(en) niet gevonden
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /onderzoeksopdrachten/{id}:
+  /organisaties/{id}:
     get:
       tags:
-      - 'Onderzoeksopdrachten'
-      description: Retourneert een Onderzoeksopdracht met de gegeven identifier
-      operationId: readOnderzoeksopdrachtById
+      - 'Organisaties'
+      description: Retourneert een Organisatie met de gegeven identifier
+      operationId: readOrganisatieById
       parameters:
       - name: id
         in: path
-        description: Id van Onderzoeksopdracht om op te halen
+        description: Id van Organisatie om op te halen
         required: true
         schema:
           type: string
@@ -707,15 +703,15 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
-          description: Onderzoeksopdracht response
+          description: Organisatie response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Onderzoeksopdrachtbericht'
+                $ref: '#/components/schemas/Organisatiebericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Onderzoeksopdracht met id niet gevonden
+          description: Organisatie met id niet gevonden
         default:
           description: Onverwachte fout
           content:
@@ -724,13 +720,13 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
-      - 'Onderzoeksopdrachten'
-      description: Vervangen van een Onderzoeksopdracht
-      operationId: replaceOnderzoeksopdrachtById
+      - 'Organisaties'
+      description: Vervangen van een Organisatie
+      operationId: replaceOrganisatieById
       parameters:
       - name: 'id'
         in: 'path'
-        description: Id van Onderzoeksopdracht om te vervangen
+        description: Id van Organisatie om te vervangen
         required: true
         schema:
           type: string
@@ -739,18 +735,18 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Onderzoeksopdracht
+        description: Entiteit Organisatie
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Onderzoeksopdrachtbericht'
+              $ref: '#/components/schemas/Organisatiebericht'
       responses:
         '200':
-          description: Onderzoeksopdracht succesvol vervangen
+          description: Organisatie succesvol vervangen
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Onderzoeksopdracht met id niet gevonden
+          description: Organisatie met id niet gevonden
         default:
           description: Onverwachte fout
           content:
@@ -759,13 +755,13 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     patch:
       tags:
-      - 'Onderzoeksopdrachten'
-      description: Wijzigen van een Onderzoeksopdracht
-      operationId: updateOnderzoeksopdrachtById
+      - 'Organisaties'
+      description: Wijzigen van een Organisatie
+      operationId: updateOrganisatieById
       parameters:
       - name: 'id'
         in: 'path'
-        description: Id van Onderzoeksopdracht om te wijzigen
+        description: Id van Organisatie om te wijzigen
         required: true
         schema:
           type: integer
@@ -774,37 +770,37 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Onderzoeksopdracht
+        description: Entiteit Organisatie
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Onderzoeksopdrachtbericht'
+              $ref: '#/components/schemas/Organisatiebericht'
       responses:
         '200':
-          description: Onderzoeksopdracht succesvol gewijzigd
+          description: Organisatie succesvol gewijzigd
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Onderzoeksopdracht met id niet gevonden
+          description: Organisatie met id niet gevonden
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /onderzoeksresultaten:
+  /organisatorische-eenheden:
     get:
       tags:
-      - 'Onderzoeksresultaten'
-      description: Ophalen van Onderzoeksresultaten
-      operationId: listOnderzoeksresultaten
+      - 'OrganisatorischeEenheden'
+      description: Ophalen van OrganisatorischeEenheden
+      operationId: listOrganisatorischeEenheden
       parameters:
       - name: params
         in: query
         style: form
         explode: true
         schema:
-          $ref: '#/components/schemas/Onderzoeksresultaatbericht'
+          $ref: '#/components/schemas/OrganisatorischeEenheidbericht'
       - $ref: '#/components/parameters/Cursor'
       - $ref: '#/components/parameters/Pagina'
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
@@ -821,7 +817,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Onderzoeksresultaatbericht'
+                  $ref: '#/components/schemas/OrganisatorischeEenheidbericht'
           headers:
             X-Parameters-Aantal:
               $ref: '#/components/headers/X-Parameters-Aantal'
@@ -841,23 +837,23 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     post:
       tags:
-      - 'Onderzoeksresultaten'
-      description: Voegt een nieuw(e) Onderzoeksresultaat toe.
-      operationId: createOnderzoeksresultaat
+      - 'OrganisatorischeEenheden'
+      description: Voegt een nieuw(e) OrganisatorischeEenheid toe.
+      operationId: createOrganisatorischeEenheid
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Onderzoeksresultaat
+        description: OrganisatorischeEenheid
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Onderzoeksresultaatbericht'
+              $ref: '#/components/schemas/OrganisatorischeEenheidbericht'
       responses:
         '200':
-          description: Onderzoeksresultaat succesvol toegevoegd
+          description: OrganisatorischeEenheid succesvol toegevoegd
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -868,32 +864,32 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
-      - 'Onderzoeksresultaten'
+      - 'OrganisatorischeEenheden'
       description: |
-        Vervangen van een Onderzoeksresultaat op basis van overeenkomstige sleutelvelden.
-      operationId: replaceOnderzoeksresultaat
+        Vervangen van een OrganisatorischeEenheid op basis van overeenkomstige sleutelvelden.
+      operationId: replaceOrganisatorischeEenheid
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Onderzoeksresultaat
+        description: Entiteit OrganisatorischeEenheid
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Onderzoeksresultaatbericht'
+              $ref: '#/components/schemas/OrganisatorischeEenheidbericht'
       responses:
         '200':
-          description: Onderzoeksresultaat succesvol vervangen
+          description: OrganisatorischeEenheid succesvol vervangen
         '400':
           description: |
             Fout in request.
-            Onderzoeksresultaat bevat geen sleutelveld(en).
+            OrganisatorischeEenheid bevat geen sleutelveld(en).
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Onderzoeksresultaat met gegeven sleutelveld(en) niet gevonden
+          description: OrganisatorischeEenheid met gegeven sleutelveld(en) niet gevonden
         default:
           description: Onverwachte fout
           content:
@@ -902,49 +898,49 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     patch:
       tags:
-      - 'Onderzoeksresultaten'
+      - 'OrganisatorischeEenheden'
       description: |
-        Wijzigen van afzonderlijke attributen van een Onderzoeksresultaat. In de meegestuurde entiteit moeten
+        Wijzigen van afzonderlijke attributen van een OrganisatorischeEenheid. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
-      operationId: updateOnderzoeksresultaat
+      operationId: updateOrganisatorischeEenheid
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Onderzoeksresultaat
+        description: Entiteit OrganisatorischeEenheid
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Onderzoeksresultaatbericht'
+              $ref: '#/components/schemas/OrganisatorischeEenheidbericht'
       responses:
         '200':
-          description: Onderzoeksresultaat succesvol gewijzigd
+          description: OrganisatorischeEenheid succesvol gewijzigd
         '400':
           description: |
             Fout in request.
-            Onderzoeksresultaat bevat geen sleutelveld(en).
+            OrganisatorischeEenheid bevat geen sleutelveld(en).
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-           description: Onderzoeksresultaat met gegeven sleutelveld(en) niet gevonden
+           description: OrganisatorischeEenheid met gegeven sleutelveld(en) niet gevonden
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /onderzoeksresultaten/{id}:
+  /organisatorische-eenheden/{id}:
     get:
       tags:
-      - 'Onderzoeksresultaten'
-      description: Retourneert een Onderzoeksresultaat met de gegeven identifier
-      operationId: readOnderzoeksresultaatById
+      - 'OrganisatorischeEenheden'
+      description: Retourneert een OrganisatorischeEenheid met de gegeven identifier
+      operationId: readOrganisatorischeEenheidById
       parameters:
       - name: id
         in: path
-        description: Id van Onderzoeksresultaat om op te halen
+        description: Id van OrganisatorischeEenheid om op te halen
         required: true
         schema:
           type: string
@@ -954,15 +950,15 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
-          description: Onderzoeksresultaat response
+          description: OrganisatorischeEenheid response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Onderzoeksresultaatbericht'
+                $ref: '#/components/schemas/OrganisatorischeEenheidbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Onderzoeksresultaat met id niet gevonden
+          description: OrganisatorischeEenheid met id niet gevonden
         default:
           description: Onverwachte fout
           content:
@@ -971,13 +967,13 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
-      - 'Onderzoeksresultaten'
-      description: Vervangen van een Onderzoeksresultaat
-      operationId: replaceOnderzoeksresultaatById
+      - 'OrganisatorischeEenheden'
+      description: Vervangen van een OrganisatorischeEenheid
+      operationId: replaceOrganisatorischeEenheidById
       parameters:
       - name: 'id'
         in: 'path'
-        description: Id van Onderzoeksresultaat om te vervangen
+        description: Id van OrganisatorischeEenheid om te vervangen
         required: true
         schema:
           type: string
@@ -986,18 +982,18 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Onderzoeksresultaat
+        description: Entiteit OrganisatorischeEenheid
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Onderzoeksresultaatbericht'
+              $ref: '#/components/schemas/OrganisatorischeEenheidbericht'
       responses:
         '200':
-          description: Onderzoeksresultaat succesvol vervangen
+          description: OrganisatorischeEenheid succesvol vervangen
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Onderzoeksresultaat met id niet gevonden
+          description: OrganisatorischeEenheid met id niet gevonden
         default:
           description: Onverwachte fout
           content:
@@ -1006,13 +1002,13 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     patch:
       tags:
-      - 'Onderzoeksresultaten'
-      description: Wijzigen van een Onderzoeksresultaat
-      operationId: updateOnderzoeksresultaatById
+      - 'OrganisatorischeEenheden'
+      description: Wijzigen van een OrganisatorischeEenheid
+      operationId: updateOrganisatorischeEenheidById
       parameters:
       - name: 'id'
         in: 'path'
-        description: Id van Onderzoeksresultaat om te wijzigen
+        description: Id van OrganisatorischeEenheid om te wijzigen
         required: true
         schema:
           type: integer
@@ -1021,37 +1017,37 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Onderzoeksresultaat
+        description: Entiteit OrganisatorischeEenheid
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Onderzoeksresultaatbericht'
+              $ref: '#/components/schemas/OrganisatorischeEenheidbericht'
       responses:
         '200':
-          description: Onderzoeksresultaat succesvol gewijzigd
+          description: OrganisatorischeEenheid succesvol gewijzigd
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Onderzoeksresultaat met id niet gevonden
+          description: OrganisatorischeEenheid met id niet gevonden
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /vragenlijsten:
+  /personele-functies:
     get:
       tags:
-      - 'Vragenlijsten'
-      description: Ophalen van Vragenlijsten
-      operationId: listVragenlijsten
+      - 'PersoneleFuncties'
+      description: Ophalen van PersoneleFuncties
+      operationId: listPersoneleFuncties
       parameters:
       - name: params
         in: query
         style: form
         explode: true
         schema:
-          $ref: '#/components/schemas/Vragenlijstbericht'
+          $ref: '#/components/schemas/PersoneleFunctiebericht'
       - $ref: '#/components/parameters/Cursor'
       - $ref: '#/components/parameters/Pagina'
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
@@ -1068,7 +1064,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Vragenlijstbericht'
+                  $ref: '#/components/schemas/PersoneleFunctiebericht'
           headers:
             X-Parameters-Aantal:
               $ref: '#/components/headers/X-Parameters-Aantal'
@@ -1088,23 +1084,23 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     post:
       tags:
-      - 'Vragenlijsten'
-      description: Voegt een nieuw(e) Vragenlijst toe.
-      operationId: createVragenlijst
+      - 'PersoneleFuncties'
+      description: Voegt een nieuw(e) PersoneleFunctie toe.
+      operationId: createPersoneleFunctie
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Vragenlijst
+        description: PersoneleFunctie
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Vragenlijstbericht'
+              $ref: '#/components/schemas/PersoneleFunctiebericht'
       responses:
         '200':
-          description: Vragenlijst succesvol toegevoegd
+          description: PersoneleFunctie succesvol toegevoegd
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -1115,32 +1111,32 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
-      - 'Vragenlijsten'
+      - 'PersoneleFuncties'
       description: |
-        Vervangen van een Vragenlijst op basis van overeenkomstige sleutelvelden.
-      operationId: replaceVragenlijst
+        Vervangen van een PersoneleFunctie op basis van overeenkomstige sleutelvelden.
+      operationId: replacePersoneleFunctie
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Vragenlijst
+        description: Entiteit PersoneleFunctie
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Vragenlijstbericht'
+              $ref: '#/components/schemas/PersoneleFunctiebericht'
       responses:
         '200':
-          description: Vragenlijst succesvol vervangen
+          description: PersoneleFunctie succesvol vervangen
         '400':
           description: |
             Fout in request.
-            Vragenlijst bevat geen sleutelveld(en).
+            PersoneleFunctie bevat geen sleutelveld(en).
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Vragenlijst met gegeven sleutelveld(en) niet gevonden
+          description: PersoneleFunctie met gegeven sleutelveld(en) niet gevonden
         default:
           description: Onverwachte fout
           content:
@@ -1149,49 +1145,49 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     patch:
       tags:
-      - 'Vragenlijsten'
+      - 'PersoneleFuncties'
       description: |
-        Wijzigen van afzonderlijke attributen van een Vragenlijst. In de meegestuurde entiteit moeten
+        Wijzigen van afzonderlijke attributen van een PersoneleFunctie. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
-      operationId: updateVragenlijst
+      operationId: updatePersoneleFunctie
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Vragenlijst
+        description: Entiteit PersoneleFunctie
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Vragenlijstbericht'
+              $ref: '#/components/schemas/PersoneleFunctiebericht'
       responses:
         '200':
-          description: Vragenlijst succesvol gewijzigd
+          description: PersoneleFunctie succesvol gewijzigd
         '400':
           description: |
             Fout in request.
-            Vragenlijst bevat geen sleutelveld(en).
+            PersoneleFunctie bevat geen sleutelveld(en).
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-           description: Vragenlijst met gegeven sleutelveld(en) niet gevonden
+           description: PersoneleFunctie met gegeven sleutelveld(en) niet gevonden
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /vragenlijsten/{id}:
+  /personele-functies/{id}:
     get:
       tags:
-      - 'Vragenlijsten'
-      description: Retourneert een Vragenlijst met de gegeven identifier
-      operationId: readVragenlijstById
+      - 'PersoneleFuncties'
+      description: Retourneert een PersoneleFunctie met de gegeven identifier
+      operationId: readPersoneleFunctieById
       parameters:
       - name: id
         in: path
-        description: Id van Vragenlijst om op te halen
+        description: Id van PersoneleFunctie om op te halen
         required: true
         schema:
           type: string
@@ -1201,15 +1197,15 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
-          description: Vragenlijst response
+          description: PersoneleFunctie response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Vragenlijstbericht'
+                $ref: '#/components/schemas/PersoneleFunctiebericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Vragenlijst met id niet gevonden
+          description: PersoneleFunctie met id niet gevonden
         default:
           description: Onverwachte fout
           content:
@@ -1218,13 +1214,13 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
-      - 'Vragenlijsten'
-      description: Vervangen van een Vragenlijst
-      operationId: replaceVragenlijstById
+      - 'PersoneleFuncties'
+      description: Vervangen van een PersoneleFunctie
+      operationId: replacePersoneleFunctieById
       parameters:
       - name: 'id'
         in: 'path'
-        description: Id van Vragenlijst om te vervangen
+        description: Id van PersoneleFunctie om te vervangen
         required: true
         schema:
           type: string
@@ -1233,18 +1229,18 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Vragenlijst
+        description: Entiteit PersoneleFunctie
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Vragenlijstbericht'
+              $ref: '#/components/schemas/PersoneleFunctiebericht'
       responses:
         '200':
-          description: Vragenlijst succesvol vervangen
+          description: PersoneleFunctie succesvol vervangen
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Vragenlijst met id niet gevonden
+          description: PersoneleFunctie met id niet gevonden
         default:
           description: Onverwachte fout
           content:
@@ -1253,13 +1249,13 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     patch:
       tags:
-      - 'Vragenlijsten'
-      description: Wijzigen van een Vragenlijst
-      operationId: updateVragenlijstById
+      - 'PersoneleFuncties'
+      description: Wijzigen van een PersoneleFunctie
+      operationId: updatePersoneleFunctieById
       parameters:
       - name: 'id'
         in: 'path'
-        description: Id van Vragenlijst om te wijzigen
+        description: Id van PersoneleFunctie om te wijzigen
         required: true
         schema:
           type: integer
@@ -1268,512 +1264,18 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Vragenlijst
+        description: Entiteit PersoneleFunctie
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Vragenlijstbericht'
+              $ref: '#/components/schemas/PersoneleFunctiebericht'
       responses:
         '200':
-          description: Vragenlijst succesvol gewijzigd
+          description: PersoneleFunctie succesvol gewijzigd
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Vragenlijst met id niet gevonden
-        default:
-          description: Onverwachte fout
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
-  /vragenlijst-antwoorden:
-    get:
-      tags:
-      - 'VragenlijstAntwoorden'
-      description: Ophalen van VragenlijstAntwoorden
-      operationId: listVragenlijstAntwoorden
-      parameters:
-      - name: params
-        in: query
-        style: form
-        explode: true
-        schema:
-          $ref: '#/components/schemas/VragenlijstAntwoordbericht'
-      - $ref: '#/components/parameters/Cursor'
-      - $ref: '#/components/parameters/Pagina'
-      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
-      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
-      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
-      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
-      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
-      - $ref: '#/components/parameters/ParametersAantalPerPagina'
-      responses:
-        '200':
-          description: Zoekactie geslaagd
-          content:
-            'application/json':
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/VragenlijstAntwoordbericht'
-          headers:
-            X-Parameters-Aantal:
-              $ref: '#/components/headers/X-Parameters-Aantal'
-            X-Parameters-AantalPerPagina:
-              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
-            X-Parameters-Pagina:
-              $ref: '#/components/headers/X-Parameters-Pagina'
-            X-Parameters-Cursor:
-              $ref: '#/components/headers/X-Parameters-Cursor'
-        '401':
-          $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: Onverwachte fout
-          content:
-            'application/json':
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
-    post:
-      tags:
-      - 'VragenlijstAntwoorden'
-      description: Voegt een nieuw(e) VragenlijstAntwoord toe.
-      operationId: createVragenlijstAntwoord
-      parameters:
-      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
-      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
-      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
-      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
-      requestBody:
-        description: VragenlijstAntwoord
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/VragenlijstAntwoordbericht'
-      responses:
-        '200':
-          description: VragenlijstAntwoord succesvol toegevoegd
-        '401':
-          $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: Onverwachte fout
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
-    put:
-      tags:
-      - 'VragenlijstAntwoorden'
-      description: |
-        Vervangen van een VragenlijstAntwoord op basis van overeenkomstige sleutelvelden.
-      operationId: replaceVragenlijstAntwoord
-      parameters:
-      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
-      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
-      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
-      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
-      requestBody:
-        description: Entiteit VragenlijstAntwoord
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/VragenlijstAntwoordbericht'
-      responses:
-        '200':
-          description: VragenlijstAntwoord succesvol vervangen
-        '400':
-          description: |
-            Fout in request.
-            VragenlijstAntwoord bevat geen sleutelveld(en).
-        '401':
-          $ref: '#/components/responses/NietGeautoriseerd'
-        '404':
-          description: VragenlijstAntwoord met gegeven sleutelveld(en) niet gevonden
-        default:
-          description: Onverwachte fout
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
-    patch:
-      tags:
-      - 'VragenlijstAntwoorden'
-      description: |
-        Wijzigen van afzonderlijke attributen van een VragenlijstAntwoord. In de meegestuurde entiteit moeten
-        sleutelvelden aanwezig zijn.
-      operationId: updateVragenlijstAntwoord
-      parameters:
-      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
-      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
-      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
-      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
-      requestBody:
-        description: Entiteit VragenlijstAntwoord
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/VragenlijstAntwoordbericht'
-      responses:
-        '200':
-          description: VragenlijstAntwoord succesvol gewijzigd
-        '400':
-          description: |
-            Fout in request.
-            VragenlijstAntwoord bevat geen sleutelveld(en).
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        '404':
-           description: VragenlijstAntwoord met gegeven sleutelveld(en) niet gevonden
-        default:
-          description: Onverwachte fout
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
-  /vragenlijst-antwoorden/{id}:
-    get:
-      tags:
-      - 'VragenlijstAntwoorden'
-      description: Retourneert een VragenlijstAntwoord met de gegeven identifier
-      operationId: readVragenlijstAntwoordById
-      parameters:
-      - name: id
-        in: path
-        description: Id van VragenlijstAntwoord om op te halen
-        required: true
-        schema:
-          type: string
-      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
-      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
-      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
-      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
-      responses:
-        '200':
-          description: VragenlijstAntwoord response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/VragenlijstAntwoordbericht'
-        '401':
-          $ref: '#/components/responses/NietGeautoriseerd'
-        '404':
-          description: VragenlijstAntwoord met id niet gevonden
-        default:
-          description: Onverwachte fout
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
-    put:
-      tags:
-      - 'VragenlijstAntwoorden'
-      description: Vervangen van een VragenlijstAntwoord
-      operationId: replaceVragenlijstAntwoordById
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: Id van VragenlijstAntwoord om te vervangen
-        required: true
-        schema:
-          type: string
-      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
-      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
-      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
-      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
-      requestBody:
-        description: Entiteit VragenlijstAntwoord
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/VragenlijstAntwoordbericht'
-      responses:
-        '200':
-          description: VragenlijstAntwoord succesvol vervangen
-        '401':
-          $ref: '#/components/responses/NietGeautoriseerd'
-        '404':
-          description: VragenlijstAntwoord met id niet gevonden
-        default:
-          description: Onverwachte fout
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
-    patch:
-      tags:
-      - 'VragenlijstAntwoorden'
-      description: Wijzigen van een VragenlijstAntwoord
-      operationId: updateVragenlijstAntwoordById
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: Id van VragenlijstAntwoord om te wijzigen
-        required: true
-        schema:
-          type: integer
-      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
-      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
-      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
-      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
-      requestBody:
-        description: Entiteit VragenlijstAntwoord
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/VragenlijstAntwoordbericht'
-      responses:
-        '200':
-          description: VragenlijstAntwoord succesvol gewijzigd
-        '401':
-          $ref: '#/components/responses/NietGeautoriseerd'
-        '404':
-          description: VragenlijstAntwoord met id niet gevonden
-        default:
-          description: Onverwachte fout
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
-  /vragenlijst-regels:
-    get:
-      tags:
-      - 'VragenlijstRegels'
-      description: Ophalen van VragenlijstRegels
-      operationId: listVragenlijstRegels
-      parameters:
-      - name: params
-        in: query
-        style: form
-        explode: true
-        schema:
-          $ref: '#/components/schemas/VragenlijstRegelbericht'
-      - $ref: '#/components/parameters/Cursor'
-      - $ref: '#/components/parameters/Pagina'
-      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
-      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
-      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
-      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
-      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
-      - $ref: '#/components/parameters/ParametersAantalPerPagina'
-      responses:
-        '200':
-          description: Zoekactie geslaagd
-          content:
-            'application/json':
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/VragenlijstRegelbericht'
-          headers:
-            X-Parameters-Aantal:
-              $ref: '#/components/headers/X-Parameters-Aantal'
-            X-Parameters-AantalPerPagina:
-              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
-            X-Parameters-Pagina:
-              $ref: '#/components/headers/X-Parameters-Pagina'
-            X-Parameters-Cursor:
-              $ref: '#/components/headers/X-Parameters-Cursor'
-        '401':
-          $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: Onverwachte fout
-          content:
-            'application/json':
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
-    post:
-      tags:
-      - 'VragenlijstRegels'
-      description: Voegt een nieuw(e) VragenlijstRegel toe.
-      operationId: createVragenlijstRegel
-      parameters:
-      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
-      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
-      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
-      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
-      requestBody:
-        description: VragenlijstRegel
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/VragenlijstRegelbericht'
-      responses:
-        '200':
-          description: VragenlijstRegel succesvol toegevoegd
-        '401':
-          $ref: '#/components/responses/NietGeautoriseerd'
-        default:
-          description: Onverwachte fout
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
-    put:
-      tags:
-      - 'VragenlijstRegels'
-      description: |
-        Vervangen van een VragenlijstRegel op basis van overeenkomstige sleutelvelden.
-      operationId: replaceVragenlijstRegel
-      parameters:
-      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
-      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
-      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
-      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
-      requestBody:
-        description: Entiteit VragenlijstRegel
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/VragenlijstRegelbericht'
-      responses:
-        '200':
-          description: VragenlijstRegel succesvol vervangen
-        '400':
-          description: |
-            Fout in request.
-            VragenlijstRegel bevat geen sleutelveld(en).
-        '401':
-          $ref: '#/components/responses/NietGeautoriseerd'
-        '404':
-          description: VragenlijstRegel met gegeven sleutelveld(en) niet gevonden
-        default:
-          description: Onverwachte fout
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
-    patch:
-      tags:
-      - 'VragenlijstRegels'
-      description: |
-        Wijzigen van afzonderlijke attributen van een VragenlijstRegel. In de meegestuurde entiteit moeten
-        sleutelvelden aanwezig zijn.
-      operationId: updateVragenlijstRegel
-      parameters:
-      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
-      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
-      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
-      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
-      requestBody:
-        description: Entiteit VragenlijstRegel
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/VragenlijstRegelbericht'
-      responses:
-        '200':
-          description: VragenlijstRegel succesvol gewijzigd
-        '400':
-          description: |
-            Fout in request.
-            VragenlijstRegel bevat geen sleutelveld(en).
-        '401':
-           $ref: '#/components/responses/NietGeautoriseerd'
-        '404':
-           description: VragenlijstRegel met gegeven sleutelveld(en) niet gevonden
-        default:
-          description: Onverwachte fout
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
-  /vragenlijst-regels/{id}:
-    get:
-      tags:
-      - 'VragenlijstRegels'
-      description: Retourneert een VragenlijstRegel met de gegeven identifier
-      operationId: readVragenlijstRegelById
-      parameters:
-      - name: id
-        in: path
-        description: Id van VragenlijstRegel om op te halen
-        required: true
-        schema:
-          type: string
-      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
-      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
-      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
-      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
-      responses:
-        '200':
-          description: VragenlijstRegel response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/VragenlijstRegelbericht'
-        '401':
-          $ref: '#/components/responses/NietGeautoriseerd'
-        '404':
-          description: VragenlijstRegel met id niet gevonden
-        default:
-          description: Onverwachte fout
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
-    put:
-      tags:
-      - 'VragenlijstRegels'
-      description: Vervangen van een VragenlijstRegel
-      operationId: replaceVragenlijstRegelById
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: Id van VragenlijstRegel om te vervangen
-        required: true
-        schema:
-          type: string
-      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
-      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
-      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
-      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
-      requestBody:
-        description: Entiteit VragenlijstRegel
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/VragenlijstRegelbericht'
-      responses:
-        '200':
-          description: VragenlijstRegel succesvol vervangen
-        '401':
-          $ref: '#/components/responses/NietGeautoriseerd'
-        '404':
-          description: VragenlijstRegel met id niet gevonden
-        default:
-          description: Onverwachte fout
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Foutbericht'
-    patch:
-      tags:
-      - 'VragenlijstRegels'
-      description: Wijzigen van een VragenlijstRegel
-      operationId: updateVragenlijstRegelById
-      parameters:
-      - name: 'id'
-        in: 'path'
-        description: Id van VragenlijstRegel om te wijzigen
-        required: true
-        schema:
-          type: integer
-      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
-      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
-      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
-      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
-      requestBody:
-        description: Entiteit VragenlijstRegel
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/VragenlijstRegelbericht'
-      responses:
-        '200':
-          description: VragenlijstRegel succesvol gewijzigd
-        '401':
-          $ref: '#/components/responses/NietGeautoriseerd'
-        '404':
-          description: VragenlijstRegel met id niet gevonden
+          description: PersoneleFunctie met id niet gevonden
         default:
           description: Onverwachte fout
           content:
@@ -1819,11 +1321,11 @@ components:
           schema:
             type: string
   schemas:
-    Kwaliteitsmetingsresultaatbericht:
+    Medewerkerbericht:
       allOf:
-        - $ref: '#/components/schemas/Kwaliteitsmetingsresultaat'
+        - $ref: '#/components/schemas/Medewerker'
         - $ref: '#/components/schemas/Bericht-basis'
-    Kwaliteitsmetingsresultaat:
+    Medewerker:
       type: object
       properties:
         id:
@@ -1841,39 +1343,46 @@ components:
         code:
           type: string
           format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        omschrijving:
-          type: string
-          format: any
-          description: Beknopte omschrijving van het kwaliteitsmetingresultaat.
-        datumReactie:
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort medewerker. Bijv. oproepkracht, inhuur, stagair etc.
+        begindatum:
           type: string
           format: date
-          description: Datum waarop de resultaten van de onderzoeksopdracht zijn binnen gekomen (vóór de analyse).
-        beoordelingsSchaal:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'De methodiek / schaal waarlangs de reactie van de relatie wordt gemeten. Voorbeelden: Lickert-scale, Positief/Negatief, Rapportcijfer 1-10.'
-        beoordelingsWaarde:
+          description: De begindatum van de medewerker.
+        einddatum:
           type: string
-          format: any
-          description: de waarde van de beoordeling op basis van de gespecificeerde beoordelingsSchaal.
-        kwaliteitsmetingsverzoek:
-          allOf:
-          - $ref: '#/components/schemas/Kwaliteitsmetingsverzoek'
-          description: Het kwaliteitsmetingsverzoek behorende bij het resultaat.
-        onderzoeksopdracht:
-          allOf:
-          - $ref: '#/components/schemas/Onderzoeksopdracht'
-          description: De onderzoeksopdracht die de basis is voor de analyse en het resultaat van de kwaliteitsmeting.
-        resultaatReactie:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Wordt aangegeven of de relatie de vragenlijst heeft ingevuld, of er opvolging gegeven moet worden aan de kwaliteitsmeting of dat de relatie niet heeft gereageerd. Deze laatste situatie kan ook gebruikt worden voor de situatie waarbij de relatie anoniem wil blijven. Mogelijke referentiedata: Volledig ingevuld, Deels ingevuld, Ingevuld met verzoek opvolging, Niet gereageerd.'
-        toelichtingBeoordeling:
+          format: date
+          description: De einddatum van de medewerker.
+        eindeWerkzaamhedenDatum:
           type: string
-          format: any
-          description: Korte toelichting van de beoordeling van de kwaliteitsmeting.
+          format: date
+          description: De datum laatste werkzaamheden van de medewerker.
+        functies:
+          description: De rollen van de medewerker.
+          type: array
+          items:
+            $ref: '#/components/schemas/PersoneleFunctie'
+        organisatie:
+          allOf:
+          - $ref: '#/components/schemas/Organisatie'
+          description: De organisatie waarvoor de medewerker werkt.
+        organisatorischeEenheden:
+          description: De organisatorische eenheid waarvoor de medewerker werzaamheden uitvoert.
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganisatorischeEenheid'
+        relatie:
+          type: string
+          format: uri
+          description: Referentie naar Relatie in bronsysteem Relaties
+        rollen:
+          description: De rollen van de medewerker.
+          type: array
+          items:
+            $ref: '#/components/schemas/Medewerkerrol'
     Referentiedatabericht:
       allOf:
         - $ref: '#/components/schemas/Referentiedata'
@@ -1948,11 +1457,11 @@ components:
           type: string
           format: any
           description: De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.
-    Kwaliteitsmetingsverzoekbericht:
+    PersoneleFunctiebericht:
       allOf:
-        - $ref: '#/components/schemas/Kwaliteitsmetingsverzoek'
+        - $ref: '#/components/schemas/PersoneleFunctie'
         - $ref: '#/components/schemas/Bericht-basis'
-    Kwaliteitsmetingsverzoek:
+    PersoneleFunctie:
       type: object
       properties:
         id:
@@ -1970,62 +1479,49 @@ components:
         code:
           type: string
           format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Geeft het verzoek type aan.
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+        naam:
+          type: string
+          format: any
+          description: De naam van de functie.
         omschrijving:
           type: string
           format: any
-          description: Beknopte omschrijving van het kwaliteitsmetingverzoek.
-        status:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: De status van het kwaliteitmetingsverzoek (Aangevraagd, In uitvoering, Geannuleerd, Afgerond).
-        afgerondeZaak:
+          description: De beschrijving van de functie zoals in een FUBE is vastgelegd.
+        begindatum:
           type: string
-          format: uri
-          description: Referentie naar Zaak in bronsysteem Dossier
-        contactmoment:
+          format: date
+          description: De begindatum van de functie.
+        einddatum:
           type: string
-          format: uri
-          description: Referentie naar Contactmoment in bronsysteem Relaties
-        eenheid:
-          type: string
-          format: uri
-          description: Referentie naar Eenheid in bronsysteem Vastgoed
-        kwaliteitsmetingresultaat:
-          allOf:
-          - $ref: '#/components/schemas/Kwaliteitsmetingsresultaat'
-          description: Het resultaat van de kwaliteitsmeting op basis van de uitgevoerde onderzoeksopdracht en analyse.
-        onderhoudsverzoek:
-          type: string
-          format: uri
-          description: Referentie naar Onderhoudsverzoek in bronsysteem Onderhoud
-        onderzoeksopdracht:
-          allOf:
-          - $ref: '#/components/schemas/Onderzoeksopdracht'
-          description: De onderzoeksopdracht die uitgevoerd is naar aanleiding van het kwaliteitsmetingsverzoek.
-        overeenkomst:
-          type: string
-          format: uri
-          description: Referentie naar Overeenkomst in bronsysteem Overeenkomsten
-        relaties:
+          format: date
+          description: De einddatum van de functie.
+        medewerkers:
+          description: De medewerkers met deze functie.
           type: array
           items:
-            type: string
-            format: uri
-          description: Referentie naar Relatie in bronsysteem Relaties
-        teEnqueterenRelatie:
+            $ref: '#/components/schemas/Medewerker'
+        organisatie:
+          allOf:
+          - $ref: '#/components/schemas/Organisatie'
+          description: De organisatie waarbinnen de functie wordt uitgevoerd.
+        salarisschaalBegin:
+          type: number
+          format: float
+          description: het start salaris van de schaal bij aanvang contract.
+        salarisschaalEind:
+          type: number
+          format: float
+          description: het maximale salaris van de schaal bij aanvang contract.
+        schaal:
           type: string
-          format: uri
-          description: Referentie naar Relatie in bronsysteem Relaties
-    Onderzoeksopdrachtbericht:
+          format: any
+          description: De salarisschaal waar de functie bij aanvang is ingeschaald.
+    Organisatiebericht:
       allOf:
-        - $ref: '#/components/schemas/Onderzoeksopdracht'
+        - $ref: '#/components/schemas/Organisatie'
         - $ref: '#/components/schemas/Bericht-basis'
-    Onderzoeksopdracht:
+    Organisatie:
       type: object
       properties:
         id:
@@ -2043,49 +1539,33 @@ components:
         code:
           type: string
           format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Geeft het soort van de onderzoeksopdracht aan.
-        omschrijving:
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
+        begindatum:
           type: string
-          format: any
-          description: Beknopte omschrijving van de onderzoeksopdracht.
-        status:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'de status van de onderzoeksopdracht: enquete verstuurd, reminder verstuurd, antwoorden ontvangen, geen antwoord ontvangen en afgesloten, onderzoeksopdracht afgerond.'
-        antwoorden:
-          description: De antwoorden die door de relatie zijn gegeven behorende bij de onderzoeksopdracht.
+          format: date
+          description: De begindatum van de organisatie.
+        einddatum:
+          type: string
+          format: date
+          description: De einddatum van de organisatie.
+        organisatorischeEenheden:
+          description: De organisatorische eenhedenvan de organisatie.
           type: array
           items:
-            $ref: '#/components/schemas/VragenlijstAntwoord'
-        contactgegeven:
-          type: string
-          format: uri
-          description: Referentie naar Contactgegeven in bronsysteem Relaties
-        kanaal:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het kanaal via welke het contact moet lopen. Bijvoorbeeld: Telefoon, email, schriftelijk.'
-        postadres:
-          type: string
-          format: uri
-          description: Referentie naar Adres in bronsysteem Vastgoed
+            $ref: '#/components/schemas/OrganisatorischeEenheid'
         relatie:
           type: string
           format: uri
           description: Referentie naar Relatie in bronsysteem Relaties
-        vragenlijst:
-          allOf:
-          - $ref: '#/components/schemas/Vragenlijst'
-          description: De vragenlijst die gebruikt moet worden bij het uitvoeren van de onderzoeksopdracht.
-    VragenlijstAntwoordbericht:
+    OrganisatorischeEenheidbericht:
       allOf:
-        - $ref: '#/components/schemas/VragenlijstAntwoord'
+        - $ref: '#/components/schemas/OrganisatorischeEenheid'
         - $ref: '#/components/schemas/Bericht-basis'
-    VragenlijstAntwoord:
+    OrganisatorischeEenheid:
       type: object
       properties:
         id:
@@ -2103,24 +1583,33 @@ components:
         code:
           type: string
           format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        antwoord:
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+        naam:
           type: string
           format: any
-          description: Antwoord op de gestelde vraag
-        toelichting:
-          type: string
-          format: any
-          description: Toelichting bij het antwoord
-        vraag:
+          description: De naam van de organisatorische eenheid.
+        bovenliggendeOrganisatorischeEenheid:
           allOf:
-          - $ref: '#/components/schemas/VragenlijstRegel'
-          description: De vraag die hoort bij het gegeven antwoord
-    VragenlijstRegelbericht:
-      allOf:
-        - $ref: '#/components/schemas/VragenlijstRegel'
-        - $ref: '#/components/schemas/Bericht-basis'
-    VragenlijstRegel:
+          - $ref: '#/components/schemas/OrganisatorischeEenheid-sleutels'
+          description: De organisatorische eenheid waarvan de organisatorische eenheid deel uitmaakt.
+        begindatum:
+          type: string
+          format: date
+          description: De begindatum van de organisatorische eenheid.
+        einddatum:
+          type: string
+          format: date
+          description: De einddatum van de organisatorische eenheid.
+        medewerkers:
+          description: De medewerkers van de organisatorische eenheid.
+          type: array
+          items:
+            $ref: '#/components/schemas/Medewerker'
+        organisatie:
+          allOf:
+          - $ref: '#/components/schemas/Organisatie'
+          description: De organisatie waarvan de organisatorische eenheid deel uitmaakt.
+    OrganisatorischeEenheid-sleutels:
       type: object
       properties:
         id:
@@ -2138,34 +1627,47 @@ components:
         code:
           type: string
           format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+    Medewerkerrolbericht:
+      allOf:
+        - $ref: '#/components/schemas/Medewerkerrol'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Medewerkerrol:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Geeft het soort van de vraag aan: open vraag, ja/nee vraag, meerkeuzevraag, optie, NPS, cijferschaal, etc.'
-        omschrijving:
+          description: Het soort medewerker rol. Bijv. BHV-er, Vertrouwenspersoon, Scrummaster etc.
+        begindatum:
           type: string
-          format: any
-          description: Beknopte omschrijving van de vraag.
-        opties:
-          description: De mogelijke opties bij de vraag indien geen open vraag.
-          type: array
-          items:
-            $ref: '#/components/schemas/Referentiedata'
-        volgordenummer:
-          type: integer
-          format: int32
-          description: Volgordenummer van de vraag in de vragenlijst.
-        vragenlijsten:
-          description: De vragenlijsten waar de vraag gebruikt wordt.
-          type: array
-          items:
-            $ref: '#/components/schemas/Vragenlijst'
-    Vragenlijstbericht:
-      allOf:
-        - $ref: '#/components/schemas/Vragenlijst'
-        - $ref: '#/components/schemas/Bericht-basis'
-    Vragenlijst:
+          format: date
+          description: De begindatum van de rol.
+        einddatum:
+          type: string
+          format: date
+          description: De einddatum van de rol.
+        medewerker:
+          allOf:
+          - $ref: '#/components/schemas/Medewerker'
+          description: De medewerker met deze rol.
+    Medewerker-sleutels:
       type: object
       properties:
         id:
@@ -2183,25 +1685,12 @@ components:
         code:
           type: string
           format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Geeft het soort van de vragenlijst aan.
-        omschrijving:
-          type: string
-          format: any
-          description: Beknopte omschrijving van de vragenlijst.
-        vragen:
-          description: De vragen behorend bij de vragenlijst.
-          type: array
-          items:
-            $ref: '#/components/schemas/VragenlijstRegel'
-    Onderzoeksresultaatbericht:
-      allOf:
-        - $ref: '#/components/schemas/Onderzoeksresultaat'
-        - $ref: '#/components/schemas/Bericht-basis'
-    Onderzoeksresultaat:
+          description: Het soort medewerker. Bijv. oproepkracht, inhuur, stagair etc.
+    Medewerkerrol-sleutels:
       type: object
       properties:
         id:
@@ -2219,17 +1708,31 @@ components:
         code:
           type: string
           format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        antwoorden:
-          description: De antwoorden die door de relatie zijn gegeven behorende bij de onderzoeksopdracht.
-          type: array
-          items:
-            $ref: '#/components/schemas/VragenlijstAntwoord'
-        opdracht:
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+    Organisatie-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+        soort:
           allOf:
-          - $ref: '#/components/schemas/Onderzoeksopdracht'
-          description: De onderzoeksopdracht.
-    Kwaliteitsmetingsresultaat-sleutels:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
+    PersoneleFunctie-sleutels:
       type: object
       properties:
         id:
@@ -2247,121 +1750,7 @@ components:
         code:
           type: string
           format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-    Kwaliteitsmetingsverzoek-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-    Onderzoeksopdracht-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-    Onderzoeksresultaat-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-    Vragenlijst-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-    VragenlijstAntwoord-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-    VragenlijstRegel-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
     Bericht-basis:
       type: object
       properties:

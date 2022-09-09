@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Beheer Vastgoedgegevens
-  description: API-specificatie van ketenproces 'Beheer Vastgoedgegevens'. Deze specificatie is gebaseerd op VERA versie 4.0.13+220812.2
+  description: API-specificatie van ketenproces 'Beheer Vastgoedgegevens'. Deze specificatie is gebaseerd op VERA versie 4.0.14+220909.17
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '1.0.13+220812.2'
+  version: '1.0.14+220909.17'
 servers:
   - url: https://bvg.vera.io:{port}/{basePath}
     description: Productieserver
@@ -51,72 +51,33 @@ paths:
         style: form
         explode: true
         schema:
-          $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaat-bericht'
-      - name: cursor
-        in: query
-        schema:
-          type: string
-        description: |
-          De cursor (bijv. GUID) waarmee de volgende pagina van resultaten opgehaald kan worden.
-          Zie ook: X-Parameters-Cursor.
-        example: 241d66b1-fcdb-4266-b908-01aeec18781e
-      - name: pagina
-        in: query
-        schema:
-          type: string
-        description: |
-          De opgevraagde pagina
-        example: 21
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Parameters-PeiltijdstipMaterieel
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Parameters-PeiltijdstipMaterieel'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
-      - name: X-Parameters-AantalPerPagina
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Parameters-AantalPerPagina'           
-      - name: X-Parameters-Pagina
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Parameters-Pagina'
+          $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaatbericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
       responses:
         '200':
-          description: WoningwaarderingResultaat response
+          description: Zoekactie geslaagd
           content:
             'application/json':
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaat-bericht'
+                  $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaatbericht'
           headers:
-            X-Stuurgegevens-TijdstipBericht:
-                $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-            X-Stuurgegevens-Referentienummer:
-                $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
             X-Parameters-Aantal:
-                $ref: '#/components/headers/X-Parameters-Aantal'
+              $ref: '#/components/headers/X-Parameters-Aantal'
             X-Parameters-AantalPerPagina:
-                $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
             X-Parameters-Pagina:
-                $ref: '#/components/headers/X-Parameters-Pagina'
+              $ref: '#/components/headers/X-Parameters-Pagina'
             X-Parameters-Cursor:
-                $ref: '#/components/headers/X-Parameters-Cursor'
+              $ref: '#/components/headers/X-Parameters-Cursor'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -131,48 +92,27 @@ paths:
       description: Voegt een nieuw(e) WoningwaarderingResultaat toe.
       operationId: createWoningwaarderingResultaat
       parameters:
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: WoningwaarderingResultaat
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaat-bericht'
+              $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaatbericht'
       responses:
         '200':
           description: WoningwaarderingResultaat succesvol toegevoegd
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     put:
       tags:
       - 'WoningwaarderingResultaten'
@@ -180,60 +120,33 @@ paths:
         Vervangen van een WoningwaarderingResultaat op basis van overeenkomstige sleutelvelden.
       operationId: replaceWoningwaarderingResultaat
       parameters:
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit WoningwaarderingResultaat
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaat-bericht'
+              $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaatbericht'
       responses:
         '200':
           description: WoningwaarderingResultaat succesvol vervangen
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '400':
           description: |
             Fout in request.
             WoningwaarderingResultaat bevat geen sleutelveld(en).
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: WoningwaarderingResultaat met gegeven sleutelveld(en) niet gevonden
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     patch:
       tags:
       - 'WoningwaarderingResultaten'
@@ -242,60 +155,33 @@ paths:
         sleutelvelden aanwezig zijn.
       operationId: updateWoningwaarderingResultaat
       parameters:
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit WoningwaarderingResultaat
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaat-bericht'
+              $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaatbericht'
       responses:
         '200':
           description: WoningwaarderingResultaat succesvol gewijzigd
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '400':
           description: |
             Fout in request.
             WoningwaarderingResultaat bevat geen sleutelveld(en).
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
-           headers:
-             X-Stuurgegevens-Referentienummer:
-               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
            description: WoningwaarderingResultaat met gegeven sleutelveld(en) niet gevonden
-           headers:
-             X-Stuurgegevens-Referentienummer:
-               $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
   /woningwaardering-resultaten/{id}:
     get:
       tags:
@@ -309,51 +195,27 @@ paths:
         required: true
         schema:
           type: string
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
           description: WoningwaarderingResultaat response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaat-bericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+                $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaatbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: WoningwaarderingResultaat met id niet gevonden
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     put:
       tags:
       - 'WoningwaarderingResultaten'
@@ -366,53 +228,29 @@ paths:
         required: true
         schema:
           type: string
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit WoningwaarderingResultaat
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaat-bericht'
+              $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaatbericht'
       responses:
         '200':
           description: WoningwaarderingResultaat succesvol vervangen
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: WoningwaarderingResultaat met id niet gevonden
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-TijdstipBericht:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
     patch:
       tags:
       - 'WoningwaarderingResultaten'
@@ -425,106 +263,55 @@ paths:
         required: true
         schema:
           type: integer
-      - name: X-Stuurgegevens-Zender-Organisatie
-        in: header
-        schema:
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Organisatie'
-      - name: X-Stuurgegevens-Zender-Administratie
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Zender-Administratie'
-      - name: X-Stuurgegevens-TijdstipBericht
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-TijdstipBericht'
-      - name: X-Stuurgegevens-Referentienummer
-        in: header
-        schema:    
-          $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
         description: Entiteit WoningwaarderingResultaat
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaat-bericht'
+              $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaatbericht'
       responses:
         '200':
           description: WoningwaarderingResultaat succesvol gewijzigd
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         '404':
           description: WoningwaarderingResultaat met id niet gevonden
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-          headers:
-            X-Stuurgegevens-Referentienummer:
-              $ref: '#/components/headers/X-Stuurgegevens-Referentienummer'
 security:
   - ApiKeyAuth: []
 components:
   headers:
-    X-Stuurgegevens-TijdstipBericht:
-      schema:
-        type: string
-        format: data-time
-        description: Tijdstip waarop het bericht verzonden is
-    X-Stuurgegevens-Referentienummer:
-      schema:
-        type: string
-        format: any
-        description: Een unieke code voor correlatie
-    X-Stuurgegevens-Zender-Organisatie:
-      schema:
-        type: string
-        format: any
-        description: Naam van de verzendende organisatie
-    X-Stuurgegevens-Zender-Administratie:
-      schema:
-        type: string
-        format: any
-        description: |
-          Met het stuurgegeven Administratie kan onderscheid gemaakt worden tussen 
-          de verschillende gegevensverzamelingen die de verzendende organisatie beheert
     X-Parameters-Aantal:
+      description: Totaal aantal gevonden resultaten
       schema:
-        type: integer
-        description: Totaal aantal gevonden entiteiten
-        example: 135
+        $ref: '#/components/schemas/Aantal'
     X-Parameters-AantalPerPagina:
+      description: |
+        Het maximum aantal resultaten per pagina zoals dat in het request opgegeven is,
+        of de default waarde indien dit niet opgeven is.
+      example: 20
       schema:
-        type: integer
-        description: Maximum aantal resultaten per pagina
-        example: 20
+        $ref: '#/components/schemas/AantalPerPagina'
     X-Parameters-Pagina:
+      description: Het huidige paginanummer
       schema:
-        type: integer
-        description: Huidige paginanummer
-        example: 3
+        $ref: '#/components/schemas/Paginanummer'
     X-Parameters-Cursor:
+      description: |
+        Bij het ophalen van de volgende set van resultaten dient deze waarde 
+        als parameter (cursor) in de query meegestuurd te worden.
+      example: 241d66b1-fcdb-4266-b908-01aeec18781e
       schema:
-        type: string
-        description: |
-          De cursor (bijv. GUID) wanneer het aantal resultaten groter is dan het maximum aantal resultaten per pagina.
-          Deze dient als query parameter ('?cursor=<guid>') te worden meegestuurd bij het ophalen van de volgende pagina.
-        example: 241d66b1-fcdb-4266-b908-01aeec18781e
-    X-Parameters-PeiltijdstipMaterieel:
-      schema:
-        type: string
-        format: date-time
-        description: De peildatum. Indien leeg worden de actuele gegevens opgevraagd
+        $ref: '#/components/schemas/Cursor'
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
@@ -570,7 +357,8 @@ components:
           format: float
           description: Het aantal van de opgegeven meeteenheid van de bijbehorende woningwaardering criterium.
         criterium:
-          $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingCriterium'
+          allOf:
+          - $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingCriterium'
           description: De omschrijving van het woningwaardering onderdeel.
         punten:
           type: number
@@ -600,10 +388,12 @@ components:
           format: any
           description: De naam van het woningwaardering element.
         meeteenheid:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: De meeteenheid waarmee het criterium wordt aangeduid.
         stelsel:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Het woningwaardering stelsel bevat een apart puntensystemen voor de eenheidssoorten zelfstandige woningen, kamers, woonwagens en woonwagenstandplaatsen. Dit attribuut geeft het toe te passen puntensysteem aan.
     Referentiedata:
       type: object
@@ -644,10 +434,12 @@ components:
           format: any
           description: De omschrijving van de groep.
         stelsel:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Het woningwaardering stelsel bevat een apart puntensystemen voor de eenheidssoorten zelfstandige woningen, kamers, woonwagens en woonwagenstandplaatsen. Dit attribuut geeft het toe te passen puntensysteem aan.
         stelselgroep:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: De naam van de groep binnen het woningwaarderingsstelsel, zoals beschreven in het Besluit huurprijzen woonruimte.
     WoningwaarderingResultaten-WoningwaarderingGroep:
       type: object
@@ -677,7 +469,8 @@ components:
           format: date
           description: De einddatum waarop de waarop de woningwaardering niet meer geldig is.
         criteriumGroep:
-          $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingCriteriumGroep'
+          allOf:
+          - $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingCriteriumGroep'
           description: De woningwaardering criterium groep behorend bij de woningwaardering groep.
         punten:
           type: number
@@ -688,7 +481,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WoningwaarderingResultaten-Woningwaardering'
-    WoningwaarderingResultaten-WoningwaarderingResultaat-bericht:
+    WoningwaarderingResultaten-WoningwaarderingResultaatbericht:
       allOf:
         - $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaat'
         - $ref: '#/components/schemas/Bericht-basis'
@@ -720,7 +513,8 @@ components:
           format: date
           description: De einddatum waarop de waarop de woningwaardering niet meer geldig is.
         eenheid:
-          $ref: '#/components/schemas/Eenheid-sleutels'
+          allOf:
+          - $ref: '#/components/schemas/Eenheid-sleutels'
           description: De eenheid behorend bij de woningwaardering.
         groepen:
           description: De woningwaarderingenGroep behorend bij het woningwaardering puntentotaal.
@@ -802,16 +596,20 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Specificatie van het documenttype. Bijvoorbeeld verslag, rapport etc.
         detailSoort:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Detail specificatie van het documenttype. Bijvoorbeeld notulen, adviesrapport etc.
         onderwerp:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Onderwerp van het informatieobject.
         subonderwerp:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Subonderwerp van het informatieobject.
         titel:
           type: string
@@ -845,21 +643,24 @@ components:
           format: any
           description: Tekstuele omschrijving ten behoeve van externe publicatie van dit informatieobject.
         formaat:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: Het digitale formaat (IANA media type) van het informatieobject.
         gebruiksrechten:
           type: string
           format: any
           description: Informatie omtrent rechten die geassocieerd zijn met het informatieobject zoals intellectueel eigendom.
         taal:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: De taal waarin het informatieobject is opgesteld.
         versie:
           type: number
           format: float
           description: Het versienummer van het informatieobject.
         vertrouwelijkheid:
-          $ref: '#/components/schemas/Referentiedata'
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
           description: De classificatie van het vertrouwelijkheidsniveau van het informatieobject.
     Foutbericht:
       type: object
@@ -872,4 +673,95 @@ components:
           type: string
           format: any
           description: Omschrijving van de fout
+    TijdstipBericht:
+      type: string
+      format: date-time
+    Referentienummer:
+      type: string
+      format: any
+    ZenderOrganisatie:
+      type: string
+      format: any
+    ZenderAdministratie:
+      type: string
+      format: any
+    Aantal:
+      type: integer
+    AantalPerPagina:
+      type: integer
+    Paginanummer:
+      type: integer
+    Cursor:
+      type: string
+    PeiltijdstipMaterieel:
+      type: string
+      format: date-time
+  parameters:
+    Cursor:
+      in: query
+      name: cursor
+      description: |
+        De cursor uit de response dient te worden meegestuurd bij het opvragen van 
+        de volgende set van resultaten wanneer deze groter is dan het aantal resultaten per pagina.
+      example: ca73d9bc-f810-48bf-8950-ec3fd70b0159
+      required: false
+      schema:
+        $ref: '#/components/schemas/Cursor'
+    Pagina:
+      in: query
+      name: pagina
+      description: Opgevraagde paginanummer
+      example: 3
+      required: false
+      schema:
+        $ref: '#/components/schemas/Paginanummer'
+    StuurgegevensTijdstipBericht:
+      in: header
+      name: X-Stuurgegevens-Tijdstip-Bericht
+      description: Tijdstip van verzenden
+      example: 2022-07-21T17:32:28Z
+      required: false
+      schema:
+        $ref: '#/components/schemas/TijdstipBericht'
+    StuurgegevensReferentienummer:
+      in: header
+      name: X-Stuurgegevens-Referentienummer
+      description: | 
+        Code bedoeld voor correlatie
+      example: 05aa0347-fef9-486a-a1b0-4fd75f33e746
+      required: false
+      schema:
+        $ref: '#/components/schemas/Referentienummer'
+    StuurgegevensZenderOrganisatie:
+      in: header
+      name: X-Stuurgegevens-Zender-Organisatie
+      description: Naam van de verzendende organisatie
+      required: false
+      schema:
+        $ref: '#/components/schemas/ZenderOrganisatie'
+    StuurgegevensZenderAdministratie:
+      in: header
+      name: X-Stuurgegevens-Zender-Administratie
+      description: |
+        Met het stuurgegeven Administratie kan onderscheid gemaakt worden tussen 
+        de verschillende gegevensverzamelingen die de verzendende organisatie beheert
+      required: false
+      schema:
+        $ref: '#/components/schemas/ZenderAdministratie'
+    ParametersAantalPerPagina:
+      in: header
+      name: X-Parameters-AantalPerPagina
+      description: Maximaal aantal resultaten in de response
+      example: 20
+      required: false
+      schema:
+        $ref: '#/components/schemas/AantalPerPagina'
+    ParametersPeiltijdstipMaterieel:
+      in: header
+      name: X-Parameters-PeiltijdstipMaterieel
+      description: De peildatum. Indien leeg worden de actuele gegevens opgevraagd
+      example: 2022-04-14T12:00:00Z
+      required: false
+      schema:
+        $ref: '#/components/schemas/PeiltijdstipMaterieel'
 
