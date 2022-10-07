@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '4.0.14+220909.17'
+  version: '4.0.15+221007.14'
 servers:
   - url: https://financien.vera.io:{port}/{basePath}
     description: Productieserver
@@ -11105,10 +11105,11 @@ components:
           allOf:
           - $ref: '#/components/schemas/Betaalopdracht'
           description: De betaalopdracht van deze factuurbetaling.
-        factuur:
-          allOf:
-          - $ref: '#/components/schemas/Factuur'
+        facturen:
           description: De factuur van deze factuurbetaling.
+          type: array
+          items:
+            $ref: '#/components/schemas/Factuur'
         grootboekmutatie:
           allOf:
           - $ref: '#/components/schemas/Grootboekmutatie'
@@ -11159,7 +11160,7 @@ components:
         status:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De status van de factuur. Bijv. Goedgekeurd, Geblokkeerd, Betaald etc.
+          description: De status van de factuur. Bijv. Goedgekeurd, Geblokkeerd, Betaald, Gedeeltelijk betaald etc.
         ontvangstdatum:
           type: string
           format: date
@@ -11237,6 +11238,11 @@ components:
           type: string
           format: any
           description: Extern factuurnummer van de factuur.
+        factuurbetalingen:
+          description: De betalingen behorende bij de factuur.
+          type: array
+          items:
+            $ref: '#/components/schemas/Factuurbetaling'
         factuurGeblokkeerd:
           type: boolean
           description: Geblokkeerd ja/nee.
@@ -11262,6 +11268,12 @@ components:
           type: number
           format: float
           description: Bedrag dat nog openstaat op de factuur.
+        overeenkomsten:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: Referentie naar Overeenkomst in bronsysteem Overeenkomsten
         relatie:
           type: string
           format: uri
@@ -12095,7 +12107,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BoekjaarPeriodesaldo'
-        inkoopofactuurregels:
+        inkoopfactuurregels:
           description: De inkoopfactuurregels behorende bij de verbijzondering.
           type: array
           items:
@@ -13170,6 +13182,12 @@ components:
           type: string
           format: uri
           description: Referentie naar Overeenkomst in bronsysteem Overeenkomsten
+        overeenkomsten:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: Referentie naar Overeenkomst in bronsysteem Overeenkomsten
         relatie:
           type: string
           format: uri
@@ -13285,11 +13303,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/Crediteur'
           description: De crediteur van deze factuur.
-        factuurbetaling:
-          description: De betalingen behorende bij de factuur.
-          type: array
-          items:
-            $ref: '#/components/schemas/Factuurbetaling'
         inkoopopdracht:
           allOf:
           - $ref: '#/components/schemas/Inkoopopdracht'

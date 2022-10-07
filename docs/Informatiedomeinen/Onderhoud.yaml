@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '4.0.14+220909.17'
+  version: '4.0.15+221007.14'
 servers:
   - url: https://onderhoud.vera.io:{port}/{basePath}
     description: Productieserver
@@ -36,6 +36,8 @@ tags:
   description: Operaties met betrekking tot een Onderhoudstaakvoorcalculatie
 - name: Onderhoudsverzoeken
   description: Operaties met betrekking tot een Onderhoudsverzoek
+- name: Onderhoudsverzoekverrekeningen
+  description: Operaties met betrekking tot een Onderhoudsverzoekverrekening
 - name: Standaardprijzen
   description: Operaties met betrekking tot een Standaardprijs
 paths:
@@ -1782,6 +1784,253 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+  /onderhoudsverzoekverrekeningen:
+    get:
+      tags:
+      - 'Onderhoudsverzoekverrekeningen'
+      description: Ophalen van Onderhoudsverzoekverrekeningen
+      operationId: listOnderhoudsverzoekverrekeningen
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Onderhoudsverzoekverrekeningbericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
+      responses:
+        '200':
+          description: Zoekactie geslaagd
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Onderhoudsverzoekverrekeningbericht'
+          headers:
+            X-Parameters-Aantal:
+              $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+              $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+              $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Onderhoudsverzoekverrekeningen'
+      description: Voegt een nieuw(e) Onderhoudsverzoekverrekening toe.
+      operationId: createOnderhoudsverzoekverrekening
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Onderhoudsverzoekverrekening
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Onderhoudsverzoekverrekeningbericht'
+      responses:
+        '200':
+          description: Onderhoudsverzoekverrekening succesvol toegevoegd
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Onderhoudsverzoekverrekeningen'
+      description: |
+        Vervangen van een Onderhoudsverzoekverrekening op basis van overeenkomstige sleutelvelden.
+      operationId: replaceOnderhoudsverzoekverrekening
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Onderhoudsverzoekverrekening
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Onderhoudsverzoekverrekeningbericht'
+      responses:
+        '200':
+          description: Onderhoudsverzoekverrekening succesvol vervangen
+        '400':
+          description: |
+            Fout in request.
+            Onderhoudsverzoekverrekening bevat geen sleutelveld(en).
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Onderhoudsverzoekverrekening met gegeven sleutelveld(en) niet gevonden
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Onderhoudsverzoekverrekeningen'
+      description: |
+        Wijzigen van afzonderlijke attributen van een Onderhoudsverzoekverrekening. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateOnderhoudsverzoekverrekening
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Onderhoudsverzoekverrekening
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Onderhoudsverzoekverrekeningbericht'
+      responses:
+        '200':
+          description: Onderhoudsverzoekverrekening succesvol gewijzigd
+        '400':
+          description: |
+            Fout in request.
+            Onderhoudsverzoekverrekening bevat geen sleutelveld(en).
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: Onderhoudsverzoekverrekening met gegeven sleutelveld(en) niet gevonden
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /onderhoudsverzoekverrekeningen/{id}:
+    get:
+      tags:
+      - 'Onderhoudsverzoekverrekeningen'
+      description: Retourneert een Onderhoudsverzoekverrekening met de gegeven identifier
+      operationId: readOnderhoudsverzoekverrekeningById
+      parameters:
+      - name: id
+        in: path
+        description: Id van Onderhoudsverzoekverrekening om op te halen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      responses:
+        '200':
+          description: Onderhoudsverzoekverrekening response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Onderhoudsverzoekverrekeningbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Onderhoudsverzoekverrekening met id niet gevonden
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Onderhoudsverzoekverrekeningen'
+      description: Vervangen van een Onderhoudsverzoekverrekening
+      operationId: replaceOnderhoudsverzoekverrekeningById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Onderhoudsverzoekverrekening om te vervangen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Onderhoudsverzoekverrekening
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Onderhoudsverzoekverrekeningbericht'
+      responses:
+        '200':
+          description: Onderhoudsverzoekverrekening succesvol vervangen
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Onderhoudsverzoekverrekening met id niet gevonden
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Onderhoudsverzoekverrekeningen'
+      description: Wijzigen van een Onderhoudsverzoekverrekening
+      operationId: updateOnderhoudsverzoekverrekeningById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Onderhoudsverzoekverrekening om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Onderhoudsverzoekverrekening
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Onderhoudsverzoekverrekeningbericht'
+      responses:
+        '200':
+          description: Onderhoudsverzoekverrekening succesvol gewijzigd
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Onderhoudsverzoekverrekening met id niet gevonden
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
   /standaardprijzen:
     get:
       tags:
@@ -2555,6 +2804,10 @@ components:
           type: number
           format: float
           description: De totale kosten van de bestedingsregel op basis van het aantal, de meeteenheid en het eventueel gebruikte artikel
+        grootboekmutatie:
+          type: string
+          format: uri
+          description: Referentie naar Grootboekmutatie in bronsysteem Financien
         meeteenheid:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
@@ -2643,6 +2896,11 @@ components:
             type: string
             format: uri
           description: Referentie naar Relatie in bronsysteem Relaties
+        verrekeningen:
+          description: De verrekeningen van het onderhoudsverzoek met de melder
+          type: array
+          items:
+            $ref: '#/components/schemas/Onderhoudsverzoekverrekening'
         voorkeurAfspraken:
           type: array
           items:
@@ -2668,6 +2926,41 @@ components:
           type: string
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Onderhoudsverzoekverrekeningbericht:
+      allOf:
+        - $ref: '#/components/schemas/Onderhoudsverzoekverrekening'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Onderhoudsverzoekverrekening:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Typering van het soort verrekening: te verhalen, te activeren.'
+        bedrag:
+          type: number
+          format: float
+          description: Het bedrag dat in rekening wordt gebracht.
+        order:
+          allOf:
+          - $ref: '#/components/schemas/Onderhoudsorder-sleutels'
+          description: Verwijzing naar de eventuele onderhoudsorder waarvoor de (deel)verrekening.
     Onderhoudstaakvoorcalculatiebericht:
       allOf:
         - $ref: '#/components/schemas/Onderhoudstaakvoorcalculatie'
@@ -2840,6 +3133,25 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
     Onderhoudstaakvoorcalculatie-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Onderhoudsverzoekverrekening-sleutels:
       type: object
       properties:
         id:
