@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '4.0.15+221007.14'
+  version: '4.0.16+221028.5'
 servers:
   - url: https://woonruimteverdeling.vera.io:{port}/{basePath}
     description: Productieserver
@@ -34,6 +34,8 @@ tags:
   description: Operaties met betrekking tot een Publicatie
 - name: Puntenberekeningen
   description: Operaties met betrekking tot een Puntenberekening
+- name: Puntengebeurtenissen
+  description: Operaties met betrekking tot een Puntengebeurtenis
 - name: Puntenmutaties
   description: Operaties met betrekking tot een Puntenmutatie
 - name: Reacties
@@ -1539,6 +1541,253 @@ paths:
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
           description: Puntenberekening met id niet gevonden
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /puntengebeurtenissen:
+    get:
+      tags:
+      - 'Puntengebeurtenissen'
+      description: Ophalen van Puntengebeurtenissen
+      operationId: listPuntengebeurtenissen
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Puntengebeurtenisbericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
+      responses:
+        '200':
+          description: Zoekactie geslaagd
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Puntengebeurtenisbericht'
+          headers:
+            X-Parameters-Aantal:
+              $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+              $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+              $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Puntengebeurtenissen'
+      description: Voegt een nieuw(e) Puntengebeurtenis toe.
+      operationId: createPuntengebeurtenis
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Puntengebeurtenis
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Puntengebeurtenisbericht'
+      responses:
+        '200':
+          description: Puntengebeurtenis succesvol toegevoegd
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Puntengebeurtenissen'
+      description: |
+        Vervangen van een Puntengebeurtenis op basis van overeenkomstige sleutelvelden.
+      operationId: replacePuntengebeurtenis
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Puntengebeurtenis
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Puntengebeurtenisbericht'
+      responses:
+        '200':
+          description: Puntengebeurtenis succesvol vervangen
+        '400':
+          description: |
+            Fout in request.
+            Puntengebeurtenis bevat geen sleutelveld(en).
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Puntengebeurtenis met gegeven sleutelveld(en) niet gevonden
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Puntengebeurtenissen'
+      description: |
+        Wijzigen van afzonderlijke attributen van een Puntengebeurtenis. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updatePuntengebeurtenis
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Puntengebeurtenis
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Puntengebeurtenisbericht'
+      responses:
+        '200':
+          description: Puntengebeurtenis succesvol gewijzigd
+        '400':
+          description: |
+            Fout in request.
+            Puntengebeurtenis bevat geen sleutelveld(en).
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: Puntengebeurtenis met gegeven sleutelveld(en) niet gevonden
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /puntengebeurtenissen/{id}:
+    get:
+      tags:
+      - 'Puntengebeurtenissen'
+      description: Retourneert een Puntengebeurtenis met de gegeven identifier
+      operationId: readPuntengebeurtenisById
+      parameters:
+      - name: id
+        in: path
+        description: Id van Puntengebeurtenis om op te halen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      responses:
+        '200':
+          description: Puntengebeurtenis response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Puntengebeurtenisbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Puntengebeurtenis met id niet gevonden
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Puntengebeurtenissen'
+      description: Vervangen van een Puntengebeurtenis
+      operationId: replacePuntengebeurtenisById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Puntengebeurtenis om te vervangen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Puntengebeurtenis
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Puntengebeurtenisbericht'
+      responses:
+        '200':
+          description: Puntengebeurtenis succesvol vervangen
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Puntengebeurtenis met id niet gevonden
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Puntengebeurtenissen'
+      description: Wijzigen van een Puntengebeurtenis
+      operationId: updatePuntengebeurtenisById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Puntengebeurtenis om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Puntengebeurtenis
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Puntengebeurtenisbericht'
+      responses:
+        '200':
+          description: Puntengebeurtenis succesvol gewijzigd
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Puntengebeurtenis met id niet gevonden
         default:
           description: Onverwachte fout
           content:
@@ -3777,18 +4026,18 @@ components:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: Het soort gebeurtenis. Bijv. Niet aanwezig op bevestige bezichtiging.
-        begindatum:
-          type: string
-          format: date-time
-          description: De begindatum van de gebeurtenis.
-        einddatum:
-          type: string
-          format: date-time
-          description: De einddatum van de gebeurtenis.
         datum:
           type: string
           format: date-time
           description: De datum waarop gebeurtenis heeft plaatsgevonden.
+        begindatum:
+          type: string
+          format: date-time
+          description: De begindatum van de geldigheid van de gebeurtenis.
+        einddatum:
+          type: string
+          format: date-time
+          description: De einddatum van de geldigheid van de gebeurtenis.
         adres:
           type: string
           format: uri
@@ -3831,15 +4080,15 @@ components:
         datum:
           type: string
           format: date-time
-          description: De datum waarop gebeurtenis heeft plaatsgevonden.
+          description: De datum waarop berekening heeft plaatsgevonden.
         begindatum:
           type: string
           format: date-time
-          description: De begindatum van de gebeurtenis.
+          description: De begindatum van de geldigheid van de berekenis.
         einddatum:
           type: string
           format: date-time
-          description: De einddatum van de gebeurtenis.
+          description: De einddatum van de geldigheid van de berekenis.
         puntenmutaties:
           description: De puntenmutaties die hebben geleid tot een puntenberekening.
           type: array
@@ -3893,10 +4142,16 @@ components:
           format: date-time
           description: De datum waarop de puntenmutatie is bepaald.
         gebeurtenissen:
-          description: De gebeurtenissen welke hebben geleid tot de puntenmutatie.
+          description: De gebeurtenissen welke hebben geleid tot de puntenmutatie. OBSOLETE.
           type: array
           items:
             $ref: '#/components/schemas/Gebeurtenis'
+          deprecated: true
+        puntengebeurtenissen:
+          description: De gebeurtenissen welke hebben geleid tot de puntenmutatie.
+          type: array
+          items:
+            $ref: '#/components/schemas/Puntengebeurtenis'
         relatie:
           type: string
           format: uri
@@ -3913,6 +4168,57 @@ components:
           type: number
           format: float
           description: Het aantal punten dat aangeeft hoe actief men op zoek is naar een woning.
+    Puntengebeurtenisbericht:
+      allOf:
+        - $ref: '#/components/schemas/Puntengebeurtenis'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Puntengebeurtenis:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort gebeurtenis. Bijv. Niet aanwezig op bevestige bezichtiging.
+        datum:
+          type: string
+          format: date-time
+          description: De datum waarop gebeurtenis heeft plaatsgevonden.
+        begindatum:
+          type: string
+          format: date-time
+          description: De begindatum van de geldigheid van de gebeurtenis.
+        einddatum:
+          type: string
+          format: date-time
+          description: De einddatum van de geldigheid van de gebeurtenis.
+        adres:
+          type: string
+          format: uri
+          description: Referentie naar Adres in bronsysteem Vastgoed
+        contextId:
+          type: string
+          format: any
+          description: De id van de context van de gebeurtenis, bijv. een reactie id, een aanbieding id etc.
+        inschrijving:
+          type: string
+          format: uri
+          description: Referentie naar Overeenkomst in bronsysteem Overeenkomsten
+        vestiging:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De vestiging van de vastgoedaanbieder die de woning heeft aangeboden.
     Regelingbericht:
       allOf:
         - $ref: '#/components/schemas/Regeling'
@@ -3995,10 +4301,16 @@ components:
           format: date
           description: De einddatum van de sanctie.
         gebeurtenissen:
-          description: De geberutenissen die hebben geleid tot de sanctie.
+          description: De geberutenissen die hebben geleid tot de sanctie. OBSOLETE.
           type: array
           items:
             $ref: '#/components/schemas/Gebeurtenis'
+          deprecated: true
+        puntengebeurtenissen:
+          description: De geberutenissen die hebben geleid tot de sanctie.
+          type: array
+          items:
+            $ref: '#/components/schemas/Puntengebeurtenis'
         relatie:
           type: string
           format: uri
@@ -4357,6 +4669,25 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+    Puntengebeurtenis-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort gebeurtenis. Bijv. Niet aanwezig op bevestige bezichtiging.
     Puntenmutatie-sleutels:
       type: object
       properties:
