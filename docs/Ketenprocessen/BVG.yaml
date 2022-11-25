@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Beheer Vastgoedgegevens
-  description: API-specificatie van ketenproces 'Beheer Vastgoedgegevens'. Deze specificatie is gebaseerd op VERA versie 4.0.16+221028.5
+  description: API-specificatie van ketenproces 'Beheer Vastgoedgegevens'. Deze specificatie is gebaseerd op VERA versie 4.0.17+221125.6
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '1.0.16+221028.5'
+  version: '1.0.17+221125.6'
 servers:
   - url: https://bvg.vera.io:{port}/{basePath}
     description: Productieserver
@@ -62,7 +62,7 @@ paths:
       - $ref: '#/components/parameters/ParametersAantalPerPagina'
       responses:
         '200':
-          description: Zoekactie geslaagd
+          description: OK
           content:
             'application/json':
               schema:
@@ -103,8 +103,18 @@ paths:
             schema:
               $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaatbericht'
       responses:
-        '200':
-          description: WoningwaarderingResultaat succesvol toegevoegd
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaatbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -132,15 +142,13 @@ paths:
               $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaatbericht'
       responses:
         '200':
-          description: WoningwaarderingResultaat succesvol vervangen
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            WoningwaarderingResultaat bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: WoningwaarderingResultaat met gegeven sleutelveld(en) niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -167,15 +175,13 @@ paths:
               $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaatbericht'
       responses:
         '200':
-          description: WoningwaarderingResultaat succesvol gewijzigd
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            WoningwaarderingResultaat bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-           description: WoningwaarderingResultaat met gegeven sleutelveld(en) niet gevonden
+           description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -201,7 +207,7 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
-          description: WoningwaarderingResultaat response
+          description: OK
           content:
             application/json:
               schema:
@@ -209,7 +215,7 @@ paths:
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: WoningwaarderingResultaat met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -240,11 +246,11 @@ paths:
               $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaatbericht'
       responses:
         '200':
-          description: WoningwaarderingResultaat succesvol vervangen
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: WoningwaarderingResultaat met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -275,11 +281,11 @@ paths:
               $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaatbericht'
       responses:
         '200':
-          description: WoningwaarderingResultaat succesvol gewijzigd
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: WoningwaarderingResultaat met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -319,7 +325,7 @@ components:
       name: X-API-KEY
   responses:
     NietGeautoriseerd:
-      description: API-key ontbreekt of is ongeldig
+      description: Unauthorized
       headers:
         X-API-KEY:
           schema:
@@ -390,11 +396,11 @@ components:
         meeteenheid:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De meeteenheid waarmee het criterium wordt aangeduid.
+          description: De meeteenheid waarmee het criterium wordt aangeduid. Referentiedatasoort MEETEENHEID.
         stelsel:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het woningwaardering stelsel bevat een apart puntensystemen voor de eenheidssoorten zelfstandige woningen, kamers, woonwagens en woonwagenstandplaatsen. Dit attribuut geeft het toe te passen puntensysteem aan.
+          description: Het woningwaardering stelsel bevat een apart puntensystemen voor de eenheidssoorten zelfstandige woningen, kamers, woonwagens en woonwagenstandplaatsen. Dit attribuut geeft het toe te passen puntensysteem aan. Referentiedatasoort WONINGWAARDERINGSTELSEL.
     Referentiedata:
       type: object
       properties:
@@ -436,11 +442,11 @@ components:
         stelsel:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het woningwaardering stelsel bevat een apart puntensystemen voor de eenheidssoorten zelfstandige woningen, kamers, woonwagens en woonwagenstandplaatsen. Dit attribuut geeft het toe te passen puntensysteem aan.
+          description: Het woningwaardering stelsel bevat een apart puntensystemen voor de eenheidssoorten zelfstandige woningen, kamers, woonwagens en woonwagenstandplaatsen. Dit attribuut geeft het toe te passen puntensysteem aan. Referentiedatasoort WONINGWAARDERINGSTELSEL.
         stelselgroep:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De naam van de groep binnen het woningwaarderingsstelsel, zoals beschreven in het Besluit huurprijzen woonruimte.
+          description: De naam van de groep binnen het woningwaarderingsstelsel, zoals beschreven in het Besluit huurprijzen woonruimte. Referentiedatasoort WONINGWAARDERINGSTELSELGROEP.
     WoningwaarderingResultaten-WoningwaarderingGroep:
       type: object
       properties:
@@ -598,19 +604,19 @@ components:
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Specificatie van het documenttype. Bijvoorbeeld verslag, rapport etc.
+          description: Specificatie van het documenttype. Bijvoorbeeld verslag, rapport etc. Referentiedatasoort INFORMATIEOBJECTSOORT.
         detailSoort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Detail specificatie van het documenttype. Bijvoorbeeld notulen, adviesrapport etc.
+          description: Detail specificatie van het documenttype. Bijvoorbeeld notulen, adviesrapport etc. Referentiedatasoort INFORMATIEOBJECTDETAILSOORT.
         onderwerp:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Onderwerp van het informatieobject.
+          description: Onderwerp van het informatieobject. Referentiedatasoort INFORMATIEOBJECTONDERWERP.
         subonderwerp:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Subonderwerp van het informatieobject.
+          description: Subonderwerp van het informatieobject. Referentiedatasoort INFORMATIEOBJECTSUBONDERWERP.
         titel:
           type: string
           format: any
@@ -645,7 +651,7 @@ components:
         formaat:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het digitale formaat (IANA media type) van het informatieobject.
+          description: Het digitale formaat (IANA media type) van het informatieobject. Referentiedatasoort INFORMATIEOBJECTFORMAAT.
         gebruiksrechten:
           type: string
           format: any
@@ -653,7 +659,7 @@ components:
         taal:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De taal waarin het informatieobject is opgesteld.
+          description: De taal waarin het informatieobject is opgesteld. Referentiedatasoort TAAL.
         versie:
           type: number
           format: float
@@ -661,7 +667,7 @@ components:
         vertrouwelijkheid:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De classificatie van het vertrouwelijkheidsniveau van het informatieobject.
+          description: De classificatie van het vertrouwelijkheidsniveau van het informatieobject. Referentiedatasoort VERTROUWELIJKHEID.
     Foutbericht:
       type: object
       properties:

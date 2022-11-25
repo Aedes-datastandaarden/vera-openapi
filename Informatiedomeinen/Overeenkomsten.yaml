@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '4.0.16+221028.5'
+  version: '4.0.17+221125.6'
 servers:
   - url: https://overeenkomsten.vera.io:{port}/{basePath}
     description: Productieserver
@@ -22,8 +22,8 @@ servers:
        basePath:
          default: v4
 tags:
-- name: Arbeitsovereenkomsten
-  description: Operaties met betrekking tot een Arbeitsovereenkomst
+- name: Arbeidsovereenkomsten
+  description: Operaties met betrekking tot een Arbeidsovereenkomst
 - name: Huurgeschillen
   description: Operaties met betrekking tot een Huurgeschil
 - name: HuurgeschilActies
@@ -65,19 +65,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /arbeitsovereenkomsten:
+  /arbeidsovereenkomsten:
     get:
       tags:
-      - 'Arbeitsovereenkomsten'
-      description: Ophalen van Arbeitsovereenkomsten
-      operationId: listArbeitsovereenkomsten
+      - 'Arbeidsovereenkomsten'
+      description: Ophalen van Arbeidsovereenkomsten
+      operationId: listArbeidsovereenkomsten
       parameters:
       - name: params
         in: query
         style: form
         explode: true
         schema:
-          $ref: '#/components/schemas/Arbeitsovereenkomstbericht'
+          $ref: '#/components/schemas/Arbeidsovereenkomstbericht'
       - $ref: '#/components/parameters/Cursor'
       - $ref: '#/components/parameters/Pagina'
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
@@ -88,13 +88,13 @@ paths:
       - $ref: '#/components/parameters/ParametersAantalPerPagina'
       responses:
         '200':
-          description: Zoekactie geslaagd
+          description: OK
           content:
             'application/json':
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Arbeitsovereenkomstbericht'
+                  $ref: '#/components/schemas/Arbeidsovereenkomstbericht'
           headers:
             X-Parameters-Aantal:
               $ref: '#/components/headers/X-Parameters-Aantal'
@@ -114,23 +114,33 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     post:
       tags:
-      - 'Arbeitsovereenkomsten'
-      description: Voegt een nieuw(e) Arbeitsovereenkomst toe.
-      operationId: createArbeitsovereenkomst
+      - 'Arbeidsovereenkomsten'
+      description: Voegt een nieuw(e) Arbeidsovereenkomst toe.
+      operationId: createArbeidsovereenkomst
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Arbeitsovereenkomst
+        description: Arbeidsovereenkomst
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Arbeitsovereenkomstbericht'
+              $ref: '#/components/schemas/Arbeidsovereenkomstbericht'
       responses:
-        '200':
-          description: Arbeitsovereenkomst succesvol toegevoegd
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Arbeidsovereenkomstbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -141,32 +151,30 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
-      - 'Arbeitsovereenkomsten'
+      - 'Arbeidsovereenkomsten'
       description: |
-        Vervangen van een Arbeitsovereenkomst op basis van overeenkomstige sleutelvelden.
-      operationId: replaceArbeitsovereenkomst
+        Vervangen van een Arbeidsovereenkomst op basis van overeenkomstige sleutelvelden.
+      operationId: replaceArbeidsovereenkomst
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Arbeitsovereenkomst
+        description: Entiteit Arbeidsovereenkomst
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Arbeitsovereenkomstbericht'
+              $ref: '#/components/schemas/Arbeidsovereenkomstbericht'
       responses:
         '200':
-          description: Arbeitsovereenkomst succesvol vervangen
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            Arbeitsovereenkomst bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Arbeitsovereenkomst met gegeven sleutelveld(en) niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -175,49 +183,47 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     patch:
       tags:
-      - 'Arbeitsovereenkomsten'
+      - 'Arbeidsovereenkomsten'
       description: |
-        Wijzigen van afzonderlijke attributen van een Arbeitsovereenkomst. In de meegestuurde entiteit moeten
+        Wijzigen van afzonderlijke attributen van een Arbeidsovereenkomst. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
-      operationId: updateArbeitsovereenkomst
+      operationId: updateArbeidsovereenkomst
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Arbeitsovereenkomst
+        description: Entiteit Arbeidsovereenkomst
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Arbeitsovereenkomstbericht'
+              $ref: '#/components/schemas/Arbeidsovereenkomstbericht'
       responses:
         '200':
-          description: Arbeitsovereenkomst succesvol gewijzigd
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            Arbeitsovereenkomst bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-           description: Arbeitsovereenkomst met gegeven sleutelveld(en) niet gevonden
+           description: Not Found
         default:
           description: Onverwachte fout
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /arbeitsovereenkomsten/{id}:
+  /arbeidsovereenkomsten/{id}:
     get:
       tags:
-      - 'Arbeitsovereenkomsten'
-      description: Retourneert een Arbeitsovereenkomst met de gegeven identifier
-      operationId: readArbeitsovereenkomstById
+      - 'Arbeidsovereenkomsten'
+      description: Retourneert een Arbeidsovereenkomst met de gegeven identifier
+      operationId: readArbeidsovereenkomstById
       parameters:
       - name: id
         in: path
-        description: Id van Arbeitsovereenkomst om op te halen
+        description: Id van Arbeidsovereenkomst om op te halen
         required: true
         schema:
           type: string
@@ -227,15 +233,15 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
-          description: Arbeitsovereenkomst response
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Arbeitsovereenkomstbericht'
+                $ref: '#/components/schemas/Arbeidsovereenkomstbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Arbeitsovereenkomst met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -244,13 +250,13 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     put:
       tags:
-      - 'Arbeitsovereenkomsten'
-      description: Vervangen van een Arbeitsovereenkomst
-      operationId: replaceArbeitsovereenkomstById
+      - 'Arbeidsovereenkomsten'
+      description: Vervangen van een Arbeidsovereenkomst
+      operationId: replaceArbeidsovereenkomstById
       parameters:
       - name: 'id'
         in: 'path'
-        description: Id van Arbeitsovereenkomst om te vervangen
+        description: Id van Arbeidsovereenkomst om te vervangen
         required: true
         schema:
           type: string
@@ -259,18 +265,18 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Arbeitsovereenkomst
+        description: Entiteit Arbeidsovereenkomst
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Arbeitsovereenkomstbericht'
+              $ref: '#/components/schemas/Arbeidsovereenkomstbericht'
       responses:
         '200':
-          description: Arbeitsovereenkomst succesvol vervangen
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Arbeitsovereenkomst met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -279,13 +285,13 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     patch:
       tags:
-      - 'Arbeitsovereenkomsten'
-      description: Wijzigen van een Arbeitsovereenkomst
-      operationId: updateArbeitsovereenkomstById
+      - 'Arbeidsovereenkomsten'
+      description: Wijzigen van een Arbeidsovereenkomst
+      operationId: updateArbeidsovereenkomstById
       parameters:
       - name: 'id'
         in: 'path'
-        description: Id van Arbeitsovereenkomst om te wijzigen
+        description: Id van Arbeidsovereenkomst om te wijzigen
         required: true
         schema:
           type: integer
@@ -294,18 +300,18 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Arbeitsovereenkomst
+        description: Entiteit Arbeidsovereenkomst
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Arbeitsovereenkomstbericht'
+              $ref: '#/components/schemas/Arbeidsovereenkomstbericht'
       responses:
         '200':
-          description: Arbeitsovereenkomst succesvol gewijzigd
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Arbeitsovereenkomst met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -335,7 +341,7 @@ paths:
       - $ref: '#/components/parameters/ParametersAantalPerPagina'
       responses:
         '200':
-          description: Zoekactie geslaagd
+          description: OK
           content:
             'application/json':
               schema:
@@ -376,8 +382,18 @@ paths:
             schema:
               $ref: '#/components/schemas/Huurgeschilbericht'
       responses:
-        '200':
-          description: Huurgeschil succesvol toegevoegd
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Huurgeschilbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -405,15 +421,13 @@ paths:
               $ref: '#/components/schemas/Huurgeschilbericht'
       responses:
         '200':
-          description: Huurgeschil succesvol vervangen
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            Huurgeschil bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Huurgeschil met gegeven sleutelveld(en) niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -440,15 +454,13 @@ paths:
               $ref: '#/components/schemas/Huurgeschilbericht'
       responses:
         '200':
-          description: Huurgeschil succesvol gewijzigd
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            Huurgeschil bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-           description: Huurgeschil met gegeven sleutelveld(en) niet gevonden
+           description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -474,7 +486,7 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
-          description: Huurgeschil response
+          description: OK
           content:
             application/json:
               schema:
@@ -482,7 +494,7 @@ paths:
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Huurgeschil met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -513,11 +525,11 @@ paths:
               $ref: '#/components/schemas/Huurgeschilbericht'
       responses:
         '200':
-          description: Huurgeschil succesvol vervangen
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Huurgeschil met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -548,11 +560,11 @@ paths:
               $ref: '#/components/schemas/Huurgeschilbericht'
       responses:
         '200':
-          description: Huurgeschil succesvol gewijzigd
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Huurgeschil met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -582,7 +594,7 @@ paths:
       - $ref: '#/components/parameters/ParametersAantalPerPagina'
       responses:
         '200':
-          description: Zoekactie geslaagd
+          description: OK
           content:
             'application/json':
               schema:
@@ -623,8 +635,18 @@ paths:
             schema:
               $ref: '#/components/schemas/HuurgeschilActiebericht'
       responses:
-        '200':
-          description: HuurgeschilActie succesvol toegevoegd
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HuurgeschilActiebericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -652,15 +674,13 @@ paths:
               $ref: '#/components/schemas/HuurgeschilActiebericht'
       responses:
         '200':
-          description: HuurgeschilActie succesvol vervangen
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            HuurgeschilActie bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: HuurgeschilActie met gegeven sleutelveld(en) niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -687,15 +707,13 @@ paths:
               $ref: '#/components/schemas/HuurgeschilActiebericht'
       responses:
         '200':
-          description: HuurgeschilActie succesvol gewijzigd
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            HuurgeschilActie bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-           description: HuurgeschilActie met gegeven sleutelveld(en) niet gevonden
+           description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -721,7 +739,7 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
-          description: HuurgeschilActie response
+          description: OK
           content:
             application/json:
               schema:
@@ -729,7 +747,7 @@ paths:
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: HuurgeschilActie met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -760,11 +778,11 @@ paths:
               $ref: '#/components/schemas/HuurgeschilActiebericht'
       responses:
         '200':
-          description: HuurgeschilActie succesvol vervangen
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: HuurgeschilActie met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -795,11 +813,11 @@ paths:
               $ref: '#/components/schemas/HuurgeschilActiebericht'
       responses:
         '200':
-          description: HuurgeschilActie succesvol gewijzigd
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: HuurgeschilActie met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -829,7 +847,7 @@ paths:
       - $ref: '#/components/parameters/ParametersAantalPerPagina'
       responses:
         '200':
-          description: Zoekactie geslaagd
+          description: OK
           content:
             'application/json':
               schema:
@@ -870,8 +888,18 @@ paths:
             schema:
               $ref: '#/components/schemas/HuurgeschilUitspraakbericht'
       responses:
-        '200':
-          description: HuurgeschilUitspraak succesvol toegevoegd
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HuurgeschilUitspraakbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -899,15 +927,13 @@ paths:
               $ref: '#/components/schemas/HuurgeschilUitspraakbericht'
       responses:
         '200':
-          description: HuurgeschilUitspraak succesvol vervangen
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            HuurgeschilUitspraak bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: HuurgeschilUitspraak met gegeven sleutelveld(en) niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -934,15 +960,13 @@ paths:
               $ref: '#/components/schemas/HuurgeschilUitspraakbericht'
       responses:
         '200':
-          description: HuurgeschilUitspraak succesvol gewijzigd
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            HuurgeschilUitspraak bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-           description: HuurgeschilUitspraak met gegeven sleutelveld(en) niet gevonden
+           description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -968,7 +992,7 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
-          description: HuurgeschilUitspraak response
+          description: OK
           content:
             application/json:
               schema:
@@ -976,7 +1000,7 @@ paths:
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: HuurgeschilUitspraak met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -1007,11 +1031,11 @@ paths:
               $ref: '#/components/schemas/HuurgeschilUitspraakbericht'
       responses:
         '200':
-          description: HuurgeschilUitspraak succesvol vervangen
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: HuurgeschilUitspraak met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -1042,11 +1066,11 @@ paths:
               $ref: '#/components/schemas/HuurgeschilUitspraakbericht'
       responses:
         '200':
-          description: HuurgeschilUitspraak succesvol gewijzigd
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: HuurgeschilUitspraak met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -1076,7 +1100,7 @@ paths:
       - $ref: '#/components/parameters/ParametersAantalPerPagina'
       responses:
         '200':
-          description: Zoekactie geslaagd
+          description: OK
           content:
             'application/json':
               schema:
@@ -1117,8 +1141,18 @@ paths:
             schema:
               $ref: '#/components/schemas/Huuropzeggingbericht'
       responses:
-        '200':
-          description: Huuropzegging succesvol toegevoegd
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Huuropzeggingbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -1146,15 +1180,13 @@ paths:
               $ref: '#/components/schemas/Huuropzeggingbericht'
       responses:
         '200':
-          description: Huuropzegging succesvol vervangen
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            Huuropzegging bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Huuropzegging met gegeven sleutelveld(en) niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -1181,15 +1213,13 @@ paths:
               $ref: '#/components/schemas/Huuropzeggingbericht'
       responses:
         '200':
-          description: Huuropzegging succesvol gewijzigd
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            Huuropzegging bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-           description: Huuropzegging met gegeven sleutelveld(en) niet gevonden
+           description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -1215,7 +1245,7 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
-          description: Huuropzegging response
+          description: OK
           content:
             application/json:
               schema:
@@ -1223,7 +1253,7 @@ paths:
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Huuropzegging met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -1254,11 +1284,11 @@ paths:
               $ref: '#/components/schemas/Huuropzeggingbericht'
       responses:
         '200':
-          description: Huuropzegging succesvol vervangen
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Huuropzegging met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -1289,11 +1319,11 @@ paths:
               $ref: '#/components/schemas/Huuropzeggingbericht'
       responses:
         '200':
-          description: Huuropzegging succesvol gewijzigd
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Huuropzegging met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -1323,7 +1353,7 @@ paths:
       - $ref: '#/components/parameters/ParametersAantalPerPagina'
       responses:
         '200':
-          description: Zoekactie geslaagd
+          description: OK
           content:
             'application/json':
               schema:
@@ -1364,8 +1394,18 @@ paths:
             schema:
               $ref: '#/components/schemas/Huurovereenkomstbericht'
       responses:
-        '200':
-          description: Huurovereenkomst succesvol toegevoegd
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Huurovereenkomstbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -1393,15 +1433,13 @@ paths:
               $ref: '#/components/schemas/Huurovereenkomstbericht'
       responses:
         '200':
-          description: Huurovereenkomst succesvol vervangen
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            Huurovereenkomst bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Huurovereenkomst met gegeven sleutelveld(en) niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -1428,15 +1466,13 @@ paths:
               $ref: '#/components/schemas/Huurovereenkomstbericht'
       responses:
         '200':
-          description: Huurovereenkomst succesvol gewijzigd
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            Huurovereenkomst bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-           description: Huurovereenkomst met gegeven sleutelveld(en) niet gevonden
+           description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -1462,7 +1498,7 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
-          description: Huurovereenkomst response
+          description: OK
           content:
             application/json:
               schema:
@@ -1470,7 +1506,7 @@ paths:
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Huurovereenkomst met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -1501,11 +1537,11 @@ paths:
               $ref: '#/components/schemas/Huurovereenkomstbericht'
       responses:
         '200':
-          description: Huurovereenkomst succesvol vervangen
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Huurovereenkomst met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -1536,11 +1572,11 @@ paths:
               $ref: '#/components/schemas/Huurovereenkomstbericht'
       responses:
         '200':
-          description: Huurovereenkomst succesvol gewijzigd
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Huurovereenkomst met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -1570,7 +1606,7 @@ paths:
       - $ref: '#/components/parameters/ParametersAantalPerPagina'
       responses:
         '200':
-          description: Zoekactie geslaagd
+          description: OK
           content:
             'application/json':
               schema:
@@ -1611,8 +1647,18 @@ paths:
             schema:
               $ref: '#/components/schemas/Huurtoeslagbericht'
       responses:
-        '200':
-          description: Huurtoeslag succesvol toegevoegd
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Huurtoeslagbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -1640,15 +1686,13 @@ paths:
               $ref: '#/components/schemas/Huurtoeslagbericht'
       responses:
         '200':
-          description: Huurtoeslag succesvol vervangen
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            Huurtoeslag bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Huurtoeslag met gegeven sleutelveld(en) niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -1675,15 +1719,13 @@ paths:
               $ref: '#/components/schemas/Huurtoeslagbericht'
       responses:
         '200':
-          description: Huurtoeslag succesvol gewijzigd
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            Huurtoeslag bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-           description: Huurtoeslag met gegeven sleutelveld(en) niet gevonden
+           description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -1709,7 +1751,7 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
-          description: Huurtoeslag response
+          description: OK
           content:
             application/json:
               schema:
@@ -1717,7 +1759,7 @@ paths:
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Huurtoeslag met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -1748,11 +1790,11 @@ paths:
               $ref: '#/components/schemas/Huurtoeslagbericht'
       responses:
         '200':
-          description: Huurtoeslag succesvol vervangen
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Huurtoeslag met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -1783,11 +1825,11 @@ paths:
               $ref: '#/components/schemas/Huurtoeslagbericht'
       responses:
         '200':
-          description: Huurtoeslag succesvol gewijzigd
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Huurtoeslag met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -1817,7 +1859,7 @@ paths:
       - $ref: '#/components/parameters/ParametersAantalPerPagina'
       responses:
         '200':
-          description: Zoekactie geslaagd
+          description: OK
           content:
             'application/json':
               schema:
@@ -1858,8 +1900,18 @@ paths:
             schema:
               $ref: '#/components/schemas/Inspectiebericht'
       responses:
-        '200':
-          description: Inspectie succesvol toegevoegd
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Inspectiebericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -1887,15 +1939,13 @@ paths:
               $ref: '#/components/schemas/Inspectiebericht'
       responses:
         '200':
-          description: Inspectie succesvol vervangen
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            Inspectie bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Inspectie met gegeven sleutelveld(en) niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -1922,15 +1972,13 @@ paths:
               $ref: '#/components/schemas/Inspectiebericht'
       responses:
         '200':
-          description: Inspectie succesvol gewijzigd
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            Inspectie bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-           description: Inspectie met gegeven sleutelveld(en) niet gevonden
+           description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -1956,7 +2004,7 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
-          description: Inspectie response
+          description: OK
           content:
             application/json:
               schema:
@@ -1964,7 +2012,7 @@ paths:
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Inspectie met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -1995,11 +2043,11 @@ paths:
               $ref: '#/components/schemas/Inspectiebericht'
       responses:
         '200':
-          description: Inspectie succesvol vervangen
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Inspectie met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -2030,11 +2078,11 @@ paths:
               $ref: '#/components/schemas/Inspectiebericht'
       responses:
         '200':
-          description: Inspectie succesvol gewijzigd
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Inspectie met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -2064,7 +2112,7 @@ paths:
       - $ref: '#/components/parameters/ParametersAantalPerPagina'
       responses:
         '200':
-          description: Zoekactie geslaagd
+          description: OK
           content:
             'application/json':
               schema:
@@ -2105,8 +2153,18 @@ paths:
             schema:
               $ref: '#/components/schemas/Koopovereenkomstbericht'
       responses:
-        '200':
-          description: Koopovereenkomst succesvol toegevoegd
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Koopovereenkomstbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -2134,15 +2192,13 @@ paths:
               $ref: '#/components/schemas/Koopovereenkomstbericht'
       responses:
         '200':
-          description: Koopovereenkomst succesvol vervangen
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            Koopovereenkomst bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Koopovereenkomst met gegeven sleutelveld(en) niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -2169,15 +2225,13 @@ paths:
               $ref: '#/components/schemas/Koopovereenkomstbericht'
       responses:
         '200':
-          description: Koopovereenkomst succesvol gewijzigd
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            Koopovereenkomst bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-           description: Koopovereenkomst met gegeven sleutelveld(en) niet gevonden
+           description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -2203,7 +2257,7 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
-          description: Koopovereenkomst response
+          description: OK
           content:
             application/json:
               schema:
@@ -2211,7 +2265,7 @@ paths:
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Koopovereenkomst met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -2242,11 +2296,11 @@ paths:
               $ref: '#/components/schemas/Koopovereenkomstbericht'
       responses:
         '200':
-          description: Koopovereenkomst succesvol vervangen
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Koopovereenkomst met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -2277,11 +2331,11 @@ paths:
               $ref: '#/components/schemas/Koopovereenkomstbericht'
       responses:
         '200':
-          description: Koopovereenkomst succesvol gewijzigd
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Koopovereenkomst met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -2311,7 +2365,7 @@ paths:
       - $ref: '#/components/parameters/ParametersAantalPerPagina'
       responses:
         '200':
-          description: Zoekactie geslaagd
+          description: OK
           content:
             'application/json':
               schema:
@@ -2352,8 +2406,18 @@ paths:
             schema:
               $ref: '#/components/schemas/Onderhoudsovereenkomstbericht'
       responses:
-        '200':
-          description: Onderhoudsovereenkomst succesvol toegevoegd
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Onderhoudsovereenkomstbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -2381,15 +2445,13 @@ paths:
               $ref: '#/components/schemas/Onderhoudsovereenkomstbericht'
       responses:
         '200':
-          description: Onderhoudsovereenkomst succesvol vervangen
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            Onderhoudsovereenkomst bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Onderhoudsovereenkomst met gegeven sleutelveld(en) niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -2416,15 +2478,13 @@ paths:
               $ref: '#/components/schemas/Onderhoudsovereenkomstbericht'
       responses:
         '200':
-          description: Onderhoudsovereenkomst succesvol gewijzigd
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            Onderhoudsovereenkomst bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-           description: Onderhoudsovereenkomst met gegeven sleutelveld(en) niet gevonden
+           description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -2450,7 +2510,7 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
-          description: Onderhoudsovereenkomst response
+          description: OK
           content:
             application/json:
               schema:
@@ -2458,7 +2518,7 @@ paths:
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Onderhoudsovereenkomst met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -2489,11 +2549,11 @@ paths:
               $ref: '#/components/schemas/Onderhoudsovereenkomstbericht'
       responses:
         '200':
-          description: Onderhoudsovereenkomst succesvol vervangen
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Onderhoudsovereenkomst met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -2524,11 +2584,11 @@ paths:
               $ref: '#/components/schemas/Onderhoudsovereenkomstbericht'
       responses:
         '200':
-          description: Onderhoudsovereenkomst succesvol gewijzigd
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Onderhoudsovereenkomst met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -2558,7 +2618,7 @@ paths:
       - $ref: '#/components/parameters/ParametersAantalPerPagina'
       responses:
         '200':
-          description: Zoekactie geslaagd
+          description: OK
           content:
             'application/json':
               schema:
@@ -2599,8 +2659,18 @@ paths:
             schema:
               $ref: '#/components/schemas/Overeenkomstbericht'
       responses:
-        '200':
-          description: Overeenkomst succesvol toegevoegd
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Overeenkomstbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -2628,15 +2698,13 @@ paths:
               $ref: '#/components/schemas/Overeenkomstbericht'
       responses:
         '200':
-          description: Overeenkomst succesvol vervangen
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            Overeenkomst bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Overeenkomst met gegeven sleutelveld(en) niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -2663,15 +2731,13 @@ paths:
               $ref: '#/components/schemas/Overeenkomstbericht'
       responses:
         '200':
-          description: Overeenkomst succesvol gewijzigd
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            Overeenkomst bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-           description: Overeenkomst met gegeven sleutelveld(en) niet gevonden
+           description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -2697,7 +2763,7 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
-          description: Overeenkomst response
+          description: OK
           content:
             application/json:
               schema:
@@ -2705,7 +2771,7 @@ paths:
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Overeenkomst met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -2736,11 +2802,11 @@ paths:
               $ref: '#/components/schemas/Overeenkomstbericht'
       responses:
         '200':
-          description: Overeenkomst succesvol vervangen
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Overeenkomst met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -2771,11 +2837,11 @@ paths:
               $ref: '#/components/schemas/Overeenkomstbericht'
       responses:
         '200':
-          description: Overeenkomst succesvol gewijzigd
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Overeenkomst met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -2805,7 +2871,7 @@ paths:
       - $ref: '#/components/parameters/ParametersAantalPerPagina'
       responses:
         '200':
-          description: Zoekactie geslaagd
+          description: OK
           content:
             'application/json':
               schema:
@@ -2846,8 +2912,18 @@ paths:
             schema:
               $ref: '#/components/schemas/Overeenkomstkoppelingbericht'
       responses:
-        '200':
-          description: Overeenkomstkoppeling succesvol toegevoegd
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Overeenkomstkoppelingbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -2875,15 +2951,13 @@ paths:
               $ref: '#/components/schemas/Overeenkomstkoppelingbericht'
       responses:
         '200':
-          description: Overeenkomstkoppeling succesvol vervangen
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            Overeenkomstkoppeling bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Overeenkomstkoppeling met gegeven sleutelveld(en) niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -2910,15 +2984,13 @@ paths:
               $ref: '#/components/schemas/Overeenkomstkoppelingbericht'
       responses:
         '200':
-          description: Overeenkomstkoppeling succesvol gewijzigd
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            Overeenkomstkoppeling bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-           description: Overeenkomstkoppeling met gegeven sleutelveld(en) niet gevonden
+           description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -2944,7 +3016,7 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
-          description: Overeenkomstkoppeling response
+          description: OK
           content:
             application/json:
               schema:
@@ -2952,7 +3024,7 @@ paths:
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Overeenkomstkoppeling met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -2983,11 +3055,11 @@ paths:
               $ref: '#/components/schemas/Overeenkomstkoppelingbericht'
       responses:
         '200':
-          description: Overeenkomstkoppeling succesvol vervangen
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Overeenkomstkoppeling met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -3018,11 +3090,11 @@ paths:
               $ref: '#/components/schemas/Overeenkomstkoppelingbericht'
       responses:
         '200':
-          description: Overeenkomstkoppeling succesvol gewijzigd
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Overeenkomstkoppeling met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -3052,7 +3124,7 @@ paths:
       - $ref: '#/components/parameters/ParametersAantalPerPagina'
       responses:
         '200':
-          description: Zoekactie geslaagd
+          description: OK
           content:
             'application/json':
               schema:
@@ -3093,8 +3165,18 @@ paths:
             schema:
               $ref: '#/components/schemas/Prijscomponentbericht'
       responses:
-        '200':
-          description: Prijscomponent succesvol toegevoegd
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prijscomponentbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -3122,15 +3204,13 @@ paths:
               $ref: '#/components/schemas/Prijscomponentbericht'
       responses:
         '200':
-          description: Prijscomponent succesvol vervangen
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            Prijscomponent bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Prijscomponent met gegeven sleutelveld(en) niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -3157,15 +3237,13 @@ paths:
               $ref: '#/components/schemas/Prijscomponentbericht'
       responses:
         '200':
-          description: Prijscomponent succesvol gewijzigd
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            Prijscomponent bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-           description: Prijscomponent met gegeven sleutelveld(en) niet gevonden
+           description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -3191,7 +3269,7 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
-          description: Prijscomponent response
+          description: OK
           content:
             application/json:
               schema:
@@ -3199,7 +3277,7 @@ paths:
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Prijscomponent met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -3230,11 +3308,11 @@ paths:
               $ref: '#/components/schemas/Prijscomponentbericht'
       responses:
         '200':
-          description: Prijscomponent succesvol vervangen
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Prijscomponent met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -3265,11 +3343,11 @@ paths:
               $ref: '#/components/schemas/Prijscomponentbericht'
       responses:
         '200':
-          description: Prijscomponent succesvol gewijzigd
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Prijscomponent met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -3299,7 +3377,7 @@ paths:
       - $ref: '#/components/parameters/ParametersAantalPerPagina'
       responses:
         '200':
-          description: Zoekactie geslaagd
+          description: OK
           content:
             'application/json':
               schema:
@@ -3340,8 +3418,18 @@ paths:
             schema:
               $ref: '#/components/schemas/Serviceovereenkomstbericht'
       responses:
-        '200':
-          description: Serviceovereenkomst succesvol toegevoegd
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Serviceovereenkomstbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -3369,15 +3457,13 @@ paths:
               $ref: '#/components/schemas/Serviceovereenkomstbericht'
       responses:
         '200':
-          description: Serviceovereenkomst succesvol vervangen
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            Serviceovereenkomst bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Serviceovereenkomst met gegeven sleutelveld(en) niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -3404,15 +3490,13 @@ paths:
               $ref: '#/components/schemas/Serviceovereenkomstbericht'
       responses:
         '200':
-          description: Serviceovereenkomst succesvol gewijzigd
+          description: OK
         '400':
-          description: |
-            Fout in request.
-            Serviceovereenkomst bevat geen sleutelveld(en).
+          description: Bad Request
         '401':
            $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-           description: Serviceovereenkomst met gegeven sleutelveld(en) niet gevonden
+           description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -3438,7 +3522,7 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       responses:
         '200':
-          description: Serviceovereenkomst response
+          description: OK
           content:
             application/json:
               schema:
@@ -3446,7 +3530,7 @@ paths:
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Serviceovereenkomst met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -3477,11 +3561,11 @@ paths:
               $ref: '#/components/schemas/Serviceovereenkomstbericht'
       responses:
         '200':
-          description: Serviceovereenkomst succesvol vervangen
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Serviceovereenkomst met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -3512,11 +3596,11 @@ paths:
               $ref: '#/components/schemas/Serviceovereenkomstbericht'
       responses:
         '200':
-          description: Serviceovereenkomst succesvol gewijzigd
+          description: OK
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
-          description: Serviceovereenkomst met id niet gevonden
+          description: Not Found
         default:
           description: Onverwachte fout
           content:
@@ -3556,53 +3640,53 @@ components:
       name: X-API-KEY
   responses:
     NietGeautoriseerd:
-      description: API-key ontbreekt of is ongeldig
+      description: Unauthorized
       headers:
         X-API-KEY:
           schema:
             type: string
   schemas:
-    Arbeitsovereenkomstbericht:
+    Arbeidsovereenkomstbericht:
       allOf:
-        - $ref: '#/components/schemas/Arbeitsovereenkomst'
+        - $ref: '#/components/schemas/Arbeidsovereenkomst'
         - $ref: '#/components/schemas/Bericht-basis'
-    Arbeitsovereenkomst:
-      type: object
+    Arbeidsovereenkomst:
       allOf:
       - $ref: '#/components/schemas/Overeenkomst-basis'
-      properties:
-        brutosalaris:
-          type: number
-          format: float
-          description: Het brutto bedrag dat is overeengekomen bij aanvang van het contract.
-        contracturen:
-          type: integer
-          format: int32
-          description: Het aantal uren van het dienstverband.
-        functie:
-          type: string
-          format: uri
-          description: Referentie naar PersoneleFunctie in bronsysteem Organisatie
-        medewerker:
-          type: string
-          format: uri
-          description: Referentie naar Medewerker in bronsysteem Organisatie
-        organisatorischeEenheid:
-          type: string
-          format: uri
-          description: Referentie naar OrganisatorischeEenheid in bronsysteem Organisatie
-        parttimePercentage:
-          type: number
-          format: float
-          description: Het part-time percentage van het dienstverband.
-        schaal:
-          type: string
-          format: any
-          description: De salarisschaal waar de functie bij aanvang is ingeschaald.
-        uurtarief:
-          type: number
-          format: float
-          description: Het bruto uurtarief dat is overeengekomen.
+      - type: object
+        properties:
+          brutosalaris:
+            type: number
+            format: float
+            description: Het brutto bedrag dat is overeengekomen bij aanvang van het contract.
+          contracturen:
+            type: integer
+            format: int32
+            description: Het aantal uren van het dienstverband.
+          functie:
+            type: string
+            format: uri
+            description: Referentie naar PersoneleFunctie in bronsysteem Organisatie
+          medewerker:
+            type: string
+            format: uri
+            description: Referentie naar Medewerker in bronsysteem Organisatie
+          organisatorischeEenheid:
+            type: string
+            format: uri
+            description: Referentie naar OrganisatorischeEenheid in bronsysteem Organisatie
+          parttimePercentage:
+            type: number
+            format: float
+            description: Het part-time percentage van het dienstverband.
+          schaal:
+            type: string
+            format: any
+            description: De salarisschaal waar de functie bij aanvang is ingeschaald.
+          uurtarief:
+            type: number
+            format: float
+            description: Het bruto uurtarief dat is overeengekomen.
     Huurgeschilbericht:
       allOf:
         - $ref: '#/components/schemas/Huurgeschil'
@@ -3633,11 +3717,11 @@ components:
         status:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van het huurgeschil. Bijvoorbeeld: In behandeling huurcommissie.'
+          description: 'De status van het huurgeschil. Bijvoorbeeld: In behandeling huurcommissie. Referentiedatasoort HUURGESCHILSTATUS.'
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De reden van het huurgeschil.
+          description: De reden van het huurgeschil. Referentiedatasoort HUURGESCHILSOORT.
         begindatum:
           type: string
           format: date
@@ -3679,7 +3763,7 @@ components:
         reden:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De reden van het huurgeschil. OBSOLETE, zie HuurgeschilSoort.
+          description: De reden van het huurgeschil. OBSOLETE, zie HuurgeschilSoort. Referentiedatasoort HUURGESCHILREDEN.
           deprecated: true
         uitspraken:
           description: De uitspraken die zijn gedaan door de huurcommissie.
@@ -3712,7 +3796,7 @@ components:
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De soort van het referentiedata item. Bijvoorbeeld nationaliteit.
+          description: De soort van het referentiedata item. Bijvoorbeeld nationaliteit. Referentiedatasoort REFERENTIEDATASOORT.
         naam:
           type: string
           format: any
@@ -3821,11 +3905,11 @@ components:
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn.
+          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn. Referentiedatasoort OVEREENKOMSTSOORT.
         detailSoort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het detail soort overeenkomst. Bijvoorbeeld BOG (Bedrijfs Onroerend Goed).
+          description: Het detail soort overeenkomst. Bijvoorbeeld BOG (Bedrijfs Onroerend Goed). Referentiedatasoort OVEREENKOMSTDETAILSOORT.
         bovenliggendeOvereenkomst:
           allOf:
           - $ref: '#/components/schemas/Overeenkomst-sleutels'
@@ -3833,7 +3917,7 @@ components:
         status:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van een huurovereenkomst. Dit kan een waarde bevatten zoals: overeenkomst beëindigd en huurder is vertrokken, of overeenkomst is momenteel in gebruik.'
+          description: 'De status van een huurovereenkomst. Dit kan een waarde bevatten zoals: overeenkomst beëindigd en huurder is vertrokken, of overeenkomst is momenteel in gebruik. Referentiedatasoort OVEREENKOMSTSTATUS.'
         begindatum:
           type: string
           format: date
@@ -3853,11 +3937,11 @@ components:
         versturenStatus:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De status van het versturen van de overeenkomst.
+          description: De status van het versturen van de overeenkomst. Referentiedatasoort OVEREENKOMSTVERSTURENSTATUS.
         bewakingsstatus:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De bewakingsstatus bij de overeenkomst die wordt gebruikt in verband met incasso en prolongatie. Deze status is van toepassing als een debiteur niet aan zijn betalingsverplichtingen kan voldoen.
+          description: De bewakingsstatus bij de overeenkomst die wordt gebruikt in verband met incasso en prolongatie. Deze status is van toepassing als een debiteur niet aan zijn betalingsverplichtingen kan voldoen. Referentiedatasoort BEWAKINGSSTATUS.
         betaalgegeven:
           type: string
           format: uri
@@ -3887,11 +3971,11 @@ components:
         eindeDetailReden:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De reden voor beëindiging van de overeenkomst.
+          description: De reden voor beëindiging van de overeenkomst. Referentiedatasoort EINDEDETAILREDEN.
         eindeReden:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De reden voor beëindiging van de overeenkomst.
+          description: De reden voor beëindiging van de overeenkomst. Referentiedatasoort EINDEREDEN.
         garanties:
           type: array
           items:
@@ -3901,12 +3985,12 @@ components:
         incassomoment:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het moment waarop de incasso wordt gedaan. OBSOLETE.
+          description: Het moment waarop de incasso wordt gedaan. OBSOLETE. Referentiedatasoort INCASSOMOMENT.
           deprecated: true
         incassowijze:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De wijze van incasso waarop de huurovereenkomst wordt betaald. OBSOLETE.
+          description: De wijze van incasso waarop de huurovereenkomst wordt betaald. OBSOLETE. Referentiedatasoort INCASSOWIJZE.
           deprecated: true
         onderhoudsverzoeken:
           type: array
@@ -3922,17 +4006,17 @@ components:
         redenOntbinding:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De reden van de voortijdige ontbinding van de overeenkomst. OBSOLETE.
+          description: De reden van de voortijdige ontbinding van de overeenkomst. OBSOLETE. Referentiedatasoort REDENONTBINDING.
           deprecated: true
         redenOpzegging:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De reden van de voortijdige ontbinding van de overeenkomst. OBSOLETE.
+          description: De reden van de voortijdige ontbinding van de overeenkomst. OBSOLETE. Referentiedatasoort REDENOPZEGGING.
           deprecated: true
         redenVernietiging:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De reden van de vernietiging van de overeenkomst. OBSOLETE.
+          description: De reden van de vernietiging van de overeenkomst. OBSOLETE. Referentiedatasoort REDENVERNIETIGING.
           deprecated: true
         relaties:
           type: array
@@ -3969,7 +4053,7 @@ components:
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn.
+          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn. Referentiedatasoort OVEREENKOMSTSOORT.
     Prijscomponentbericht:
       allOf:
         - $ref: '#/components/schemas/Prijscomponent'
@@ -4000,15 +4084,15 @@ components:
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Geeft aan om welk soort prijscomponent het betreft. Bijvoorbeeld een component voor een eenheid, of een component voor een overeenkomst.
+          description: Geeft aan om welk soort prijscomponent het betreft. Bijvoorbeeld een component voor een eenheid, of een component voor een overeenkomst. Referentiedatasoort PRIJSCOMPONENTSOORT.
         detailSoort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Geeft aan om welk detail soort prijscomponent het betreft. Bijvoorbeeld of het om service kosten gaat.
+          description: Geeft aan om welk detail soort prijscomponent het betreft. Bijvoorbeeld of het om service kosten gaat. Referentiedatasoort PRIJSCOMPONENTDETAILSOORT.
         subsidieSoort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Geeft aan of het prijscomponent onderdeel kan zijn van een subsidieregeling. Vooralsnog alleen van toepassing op de wet op de huurtoeslag.
+          description: Geeft aan of het prijscomponent onderdeel kan zijn van een subsidieregeling. Vooralsnog alleen van toepassing op de wet op de huurtoeslag. Referentiedatasoort PRIJSCOMPONENTSUBSIDIESOORT.
         begindatum:
           type: string
           format: date-time
@@ -4028,7 +4112,7 @@ components:
         btw:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De BTW van het prijscomponent.
+          description: De BTW van het prijscomponent. Referentiedatasoort BTW.
         eenheid:
           type: string
           format: uri
@@ -4040,14 +4124,14 @@ components:
         wijzigingsreden:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Geeft aan wat de reden was voor het aanpassen van het prijscomponent.
+          description: Geeft aan wat de reden was voor het aanpassen van het prijscomponent. Referentiedatasoort PRIJSCOMPONENTWIJZIGINGSREDEN.
     Overeenkomstbericht:
       allOf:
         - $ref: '#/components/schemas/Overeenkomst'
         - $ref: '#/components/schemas/Bericht-basis'
     Overeenkomst:
       oneOf:
-        - $ref: '#/components/schemas/Arbeitsovereenkomst'
+        - $ref: '#/components/schemas/Arbeidsovereenkomst'
         - $ref: '#/components/schemas/Huurovereenkomst'
         - $ref: '#/components/schemas/Koopovereenkomst'
         - $ref: '#/components/schemas/Onderhoudsovereenkomst'
@@ -4078,7 +4162,7 @@ components:
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort uitspraak die is gedaan door de huurcommissie.
+          description: Het soort uitspraak die is gedaan door de huurcommissie. Referentiedatasoort HUURGESCHILUITSPRAAKSOORT.
         datum:
           type: string
           format: date
@@ -4117,7 +4201,7 @@ components:
         status:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De status van de huuropzegging. Bijv. Aangemaakt, Goedgekeurd, Geannuleerd, Afgewezen, In behandeling, Afgehandeld.
+          description: De status van de huuropzegging. Bijv. Aangemaakt, Goedgekeurd, Geannuleerd, Afgewezen, In behandeling, Afgehandeld. Referentiedatasoort HUUROPZEGGINGSTATUS.
         begindatum:
           type: string
           format: date
@@ -4133,11 +4217,11 @@ components:
         eindeDetailReden:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De reden voor beëindiging van de overeenkomst.
+          description: De reden voor beëindiging van de overeenkomst. Referentiedatasoort EINDEDETAILREDEN.
         eindeReden:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De reden voor beëindiging van de overeenkomst.
+          description: De reden voor beëindiging van de overeenkomst. Referentiedatasoort EINDEREDEN.
         huurovereenkomst:
           allOf:
           - $ref: '#/components/schemas/Overeenkomst'
@@ -4161,7 +4245,7 @@ components:
         redenOpzegging:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De reden van de voortijdige ontbinding van de overeenkomst. OBSOLETE
+          description: De reden van de voortijdige ontbinding van de overeenkomst. OBSOLETE Referentiedatasoort REDENOPZEGGING.
           deprecated: true
         relaties:
           type: array
@@ -4174,93 +4258,93 @@ components:
         - $ref: '#/components/schemas/Huurovereenkomst'
         - $ref: '#/components/schemas/Bericht-basis'
     Huurovereenkomst:
-      type: object
       allOf:
       - $ref: '#/components/schemas/Overeenkomst-basis'
-      properties:
-        opzegdatum:
-          type: string
-          format: date
-          description: De datum dat de overeenkomst is opgezegd door de huurder.
-        prolongatieInterval:
-          type: string
-          format: duration
-          pattern: '^(-?)P(?=\d|T\d)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)([DW]))?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?)?$'
-          description: De interval die aangeeft na hoeveel tijd er wordt geprolongeerd op de overeenkomst.
-        prolongatieTotDatum:
-          type: string
-          format: date
-          description: De overeenkomst is geprolongeerd tot deze datum
-        huurHerzieningsdatum:
-          type: string
-          format: date
-          description: De datum dat de huurprijs van de huurovereenkomst is aangepast.
-        afwijkendeBetaler:
-          type: string
-          format: uri
-          description: Referentie naar Relatie in bronsysteem Relaties
-        afwijkendeBetalerIncassowijze:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: De wijze van incasso waarop de huurovereenkomst wordt betaald door de afwijkende betaler. OBSOLETE.
-          deprecated: true
-        bepaaldeTijd:
-          type: boolean
-          description: De waarde die aangeeft of er sprake is van een tijdelijke huurovereenkomst.
-        brutohuur:
-          type: number
-          format: float
-          description: De brutohuur = netto huur + servicekosten. De brutohuurprijs is inclusief BTW.
-        btw:
-          type: boolean
-          description: De waarde geeft aan of er BTW wordt geheven over de overeenkomst.
-        huurgeschillen:
-          description: Verwijzing naar eventuele huurgeschillen van toepassing op de huurovereenkomst.
-          type: array
-          items:
-            $ref: '#/components/schemas/Huurgeschil'
-        huurtoeslagen:
-          description: De huurtoeslagen behorende bij de huurovereenkomst.
-          type: array
-          items:
-            $ref: '#/components/schemas/Huurtoeslag'
-        maatschappelijkLabel:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het label waarmee het maatschappelijk en economisch  belang van de dienstverlening wordt aangegeven bij de verhuring: DAEB of niet-DAEB. Het label op de huurovereenkomst kan afwijken van het maatschappelijk label van de eenheid. Hiermee kan worden aangegeven dat een eenheid die behoort tot de niet-DAEB tak als DAEB-verhuring verantwoord moet worden.'
-        opzegtermijn:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: De opzegtermijn van de overeenkomst.
-        rekenhuur:
-          type: number
-          format: float
-          description: Het huurbedrag waarvoor een huurder huurtoeslag mag aanvragen.
-        startBrutohuur:
-          type: number
-          format: float
-          description: De bruto huur (bruto huurprijs) bij aanvang huurovereenkomst in euro's.
-        startBrutoJaarinkomen:
-          type: number
-          format: float
-          description: De hoogte van het bruto inkomen bij aanvang huurovereenkomst in euro's. Dit is het inkomen van de hoofdhuurder waaraan bijvoorbeeld de BBSH (Besluit Beheer Sociale Huursector) normen kunnen worden getoetst.
-        startLeeftijd:
-          type: integer
-          format: int32
-          description: De leeftijd van de hoofdhuurder bij aanvang huurovereenkomst in jaren.
-        vervaltermijnInterval:
-          type: string
-          format: duration
-          pattern: '^(-?)P(?=\d|T\d)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)([DW]))?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?)?$'
-          description: De interval van de incasso vervaltermijn.
-        waarborgsom:
-          type: number
-          format: float
-          description: 'De hoogte van de waarborgsom op de overeenkomst. Bijvoorbeeld: voor een studentenkamer is de borg €103 voor een vrije sector woning is de borg 1 maand huur. '
-        waarborgsomRente:
-          type: number
-          format: float
-          description: De rente van de waarborgsom op de overeenkomst. Deze waarde wordt in Euro's aangegeven en is cumulatief over de volledige looptijd van de huurovereenkomst.
+      - type: object
+        properties:
+          opzegdatum:
+            type: string
+            format: date
+            description: De datum dat de overeenkomst is opgezegd door de huurder.
+          prolongatieInterval:
+            type: string
+            format: duration
+            pattern: '^(-?)P(?=\d|T\d)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)([DW]))?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?)?$'
+            description: De interval die aangeeft na hoeveel tijd er wordt geprolongeerd op de overeenkomst.
+          prolongatieTotDatum:
+            type: string
+            format: date
+            description: De overeenkomst is geprolongeerd tot deze datum
+          huurHerzieningsdatum:
+            type: string
+            format: date
+            description: De datum dat de huurprijs van de huurovereenkomst is aangepast.
+          afwijkendeBetaler:
+            type: string
+            format: uri
+            description: Referentie naar Relatie in bronsysteem Relaties
+          afwijkendeBetalerIncassowijze:
+            allOf:
+            - $ref: '#/components/schemas/Referentiedata'
+            description: De wijze van incasso waarop de huurovereenkomst wordt betaald door de afwijkende betaler. OBSOLETE. Referentiedatasoort INCASSOWIJZE.
+            deprecated: true
+          bepaaldeTijd:
+            type: boolean
+            description: De waarde die aangeeft of er sprake is van een tijdelijke huurovereenkomst.
+          brutohuur:
+            type: number
+            format: float
+            description: De brutohuur = netto huur + servicekosten. De brutohuurprijs is inclusief BTW.
+          btw:
+            type: boolean
+            description: De waarde geeft aan of er BTW wordt geheven over de overeenkomst.
+          huurgeschillen:
+            description: Verwijzing naar eventuele huurgeschillen van toepassing op de huurovereenkomst.
+            type: array
+            items:
+              $ref: '#/components/schemas/Huurgeschil'
+          huurtoeslagen:
+            description: De huurtoeslagen behorende bij de huurovereenkomst.
+            type: array
+            items:
+              $ref: '#/components/schemas/Huurtoeslag'
+          maatschappelijkLabel:
+            allOf:
+            - $ref: '#/components/schemas/Referentiedata'
+            description: 'Het label waarmee het maatschappelijk en economisch  belang van de dienstverlening wordt aangegeven bij de verhuring: DAEB of niet-DAEB. Het label op de huurovereenkomst kan afwijken van het maatschappelijk label van de eenheid. Hiermee kan worden aangegeven dat een eenheid die behoort tot de niet-DAEB tak als DAEB-verhuring verantwoord moet worden. Referentiedatasoort MAATSCHAPPELIJKLABEL.'
+          opzegtermijn:
+            allOf:
+            - $ref: '#/components/schemas/Referentiedata'
+            description: De opzegtermijn van de overeenkomst. Referentiedatasoort OPZEGTERMIJN.
+          rekenhuur:
+            type: number
+            format: float
+            description: Het huurbedrag waarvoor een huurder huurtoeslag mag aanvragen.
+          startBrutohuur:
+            type: number
+            format: float
+            description: De bruto huur (bruto huurprijs) bij aanvang huurovereenkomst in euro's.
+          startBrutoJaarinkomen:
+            type: number
+            format: float
+            description: De hoogte van het bruto inkomen bij aanvang huurovereenkomst in euro's. Dit is het inkomen van de hoofdhuurder waaraan bijvoorbeeld de BBSH (Besluit Beheer Sociale Huursector) normen kunnen worden getoetst.
+          startLeeftijd:
+            type: integer
+            format: int32
+            description: De leeftijd van de hoofdhuurder bij aanvang huurovereenkomst in jaren.
+          vervaltermijnInterval:
+            type: string
+            format: duration
+            pattern: '^(-?)P(?=\d|T\d)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)([DW]))?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?)?$'
+            description: De interval van de incasso vervaltermijn.
+          waarborgsom:
+            type: number
+            format: float
+            description: 'De hoogte van de waarborgsom op de overeenkomst. Bijvoorbeeld: voor een studentenkamer is de borg €103 voor een vrije sector woning is de borg 1 maand huur.'
+          waarborgsomRente:
+            type: number
+            format: float
+            description: De rente van de waarborgsom op de overeenkomst. Deze waarde wordt in Euro's aangegeven en is cumulatief over de volledige looptijd van de huurovereenkomst.
     Huurtoeslagbericht:
       allOf:
         - $ref: '#/components/schemas/Huurtoeslag'
@@ -4326,11 +4410,11 @@ components:
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort inspectie dat wordt uitgevoerd. Bijvoorbeeld voorinspectie of eindinspectie.
+          description: Het soort inspectie dat wordt uitgevoerd. Bijvoorbeeld voorinspectie of eindinspectie. Referentiedatasoort INSPECTIESOORT.
         status:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De status van de inspectie. bijvoorbeeld Aangemaakt, Ingepland, InUitvoering, Afgerond.
+          description: De status van de inspectie. bijvoorbeeld Aangemaakt, Ingepland, InUitvoering, Afgerond. Referentiedatasoort INSPECTIESTATUS.
         afspraak:
           type: string
           format: uri
@@ -4350,73 +4434,73 @@ components:
         - $ref: '#/components/schemas/Koopovereenkomst'
         - $ref: '#/components/schemas/Bericht-basis'
     Koopovereenkomst:
-      type: object
       allOf:
       - $ref: '#/components/schemas/Overeenkomst-basis'
-      properties:
-        koopsom:
-          type: number
-          format: float
-          description: De koopsom van de verkochte eenheid in euro's.
-        koopsomTotaal:
-          type: number
-          format: float
-          description: De totale volledige koopsom van de verkochte eenheid in euro's.
-        kortingspercentage:
-          type: number
-          format: float
-          description: Het kortingspercentage dat de klant heeft gekregen op de overeenkomst in procenten.
-        oudHuurder:
-          type: boolean
-          description: De waarde die aangeeft of de verkoopovereenkomst is afgesloten met de oud huurder.
-        prijs:
-          type: number
-          format: float
-          description: De uiteindelijke aankoop- of verkoopprijs in euro's. (kosten koper)
-        transportdatum:
-          type: string
-          format: date-time
-          description: De datum waarop de akte gepasseerd zal worden bij de notaris. Deze datum is wordt ook passeerdatum genoemd.
-        vveBijdrage:
-          type: number
-          format: float
-          description: Het bedrag dat de koper betaald aan VVE inclusief BTW. De koper heeft geen recht op VVE als er geen bedrag is ingevuld.
+      - type: object
+        properties:
+          koopsom:
+            type: number
+            format: float
+            description: De koopsom van de verkochte eenheid in euro's.
+          koopsomTotaal:
+            type: number
+            format: float
+            description: De totale volledige koopsom van de verkochte eenheid in euro's.
+          kortingspercentage:
+            type: number
+            format: float
+            description: Het kortingspercentage dat de klant heeft gekregen op de overeenkomst in procenten.
+          oudHuurder:
+            type: boolean
+            description: De waarde die aangeeft of de verkoopovereenkomst is afgesloten met de oud huurder.
+          prijs:
+            type: number
+            format: float
+            description: De uiteindelijke aankoop- of verkoopprijs in euro's. (kosten koper)
+          transportdatum:
+            type: string
+            format: date-time
+            description: De datum waarop de akte gepasseerd zal worden bij de notaris. Deze datum is wordt ook passeerdatum genoemd.
+          vveBijdrage:
+            type: number
+            format: float
+            description: Het bedrag dat de koper betaald aan VVE inclusief BTW. De koper heeft geen recht op VVE als er geen bedrag is ingevuld.
     Onderhoudsovereenkomstbericht:
       allOf:
         - $ref: '#/components/schemas/Onderhoudsovereenkomst'
         - $ref: '#/components/schemas/Bericht-basis'
     Onderhoudsovereenkomst:
-      type: object
       allOf:
       - $ref: '#/components/schemas/Overeenkomst-basis'
-      properties:
-        omschrijving:
-          type: string
-          format: any
-          description: Omschrijving van welke werkzaamheden wel en niet onder de overeenkomst vallen.
-        bouwkundigElement:
-          type: string
-          format: uri
-          description: Referentie naar BouwkundigElement in bronsysteem Vastgoed
-        cluster:
-          type: string
-          format: uri
-          description: Referentie naar Cluster in bronsysteem Vastgoed
-        collectiefObject:
-          type: string
-          format: uri
-          description: Referentie naar CollectiefObject in bronsysteem Vastgoed
-        orders:
-          type: array
-          items:
+      - type: object
+        properties:
+          omschrijving:
+            type: string
+            format: any
+            description: Omschrijving van welke werkzaamheden wel en niet onder de overeenkomst vallen.
+          bouwkundigElement:
             type: string
             format: uri
-          description: Referentie naar Onderhoudsorder in bronsysteem Onderhoud
-        specialismen:
-          description: Het specialismen die de opdrachtnemer kan uitvoeren. Voorbeelden zijn Timmerman, Loodgieter, etc.
-          type: array
-          items:
-            $ref: '#/components/schemas/Referentiedata'
+            description: Referentie naar BouwkundigElement in bronsysteem Vastgoed
+          cluster:
+            type: string
+            format: uri
+            description: Referentie naar Cluster in bronsysteem Vastgoed
+          collectiefObject:
+            type: string
+            format: uri
+            description: Referentie naar CollectiefObject in bronsysteem Vastgoed
+          orders:
+            type: array
+            items:
+              type: string
+              format: uri
+            description: Referentie naar Onderhoudsorder in bronsysteem Onderhoud
+          specialismen:
+            description: Het specialismen die de opdrachtnemer kan uitvoeren. Voorbeelden zijn Timmerman, Loodgieter, etc. Referentiedatasoort ONDERHOUDSPECIALISME.
+            type: array
+            items:
+              $ref: '#/components/schemas/Referentiedata'
     Overeenkomstkoppelingbericht:
       allOf:
         - $ref: '#/components/schemas/Overeenkomstkoppeling'
@@ -4439,7 +4523,7 @@ components:
         status:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De status van een overeeenkomstkoppeling. Bijv. Aangevraagd, Afgekeurd, Bevestigd.
+          description: De status van een overeeenkomstkoppeling. Bijv. Aangevraagd, Afgekeurd, Bevestigd. Referentiedatasoort OVEREENKOMSTKOPPELINGSTATUS.
         begindatum:
           type: string
           format: date
@@ -4458,19 +4542,19 @@ components:
         - $ref: '#/components/schemas/Serviceovereenkomst'
         - $ref: '#/components/schemas/Bericht-basis'
     Serviceovereenkomst:
-      type: object
       allOf:
       - $ref: '#/components/schemas/Overeenkomst-basis'
-      properties:
-        bedrag:
-          type: number
-          format: float
-          description: Het bedrag inclusief BTW in euro's dat betaald dient te worden voor de serviceovereenkomst. Naast huurders, kunnen ook andere relaties een serviceovereenkomst afsluiten met de woningcorporatie. Dit veld geeft het bedrag aan dat de relatie voor de dienstverlening betaalt.
-        samenwerkingsverband:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc.
-    Arbeitsovereenkomst-sleutels:
+      - type: object
+        properties:
+          bedrag:
+            type: number
+            format: float
+            description: Het bedrag inclusief BTW in euro's dat betaald dient te worden voor de serviceovereenkomst. Naast huurders, kunnen ook andere relaties een serviceovereenkomst afsluiten met de woningcorporatie. Dit veld geeft het bedrag aan dat de relatie voor de dienstverlening betaalt.
+          samenwerkingsverband:
+            allOf:
+            - $ref: '#/components/schemas/Referentiedata'
+            description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc. Referentiedatasoort SAMENWERKINGSVERBAND.
+    Arbeidsovereenkomst-sleutels:
       type: object
       properties:
         id:
@@ -4492,7 +4576,7 @@ components:
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn.
+          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn. Referentiedatasoort OVEREENKOMSTSOORT.
     Huurgeschil-sleutels:
       type: object
       properties:
@@ -4591,7 +4675,7 @@ components:
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn.
+          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn. Referentiedatasoort OVEREENKOMSTSOORT.
     Huurtoeslag-sleutels:
       type: object
       properties:
@@ -4652,7 +4736,7 @@ components:
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn.
+          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn. Referentiedatasoort OVEREENKOMSTSOORT.
     Onderhoudsovereenkomst-sleutels:
       type: object
       properties:
@@ -4675,7 +4759,7 @@ components:
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn.
+          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn. Referentiedatasoort OVEREENKOMSTSOORT.
     Overeenkomstkoppeling-sleutels:
       type: object
       properties:
@@ -4732,7 +4816,7 @@ components:
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn.
+          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn. Referentiedatasoort OVEREENKOMSTSOORT.
     Bericht-basis:
       type: object
       properties:
