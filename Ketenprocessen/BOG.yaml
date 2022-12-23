@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Beheer Overeenkomstgegevens
-  description: API-specificatie van ketenproces 'Beheer Overeenkomstgegevens'. Deze specificatie is gebaseerd op VERA versie 4.0.17+221125.6
+  description: API-specificatie van ketenproces 'Beheer Overeenkomstgegevens'. Deze specificatie is gebaseerd op VERA versie 4.0.18+221223.13
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '1.0.17+221125.6'
+  version: '1.0.18+221223.13'
 servers:
   - url: https://bog.vera.io:{port}/{basePath}
     description: Productieserver
@@ -1453,10 +1453,15 @@ components:
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
         informatieobjecten:
-          description: Mogelijkheid om het bericht uit te breiden met documentatie
+          description: Mogelijkheid om het bericht uit te breiden met documentatie. De beschrijving kan de inhoud van een notitie of memo zijn
           type: array
           items:
             $ref: '#/components/schemas/Informatieobject'
+        sturingslabels:
+          description: Mogelijkheid om het bericht uit te breiden met sturingslabels
+          type: array
+          items:
+            $ref: '#/components/schemas/Sturingslabel'
     ExtraAttribuut:
       type: object
       properties:
@@ -1511,6 +1516,38 @@ components:
           type: string
           format: any
           description: Beschrijving van het informatieobject.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De fase waarin het informatieobject zich vanuit het perspectief van archivering bevindt. Referentiedatasoort INFORMATIEOBJECTSTATUS.
+        detailStatus:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Detaillering van de fase waarin het informatieobject zich vanuit het perspectief van archivering bevindt. Referentiedatasoort INFORMATIEOBJECTDETAILSTATUS.
+        registratiedatum:
+          type: string
+          format: date-time
+          description: Registratiedatum van het informatieobject.
+        ontvangstdatum:
+          type: string
+          format: date-time
+          description: Ontvangstdatum van het informatieobject.
+        publicatiedatum:
+          type: string
+          format: date-time
+          description: Publicatiedatum of verzenddatum van het informatieobject.
+        archiefActiedatum:
+          type: string
+          format: date-time
+          description: De datum waarop het gearchiveerde informatieobject vernietigd moet worden dan wel overgebracht moet worden naar een archiefbewaarplaats.
+        archiefnominatie:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Aanduiding of het informatieobject blijvend bewaard of na een bepaalde termijn vernietigd moet worden. Referentiedatasoort ARCHIEFNOMINATIE.
+        auteur:
+          type: string
+          format: any
+          description: De persoon of organisatie die in de eerste plaats verantwoordelijk is voor het creëren van de inhoud van het informatieobject.
         bestand:
           type: string
           format: byte
@@ -1527,6 +1564,11 @@ components:
           type: string
           format: any
           description: De naam van het fysieke bestand waarin de inhoud van het informatieobject is vastgelegd.
+        bijlagen:
+          description: De bijlagen behorend bij het informatieobject.
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject-sleutels'
         externePublicatie:
           type: boolean
           description: Aanduiding of dit informatieobject extern gepubliceerd dient te worden.
@@ -1542,10 +1584,28 @@ components:
           type: string
           format: any
           description: Informatie omtrent rechten die geassocieerd zijn met het informatieobject zoals intellectueel eigendom.
+        isBijlageVan:
+          allOf:
+          - $ref: '#/components/schemas/Informatieobject-sleutels'
+          description: Geeft aan dat het informatieobject een bijlage is van een ander informatieobject.
+        objecten:
+          description: De gegevensobjecten die bij de zaak horen. Kan iedere klasse uit ons model zijn. Bijv. Overeenkomst, Onderhoudsverzoek etc.
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaakobject-sleutels'
+        relaties:
+          description: Het dossier is gekoppeld aan/heeft betrekking op relatie(s). Bijvoorbeeld huurdersdossier of mutatiedossier.
+          type: array
+          items:
+            $ref: '#/components/schemas/Relatie-sleutels'
         taal:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: De taal waarin het informatieobject is opgesteld. Referentiedatasoort TAAL.
+        verantwoordelijkeOrganisatie:
+          type: string
+          format: any
+          description: Het RSIN (Rechtspersonen en Samenwerkingsverbanden Informatienummer) van de organisatie die verantwoordelijk is voor het informatieobject.
         versie:
           type: number
           format: float
@@ -1554,6 +1614,55 @@ components:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: De classificatie van het vertrouwelijkheidsniveau van het informatieobject. Referentiedatasoort VERTROUWELIJKHEID.
+    Informatieobject-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Zaakobject-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+    Sturingslabel:
+      type: object
+      properties:
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De categorie of groepering van het label. Bijv. dVI samenstelling bezit etc. Referentiedatasoort STURINGSLABELSOORT.
+        label:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het label dat is bepaald op basis van de bijbehorende definitie. Bijv. Zelfstandige huurwoning. Referentiedatasoort STURINGSLABEL.
+        datum:
+          type: string
+          format: date
+          description: Datum en tijdstip waarop het label is bepaald.
+        bron:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De bron van de definitie van het label. Bijv. dVI 2014, CORA etc. Referentiedatasoort STURINGSLABELBRON.
     Foutbericht:
       type: object
       properties:

@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Woonruimteverdeling
-  description: API-specificatie van ketenproces 'Woonruimteverdeling'. Deze specificatie is gebaseerd op VERA versie 4.0.17+221125.6
+  description: API-specificatie van ketenproces 'Woonruimteverdeling'. Deze specificatie is gebaseerd op VERA versie 4.0.18+221223.13
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '3.0.17+221125.6'
+  version: '3.0.18+221223.13'
 servers:
   - url: https://wrv.vera.io:{port}/{basePath}
     description: Productieserver
@@ -3070,6 +3070,10 @@ components:
           type: string
           format: any
           description: Het kadastraalnummer behorend bij de eenheid.
+        bouwnummer:
+          type: string
+          format: any
+          description: Het bouwnummer behorende bij de eenheid. Dit wordt aan een eenheid toegekend bij nieuwbouw van de eenheid. Vaak is op dat moment het adres van de eenheid nog niet bepaald.
         status:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
@@ -3082,6 +3086,10 @@ components:
           type: string
           format: date
           description: De begindatum van de bouw van de eenheid.
+        bouwjaar:
+          type: integer
+          format: int32
+          description: Het bouwjaar waarin de bouw van de eenheid is afgerond.
         opleverdatum:
           type: string
           format: date
@@ -3114,10 +3122,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: Door de corporatie bepaalde bestemming van de eenheid bij mutatie (sloop, verkoop, huur). In AddresseerbaarObjectRegistratie wordt met het attribuut gebruiksdoel aangegeven wat volgens de gemeente het gebruiksdoel van de eenheid is (wonen, werken, zorg, enz.) Referentiedatasoort BESTEMMING.
-        bouwnummer:
-          type: string
-          format: any
-          description: Het bouwnummer behorende bij de eenheid. Dit wordt aan een eenheid toegekend bij nieuwbouw van de eenheid. Vaak is op dat moment het adres van de eenheid nog niet bepaald.
         brutohuur:
           type: number
           format: float
@@ -4147,6 +4151,10 @@ components:
             type: string
             format: any
             description: De voornaam van de natuurlijk persoon.
+          aanschrijfnaam:
+            type: string
+            format: any
+            description: De achternaam van de natuurlijk persoon zoals deze wenst te worden aangeschreven.
           achternaam:
             type: string
             format: any
@@ -4653,6 +4661,10 @@ components:
             type: string
             format: any
             description: De voornaam van de natuurlijk persoon.
+          aanschrijfnaam:
+            type: string
+            format: any
+            description: De achternaam van de natuurlijk persoon zoals deze wenst te worden aangeschreven.
           account:
             allOf:
             - $ref: '#/components/schemas/Overeenkomstkoppelingen-Account'
@@ -5024,6 +5036,10 @@ components:
           type: string
           format: date
           description: De begindatum van de bouw van de eenheid.
+        bouwjaar:
+          type: integer
+          format: int32
+          description: Het bouwjaar waarin de bouw van de eenheid is afgerond.
         opleverdatum:
           type: string
           format: date
@@ -5372,6 +5388,10 @@ components:
             type: string
             format: any
             description: De aanhef of aanspreking is een (meestal vriendelijke) introducerende zin van een brief of e-mail. Het gaat doorgaans om standaardformuleringen waarmee de schrijver zich tot de geadresseerde richt.
+          aanschrijfnaam:
+            type: string
+            format: any
+            description: De achternaam van de natuurlijk persoon zoals deze wenst te worden aangeschreven.
           achternaam:
             type: string
             format: any
@@ -6430,6 +6450,10 @@ components:
             type: string
             format: any
             description: De aanhef of aanspreking is een (meestal vriendelijke) introducerende zin van een brief of e-mail. Het gaat doorgaans om standaardformuleringen waarmee de schrijver zich tot de geadresseerde richt.
+          aanschrijfnaam:
+            type: string
+            format: any
+            description: De achternaam van de natuurlijk persoon zoals deze wenst te worden aangeschreven.
           account:
             allOf:
             - $ref: '#/components/schemas/Relaties-Account'
@@ -7096,6 +7120,10 @@ components:
             type: string
             format: any
             description: De voornaam van de natuurlijk persoon.
+          aanschrijfnaam:
+            type: string
+            format: any
+            description: De achternaam van de natuurlijk persoon zoals deze wenst te worden aangeschreven.
           achternaam:
             type: string
             format: any
@@ -7386,6 +7414,9 @@ components:
           type: integer
           format: int32
           description: Aantal personen waaruit het huishouden bestaat waaraan de woning is toegewezen.
+        isOuderenhuishouden:
+          type: boolean
+          description: Geeft aan of de kandidaat, of één van diens medebewoners, op 1 januari van het jaar van toewijzen de pensioengerechtigde leeftijd bereikt.
         kandidaat:
           allOf:
           - $ref: '#/components/schemas/Toewijzingen-Kandidaat'
@@ -7394,14 +7425,24 @@ components:
           allOf:
           - $ref: '#/components/schemas/Toewijzingen-Overeenkomst'
           description: De overeenkomst behorend bij de toewijzing. Bijvoorbeeld een huurovereenkomst of een koopovereenkomst.
+        passendheiddetailsoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De reden waarom er niet passend is toegewezen. Referentiedatasoort PASSENDHEIDDETAILSOORT.
+        passendheidsoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De indicatie of de toewijzing passend is volgens de wetgeving of valt binnen de vrij toe te wijzen ruimte. Referentiedatasoort PASSENDHEIDSSOORT.
         Rekenhuur:
           type: number
           format: float
-          description: De huurprijs ten tijde van de toewijzing. (Bij sociale huur de rekenhuur conform de wet op de huurtoeslag.)
         Rekeninkomen:
           type: number
           format: float
-          description: Het huishoudinkomen dat gebruikt is als toets inkomen bij de toewijzing. (Bij sociale huur het rekeninkomen conform de wet op de huurtoeslag.)
+        rekenvermogen:
+          type: number
+          format: float
+          description: Het vermogen dat is toegepast bij het afwijken van passend toewijzen bij ouderen met een hoog vermogen.
         voorrangsregelingen:
           description: De voorrangsregeling(en) die van toepassing was of waren voor de toewijzing binnen het woonruimteverdeelproces. Onderdeel van de reden van de toewijzing.
           type: array
@@ -7519,10 +7560,15 @@ components:
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
         informatieobjecten:
-          description: Mogelijkheid om het bericht uit te breiden met documentatie
+          description: Mogelijkheid om het bericht uit te breiden met documentatie. De beschrijving kan de inhoud van een notitie of memo zijn
           type: array
           items:
             $ref: '#/components/schemas/Informatieobject'
+        sturingslabels:
+          description: Mogelijkheid om het bericht uit te breiden met sturingslabels
+          type: array
+          items:
+            $ref: '#/components/schemas/Sturingslabel'
     ExtraAttribuut:
       type: object
       properties:
@@ -7577,6 +7623,38 @@ components:
           type: string
           format: any
           description: Beschrijving van het informatieobject.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De fase waarin het informatieobject zich vanuit het perspectief van archivering bevindt. Referentiedatasoort INFORMATIEOBJECTSTATUS.
+        detailStatus:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Detaillering van de fase waarin het informatieobject zich vanuit het perspectief van archivering bevindt. Referentiedatasoort INFORMATIEOBJECTDETAILSTATUS.
+        registratiedatum:
+          type: string
+          format: date-time
+          description: Registratiedatum van het informatieobject.
+        ontvangstdatum:
+          type: string
+          format: date-time
+          description: Ontvangstdatum van het informatieobject.
+        publicatiedatum:
+          type: string
+          format: date-time
+          description: Publicatiedatum of verzenddatum van het informatieobject.
+        archiefActiedatum:
+          type: string
+          format: date-time
+          description: De datum waarop het gearchiveerde informatieobject vernietigd moet worden dan wel overgebracht moet worden naar een archiefbewaarplaats.
+        archiefnominatie:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Aanduiding of het informatieobject blijvend bewaard of na een bepaalde termijn vernietigd moet worden. Referentiedatasoort ARCHIEFNOMINATIE.
+        auteur:
+          type: string
+          format: any
+          description: De persoon of organisatie die in de eerste plaats verantwoordelijk is voor het creëren van de inhoud van het informatieobject.
         bestand:
           type: string
           format: byte
@@ -7593,6 +7671,11 @@ components:
           type: string
           format: any
           description: De naam van het fysieke bestand waarin de inhoud van het informatieobject is vastgelegd.
+        bijlagen:
+          description: De bijlagen behorend bij het informatieobject.
+          type: array
+          items:
+            $ref: '#/components/schemas/Informatieobject-sleutels'
         externePublicatie:
           type: boolean
           description: Aanduiding of dit informatieobject extern gepubliceerd dient te worden.
@@ -7608,10 +7691,28 @@ components:
           type: string
           format: any
           description: Informatie omtrent rechten die geassocieerd zijn met het informatieobject zoals intellectueel eigendom.
+        isBijlageVan:
+          allOf:
+          - $ref: '#/components/schemas/Informatieobject-sleutels'
+          description: Geeft aan dat het informatieobject een bijlage is van een ander informatieobject.
+        objecten:
+          description: De gegevensobjecten die bij de zaak horen. Kan iedere klasse uit ons model zijn. Bijv. Overeenkomst, Onderhoudsverzoek etc.
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaakobject-sleutels'
+        relaties:
+          description: Het dossier is gekoppeld aan/heeft betrekking op relatie(s). Bijvoorbeeld huurdersdossier of mutatiedossier.
+          type: array
+          items:
+            $ref: '#/components/schemas/Relatie-sleutels'
         taal:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: De taal waarin het informatieobject is opgesteld. Referentiedatasoort TAAL.
+        verantwoordelijkeOrganisatie:
+          type: string
+          format: any
+          description: Het RSIN (Rechtspersonen en Samenwerkingsverbanden Informatienummer) van de organisatie die verantwoordelijk is voor het informatieobject.
         versie:
           type: number
           format: float
@@ -7620,6 +7721,55 @@ components:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: De classificatie van het vertrouwelijkheidsniveau van het informatieobject. Referentiedatasoort VERTROUWELIJKHEID.
+    Informatieobject-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Zaakobject-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+    Sturingslabel:
+      type: object
+      properties:
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De categorie of groepering van het label. Bijv. dVI samenstelling bezit etc. Referentiedatasoort STURINGSLABELSOORT.
+        label:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het label dat is bepaald op basis van de bijbehorende definitie. Bijv. Zelfstandige huurwoning. Referentiedatasoort STURINGSLABEL.
+        datum:
+          type: string
+          format: date
+          description: Datum en tijdstip waarop het label is bepaald.
+        bron:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De bron van de definitie van het label. Bijv. dVI 2014, CORA etc. Referentiedatasoort STURINGSLABELBRON.
     Foutbericht:
       type: object
       properties:
