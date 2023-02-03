@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Woonruimteverdeling
-  description: API-specificatie van ketenproces 'Woonruimteverdeling'. Deze specificatie is gebaseerd op VERA versie 4.0.18+221223.13
+  description: API-specificatie van ketenproces 'Woonruimteverdeling'. Deze specificatie is gebaseerd op VERA versie 4.0.19+230203.22
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '3.0.18+221223.13'
+  version: '3.0.19+230203.22'
 servers:
   - url: https://wrv.vera.io:{port}/{basePath}
     description: Productieserver
@@ -3135,6 +3135,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Eenheden-Cluster'
+        Criteria:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: Referentie naar Eenheidcriterium in bronsysteem Vastgoed
         doelgroep:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
@@ -3279,7 +3285,8 @@ components:
         voorwaarden:
           allOf:
           - $ref: '#/components/schemas/Eenheden-EenheidVoorwaarden'
-          description: De voorwaarden waaraan de bewoner moet voldoen om in aanmerking te komen of voorrang te krijgen voor de eenheid.
+          description: De voorwaarden waaraan de bewoner moet voldoen om in aanmerking te komen of voorrang te krijgen voor de eenheid. OBSOLETE
+          deprecated: true
         vraagprijs:
           type: number
           format: float
@@ -3361,11 +3368,12 @@ components:
         index:
           type: number
           format: float
-          description: De energieprestatie index van de eenheid.
+          description: De energieprestatie index van de eenheid. OBSOLETE
+          deprecated: true
         label:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het energielabel voor woningen geeft met klassen (A tot en met G) en kleuren (groen tot en met rood) aan hoe energiezuinig een huis is ten opzichte van andere soortgelijke woningen. Energielabel A (donkergroen) is zuinig, energielabel G (rood) is onzuinig. Referentiedatasoort ENERGIELABEL.
+          description: Het energielabel voor woningen geeft met klassen (A**** tot en met G) en kleuren (groen tot en met rood) aan hoe energiezuinig een huis is ten opzichte van andere soortgelijke woningen. Energielabel A (donkergroen) is zuinig, energielabel G (rood) is onzuinig. Het energielabel is meestal een afgeleide van de waarde van de energieprestatie. Referentiedatasoort ENERGIELABEL.
     Eenheden-Gemeente:
       type: object
       properties:
@@ -3844,6 +3852,30 @@ components:
           type: string
           format: any
           description: De naam van de gemeente.
+    Gebeurtenissen-Inschrijving:
+      allOf:
+      - $ref: '#/components/schemas/Gebeurtenissen-Overeenkomst-basis'
+      - type: object
+        properties:
+          bijschrijfdatum:
+            type: string
+            format: date
+            description: Datum vanaf wanneer een medeaanvrager rechten opbouwt op een INSCHRIJVING. Zodat bij een eventuele splitsing (medeaanvrager verlaat huishouden maar wil persoonlijke inschrijving) de nieuwe inschrijving kan worden voorzien van een correcte inschrijfdatum.
+          bedrag:
+            type: number
+            format: float
+            description: Het bedrag inclusief BTW in euro's dat betaald dient te worden voor de inschrijving. Naast huurders, kunnen ook andere relaties een serviceovereenkomst afsluiten met de woningcorporatie. Dit veld geeft het bedrag aan dat de relatie voor de dienstverlening betaalt.
+          herkomst:
+            allOf:
+            - $ref: '#/components/schemas/Referentiedata'
+            description: Verwijzing naar de herkomst waaruit de inschrijving is ontstaan (bijvoorbeeld migratie, heropening, urgentie, splitsen etc.). Referentiedatasoort INSCHRIJVINGHERKOMST.
+          samenwerkingsverband:
+            allOf:
+            - $ref: '#/components/schemas/Referentiedata'
+            description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc. Referentiedatasoort SAMENWERKINGSVERBAND.
+          verlengen:
+            type: boolean
+            description: Of er periodiek betaald moet worden om de inschrijving te prolongeren.
     Gebeurtenissen-Overeenkomst-basis:
       type: object
       properties:
@@ -3869,6 +3901,7 @@ components:
           description: Het detail soort overeenkomst. Bijvoorbeeld BOG (Bedrijfs Onroerend Goed). Referentiedatasoort OVEREENKOMSTDETAILSOORT.
     Gebeurtenissen-Overeenkomst:
       oneOf:
+        - $ref: '#/components/schemas/Gebeurtenissen-Inschrijving'
         - $ref: '#/components/schemas/Gebeurtenissen-Serviceovereenkomst'
     Gebeurtenissen-Serviceovereenkomst:
       allOf:
@@ -3878,7 +3911,8 @@ components:
           samenwerkingsverband:
             allOf:
             - $ref: '#/components/schemas/Referentiedata'
-            description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc. Referentiedatasoort SAMENWERKINGSVERBAND.
+            description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc. OBSOLETE. Referentiedatasoort SAMENWERKINGSVERBAND.
+            deprecated: true
     Kandidaten-Adres-basis:
       type: object
       properties:
@@ -4008,6 +4042,52 @@ components:
           type: string
           format: any
           description: 'De aard van het contactgegeven. Dit kan de waarde zijn van een telefoonnummer, emailadres, of twitteradres. Bijvoorbeeld: 020-1234563'
+    Kandidaten-Eenheid:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'De dienstverlening (soort) die geboden kan worden met de eenheid. Voorbeeld: Woonruimte, Bedrijfsruimte, Parkeergelegenheid. Referentiedatasoort EENHEIDSOORT.'
+        detailSoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het type van de eenheid. Bijvoorbeeld: Hoekwoning, Tussenwoning, Flat, Maisonnette. Hiervoor wordt de lijst van de waarderingskamer als uitgangspunt genomen. Referentiedatasoort EENHEIDDETAILSOORT.'
+        brutohuur:
+          type: number
+          format: float
+          description: De brutohuur in euro's die geregistreerd staat bij de eenheid. De brutohuur is de netto huur (of kale huur) inclusief alle huurcomponenten en inclusief BTW.
+        etage:
+          type: integer
+          format: int32
+          description: De etage waarop de eenheid zich bevindt.
+        kamersAantal:
+          type: integer
+          format: int32
+          description: Het aantal leefruimten en slaapkamers behorende bij de eenheid.
+        totaleOppervlakte:
+          type: number
+          format: float
+          description: 'De totale oppervlakte van een eenheid. Vertrekken die niet bewoonbaar zijn, worden hierbij meegeteld. Let op: niet te verwarren met de voor de dVi vereiste "gebruiksoppervlakte".'
+        zelfstandig:
+          type: boolean
+          description: Geeft aan of het een zelfstandige of onzelfstandige eenheid betreft. Dit gegeven wordt ook gebruikt bij het bepalen van het woningwaardering volgens het woningwaarderingsstelsel.
     Kandidaten-Eenheidadres:
       allOf:
       - $ref: '#/components/schemas/Kandidaten-Adres-basis'
@@ -4064,6 +4144,27 @@ components:
           type: number
           format: float
           description: Het netto jaarinkomen in euro's van de natuurlijk persoon.
+    Kandidaten-Inschrijving:
+      allOf:
+      - $ref: '#/components/schemas/Kandidaten-Overeenkomst-basis'
+      - type: object
+        properties:
+          bijschrijfdatum:
+            type: string
+            format: date
+            description: De datum
+          bedrag:
+            type: number
+            format: float
+            description: Het bedrag inclusief BTW in euro's dat betaald dient te worden voor de inschrijving. Naast huurders, kunnen ook andere relaties een serviceovereenkomst afsluiten met de woningcorporatie. Dit veld geeft het bedrag aan dat de relatie voor de dienstverlening betaalt.
+          samenwerkingsverband:
+            allOf:
+            - $ref: '#/components/schemas/Referentiedata'
+            description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc. Referentiedatasoort SAMENWERKINGSVERBAND.
+          verlengkosten:
+            type: number
+            format: float
+            description: Het bedrag inclusief BTW in euro's dat betaald moet worden om de inschrijving te prolongeren.
     Kandidaten-Kandidaatbericht:
       allOf:
         - $ref: '#/components/schemas/Kandidaten-Kandidaat'
@@ -4199,6 +4300,10 @@ components:
             type: string
             format: any
             description: De tussenvoegsels behorende bij de naam.
+          woonsituatie:
+            allOf:
+            - $ref: '#/components/schemas/Kandidaten-Woonsituatie'
+            description: De huidige woonsituatie van de natuurlijke persoon.
     Kandidaten-Opleiding:
       type: object
       properties:
@@ -4275,6 +4380,7 @@ components:
           description: De einddatum van de overeenkomst.
     Kandidaten-Overeenkomst:
       oneOf:
+        - $ref: '#/components/schemas/Kandidaten-Inschrijving'
         - $ref: '#/components/schemas/Kandidaten-Serviceovereenkomst'
     Kandidaten-Postadres:
       allOf:
@@ -4427,7 +4533,8 @@ components:
           samenwerkingsverband:
             allOf:
             - $ref: '#/components/schemas/Referentiedata'
-            description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc. Referentiedatasoort SAMENWERKINGSVERBAND.
+            description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc. OBSOLETE. Referentiedatasoort SAMENWERKINGSVERBAND.
+            deprecated: true
     Kandidaten-Signalering:
       type: object
       properties:
@@ -4482,6 +4589,73 @@ components:
           type: string
           format: any
           description: De naam van de woonplaats.
+    Kandidaten-Woonsituatie:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort woonsituatie: Starter, Doorstromer. Referentiedatasoort WOONSITUATIESOORT.'
+        begindatum:
+          type: string
+          format: date
+          description: De begindatum waarop de woonsituatie is begonnen. Bijvoorbeeld de ingangsdatum van het huidige huur- of koopcontract of de inschrijfdatum op het adres bij het BRP.
+        einddatum:
+          type: string
+          format: date
+          description: De einddatum waarop de woonsituatie is beëindigd.
+        eenheid:
+          allOf:
+          - $ref: '#/components/schemas/Kandidaten-Eenheid'
+          description: De huidige woning.
+        overeenkomst:
+          allOf:
+          - $ref: '#/components/schemas/Kandidaten-Overeenkomst'
+          description: De huur- of koopovereenkomst van de huidige woning.
+        vestiging:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De vestiging die de huidige woning exploiteerd. Referentiedatasoort VESTIGING.
+    Overeenkomsten-Inschrijving:
+      allOf:
+      - $ref: '#/components/schemas/Overeenkomsten-Overeenkomst-basis'
+      - type: object
+        properties:
+          bijschrijfdatum:
+            type: string
+            format: date
+            description: Datum vanaf wanneer een medeaanvrager rechten opbouwt op een INSCHRIJVING. Zodat bij een eventuele splitsing (medeaanvrager verlaat huishouden maar wil persoonlijke inschrijving) de nieuwe inschrijving kan worden voorzien van een correcte inschrijfdatum.
+          bedrag:
+            type: number
+            format: float
+            description: Het bedrag inclusief BTW in euro's dat betaald dient te worden voor de inschrijving. Naast huurders, kunnen ook andere relaties een serviceovereenkomst afsluiten met de woningcorporatie. Dit veld geeft het bedrag aan dat de relatie voor de dienstverlening betaalt.
+          herkomst:
+            allOf:
+            - $ref: '#/components/schemas/Referentiedata'
+            description: Verwijzing naar de herkomst waaruit de inschrijving is ontstaan (bijvoorbeeld migratie, heropening, urgentie, splitsen etc.). Referentiedatasoort INSCHRIJVINGHERKOMST.
+          samenwerkingsverband:
+            allOf:
+            - $ref: '#/components/schemas/Referentiedata'
+            description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc. Referentiedatasoort SAMENWERKINGSVERBAND.
+          verlengen:
+            type: boolean
+            description: Of er periodiek betaald moet worden om de inschrijving te prolongeren.
     Overeenkomsten-Overeenkomst-basis:
       type: object
       properties:
@@ -4568,6 +4742,7 @@ components:
         - $ref: '#/components/schemas/Bericht-basis'
     Overeenkomsten-Overeenkomst:
       oneOf:
+        - $ref: '#/components/schemas/Overeenkomsten-Inschrijving'
         - $ref: '#/components/schemas/Overeenkomsten-Serviceovereenkomst'
     Overeenkomsten-Serviceovereenkomst:
       allOf:
@@ -4577,11 +4752,13 @@ components:
           samenwerkingsverband:
             allOf:
             - $ref: '#/components/schemas/Referentiedata'
-            description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc. Referentiedatasoort SAMENWERKINGSVERBAND.
+            description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc. OBSOLETE. Referentiedatasoort SAMENWERKINGSVERBAND.
+            deprecated: true
           aantalPersonenHuishouden:
             type: integer
             format: int32
-            description: Het aantal personen van het huishouden dat meeverhuist.
+            description: Het aantal personen van het huishouden dat meeverhuist. OBSOLETE.
+            deprecated: true
     Overeenkomstkoppelingen-Account:
       type: object
       properties:
@@ -4648,6 +4825,30 @@ components:
           type: string
           format: any
           description: De straatnaam behorend bij het adres.
+    Overeenkomstkoppelingen-Inschrijving:
+      allOf:
+      - $ref: '#/components/schemas/Overeenkomstkoppelingen-Overeenkomst-basis'
+      - type: object
+        properties:
+          bijschrijfdatum:
+            type: string
+            format: date
+            description: Datum vanaf wanneer een medeaanvrager rechten opbouwt op een INSCHRIJVING. Zodat bij een eventuele splitsing (medeaanvrager verlaat huishouden maar wil persoonlijke inschrijving) de nieuwe inschrijving kan worden voorzien van een correcte inschrijfdatum.
+          bedrag:
+            type: number
+            format: float
+            description: Het bedrag inclusief BTW in euro's dat betaald dient te worden voor de inschrijving. Naast huurders, kunnen ook andere relaties een serviceovereenkomst afsluiten met de woningcorporatie. Dit veld geeft het bedrag aan dat de relatie voor de dienstverlening betaalt.
+          herkomst:
+            allOf:
+            - $ref: '#/components/schemas/Referentiedata'
+            description: Verwijzing naar de herkomst waaruit de inschrijving is ontstaan (bijvoorbeeld migratie, heropening, urgentie, splitsen etc.). Referentiedatasoort INSCHRIJVINGHERKOMST.
+          samenwerkingsverband:
+            allOf:
+            - $ref: '#/components/schemas/Referentiedata'
+            description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc. Referentiedatasoort SAMENWERKINGSVERBAND.
+          verlengen:
+            type: boolean
+            description: Of er periodiek betaald moet worden om de inschrijving te prolongeren.
     Overeenkomstkoppelingen-NatuurlijkPersoon:
       allOf:
       - $ref: '#/components/schemas/Overeenkomstkoppelingen-Relatie-basis'
@@ -4734,6 +4935,7 @@ components:
             $ref: '#/components/schemas/Overeenkomstkoppelingen-Relatie'
     Overeenkomstkoppelingen-Overeenkomst:
       oneOf:
+        - $ref: '#/components/schemas/Overeenkomstkoppelingen-Inschrijving'
         - $ref: '#/components/schemas/Overeenkomstkoppelingen-Serviceovereenkomst'
     Overeenkomstkoppelingen-Overeenkomstkoppelingbericht:
       allOf:
@@ -4845,11 +5047,13 @@ components:
           samenwerkingsverband:
             allOf:
             - $ref: '#/components/schemas/Referentiedata'
-            description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc. Referentiedatasoort SAMENWERKINGSVERBAND.
+            description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc. OBSOLETE. Referentiedatasoort SAMENWERKINGSVERBAND.
+            deprecated: true
           aantalPersonenHuishouden:
             type: integer
             format: int32
-            description: Het aantal personen van het huishouden dat meeverhuist.
+            description: Het aantal personen van het huishouden dat meeverhuist. OBSOLETE.
+            deprecated: true
     Publicaties-Adres-basis:
       type: object
       properties:
@@ -5082,6 +5286,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Publicaties-Cluster'
+        Criteria:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: Referentie naar Eenheidcriterium in bronsysteem Vastgoed
         doelgroep:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
@@ -5238,7 +5448,8 @@ components:
         voorwaarden:
           allOf:
           - $ref: '#/components/schemas/Publicaties-EenheidVoorwaarden'
-          description: De voorwaarden waaraan de bewoner moet voldoen om in aanmerking te komen of voorrang te krijgen voor de eenheid.
+          description: De voorwaarden waaraan de bewoner moet voldoen om in aanmerking te komen of voorrang te krijgen voor de eenheid. OBSOLETE
+          deprecated: true
         vraagprijs:
           type: number
           format: float
@@ -5309,6 +5520,10 @@ components:
     Publicaties-Energieprestatie:
       type: object
       properties:
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort energieprestatie. Bijv. Energielabel, Energieprestatieindex, Energieprestatiemeting etc.. Referentiedatasoort ENERGIEPRESTATIESOORT.
         begindatum:
           type: string
           format: date
@@ -5320,11 +5535,16 @@ components:
         index:
           type: number
           format: float
-          description: De energieprestatie index van de eenheid.
+          description: De energieprestatie index van de eenheid. OBSOLETE
+          deprecated: true
         label:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het energielabel voor woningen geeft met klassen (A tot en met G) en kleuren (groen tot en met rood) aan hoe energiezuinig een huis is ten opzichte van andere soortgelijke woningen. Energielabel A (donkergroen) is zuinig, energielabel G (rood) is onzuinig. Referentiedatasoort ENERGIELABEL.
+          description: Het energielabel voor woningen geeft met klassen (A**** tot en met G) en kleuren (groen tot en met rood) aan hoe energiezuinig een huis is ten opzichte van andere soortgelijke woningen. Energielabel A (donkergroen) is zuinig, energielabel G (rood) is onzuinig. Het energielabel is meestal een afgeleide van de waarde van de energieprestatie. Referentiedatasoort ENERGIELABEL.
+        waarde:
+          type: string
+          format: any
+          description: De waarde van de energieprestatiesoort. Bijv. de index of meting.
     Publicaties-Gemeente:
       type: object
       properties:
@@ -5854,6 +6074,30 @@ components:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: De vestiging van de vastgoedaanbieder die de woning heeft aangeboden. Referentiedatasoort VESTIGING.
+    Puntenberekeningen-Inschrijving:
+      allOf:
+      - $ref: '#/components/schemas/Puntenberekeningen-Overeenkomst-basis'
+      - type: object
+        properties:
+          bijschrijfdatum:
+            type: string
+            format: date
+            description: Datum vanaf wanneer een medeaanvrager rechten opbouwt op een INSCHRIJVING. Zodat bij een eventuele splitsing (medeaanvrager verlaat huishouden maar wil persoonlijke inschrijving) de nieuwe inschrijving kan worden voorzien van een correcte inschrijfdatum.
+          bedrag:
+            type: number
+            format: float
+            description: Het bedrag inclusief BTW in euro's dat betaald dient te worden voor de inschrijving. Naast huurders, kunnen ook andere relaties een serviceovereenkomst afsluiten met de woningcorporatie. Dit veld geeft het bedrag aan dat de relatie voor de dienstverlening betaalt.
+          herkomst:
+            allOf:
+            - $ref: '#/components/schemas/Referentiedata'
+            description: Verwijzing naar de herkomst waaruit de inschrijving is ontstaan (bijvoorbeeld migratie, heropening, urgentie, splitsen etc.). Referentiedatasoort INSCHRIJVINGHERKOMST.
+          samenwerkingsverband:
+            allOf:
+            - $ref: '#/components/schemas/Referentiedata'
+            description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc. Referentiedatasoort SAMENWERKINGSVERBAND.
+          verlengen:
+            type: boolean
+            description: Of er periodiek betaald moet worden om de inschrijving te prolongeren.
     Puntenberekeningen-Overeenkomst-basis:
       type: object
       properties:
@@ -5879,6 +6123,7 @@ components:
           description: Het detail soort overeenkomst. Bijvoorbeeld BOG (Bedrijfs Onroerend Goed). Referentiedatasoort OVEREENKOMSTDETAILSOORT.
     Puntenberekeningen-Overeenkomst:
       oneOf:
+        - $ref: '#/components/schemas/Puntenberekeningen-Inschrijving'
         - $ref: '#/components/schemas/Puntenberekeningen-Serviceovereenkomst'
     Puntenberekeningen-Puntenberekeningbericht:
       allOf:
@@ -6039,7 +6284,8 @@ components:
           samenwerkingsverband:
             allOf:
             - $ref: '#/components/schemas/Referentiedata'
-            description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc. Referentiedatasoort SAMENWERKINGSVERBAND.
+            description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc. OBSOLETE. Referentiedatasoort SAMENWERKINGSVERBAND.
+            deprecated: true
     Puntengebeurtenissen-Adres-basis:
       type: object
       properties:
@@ -6122,6 +6368,30 @@ components:
           type: string
           format: any
           description: De naam van de gemeente.
+    Puntengebeurtenissen-Inschrijving:
+      allOf:
+      - $ref: '#/components/schemas/Puntengebeurtenissen-Overeenkomst-basis'
+      - type: object
+        properties:
+          bijschrijfdatum:
+            type: string
+            format: date
+            description: Datum vanaf wanneer een medeaanvrager rechten opbouwt op een INSCHRIJVING. Zodat bij een eventuele splitsing (medeaanvrager verlaat huishouden maar wil persoonlijke inschrijving) de nieuwe inschrijving kan worden voorzien van een correcte inschrijfdatum.
+          bedrag:
+            type: number
+            format: float
+            description: Het bedrag inclusief BTW in euro's dat betaald dient te worden voor de inschrijving. Naast huurders, kunnen ook andere relaties een serviceovereenkomst afsluiten met de woningcorporatie. Dit veld geeft het bedrag aan dat de relatie voor de dienstverlening betaalt.
+          herkomst:
+            allOf:
+            - $ref: '#/components/schemas/Referentiedata'
+            description: Verwijzing naar de herkomst waaruit de inschrijving is ontstaan (bijvoorbeeld migratie, heropening, urgentie, splitsen etc.). Referentiedatasoort INSCHRIJVINGHERKOMST.
+          samenwerkingsverband:
+            allOf:
+            - $ref: '#/components/schemas/Referentiedata'
+            description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc. Referentiedatasoort SAMENWERKINGSVERBAND.
+          verlengen:
+            type: boolean
+            description: Of er periodiek betaald moet worden om de inschrijving te prolongeren.
     Puntengebeurtenissen-Overeenkomst-basis:
       type: object
       properties:
@@ -6147,6 +6417,7 @@ components:
           description: Het detail soort overeenkomst. Bijvoorbeeld BOG (Bedrijfs Onroerend Goed). Referentiedatasoort OVEREENKOMSTDETAILSOORT.
     Puntengebeurtenissen-Overeenkomst:
       oneOf:
+        - $ref: '#/components/schemas/Puntengebeurtenissen-Inschrijving'
         - $ref: '#/components/schemas/Puntengebeurtenissen-Serviceovereenkomst'
     Puntengebeurtenissen-Puntengebeurtenisbericht:
       allOf:
@@ -6211,7 +6482,8 @@ components:
           samenwerkingsverband:
             allOf:
             - $ref: '#/components/schemas/Referentiedata'
-            description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc. Referentiedatasoort SAMENWERKINGSVERBAND.
+            description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc. OBSOLETE. Referentiedatasoort SAMENWERKINGSVERBAND.
+            deprecated: true
     Relaties-Account:
       type: object
       properties:
@@ -6364,6 +6636,52 @@ components:
           type: string
           format: any
           description: 'De aard van het contactgegeven. Dit kan de waarde zijn van een telefoonnummer, emailadres, of twitteradres. Bijvoorbeeld: 020-1234563'
+    Relaties-Eenheid:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'De dienstverlening (soort) die geboden kan worden met de eenheid. Voorbeeld: Woonruimte, Bedrijfsruimte, Parkeergelegenheid. Referentiedatasoort EENHEIDSOORT.'
+        detailSoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het type van de eenheid. Bijvoorbeeld: Hoekwoning, Tussenwoning, Flat, Maisonnette. Hiervoor wordt de lijst van de waarderingskamer als uitgangspunt genomen. Referentiedatasoort EENHEIDDETAILSOORT.'
+        brutohuur:
+          type: number
+          format: float
+          description: De brutohuur in euro's die geregistreerd staat bij de eenheid. De brutohuur is de netto huur (of kale huur) inclusief alle huurcomponenten en inclusief BTW.
+        etage:
+          type: integer
+          format: int32
+          description: De etage waarop de eenheid zich bevindt.
+        kamersAantal:
+          type: integer
+          format: int32
+          description: Het aantal leefruimten en slaapkamers behorende bij de eenheid.
+        totaleOppervlakte:
+          type: number
+          format: float
+          description: 'De totale oppervlakte van een eenheid. Vertrekken die niet bewoonbaar zijn, worden hierbij meegeteld. Let op: niet te verwarren met de voor de dVi vereiste "gebruiksoppervlakte".'
+        zelfstandig:
+          type: boolean
+          description: Geeft aan of het een zelfstandige of onzelfstandige eenheid betreft. Dit gegeven wordt ook gebruikt bij het bepalen van het woningwaardering volgens het woningwaarderingsstelsel.
     Relaties-Eenheidadres:
       allOf:
       - $ref: '#/components/schemas/Relaties-Adres-basis'
@@ -6516,6 +6834,10 @@ components:
             type: string
             format: any
             description: Een voorletter is een afkorting van een voornaam, die in adressering veel wordt gebruikt. De voorletters geven in combinatie met de achternaam meestal een duidelijk onderscheid tussen leden van hetzelfde gezin of dezelfde familie. Indien iemand meerdere voornamen heeft dan worden de voorletters door een punt gescheiden.
+          woonsituatie:
+            allOf:
+            - $ref: '#/components/schemas/Relaties-Woonsituatie'
+            description: De huidige woonsituatie van de natuurlijke persoon.
     Relaties-Opleiding:
       type: object
       properties:
@@ -6539,6 +6861,37 @@ components:
           type: string
           format: any
           description: Het studentnummer van de relatie
+    Relaties-Overeenkomst:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn. Referentiedatasoort OVEREENKOMSTSOORT.
+        detailSoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het detail soort overeenkomst. Bijvoorbeeld BOG (Bedrijfs Onroerend Goed). Referentiedatasoort OVEREENKOMSTDETAILSOORT.
+        begindatum:
+          type: string
+          format: date
+          description: De begindatum van de overeenkomst.
+        einddatum:
+          type: string
+          format: date
+          description: De einddatum van de overeenkomst.
     Relaties-Postadres:
       allOf:
       - $ref: '#/components/schemas/Relaties-Adres-basis'
@@ -6787,6 +7140,49 @@ components:
           type: string
           format: any
           description: De naam van de woonplaats.
+    Relaties-Woonsituatie:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort woonsituatie: Starter, Doorstromer. Referentiedatasoort WOONSITUATIESOORT.'
+        begindatum:
+          type: string
+          format: date
+          description: De begindatum waarop de woonsituatie is begonnen. Bijvoorbeeld de ingangsdatum van het huidige huur- of koopcontract of de inschrijfdatum op het adres bij het BRP.
+        einddatum:
+          type: string
+          format: date
+          description: De einddatum waarop de woonsituatie is beëindigd.
+        eenheid:
+          allOf:
+          - $ref: '#/components/schemas/Relaties-Eenheid'
+          description: De huidige woning.
+        overeenkomst:
+          allOf:
+          - $ref: '#/components/schemas/Relaties-Overeenkomst'
+          description: De huur- of koopovereenkomst van de huidige woning.
+        vestiging:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De vestiging die de huidige woning exploiteerd. Referentiedatasoort VESTIGING.
     Sancties-Adres:
       type: object
       properties:
@@ -6877,6 +7273,30 @@ components:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: De vestiging van de vastgoedaanbieder die de woning heeft aangeboden. Referentiedatasoort VESTIGING.
+    Sancties-Inschrijving:
+      allOf:
+      - $ref: '#/components/schemas/Sancties-Overeenkomst-basis'
+      - type: object
+        properties:
+          bijschrijfdatum:
+            type: string
+            format: date
+            description: Datum vanaf wanneer een medeaanvrager rechten opbouwt op een INSCHRIJVING. Zodat bij een eventuele splitsing (medeaanvrager verlaat huishouden maar wil persoonlijke inschrijving) de nieuwe inschrijving kan worden voorzien van een correcte inschrijfdatum.
+          bedrag:
+            type: number
+            format: float
+            description: Het bedrag inclusief BTW in euro's dat betaald dient te worden voor de inschrijving. Naast huurders, kunnen ook andere relaties een serviceovereenkomst afsluiten met de woningcorporatie. Dit veld geeft het bedrag aan dat de relatie voor de dienstverlening betaalt.
+          herkomst:
+            allOf:
+            - $ref: '#/components/schemas/Referentiedata'
+            description: Verwijzing naar de herkomst waaruit de inschrijving is ontstaan (bijvoorbeeld migratie, heropening, urgentie, splitsen etc.). Referentiedatasoort INSCHRIJVINGHERKOMST.
+          samenwerkingsverband:
+            allOf:
+            - $ref: '#/components/schemas/Referentiedata'
+            description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc. Referentiedatasoort SAMENWERKINGSVERBAND.
+          verlengen:
+            type: boolean
+            description: Of er periodiek betaald moet worden om de inschrijving te prolongeren.
     Sancties-Overeenkomst-basis:
       type: object
       properties:
@@ -6910,6 +7330,7 @@ components:
           description: De einddatum van de overeenkomst.
     Sancties-Overeenkomst:
       oneOf:
+        - $ref: '#/components/schemas/Sancties-Inschrijving'
         - $ref: '#/components/schemas/Sancties-Serviceovereenkomst'
     Sancties-Puntengebeurtenis:
       type: object
@@ -7016,11 +7437,13 @@ components:
           bedrag:
             type: number
             format: float
-            description: Het bedrag inclusief BTW in euro's dat betaald dient te worden voor de serviceovereenkomst. Naast huurders, kunnen ook andere relaties een serviceovereenkomst afsluiten met de woningcorporatie. Dit veld geeft het bedrag aan dat de relatie voor de dienstverlening betaalt.
+            description: Het bedrag inclusief BTW in euro's dat betaald dient te worden voor de serviceovereenkomst. Naast huurders, kunnen ook andere relaties een serviceovereenkomst afsluiten met de woningcorporatie. Dit veld geeft het bedrag aan dat de relatie voor de dienstverlening betaalt. OBSOLETE.
+            deprecated: true
           samenwerkingsverband:
             allOf:
             - $ref: '#/components/schemas/Referentiedata'
-            description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc. Referentiedatasoort SAMENWERKINGSVERBAND.
+            description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc. OBSOLETE. Referentiedatasoort SAMENWERKINGSVERBAND.
+            deprecated: true
     Toewijzingen-Inkomen:
       type: object
       properties:

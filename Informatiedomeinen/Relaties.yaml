@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '4.0.18+221223.13'
+  version: '4.0.19+230203.22'
 servers:
   - url: https://relaties.vera.io:{port}/{basePath}
     description: Productieserver
@@ -58,6 +58,8 @@ tags:
   description: Operaties met betrekking tot een Signalering
 - name: Telefoonnummers
   description: Operaties met betrekking tot een Telefoonnummer
+- name: Woonsituaties
+  description: Operaties met betrekking tot een Woonsituatie
 paths:
   /ping:
     get:
@@ -4627,6 +4629,259 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+  /woonsituaties:
+    get:
+      tags:
+      - 'Woonsituaties'
+      description: Ophalen van Woonsituaties
+      operationId: listWoonsituaties
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Woonsituatiebericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Woonsituatiebericht'
+          headers:
+            X-Parameters-Aantal:
+              $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+              $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+              $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Woonsituaties'
+      description: Voegt een nieuw(e) Woonsituatie toe.
+      operationId: createWoonsituatie
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Woonsituatie
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Woonsituatiebericht'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Woonsituatiebericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Woonsituaties'
+      description: |
+        Vervangen van een Woonsituatie op basis van overeenkomstige sleutelvelden.
+      operationId: replaceWoonsituatie
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Woonsituatie
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Woonsituatiebericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Woonsituaties'
+      description: |
+        Wijzigen van afzonderlijke attributen van een Woonsituatie. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateWoonsituatie
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Woonsituatie
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Woonsituatiebericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /woonsituaties/{id}:
+    get:
+      tags:
+      - 'Woonsituaties'
+      description: Retourneert een Woonsituatie met de gegeven identifier
+      operationId: readWoonsituatieById
+      parameters:
+      - name: id
+        in: path
+        description: Id van Woonsituatie om op te halen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Woonsituatiebericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Woonsituaties'
+      description: Vervangen van een Woonsituatie
+      operationId: replaceWoonsituatieById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Woonsituatie om te vervangen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Woonsituatie
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Woonsituatiebericht'
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Woonsituaties'
+      description: Wijzigen van een Woonsituatie
+      operationId: updateWoonsituatieById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Woonsituatie om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Woonsituatie
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Woonsituatiebericht'
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
 security:
   - ApiKeyAuth: []
 components:
@@ -5763,6 +6018,57 @@ components:
             type: string
             format: any
             description: Het netnummer van het telefoonnummer.
+    Woonsituatiebericht:
+      allOf:
+        - $ref: '#/components/schemas/Woonsituatie'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Woonsituatie:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort woonsituatie: Starter, Doorstromer. Referentiedatasoort WOONSITUATIESOORT.'
+        begindatum:
+          type: string
+          format: date
+          description: De begindatum waarop de woonsituatie is begonnen. Bijvoorbeeld de ingangsdatum van het huidige huur- of koopcontract of de inschrijfdatum op het adres bij het BRP.
+        einddatum:
+          type: string
+          format: date
+          description: De einddatum waarop de woonsituatie is beëindigd.
+        eenheid:
+          type: string
+          format: uri
+          description: Referentie naar Eenheid in bronsysteem Vastgoed
+        overeenkomst:
+          type: string
+          format: uri
+          description: Referentie naar Overeenkomst in bronsysteem Overeenkomsten
+        relatie:
+          allOf:
+          - $ref: '#/components/schemas/Relatie'
+          description: De hoofdaanvrager waartoe de woonsituatie behoort.
+        vestiging:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De vestiging die de huidige woning exploiteerd. Referentiedatasoort VESTIGING.
     Account-sleutels:
       type: object
       properties:
@@ -6174,6 +6480,25 @@ components:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: De status van het contactgegeven. Bijv. Aangemaakt, Gevalideerd, Ongeldig etc. Referentiedatasoort CONTACTGEGEVENSTATUS.
+    Woonsituatie-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
     Bericht-basis:
       type: object
       properties:

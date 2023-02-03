@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '4.0.18+221223.13'
+  version: '4.0.19+230203.22'
 servers:
   - url: https://vastgoed.vera.io:{port}/{basePath}
     description: Productieserver
@@ -52,6 +52,8 @@ tags:
   description: Operaties met betrekking tot een Eenheid
 - name: Eenheidadressen
   description: Operaties met betrekking tot een Eenheidadres
+- name: Eenheidcriteria
+  description: Operaties met betrekking tot een Eenheidcriterium
 - name: EenheidToestanden
   description: Operaties met betrekking tot een EenheidToestand
 - name: EenheidVoorwaardes
@@ -3899,6 +3901,259 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Eenheidadresbericht'
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /eenheidcriteria:
+    get:
+      tags:
+      - 'Eenheidcriteria'
+      description: Ophalen van Eenheidcriteria
+      operationId: listEenheidcriteria
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Eenheidcriteriumbericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Eenheidcriteriumbericht'
+          headers:
+            X-Parameters-Aantal:
+              $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+              $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+              $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    post:
+      tags:
+      - 'Eenheidcriteria'
+      description: Voegt een nieuw(e) Eenheidcriterium toe.
+      operationId: createEenheidcriterium
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Eenheidcriterium
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Eenheidcriteriumbericht'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Eenheidcriteriumbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Eenheidcriteria'
+      description: |
+        Vervangen van een Eenheidcriterium op basis van overeenkomstige sleutelvelden.
+      operationId: replaceEenheidcriterium
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Eenheidcriterium
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Eenheidcriteriumbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Eenheidcriteria'
+      description: |
+        Wijzigen van afzonderlijke attributen van een Eenheidcriterium. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateEenheidcriterium
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Eenheidcriterium
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Eenheidcriteriumbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+  /eenheidcriteria/{id}:
+    get:
+      tags:
+      - 'Eenheidcriteria'
+      description: Retourneert een Eenheidcriterium met de gegeven identifier
+      operationId: readEenheidcriteriumById
+      parameters:
+      - name: id
+        in: path
+        description: Id van Eenheidcriterium om op te halen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Eenheidcriteriumbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    put:
+      tags:
+      - 'Eenheidcriteria'
+      description: Vervangen van een Eenheidcriterium
+      operationId: replaceEenheidcriteriumById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Eenheidcriterium om te vervangen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Eenheidcriterium
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Eenheidcriteriumbericht'
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Eenheidcriteria'
+      description: Wijzigen van een Eenheidcriterium
+      operationId: updateEenheidcriteriumById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Eenheidcriterium om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Eenheidcriterium
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Eenheidcriteriumbericht'
       responses:
         '200':
           description: OK
@@ -11109,6 +11364,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CollectiefObject'
+        Criteria:
+          description: De voorwaarden waaraan de bewoner moet voldoen om in aanmerking te komen of voorrang te krijgen voor de eenheid.
+          type: array
+          items:
+            $ref: '#/components/schemas/Eenheidcriterium'
         doelgroep:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
@@ -11320,7 +11580,8 @@ components:
         voorwaarden:
           allOf:
           - $ref: '#/components/schemas/EenheidVoorwaarden'
-          description: De voorwaarden waaraan de bewoner moet voldoen om in aanmerking te komen of voorrang te krijgen voor de eenheid.
+          description: De voorwaarden waaraan de bewoner moet voldoen om in aanmerking te komen of voorrang te krijgen voor de eenheid. OBSOLETE
+          deprecated: true
         vraagprijs:
           type: number
           format: float
@@ -11515,6 +11776,45 @@ components:
           type: string
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Eenheidcriteriumbericht:
+      allOf:
+        - $ref: '#/components/schemas/Eenheidcriterium'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Eenheidcriterium:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort criterium. Bijv. Selectie, Voorrang. Referentiedatasoort EENHEIDCRITERIUMSOORT.
+        detailsoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort criterium op basis waarvan de woning passend is of waarop men voorang kan krijgen. Referentiedatasoort EENHEIDCRITERIUMDETAILSOORT.
+        aantalBovengrens:
+          type: number
+          format: float
+          description: Bovengrens, waarbij de eenheid van deze grootheid afhankelijk is van de soort regel, bijvoorbeeld personen, euro's, meters, etc.
+        aantalExact:
+          type: number
+          format: float
+          description: De exacte waarde. De eenheid van deze grootheid is afhankelijk van de soort regel, bijvoorbeeld personen, euro's, vierkante meters, etc.
+        aantalOndergrens:
+          type: number
+          format: float
+          description: Ondergrens, waarbij de eenheid van deze grootheid afhankelijk is van de soort regel, bijvoorbeeld personen, euro's of vierkante meters
     Energieprestatiebericht:
       allOf:
         - $ref: '#/components/schemas/Energieprestatie'
@@ -11538,6 +11838,10 @@ components:
           type: string
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort energieprestatie. Bijv. Energielabel, Energieprestatieindex, Energieprestatiemeting etc.. Referentiedatasoort ENERGIEPRESTATIESOORT.
         begindatum:
           type: string
           format: date
@@ -11557,15 +11861,20 @@ components:
         index:
           type: number
           format: float
-          description: De energieprestatie index van de eenheid.
+          description: De energieprestatie index van de eenheid. OBSOLETE
+          deprecated: true
         label:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het energielabel voor woningen geeft met klassen (A tot en met G) en kleuren (groen tot en met rood) aan hoe energiezuinig een huis is ten opzichte van andere soortgelijke woningen. Energielabel A (donkergroen) is zuinig, energielabel G (rood) is onzuinig. Referentiedatasoort ENERGIELABEL.
+          description: Het energielabel voor woningen geeft met klassen (A**** tot en met G) en kleuren (groen tot en met rood) aan hoe energiezuinig een huis is ten opzichte van andere soortgelijke woningen. Energielabel A (donkergroen) is zuinig, energielabel G (rood) is onzuinig. Het energielabel is meestal een afgeleide van de waarde van de energieprestatie. Referentiedatasoort ENERGIELABEL.
         relatie:
           type: string
           format: uri
           description: Referentie naar Relatie in bronsysteem Relaties
+        waarde:
+          type: string
+          format: any
+          description: De waarde van de energieprestatiesoort. Bijv. de index of meting.
     Gebouwbericht:
       allOf:
         - $ref: '#/components/schemas/Gebouw'
@@ -12948,6 +13257,21 @@ components:
           type: string
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Eenheidcriterium-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
     EenheidToestand-sleutels:
       type: object
       properties:

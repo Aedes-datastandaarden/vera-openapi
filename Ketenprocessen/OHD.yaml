@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Onderhoud
-  description: API-specificatie van ketenproces 'Onderhoud'. Deze specificatie is gebaseerd op VERA versie 4.0.18+221223.13
+  description: API-specificatie van ketenproces 'Onderhoud'. Deze specificatie is gebaseerd op VERA versie 4.0.19+230203.22
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '2.0.18+221223.13'
+  version: '2.0.19+230203.22'
 servers:
   - url: https://ohd.vera.io:{port}/{basePath}
     description: Productieserver
@@ -3945,7 +3945,7 @@ components:
         code:
           type: string
           format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
     Grootboekmutatie-sleutels:
       type: object
       properties:
@@ -3965,11 +3965,7 @@ components:
           type: string
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-    Inkoopfacturen-Inkoopfactuurbericht:
-      allOf:
-        - $ref: '#/components/schemas/Inkoopfacturen-Inkoopfactuur'
-        - $ref: '#/components/schemas/Bericht-basis'
-    Inkoopfacturen-Inkoopfactuur:
+    Inkoopfacturen-Factuur-basis:
       type: object
       properties:
         id:
@@ -3991,7 +3987,7 @@ components:
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Soort van de factuur: Debet of Credit Referentiedatasoort FACTUURSOORT.'
+          description: 'Soort van de factuur: Inkoopfactuur of Verkoopfactuur. Referentiedatasoort FACTUURSOORT.'
         omschrijving:
           type: string
           format: any
@@ -3999,69 +3995,125 @@ components:
         status:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De status van de inkoopfactuur. Bijv. Goedgekeurd, Geblokkeerd, Betaald etc. Referentiedatasoort INKOOPFACTUURSTATUS.
+          description: De status van de factuur. Bijv. Goedgekeurd, Geblokkeerd, Betaald, Gedeeltelijk betaald etc. Referentiedatasoort INKOOPFACTUURSTATUS.
         factuurdatum:
           type: string
           format: date
-          description: Factuurdatum van de inkoopfactuur.
+          description: Factuurdatum van de factuur.
+        vervaldatum:
+          type: string
+          format: date
+          description: De datum waarop de factuur uiterlijk betaald dient te zijn.
         bedrag:
           type: number
           format: float
-          description: Bedrag van de inkoopfactuur.
+          description: Bedrag van de factuur.
         betalingskenmerk:
           type: string
           format: any
-          description: Betalingskenmerk van de inkoopfactuur.
+          description: Betalingskenmerk van de factuur.
         btwBedrag:
           type: number
           format: float
-          description: Totale btw bedrag op de inkoopfactuur.
-        crediteur:
+          description: Totale btw bedrag op de factuur.
+        correctiesoort:
           allOf:
-          - $ref: '#/components/schemas/Crediteur-sleutels'
-          description: De crediteur van deze inkoopfactuur.
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort correctie op de factuur. Bijv. intern, extern. Referentiedatasoort CORRECTIESOORT.
         externFactuurnummer:
           type: string
           format: any
-          description: Extern factuurnummer van de inkoopfactuur.
+          description: Extern factuurnummer van de factuur.
+        factuurregels:
+          description: De factuurregels behorende bij deze factuur.
+          type: array
+          items:
+            $ref: '#/components/schemas/Inkoopfacturen-Factuurregel'
         gRekeningbedrag:
           type: number
           format: float
-          description: Bedrag G rekening
+          description: Bedrag G rekening.
         grootboekmutaties:
           description: De grootboekmutaties behorende bij deze inkoopfactuur.
           type: array
           items:
             $ref: '#/components/schemas/Grootboekmutatie-sleutels'
-        inkoopfactuurregels:
-          description: De inkoopfactuurregels behorende bij deze inkoopfactuur
-          type: array
-          items:
-            $ref: '#/components/schemas/Inkoopfacturen-InkoopfactuurRegel'
+        korting:
+          allOf:
+          - $ref: '#/components/schemas/Inkoopfacturen-Prijsaanpassing'
+          description: Korting die wordt gegeven op de factuur.
+        openstaandBedrag:
+          type: number
+          format: float
+          description: Bedrag dat nog openstaat op de factuur.
+        toeslag:
+          allOf:
+          - $ref: '#/components/schemas/Inkoopfacturen-Prijsaanpassing'
+          description: Toeslag die in rekening wordt gebracht op de factuur.
+    Inkoopfacturen-Factuur:
+      oneOf:
+        - $ref: '#/components/schemas/Inkoopfacturen-Inkoopfactuur'
+        - $ref: '#/components/schemas/Inkoopfacturen-Factuur-basis'
+    Inkoopfacturen-Factuurregel:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        omschrijving:
+          type: string
+          format: any
+          description: De omschrijving van het gegeven.
+        bedrag:
+          type: number
+          format: float
+          description: Bedrag.
+        btwAangiftebedrag:
+          type: number
+          format: float
+          description: Aangiftebedrag btw op deze regel.
+        btwTarief:
+          allOf:
+          - $ref: '#/components/schemas/Inkoopfacturen-BtwTarief'
+          description: Btw-tarief dat op de mutatie van toepassing is, bijvoorbeeld;hoog, laag, geen of nul.
         korting:
           allOf:
           - $ref: '#/components/schemas/Inkoopfacturen-Prijsaanpassing'
           description: Korting die wordt gegeven op het factuurregelbedrag.
-        openstaandBedrag:
-          type: number
-          format: float
-          description: Bedrag dat nog openstaat op de inkoopfactuur.
-        rekening:
-          allOf:
-          - $ref: '#/components/schemas/Inkoopfacturen-Betaalgegeven'
-          description: De betaalgegevens van de crediteur.
-        toelichting:
-          type: string
-          format: any
-          description: Nadere omschrijving van het gegegeven (memo).
         toeslag:
           allOf:
           - $ref: '#/components/schemas/Inkoopfacturen-Prijsaanpassing'
           description: Toeslag die in rekening wordt gebracht op het factuurregelbedrag.
-        vervaldatum:
-          type: string
-          format: date
-          description: De datum waarop de factuur vervalt.
+    Inkoopfacturen-Inkoopfactuurbericht:
+      allOf:
+        - $ref: '#/components/schemas/Inkoopfacturen-Inkoopfactuur'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Inkoopfacturen-Inkoopfactuur:
+      allOf:
+      - $ref: '#/components/schemas/Inkoopfacturen-Factuur-basis'
+      - type: object
+        properties:
+          crediteur:
+            allOf:
+            - $ref: '#/components/schemas/Crediteur-sleutels'
+            description: De crediteur van deze inkoopfactuur.
+          rekening:
+            allOf:
+            - $ref: '#/components/schemas/Inkoopfacturen-Betaalgegeven'
+            description: De betaalgegevens van de crediteur.
     Crediteur-sleutels:
       type: object
       properties:
@@ -4080,50 +4132,7 @@ components:
         code:
           type: string
           format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-    Inkoopfacturen-InkoopfactuurRegel:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        omschrijving:
-          type: string
-          format: any
-          description: De omschrijving van het gegeven.
-        bedrag:
-          type: number
-          format: float
-          description: Bedrag
-        btwAangiftebedrag:
-          type: number
-          format: float
-          description: Aangiftebedrag btw op deze regel
-        btwTarief:
-          allOf:
-          - $ref: '#/components/schemas/Inkoopfacturen-BtwTarief'
-          description: Btw-tarief dat op de mutatie van toepassing is, bijvoorbeeld, hoog, laag, geen, nul.
-        korting:
-          allOf:
-          - $ref: '#/components/schemas/Inkoopfacturen-Prijsaanpassing'
-          description: Korting die wordt gegeven op het factuurregelbedrag.
-        toeslag:
-          allOf:
-          - $ref: '#/components/schemas/Inkoopfacturen-Prijsaanpassing'
-          description: Toeslag die in rekening wordt gebracht op het factuurregelbedrag.
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
     Inkoopfacturen-Prijsaanpassing:
       type: object
       properties:
@@ -5206,7 +5215,7 @@ components:
         code:
           type: string
           format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
     Offerte-sleutels:
       type: object
       properties:
