@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Beheer Overeenkomstgegevens
-  description: API-specificatie van ketenproces 'Beheer Overeenkomstgegevens'. Deze specificatie is gebaseerd op VERA versie 4.1.0-rc.0+230303.7
+  description: API-specificatie van ketenproces 'Beheer Overeenkomstgegevens'. Deze specificatie is gebaseerd op VERA versie 4.1.0-rc.1+230303.16
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '1.1.0-rc.0+230303.7'
+  version: '1.1.0-rc.1+230303.16'
 servers:
   - url: https://bog.vera.io:{port}/{basePath}
     description: Productieserver
@@ -88,6 +88,10 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Overeenkomsten.Read
+          - BOG.Overeenkomsten.ReadWrite
     post:
       tags:
       - 'Overeenkomsten'
@@ -125,6 +129,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Overeenkomsten.ReadWrite
     put:
       tags:
       - 'Overeenkomsten'
@@ -157,6 +164,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Overeenkomsten.ReadWrite
     patch:
       tags:
       - 'Overeenkomsten'
@@ -190,6 +200,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Overeenkomsten.ReadWrite
   /overeenkomsten/{id}:
     get:
       tags:
@@ -224,6 +237,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Overeenkomsten.Read
+          - BOG.Overeenkomsten.ReadWrite
     put:
       tags:
       - 'Overeenkomsten'
@@ -246,6 +263,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Overeenkomsten-Overeenkomstbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Overeenkomsten.ReadWrite
       responses:
         '200':
           description: OK
@@ -294,6 +314,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Overeenkomsten.ReadWrite
   /prijscomponenten:
     get:
       tags:
@@ -341,6 +364,10 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Prijscomponenten.Read
+          - BOG.Prijscomponenten.ReadWrite
     post:
       tags:
       - 'Prijscomponenten'
@@ -378,6 +405,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Prijscomponenten.ReadWrite
     put:
       tags:
       - 'Prijscomponenten'
@@ -410,6 +440,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Prijscomponenten.ReadWrite
     patch:
       tags:
       - 'Prijscomponenten'
@@ -443,6 +476,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Prijscomponenten.ReadWrite
   /prijscomponenten/{id}:
     get:
       tags:
@@ -477,6 +513,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Prijscomponenten.Read
+          - BOG.Prijscomponenten.ReadWrite
     put:
       tags:
       - 'Prijscomponenten'
@@ -499,6 +539,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Prijscomponenten-Prijscomponentbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Prijscomponenten.ReadWrite
       responses:
         '200':
           description: OK
@@ -547,8 +590,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Prijscomponenten.ReadWrite
 security:
   - ApiKeyAuth: []
+  - OAuth2: 
+    - BOG.All.Read
+    - BOG.All.ReadWrite
+
 components:
   headers:
     X-Parameters-Aantal:
@@ -578,6 +628,19 @@ components:
       type: apiKey
       in: header
       name: X-API-KEY
+    OAuth2:
+      type: oauth2
+      description: Deze API gebruikt OAuth2 met 'implicit grant flow'.)
+      flows:
+        implicit:
+          authorizationUrl: https://api.vera.nl/oauth2/authorize
+          scopes:
+            BOG.All.Read: alleen lezen van alle resources
+            BOG.All.ReadWrite: lezen en schrijven van alle resources
+            BOG.Overeenkomsten.Read: alleen lezen van Overeenkomsten
+            BOG.Overeenkomsten.ReadWrite: lezen en schrijven van Overeenkomsten
+            BOG.Prijscomponenten.Read: alleen lezen van Prijscomponenten
+            BOG.Prijscomponenten.ReadWrite: lezen en schrijven van Prijscomponenten
   responses:
     NietGeautoriseerd:
       description: Unauthorized

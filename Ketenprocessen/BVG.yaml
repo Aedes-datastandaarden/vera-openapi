@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Beheer Vastgoedgegevens
-  description: API-specificatie van ketenproces 'Beheer Vastgoedgegevens'. Deze specificatie is gebaseerd op VERA versie 4.1.0-rc.0+230303.7
+  description: API-specificatie van ketenproces 'Beheer Vastgoedgegevens'. Deze specificatie is gebaseerd op VERA versie 4.1.0-rc.1+230303.16
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '1.1.0-rc.0+230303.7'
+  version: '1.1.0-rc.1+230303.16'
 servers:
   - url: https://bvg.vera.io:{port}/{basePath}
     description: Productieserver
@@ -86,6 +86,10 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.WoningwaarderingResultaten.Read
+          - BVG.WoningwaarderingResultaten.ReadWrite
     post:
       tags:
       - 'WoningwaarderingResultaten'
@@ -123,6 +127,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.WoningwaarderingResultaten.ReadWrite
     put:
       tags:
       - 'WoningwaarderingResultaten'
@@ -155,6 +162,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.WoningwaarderingResultaten.ReadWrite
     patch:
       tags:
       - 'WoningwaarderingResultaten'
@@ -188,6 +198,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.WoningwaarderingResultaten.ReadWrite
   /woningwaardering-resultaten/{id}:
     get:
       tags:
@@ -222,6 +235,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.WoningwaarderingResultaten.Read
+          - BVG.WoningwaarderingResultaten.ReadWrite
     put:
       tags:
       - 'WoningwaarderingResultaten'
@@ -244,6 +261,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaatbericht'
+      security: 
+        - OAuth2: 
+          - BVG.WoningwaarderingResultaten.ReadWrite
       responses:
         '200':
           description: OK
@@ -292,8 +312,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.WoningwaarderingResultaten.ReadWrite
 security:
   - ApiKeyAuth: []
+  - OAuth2: 
+    - BVG.All.Read
+    - BVG.All.ReadWrite
+
 components:
   headers:
     X-Parameters-Aantal:
@@ -323,6 +350,17 @@ components:
       type: apiKey
       in: header
       name: X-API-KEY
+    OAuth2:
+      type: oauth2
+      description: Deze API gebruikt OAuth2 met 'implicit grant flow'.)
+      flows:
+        implicit:
+          authorizationUrl: https://api.vera.nl/oauth2/authorize
+          scopes:
+            BVG.All.Read: alleen lezen van alle resources
+            BVG.All.ReadWrite: lezen en schrijven van alle resources
+            BVG.WoningwaarderingResultaten.Read: alleen lezen van WoningwaarderingResultaten
+            BVG.WoningwaarderingResultaten.ReadWrite: lezen en schrijven van WoningwaarderingResultaten
   responses:
     NietGeautoriseerd:
       description: Unauthorized

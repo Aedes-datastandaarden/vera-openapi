@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Beheer Financiele Gegevens
-  description: API-specificatie van ketenproces 'Beheer Financiele Gegevens'. Deze specificatie is gebaseerd op VERA versie 4.1.0-rc.0+230303.7
+  description: API-specificatie van ketenproces 'Beheer Financiele Gegevens'. Deze specificatie is gebaseerd op VERA versie 4.1.0-rc.1+230303.16
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '1.1.0-rc.0+230303.7'
+  version: '1.1.0-rc.1+230303.16'
 servers:
   - url: https://bfg.vera.io:{port}/{basePath}
     description: Productieserver
@@ -88,6 +88,10 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Boekingen.Read
+          - BFG.Boekingen.ReadWrite
     post:
       tags:
       - 'Boekingen'
@@ -125,6 +129,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Boekingen.ReadWrite
     put:
       tags:
       - 'Boekingen'
@@ -157,6 +164,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Boekingen.ReadWrite
     patch:
       tags:
       - 'Boekingen'
@@ -190,6 +200,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Boekingen.ReadWrite
   /boekingen/{id}:
     get:
       tags:
@@ -224,6 +237,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Boekingen.Read
+          - BFG.Boekingen.ReadWrite
     put:
       tags:
       - 'Boekingen'
@@ -246,6 +263,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Boekingen-Boekingbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Boekingen.ReadWrite
       responses:
         '200':
           description: OK
@@ -294,6 +314,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Boekingen.ReadWrite
   /debiteuren:
     get:
       tags:
@@ -341,6 +364,10 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Debiteuren.Read
+          - BFG.Debiteuren.ReadWrite
     post:
       tags:
       - 'Debiteuren'
@@ -378,6 +405,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Debiteuren.ReadWrite
     put:
       tags:
       - 'Debiteuren'
@@ -410,6 +440,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Debiteuren.ReadWrite
     patch:
       tags:
       - 'Debiteuren'
@@ -443,6 +476,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Debiteuren.ReadWrite
   /debiteuren/{id}:
     get:
       tags:
@@ -477,6 +513,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Debiteuren.Read
+          - BFG.Debiteuren.ReadWrite
     put:
       tags:
       - 'Debiteuren'
@@ -499,6 +539,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Debiteuren-Debiteurbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Debiteuren.ReadWrite
       responses:
         '200':
           description: OK
@@ -547,8 +590,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Debiteuren.ReadWrite
 security:
   - ApiKeyAuth: []
+  - OAuth2: 
+    - BFG.All.Read
+    - BFG.All.ReadWrite
+
 components:
   headers:
     X-Parameters-Aantal:
@@ -578,6 +628,19 @@ components:
       type: apiKey
       in: header
       name: X-API-KEY
+    OAuth2:
+      type: oauth2
+      description: Deze API gebruikt OAuth2 met 'implicit grant flow'.)
+      flows:
+        implicit:
+          authorizationUrl: https://api.vera.nl/oauth2/authorize
+          scopes:
+            BFG.All.Read: alleen lezen van alle resources
+            BFG.All.ReadWrite: lezen en schrijven van alle resources
+            BFG.Boekingen.Read: alleen lezen van Boekingen
+            BFG.Boekingen.ReadWrite: lezen en schrijven van Boekingen
+            BFG.Debiteuren.Read: alleen lezen van Debiteuren
+            BFG.Debiteuren.ReadWrite: lezen en schrijven van Debiteuren
   responses:
     NietGeautoriseerd:
       description: Unauthorized
@@ -802,6 +865,10 @@ components:
           type: number
           format: float
           description: Totaal Bedrag btw.
+        crediteur:
+          allOf:
+          - $ref: '#/components/schemas/Crediteur-sleutels'
+          description: De crediteur van de boeking.
         debiteur:
           allOf:
           - $ref: '#/components/schemas/Boekingen-Debiteur'
@@ -828,6 +895,25 @@ components:
           format: float
           description: Het saldo of openstaande bedrag van de boeking.
     Betalingsregeling-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+    Crediteur-sleutels:
       type: object
       properties:
         id:

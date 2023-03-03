@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Incasso
-  description: API-specificatie van ketenproces 'Incasso'. Deze specificatie is gebaseerd op VERA versie 4.1.0-rc.0+230303.7
+  description: API-specificatie van ketenproces 'Incasso'. Deze specificatie is gebaseerd op VERA versie 4.1.0-rc.1+230303.16
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '1.1.0-rc.0+230303.7'
+  version: '1.1.0-rc.1+230303.16'
 servers:
   - url: https://inc.vera.io:{port}/{basePath}
     description: Productieserver
@@ -88,6 +88,10 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - INC.Betalingsregelingen.Read
+          - INC.Betalingsregelingen.ReadWrite
     post:
       tags:
       - 'Betalingsregelingen'
@@ -125,6 +129,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - INC.Betalingsregelingen.ReadWrite
     put:
       tags:
       - 'Betalingsregelingen'
@@ -157,6 +164,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - INC.Betalingsregelingen.ReadWrite
     patch:
       tags:
       - 'Betalingsregelingen'
@@ -190,6 +200,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - INC.Betalingsregelingen.ReadWrite
   /betalingsregelingen/{id}:
     get:
       tags:
@@ -224,6 +237,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - INC.Betalingsregelingen.Read
+          - INC.Betalingsregelingen.ReadWrite
     put:
       tags:
       - 'Betalingsregelingen'
@@ -246,6 +263,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Betalingsregelingen-Betalingsregelingbericht'
+      security: 
+        - OAuth2: 
+          - INC.Betalingsregelingen.ReadWrite
       responses:
         '200':
           description: OK
@@ -294,6 +314,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - INC.Betalingsregelingen.ReadWrite
   /externe-incassos:
     get:
       tags:
@@ -341,6 +364,10 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - INC.ExterneIncassos.Read
+          - INC.ExterneIncassos.ReadWrite
     post:
       tags:
       - 'ExterneIncassos'
@@ -378,6 +405,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - INC.ExterneIncassos.ReadWrite
     put:
       tags:
       - 'ExterneIncassos'
@@ -410,6 +440,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - INC.ExterneIncassos.ReadWrite
     patch:
       tags:
       - 'ExterneIncassos'
@@ -443,6 +476,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - INC.ExterneIncassos.ReadWrite
   /externe-incassos/{id}:
     get:
       tags:
@@ -477,6 +513,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - INC.ExterneIncassos.Read
+          - INC.ExterneIncassos.ReadWrite
     put:
       tags:
       - 'ExterneIncassos'
@@ -499,6 +539,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ExterneIncassos-ExterneIncassobericht'
+      security: 
+        - OAuth2: 
+          - INC.ExterneIncassos.ReadWrite
       responses:
         '200':
           description: OK
@@ -547,8 +590,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - INC.ExterneIncassos.ReadWrite
 security:
   - ApiKeyAuth: []
+  - OAuth2: 
+    - INC.All.Read
+    - INC.All.ReadWrite
+
 components:
   headers:
     X-Parameters-Aantal:
@@ -578,6 +628,19 @@ components:
       type: apiKey
       in: header
       name: X-API-KEY
+    OAuth2:
+      type: oauth2
+      description: Deze API gebruikt OAuth2 met 'implicit grant flow'.)
+      flows:
+        implicit:
+          authorizationUrl: https://api.vera.nl/oauth2/authorize
+          scopes:
+            INC.All.Read: alleen lezen van alle resources
+            INC.All.ReadWrite: lezen en schrijven van alle resources
+            INC.Betalingsregelingen.Read: alleen lezen van Betalingsregelingen
+            INC.Betalingsregelingen.ReadWrite: lezen en schrijven van Betalingsregelingen
+            INC.ExterneIncassos.Read: alleen lezen van ExterneIncassos
+            INC.ExterneIncassos.ReadWrite: lezen en schrijven van ExterneIncassos
   responses:
     NietGeautoriseerd:
       description: Unauthorized
@@ -752,13 +815,32 @@ components:
           - $ref: '#/components/schemas/Betalingsregelingen-Betaalgegeven'
           description: Het betaalgegeven waarmee de betalingsregeling wordt betaald. Dit kan bijvoorbeeld het rekeningnummer zijn van de relatie.
         incassomachtiging:
-          type: string
-          format: uri
-          description: Referentie naar Incassomachtiging in bronsysteem Financien
+          allOf:
+          - $ref: '#/components/schemas/Incassomachtiging-sleutels'
+          description: De digitale machtiging voor het uitvoeren van de incassoopdrachten. SEPA.
         incassomoment:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: Het moment waarop de incasso wordt gedaan. Referentiedatasoort INCASSOMOMENT.
+    Incassomachtiging-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken). In dit geval logisch om het mandaatid hier te gebruiken.
     Betalingsregelingen-Betalingsregelingbericht:
       allOf:
         - $ref: '#/components/schemas/Betalingsregelingen-Betalingsregeling'
