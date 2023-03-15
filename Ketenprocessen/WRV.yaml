@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Woonruimteverdeling
-  description: API-specificatie van ketenproces 'Woonruimteverdeling'. Deze specificatie is gebaseerd op VERA versie 4.1.0-rc.1+230303.16
+  description: API-specificatie van ketenproces 'Woonruimteverdeling'. Deze specificatie is gebaseerd op VERA versie 4.1.0-rc.2+230315.1
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
     url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '3.1.0-rc.1+230303.16'
+  version: '3.1.0-rc.2+230315.1'
 servers:
   - url: https://wrv.vera.io:{port}/{basePath}
     description: Productieserver
@@ -22,6 +22,8 @@ servers:
        basePath:
          default: v3
 tags:
+- name: Aanbiedingen
+  description: Operaties met betrekking tot een Aanbieding
 - name: Eenheden
   description: Operaties met betrekking tot een Eenheid
 - name: Gebeurtenissen
@@ -38,6 +40,8 @@ tags:
   description: Operaties met betrekking tot een Puntenberekening
 - name: Puntengebeurtenissen
   description: Operaties met betrekking tot een Puntengebeurtenis
+- name: Reclamaties
+  description: Operaties met betrekking tot een Reclamatie
 - name: Relaties
   description: Operaties met betrekking tot een Relatie
 - name: Sancties
@@ -59,6 +63,282 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+  /aanbiedingen:
+    get:
+      tags:
+      - 'Aanbiedingen'
+      description: Ophalen van Aanbiedingen
+      operationId: listAanbiedingen
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Aanbiedingen-Aanbiedingbericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Aanbiedingen-Aanbiedingbericht'
+          headers:
+            X-Parameters-Aantal:
+              $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+              $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+              $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - WRV.Aanbiedingen.Read
+          - WRV.Aanbiedingen.ReadWrite
+    post:
+      tags:
+      - 'Aanbiedingen'
+      description: Voegt een nieuw(e) Aanbieding toe.
+      operationId: createAanbieding
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Aanbieding
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Aanbiedingen-Aanbiedingbericht'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Aanbiedingen-Aanbiedingbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - WRV.Aanbiedingen.ReadWrite
+    put:
+      tags:
+      - 'Aanbiedingen'
+      description: |
+        Vervangen van een Aanbieding op basis van overeenkomstige sleutelvelden.
+      operationId: replaceAanbieding
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Aanbieding
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Aanbiedingen-Aanbiedingbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - WRV.Aanbiedingen.ReadWrite
+    patch:
+      tags:
+      - 'Aanbiedingen'
+      description: |
+        Wijzigen van afzonderlijke attributen van een Aanbieding. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateAanbieding
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Aanbieding
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Aanbiedingen-Aanbiedingbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - WRV.Aanbiedingen.ReadWrite
+  /aanbiedingen/{id}:
+    get:
+      tags:
+      - 'Aanbiedingen'
+      description: Retourneert een Aanbieding met de gegeven identifier
+      operationId: readAanbiedingById
+      parameters:
+      - name: id
+        in: path
+        description: Id van Aanbieding om op te halen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Aanbiedingen-Aanbiedingbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - WRV.Aanbiedingen.Read
+          - WRV.Aanbiedingen.ReadWrite
+    put:
+      tags:
+      - 'Aanbiedingen'
+      description: Vervangen van een Aanbieding
+      operationId: replaceAanbiedingById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Aanbieding om te vervangen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Aanbieding
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Aanbiedingen-Aanbiedingbericht'
+      security: 
+        - OAuth2: 
+          - WRV.Aanbiedingen.ReadWrite
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Aanbiedingen'
+      description: Wijzigen van een Aanbieding
+      operationId: updateAanbiedingById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Aanbieding om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Aanbieding
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Aanbiedingen-Aanbiedingbericht'
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - WRV.Aanbiedingen.ReadWrite
   /eenheden:
     get:
       tags:
@@ -2267,6 +2547,282 @@ paths:
       security: 
         - OAuth2: 
           - WRV.Puntengebeurtenissen.ReadWrite
+  /reclamaties:
+    get:
+      tags:
+      - 'Reclamaties'
+      description: Ophalen van Reclamaties
+      operationId: listReclamaties
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Reclamaties-Reclamatiebericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Reclamaties-Reclamatiebericht'
+          headers:
+            X-Parameters-Aantal:
+              $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+              $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+              $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - WRV.Reclamaties.Read
+          - WRV.Reclamaties.ReadWrite
+    post:
+      tags:
+      - 'Reclamaties'
+      description: Voegt een nieuw(e) Reclamatie toe.
+      operationId: createReclamatie
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Reclamatie
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reclamaties-Reclamatiebericht'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reclamaties-Reclamatiebericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - WRV.Reclamaties.ReadWrite
+    put:
+      tags:
+      - 'Reclamaties'
+      description: |
+        Vervangen van een Reclamatie op basis van overeenkomstige sleutelvelden.
+      operationId: replaceReclamatie
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Reclamatie
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reclamaties-Reclamatiebericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - WRV.Reclamaties.ReadWrite
+    patch:
+      tags:
+      - 'Reclamaties'
+      description: |
+        Wijzigen van afzonderlijke attributen van een Reclamatie. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateReclamatie
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Reclamatie
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reclamaties-Reclamatiebericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - WRV.Reclamaties.ReadWrite
+  /reclamaties/{id}:
+    get:
+      tags:
+      - 'Reclamaties'
+      description: Retourneert een Reclamatie met de gegeven identifier
+      operationId: readReclamatieById
+      parameters:
+      - name: id
+        in: path
+        description: Id van Reclamatie om op te halen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reclamaties-Reclamatiebericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - WRV.Reclamaties.Read
+          - WRV.Reclamaties.ReadWrite
+    put:
+      tags:
+      - 'Reclamaties'
+      description: Vervangen van een Reclamatie
+      operationId: replaceReclamatieById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Reclamatie om te vervangen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Reclamatie
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reclamaties-Reclamatiebericht'
+      security: 
+        - OAuth2: 
+          - WRV.Reclamaties.ReadWrite
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Reclamaties'
+      description: Wijzigen van een Reclamatie
+      operationId: updateReclamatieById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Reclamatie om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Reclamatie
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reclamaties-Reclamatiebericht'
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - WRV.Reclamaties.ReadWrite
   /relaties:
     get:
       tags:
@@ -3139,6 +3695,8 @@ components:
           scopes:
             WRV.All.Read: alleen lezen van alle resources
             WRV.All.ReadWrite: lezen en schrijven van alle resources
+            WRV.Aanbiedingen.Read: alleen lezen van Aanbiedingen
+            WRV.Aanbiedingen.ReadWrite: lezen en schrijven van Aanbiedingen
             WRV.Eenheden.Read: alleen lezen van Eenheden
             WRV.Eenheden.ReadWrite: lezen en schrijven van Eenheden
             WRV.Gebeurtenissen.Read: alleen lezen van Gebeurtenissen
@@ -3155,6 +3713,8 @@ components:
             WRV.Puntenberekeningen.ReadWrite: lezen en schrijven van Puntenberekeningen
             WRV.Puntengebeurtenissen.Read: alleen lezen van Puntengebeurtenissen
             WRV.Puntengebeurtenissen.ReadWrite: lezen en schrijven van Puntengebeurtenissen
+            WRV.Reclamaties.Read: alleen lezen van Reclamaties
+            WRV.Reclamaties.ReadWrite: lezen en schrijven van Reclamaties
             WRV.Relaties.Read: alleen lezen van Relaties
             WRV.Relaties.ReadWrite: lezen en schrijven van Relaties
             WRV.Sancties.Read: alleen lezen van Sancties
@@ -3169,6 +3729,269 @@ components:
           schema:
             type: string
   schemas:
+    Aanbiedingen-Aanbiedingbericht:
+      allOf:
+        - $ref: '#/components/schemas/Aanbiedingen-Aanbieding'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Aanbiedingen-Aanbieding:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De status van de aanbieding. Referentiedatasoort AANBIEDINGSTATUS.
+        detailStatus:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De detail status van de aanbieding Referentiedatasoort AANBIEDINGDETAILSTATUS.
+        contactmomenten:
+          description: De contactmomenten behorend bij de aanbieding.
+          type: array
+          items:
+            $ref: '#/components/schemas/Aanbiedingen-Contactmoment'
+        publicatie:
+          allOf:
+          - $ref: '#/components/schemas/Publicatie-sleutels'
+          description: De publicatie naar aanleiding waarvan de aanbieding is gedaan.
+        relatie:
+          allOf:
+          - $ref: '#/components/schemas/Relatie-sleutels'
+          description: Het huishouden behorend bij de aanbieding.
+    Referentiedata:
+      type: object
+      properties:
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.
+        naam:
+          type: string
+          format: any
+          description: De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.
+    Publicatie-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Relatie-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedatasoort RELATIESOORT.'
+        detailSoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedatasoort RELATIEDETAILSOORT.'
+        rollen:
+          description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Relaties-Relatierol'
+    Aanbiedingen-Contactmoment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        omschrijving:
+          type: string
+          format: any
+          description: De omschrijving van het contactmoment
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort of onderwerp van het contactmoment. VERA zal hiervoor geen lijst leveren. Referentiedatasoort CONTACTMOMENTSOORT.
+        detailSoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort detail van het contactmoment. VERA zal hiervoor geen lijst leveren. Referentiedatasoort CONTACTMOMENTDETAILSOORT.
+        datum:
+          type: string
+          format: date-time
+          description: De datum en tijd waarop contact is geweest.
+        kanaal:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het kanaal via welke het contact heeft gelopen. Bijvoorbeeld: Telefoon, email, balie, internet. Referentiedatasoort COMMUNICATIEKANAAL.'
+        relaties:
+          description: De relatie waarmee contact is geweest. Bijv. een huurder, medewerker etc.
+          type: array
+          items:
+            $ref: '#/components/schemas/Aanbiedingen-Relatie'
+        richting:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'De communicatierichting behorend bij het contact. Bijvoorbeeld: Uitgaand of ingaand. Referentiedatasoort COMMUNICATIERICHTING.'
+    Aanbiedingen-NatuurlijkPersoon:
+      allOf:
+      - $ref: '#/components/schemas/Aanbiedingen-Relatie-basis'
+      - type: object
+        properties:
+          bsn:
+            type: string
+            format: any
+            description: Het BSN (Burger Service Nummer) van de natuurlijk persoon.
+          geboortedatum:
+            type: string
+            format: date
+            description: De geboortedatum van de natuurlijk persoon.
+          overlijdensdatum:
+            type: string
+            format: date
+            description: De datum van overlijden van de natuurlijk persoon.
+          aanschrijfnaam:
+            type: string
+            format: any
+            description: De achternaam van de natuurlijk persoon zoals deze wenst te worden aangeschreven.
+          achternaam:
+            type: string
+            format: any
+            description: De achternaam van de natuurlijk persoon.
+          initialen:
+            type: string
+            format: any
+            description: De initialen van de natuurlijk persoon.
+          roepnaam:
+            type: string
+            format: any
+            description: De roepnaam van de natuurlijk persoon.
+          tussenvoegsels:
+            type: string
+            format: any
+            description: De tussenvoegsels behorende bij de naam.
+          voornaam:
+            type: string
+            format: any
+            description: De voornaam van de natuurlijk persoon.
+    Aanbiedingen-Relatie-basis:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedatasoort RELATIESOORT.'
+        detailSoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedatasoort RELATIEDETAILSOORT.'
+        contactgegevens:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: Referentie naar Contactgegeven in bronsysteem Relaties
+        rollen:
+          description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Aanbiedingen-Relatierol'
+    Aanbiedingen-Relatie:
+      oneOf:
+        - $ref: '#/components/schemas/Aanbiedingen-NatuurlijkPersoon'
+    Aanbiedingen-Relatierol:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort rol van de relatie. Bijvoorbeeld Klant, Prospect, Leverancier, Medewerker, Team etc. Referentiedatasoort RELATIEROLSOORT.
+        naam:
+          type: string
+          format: any
+          description: De naam van de relatie rol.
     Eenheden-Adres-basis:
       type: object
       properties:
@@ -3216,17 +4039,6 @@ components:
           type: string
           format: any
           description: De straatnaam behorend bij het adres.
-    Referentiedata:
-      type: object
-      properties:
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.
-        naam:
-          type: string
-          format: any
-          description: De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.
     Eenheden-Adres:
       oneOf:
         - $ref: '#/components/schemas/Eenheden-BuitenlandsAdres'
@@ -4128,51 +4940,63 @@ components:
         id:
           type: string
           format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn. OBSOLETE
+          deprecated: true
         idExtern:
           type: string
           format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling. OBSOLETE
+          deprecated: true
         idGegevensbeheerder:
           type: string
           format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden. OBSOLETE
+          deprecated: true
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort gebeurtenis. Bijv. Niet aanwezig op bevestige bezichtiging. Referentiedatasoort GEBEURTENISSOORT.
+          description: Het soort gebeurtenis. Bijv. Niet aanwezig op bevestige bezichtiging. OBSOLETE Referentiedatasoort GEBEURTENISSOORT.
+          deprecated: true
         datum:
           type: string
           format: date
-          description: De datum waarop gebeurtenis heeft plaatsgevonden.
+          description: De datum waarop gebeurtenis heeft plaatsgevonden. OBSOLETE
+          deprecated: true
         begindatum:
           type: string
           format: date
-          description: De begindatum van de geldigheid van de gebeurtenis.
+          description: De begindatum van de geldigheid van de gebeurtenis. OBSOLETE
+          deprecated: true
         einddatum:
           type: string
           format: date
-          description: De einddatum van de geldigheid van de gebeurtenis.
+          description: De einddatum van de geldigheid van de gebeurtenis. OBSOLETE
+          deprecated: true
         adres:
           allOf:
           - $ref: '#/components/schemas/Gebeurtenissen-Adres'
-          description: Het adres waar de gebeurtenis betrekking op heeft.
+          description: Het adres waar de gebeurtenis betrekking op heeft. OBSOLETE
+          deprecated: true
         cluster:
           allOf:
           - $ref: '#/components/schemas/Gebeurtenissen-Cluster'
-          description: Het cluster waar de gebeurtenis betrekking op heeft.
+          description: Het cluster waar de gebeurtenis betrekking op heeft. OBSOLETE
+          deprecated: true
         contextId:
           type: string
           format: any
-          description: De id van de context van de gebeurtenis, bijv. een reactie id, een aanbieding id etc.
+          description: De id van de context van de gebeurtenis, bijv. een reactie id, een aanbieding id etc. OBSOLETE
+          deprecated: true
         inschrijving:
           allOf:
           - $ref: '#/components/schemas/Gebeurtenissen-Overeenkomst'
-          description: De inschrijving waarbij de gebeurtenis is vastgelegd.
+          description: De inschrijving waarbij de gebeurtenis is vastgelegd. OBSOLETE
+          deprecated: true
         vestiging:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De vestiging van de vastgoedaanbieder die de woning heeft aangeboden. Referentiedatasoort VESTIGING.
+          description: De vestiging van de vastgoedaanbieder die de woning heeft aangeboden. OBSOLETE Referentiedatasoort VESTIGING.
+          deprecated: true
     Gebeurtenissen-Gemeente:
       type: object
       properties:
@@ -5040,38 +5864,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Relatie-sleutels'
-    Relatie-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedatasoort RELATIESOORT.'
-        detailSoort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedatasoort RELATIEDETAILSOORT.'
-        rollen:
-          description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
-          type: array
-          items:
-            $ref: '#/components/schemas/Relaties-Relatierol'
     Overeenkomsten-Overeenkomstbericht:
       allOf:
         - $ref: '#/components/schemas/Overeenkomsten-Overeenkomst'
@@ -5296,6 +6088,10 @@ components:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: De status van een overeeenkomstkoppeling. Bijv. Aangevraagd, Afgekeurd, Bevestigd. Referentiedatasoort OVEREENKOMSTKOPPELINGSTATUS.
+        detailstatus:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De status van een overeeenkomstkoppeling. Bijv. Afgewezen door woningzoekende, bevestigingstermijn verstreken etc.. Referentiedatasoort OVEREENKOMSTKOPPELINGDETAILSTATUS.
         begindatum:
           type: string
           format: date
@@ -6450,6 +7246,10 @@ components:
           allOf:
           - $ref: '#/components/schemas/Puntenberekeningen-Adres'
           description: Het adres waar de gebeurtenis betrekking op heeft.
+        gerelateerdeGebeurtenis:
+          allOf:
+          - $ref: '#/components/schemas/Puntenberekeningen-Gebeurtenis'
+          description: Gebeurtenis waarop de gebeurtenis betrekking op heeft. Hiermee kan bijvoorbeeld de relatie worden gelegd tussen een ingetrokken no-show en een no-show.
         inschrijving:
           allOf:
           - $ref: '#/components/schemas/Puntenberekeningen-Overeenkomst'
@@ -6600,6 +7400,10 @@ components:
           allOf:
           - $ref: '#/components/schemas/Puntenberekeningen-Adres'
           description: Het adres waar de gebeurtenis betrekking op heeft.
+        gerelateerdeGebeurtenis:
+          allOf:
+          - $ref: '#/components/schemas/Gebeurtenis-sleutels'
+          description: Gebeurtenis waarop de gebeurtenis betrekking op heeft. Hiermee kan bijvoorbeeld de relatie worden gelegd tussen een ingetrokken no-show en een no-show.
         inschrijving:
           allOf:
           - $ref: '#/components/schemas/Puntenberekeningen-Overeenkomst'
@@ -6608,6 +7412,29 @@ components:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: De vestiging van de vastgoedaanbieder die de woning heeft aangeboden. Referentiedatasoort VESTIGING.
+    Gebeurtenis-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn. OBSOLETE
+          deprecated: true
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling. OBSOLETE
+          deprecated: true
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden. OBSOLETE
+          deprecated: true
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort gebeurtenis. Bijv. Niet aanwezig op bevestige bezichtiging. OBSOLETE Referentiedatasoort GEBEURTENISSOORT.
+          deprecated: true
     Puntenberekeningen-Puntenmutatie:
       type: object
       properties:
@@ -6828,15 +7655,15 @@ components:
           description: Het soort gebeurtenis. Bijv. Niet aanwezig op bevestige bezichtiging. Referentiedatasoort GEBEURTENISSOORT.
         datum:
           type: string
-          format: date
+          format: date-time
           description: De datum waarop gebeurtenis heeft plaatsgevonden.
         begindatum:
           type: string
-          format: date
+          format: date-time
           description: De begindatum van de geldigheid van de gebeurtenis.
         einddatum:
           type: string
-          format: date
+          format: date-time
           description: De einddatum van de geldigheid van de gebeurtenis.
         adres:
           allOf:
@@ -6850,6 +7677,10 @@ components:
           type: string
           format: any
           description: De id van de context van de gebeurtenis, bijv. een reactie id, een aanbieding id etc.
+        gerelateerdeGebeurtenis:
+          allOf:
+          - $ref: '#/components/schemas/Gebeurtenis-sleutels'
+          description: Gebeurtenis waarop de gebeurtenis betrekking op heeft. Hiermee kan bijvoorbeeld de relatie worden gelegd tussen een ingetrokken no-show en een no-show.
         inschrijving:
           allOf:
           - $ref: '#/components/schemas/Puntengebeurtenissen-Overeenkomst'
@@ -6868,6 +7699,372 @@ components:
             - $ref: '#/components/schemas/Referentiedata'
             description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc. OBSOLETE. Referentiedatasoort SAMENWERKINGSVERBAND.
             deprecated: true
+    Reclamaties-Contactgegeven-basis:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort communicatie. Bijvoorbeeld: Telefoon, E-mail, .Social media etc. Referentiedatasoort CONTACTGEGEVENSOORT.'
+        detailSoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort detail communicatie. Bijvoorbeeld: Mobiel, privé, werk. Referentiedatasoort CONTACTGEGEVENDETAILSOORT.'
+        waarde:
+          type: string
+          format: any
+          description: 'De aard van het contactgegeven. Dit kan de waarde zijn van een telefoonnummer, emailadres, of twitteradres. Bijvoorbeeld: 020-1234563'
+    Reclamaties-Contactgegeven:
+      oneOf:
+        - $ref: '#/components/schemas/Reclamaties-Telefoonnummer'
+        - $ref: '#/components/schemas/Reclamaties-Contactgegeven-basis'
+    Reclamaties-Contactmoment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        omschrijving:
+          type: string
+          format: any
+          description: De omschrijving van het contactmoment
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort of onderwerp van het contactmoment. VERA zal hiervoor geen lijst leveren. Referentiedatasoort CONTACTMOMENTSOORT.
+        detailSoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort detail van het contactmoment. VERA zal hiervoor geen lijst leveren. Referentiedatasoort CONTACTMOMENTDETAILSOORT.
+        datum:
+          type: string
+          format: date-time
+          description: De datum en tijd waarop contact is geweest.
+        kanaal:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het kanaal via welke het contact heeft gelopen. Bijvoorbeeld: Telefoon, email, balie, internet. Referentiedatasoort COMMUNICATIEKANAAL.'
+        relaties:
+          description: De relatie waarmee contact is geweest. Bijv. een huurder, medewerker etc.
+          type: array
+          items:
+            $ref: '#/components/schemas/Reclamaties-Relatie'
+        richting:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'De communicatierichting behorend bij het contact. Bijvoorbeeld: Uitgaand of ingaand. Referentiedatasoort COMMUNICATIERICHTING.'
+    Reclamaties-NatuurlijkPersoon:
+      allOf:
+      - $ref: '#/components/schemas/Reclamaties-Relatie-basis'
+      - type: object
+        properties:
+          bsn:
+            type: string
+            format: any
+            description: Het BSN (Burger Service Nummer) van de natuurlijk persoon.
+          geboortedatum:
+            type: string
+            format: date
+            description: De geboortedatum van de natuurlijk persoon.
+          overlijdensdatum:
+            type: string
+            format: date
+            description: De datum van overlijden van de natuurlijk persoon.
+          aanschrijfnaam:
+            type: string
+            format: any
+            description: De achternaam van de natuurlijk persoon zoals deze wenst te worden aangeschreven.
+          achternaam:
+            type: string
+            format: any
+            description: De achternaam van de natuurlijk persoon.
+          initialen:
+            type: string
+            format: any
+            description: De initialen van de natuurlijk persoon.
+          roepnaam:
+            type: string
+            format: any
+            description: De roepnaam van de natuurlijk persoon.
+          tussenvoegsels:
+            type: string
+            format: any
+            description: De tussenvoegsels behorende bij de naam.
+          voornaam:
+            type: string
+            format: any
+            description: De voornaam van de natuurlijk persoon.
+    Reclamaties-Puntengebeurtenis:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort gebeurtenis. Bijv. Niet aanwezig op bevestige bezichtiging. Referentiedatasoort GEBEURTENISSOORT.
+        datum:
+          type: string
+          format: date-time
+          description: De datum waarop gebeurtenis heeft plaatsgevonden.
+        begindatum:
+          type: string
+          format: date-time
+          description: De begindatum van de geldigheid van de gebeurtenis.
+        einddatum:
+          type: string
+          format: date-time
+          description: De einddatum van de geldigheid van de gebeurtenis.
+        adres:
+          allOf:
+          - $ref: '#/components/schemas/Adres-sleutels'
+          description: Het adres waar de gebeurtenis betrekking op heeft.
+        contextId:
+          type: string
+          format: any
+          description: De id van de context van de gebeurtenis, bijv. een reactie id, een aanbieding id etc.
+        gerelateerdeGebeurtenis:
+          allOf:
+          - $ref: '#/components/schemas/Gebeurtenis-sleutels'
+          description: Gebeurtenis waarop de gebeurtenis betrekking op heeft. Hiermee kan bijvoorbeeld de relatie worden gelegd tussen een ingetrokken no-show en een no-show.
+        inschrijving:
+          allOf:
+          - $ref: '#/components/schemas/Overeenkomst-sleutels'
+          description: De inschrijving waarbij de gebeurtenis is vastgelegd.
+        vestiging:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De vestiging van de vastgoedaanbieder die de woning heeft aangeboden. Referentiedatasoort VESTIGING.
+    Adres-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Overeenkomst-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn. Referentiedatasoort OVEREENKOMSTSOORT.
+    Reclamaties-Reclamatiebericht:
+      allOf:
+        - $ref: '#/components/schemas/Reclamaties-Reclamatie'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Reclamaties-Reclamatie:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort reclamatie. Bijv. Klacht of Bezwaar. Referentiedatasoort RECLAMATIESOORT.
+        detailSoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het detail soort reclamatie. Referentiedatasoort RECLAMATIEDETAILSOORT.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De status van een reclamatie. Bijv. Ingediend, In behandeling, Toegekend etc. Referentiedatasoort RECLAMATIESTATUS.
+        detailStatus:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De detailstatus van een reclamatie. Referentiedatasoort RECLAMATIEDETAILSTATUS.
+        begindatum:
+          type: string
+          format: date
+          description: De begindatum van de sanctie.
+        einddatum:
+          type: string
+          format: date
+          description: De einddatum van de sanctie.
+        contactmomenten:
+          description: De contactmomenten die bij de reclamatie horen.
+          type: array
+          items:
+            $ref: '#/components/schemas/Reclamaties-Contactmoment'
+        gebeurtenis:
+          allOf:
+          - $ref: '#/components/schemas/Reclamaties-Puntengebeurtenis'
+          description: De gebeurtenis waarover de klacht of het bezwaar is ingediend.
+        relatie:
+          allOf:
+          - $ref: '#/components/schemas/Reclamaties-Relatie'
+          description: Het huishouden die de klacht of het bezwaar heeft ingediend.
+    Reclamaties-Relatie-basis:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedatasoort RELATIESOORT.'
+        detailSoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedatasoort RELATIEDETAILSOORT.'
+        contactgegevens:
+          description: De contactgegevens van de relatie.
+          type: array
+          items:
+            $ref: '#/components/schemas/Reclamaties-Contactgegeven'
+        rollen:
+          description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Reclamaties-Relatierol'
+    Reclamaties-Relatie:
+      oneOf:
+        - $ref: '#/components/schemas/Reclamaties-NatuurlijkPersoon'
+    Reclamaties-Relatierol:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort rol van de relatie. Bijvoorbeeld Klant, Prospect, Leverancier, Medewerker, Team etc. Referentiedatasoort RELATIEROLSOORT.
+        naam:
+          type: string
+          format: any
+          description: De naam van de relatie rol.
+    Reclamaties-Telefoonnummer:
+      allOf:
+      - $ref: '#/components/schemas/Reclamaties-Contactgegeven-basis'
+      - type: object
+        properties:
+          abonneenummer:
+            type: string
+            format: any
+            description: Het abonneenummer van het telefoonnummer.
+          dagdelen:
+            description: De dagdelen waarop er gebruikt gemaakt kan worden van het telefoonnummer. Referentiedatasoort DAGDEEL.
+            type: array
+            items:
+              $ref: '#/components/schemas/Referentiedata'
+          extensie:
+            type: string
+            format: any
+            description: De extensie van het telefoonnummer.
+          landnummer:
+            type: string
+            format: any
+            description: Het landnummer van het telefoonnummer.
+          netnummer:
+            type: string
+            format: any
+            description: Het netnummer van het telefoonnummer.
     Relaties-Account:
       type: object
       properties:
@@ -7657,6 +8854,10 @@ components:
           type: string
           format: any
           description: De id van de context van de gebeurtenis, bijv. een reactie id, een aanbieding id etc.
+        gerelateerdeGebeurtenis:
+          allOf:
+          - $ref: '#/components/schemas/Sancties-Gebeurtenis'
+          description: Gebeurtenis waarop de gebeurtenis betrekking op heeft. Hiermee kan bijvoorbeeld de relatie worden gelegd tussen een ingetrokken no-show en een no-show.
         vestiging:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
@@ -7741,15 +8942,15 @@ components:
           description: Het soort gebeurtenis. Bijv. Niet aanwezig op bevestige bezichtiging. Referentiedatasoort GEBEURTENISSOORT.
         datum:
           type: string
-          format: date
+          format: date-time
           description: De datum waarop gebeurtenis heeft plaatsgevonden.
         begindatum:
           type: string
-          format: date
+          format: date-time
           description: De begindatum van de geldigheid van de gebeurtenis.
         einddatum:
           type: string
-          format: date
+          format: date-time
           description: De einddatum van de geldigheid van de gebeurtenis.
         adres:
           allOf:
@@ -7759,6 +8960,10 @@ components:
           type: string
           format: any
           description: De id van de context van de gebeurtenis, bijv. een reactie id, een aanbieding id etc.
+        gerelateerdeGebeurtenis:
+          allOf:
+          - $ref: '#/components/schemas/Gebeurtenis-sleutels'
+          description: Gebeurtenis waarop de gebeurtenis betrekking op heeft. Hiermee kan bijvoorbeeld de relatie worden gelegd tussen een ingetrokken no-show en een no-show.
         vestiging:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
