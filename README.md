@@ -1,5 +1,5 @@
 # VERA-OpenAPI
-
+<img align="right" width="300" src="https://github.com/Aedes-datastandaarden/.github/blob/main/1-0.png">
 #### Inhoud
 
 - [Inleiding](#Inleiding)
