@@ -29,7 +29,7 @@ Zie ook de toeliching hieronder.
 |[Beheer Overeenkomstgegevens](https://aedes-datastandaarden.github.io/vera-openapi/Ketenprocessen/BOG.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-2638f390-0c27-5081-6238-dc446883c118)|
 |[Beheer Relatiegegevens](https://aedes-datastandaarden.github.io/vera-openapi/Ketenprocessen/BRG.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-a30a9122-b51b-e5ea-0107-679aca55dc91)|
 |[Beheer Vastgoedgegevens](https://aedes-datastandaarden.github.io/vera-openapi/Ketenprocessen/BVG.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-782edca9-65cd-8619-9608-796b7a7acaa6)|
-|[Incasso](https://aedes-datastandaarden.github.io/vera-openapi/Ketenprocessen/INC.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-782edca9-65cd-8619-9608-796b7a7acaa6)|
+|[Incasso](https://aedes-datastandaarden.github.io/vera-openapi/Ketenprocessen/INC.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-75d90503-3038-c6e3-5497-7a2c1f822714)|
 |[Kwaliteitsmanagement](https://aedes-datastandaarden.github.io/vera-openapi/Ketenprocessen/KMT.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-65dbf027-db8d-1c97-31a8-a2b93125bd51)|
 |[Onderhouden Eenheden](https://aedes-datastandaarden.github.io/vera-openapi/Ketenprocessen/OHD.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-b5f5fed0-475c-8199-a2af-befed93eb48d)|
 |[Verhuren Eenheden](https://aedes-datastandaarden.github.io/vera-openapi/Ketenprocessen/VHE.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-4a21e08f-afbf-c128-ac34-4e0b618e4fc9)|
