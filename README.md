@@ -8,8 +8,6 @@
 - [Definities](#Definities)
 - [Toepassing](#Toepassing)
 
-> :heavy_exclamation_mark: Zowel in Patch 11 als 12 zijn er problemen bekend bij het genereren v/d YML files naar .Net code. Dit heeft onze aandacht en er wordt gewerkt aan een oplossing in de volgende patch. De yml file bevat enkele missende referenties.
-
 ## Inleiding
 De mappen **Informatiedomeinen** en **Ketenprocessen** bevatten alle OpenAPI-specificaties (YAML).
 Alle overige bestanden in deze repo (in de root en in map 'docs') zijn enkel bedoeld voor documentatie en horen niet bij de opleverset.
