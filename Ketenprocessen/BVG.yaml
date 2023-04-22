@@ -1,15 +1,15 @@
 openapi: 3.0.0
 info:
   title: VERA-Beheer Vastgoedgegevens
-  description: API-specificatie van ketenproces 'Beheer Vastgoedgegevens'. Deze specificatie is gebaseerd op VERA versie 4.0.19+230203.22
+  description: API-specificatie van ketenproces 'Beheer Vastgoedgegevens'. Deze specificatie is gebaseerd op VERA versie 4.1.0+230422.8
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
-    email: info@stichting-vera.nl
+    email: VERA@aedesdatastandaarden.nl
   license:
-    name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
-    url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '1.0.18+221223.13'
+    name: "Copyright (c) Aedes vereniging van woningcorporaties"
+    url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
+  version: '1.1.0+230422.8'
 servers:
   - url: https://bvg.vera.io:{port}/{basePath}
     description: Productieserver
@@ -86,6 +86,10 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.WoningwaarderingResultaten.Read
+          - BVG.WoningwaarderingResultaten.ReadWrite
     post:
       tags:
       - 'WoningwaarderingResultaten'
@@ -123,6 +127,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.WoningwaarderingResultaten.ReadWrite
     put:
       tags:
       - 'WoningwaarderingResultaten'
@@ -155,6 +162,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.WoningwaarderingResultaten.ReadWrite
     patch:
       tags:
       - 'WoningwaarderingResultaten'
@@ -188,6 +198,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.WoningwaarderingResultaten.ReadWrite
   /woningwaardering-resultaten/{id}:
     get:
       tags:
@@ -222,6 +235,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.WoningwaarderingResultaten.Read
+          - BVG.WoningwaarderingResultaten.ReadWrite
     put:
       tags:
       - 'WoningwaarderingResultaten'
@@ -244,6 +261,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaatbericht'
+      security: 
+        - OAuth2: 
+          - BVG.WoningwaarderingResultaten.ReadWrite
       responses:
         '200':
           description: OK
@@ -292,8 +312,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.WoningwaarderingResultaten.ReadWrite
 security:
   - ApiKeyAuth: []
+  - OAuth2: 
+    - BVG.All.Read
+    - BVG.All.ReadWrite
+
 components:
   headers:
     X-Parameters-Aantal:
@@ -323,6 +350,17 @@ components:
       type: apiKey
       in: header
       name: X-API-KEY
+    OAuth2:
+      type: oauth2
+      description: Deze API gebruikt OAuth2 met 'implicit grant flow'.)
+      flows:
+        implicit:
+          authorizationUrl: https://api.vera.nl/oauth2/authorize
+          scopes:
+            BVG.All.Read: alleen lezen van alle resources
+            BVG.All.ReadWrite: lezen en schrijven van alle resources
+            BVG.WoningwaarderingResultaten.Read: alleen lezen van WoningwaarderingResultaten
+            BVG.WoningwaarderingResultaten.ReadWrite: lezen en schrijven van WoningwaarderingResultaten
   responses:
     NietGeautoriseerd:
       description: Unauthorized
@@ -488,7 +526,7 @@ components:
           items:
             $ref: '#/components/schemas/WoningwaarderingResultaten-Woningwaardering'
     WoningwaarderingResultaten-WoningwaarderingResultaatbericht:
-      allOf:
+      allOf:    
         - $ref: '#/components/schemas/WoningwaarderingResultaten-WoningwaarderingResultaat'
         - $ref: '#/components/schemas/Bericht-basis'
     WoningwaarderingResultaten-WoningwaarderingResultaat:
@@ -779,18 +817,59 @@ components:
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
           allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedatasoort RELATIESOORT.'
+          - $ref: '#/components/schemas/Referentiedata-sleutels'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
         detailSoort:
           allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedatasoort RELATIEDETAILSOORT.'
+          - $ref: '#/components/schemas/Referentiedata-sleutels'
+          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon.'
         rollen:
+          description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
           type: array
           items:
-            type: string
-            format: uri
-          description: Referentie naar Relatierol in bronsysteem Relaties
+            $ref: '#/components/schemas/Relatierol-sleutels'
+    Referentiedata-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.
+        naam:
+          type: string
+          format: any
+          description: De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.
+    Relatierol-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
     Sturingslabel:
       type: object
       properties:

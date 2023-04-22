@@ -1,15 +1,15 @@
 openapi: 3.0.0
 info:
   title: VERA-Beheer Overeenkomstgegevens
-  description: API-specificatie van ketenproces 'Beheer Overeenkomstgegevens'. Deze specificatie is gebaseerd op VERA versie 4.0.19+230203.22
+  description: API-specificatie van ketenproces 'Beheer Overeenkomstgegevens'. Deze specificatie is gebaseerd op VERA versie 4.1.0+230422.8
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
-    email: info@stichting-vera.nl
+    email: VERA@aedesdatastandaarden.nl
   license:
-    name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
-    url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '1.0.19+230203.22'
+    name: "Copyright (c) Aedes vereniging van woningcorporaties"
+    url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
+  version: '1.1.0+230422.8'
 servers:
   - url: https://bog.vera.io:{port}/{basePath}
     description: Productieserver
@@ -88,6 +88,10 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Overeenkomsten.Read
+          - BOG.Overeenkomsten.ReadWrite
     post:
       tags:
       - 'Overeenkomsten'
@@ -125,6 +129,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Overeenkomsten.ReadWrite
     put:
       tags:
       - 'Overeenkomsten'
@@ -157,6 +164,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Overeenkomsten.ReadWrite
     patch:
       tags:
       - 'Overeenkomsten'
@@ -190,6 +200,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Overeenkomsten.ReadWrite
   /overeenkomsten/{id}:
     get:
       tags:
@@ -224,6 +237,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Overeenkomsten.Read
+          - BOG.Overeenkomsten.ReadWrite
     put:
       tags:
       - 'Overeenkomsten'
@@ -246,6 +263,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Overeenkomsten-Overeenkomstbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Overeenkomsten.ReadWrite
       responses:
         '200':
           description: OK
@@ -294,6 +314,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Overeenkomsten.ReadWrite
   /prijscomponenten:
     get:
       tags:
@@ -341,6 +364,10 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Prijscomponenten.Read
+          - BOG.Prijscomponenten.ReadWrite
     post:
       tags:
       - 'Prijscomponenten'
@@ -378,6 +405,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Prijscomponenten.ReadWrite
     put:
       tags:
       - 'Prijscomponenten'
@@ -410,6 +440,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Prijscomponenten.ReadWrite
     patch:
       tags:
       - 'Prijscomponenten'
@@ -443,6 +476,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Prijscomponenten.ReadWrite
   /prijscomponenten/{id}:
     get:
       tags:
@@ -477,6 +513,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Prijscomponenten.Read
+          - BOG.Prijscomponenten.ReadWrite
     put:
       tags:
       - 'Prijscomponenten'
@@ -499,6 +539,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Prijscomponenten-Prijscomponentbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Prijscomponenten.ReadWrite
       responses:
         '200':
           description: OK
@@ -547,8 +590,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BOG.Prijscomponenten.ReadWrite
 security:
   - ApiKeyAuth: []
+  - OAuth2: 
+    - BOG.All.Read
+    - BOG.All.ReadWrite
+
 components:
   headers:
     X-Parameters-Aantal:
@@ -578,6 +628,19 @@ components:
       type: apiKey
       in: header
       name: X-API-KEY
+    OAuth2:
+      type: oauth2
+      description: Deze API gebruikt OAuth2 met 'implicit grant flow'.)
+      flows:
+        implicit:
+          authorizationUrl: https://api.vera.nl/oauth2/authorize
+          scopes:
+            BOG.All.Read: alleen lezen van alle resources
+            BOG.All.ReadWrite: lezen en schrijven van alle resources
+            BOG.Overeenkomsten.Read: alleen lezen van Overeenkomsten
+            BOG.Overeenkomsten.ReadWrite: lezen en schrijven van Overeenkomsten
+            BOG.Prijscomponenten.Read: alleen lezen van Prijscomponenten
+            BOG.Prijscomponenten.ReadWrite: lezen en schrijven van Prijscomponenten
   responses:
     NietGeautoriseerd:
       description: Unauthorized
@@ -704,18 +767,59 @@ components:
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
           allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedatasoort RELATIESOORT.'
+          - $ref: '#/components/schemas/Referentiedata-sleutels'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
         detailSoort:
           allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedatasoort RELATIEDETAILSOORT.'
+          - $ref: '#/components/schemas/Referentiedata-sleutels'
+          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon.'
         rollen:
+          description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
           type: array
           items:
-            type: string
-            format: uri
-          description: Referentie naar Relatierol in bronsysteem Relaties
+            $ref: '#/components/schemas/Relatierol-sleutels'
+    Referentiedata-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.
+        naam:
+          type: string
+          format: any
+          description: De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.
+    Relatierol-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
     Overeenkomsten-Betaalwijze:
       type: object
       properties:
@@ -865,6 +969,53 @@ components:
             type: number
             format: float
             description: De rente van de waarborgsom op de overeenkomst. Deze waarde wordt in Euro's aangegeven en is cumulatief over de volledige looptijd van de huurovereenkomst.
+    Overeenkomsten-Incassomachtiging:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken). In dit geval logisch om het mandaatid hier te gebruiken.
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Soort machtiging: doorlopend/eenmalig. Referentiedatasoort MACHTIGINGSOORT.'
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De status van de machtiging/ Bijv. Actief, Ingetrokken, . Referentiedatasoort MACHTIGINGSTATUS.
+        afgiftedatum:
+          type: string
+          format: date
+          description: De afgiftedatum van de machtiging
+        incassantId:
+          type: string
+          format: any
+          description: Het incassantId van de machtiging.
+        kenmerkMachtiging:
+          type: string
+          format: any
+          description: Het kenmerk machtiging waarin het doel van de machtiging staat beschreven. Bijvoorbeeld inschrijving regio Almere.
+        machtigingsnummer:
+          type: string
+          format: any
+          description: Het nummer van de machtiging.
+        maximumBedrag:
+          type: number
+          format: float
+          description: Het maximale bedrag dat per incasso geincasseerd mag worden.
     Overeenkomsten-Inschrijving:
       allOf:
       - $ref: '#/components/schemas/Overeenkomsten-Overeenkomst-basis'
@@ -1178,8 +1329,8 @@ components:
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
           allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn. Referentiedatasoort OVEREENKOMSTSOORT.
+          - $ref: '#/components/schemas/Referentiedata-sleutels'
+          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn.
     Contactmoment-sleutels:
       type: object
       properties:
@@ -1201,8 +1352,8 @@ components:
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
           allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort of onderwerp van het contactmoment. VERA zal hiervoor geen lijst leveren. Referentiedatasoort CONTACTMOMENTSOORT.
+          - $ref: '#/components/schemas/Referentiedata-sleutels'
+          description: Het soort of onderwerp van het contactmoment. VERA zal hiervoor geen lijst leveren.
     Eenheid-sleutels:
       type: object
       properties:
@@ -1261,7 +1412,7 @@ components:
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
     Overeenkomsten-Overeenkomstbericht:
-      allOf:
+      allOf:    
         - $ref: '#/components/schemas/Overeenkomsten-Overeenkomst'
         - $ref: '#/components/schemas/Bericht-basis'
     Overeenkomsten-Overeenkomst:
@@ -1411,7 +1562,7 @@ components:
             - $ref: '#/components/schemas/Referentiedata'
             description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc. Referentiedatasoort SAMENWERKINGSVERBAND.
     Prijscomponenten-Prijscomponentbericht:
-      allOf:
+      allOf:    
         - $ref: '#/components/schemas/Prijscomponenten-Prijscomponent'
         - $ref: '#/components/schemas/Bericht-basis'
     Prijscomponenten-Prijscomponent:

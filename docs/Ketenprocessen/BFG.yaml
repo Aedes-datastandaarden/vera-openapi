@@ -1,15 +1,15 @@
 openapi: 3.0.0
 info:
   title: VERA-Beheer Financiele Gegevens
-  description: API-specificatie van ketenproces 'Beheer Financiele Gegevens'. Deze specificatie is gebaseerd op VERA versie 4.0.19+230203.22
+  description: API-specificatie van ketenproces 'Beheer Financiele Gegevens'. Deze specificatie is gebaseerd op VERA versie 4.1.0+230422.8
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
-    email: info@stichting-vera.nl
+    email: VERA@aedesdatastandaarden.nl
   license:
-    name: "Licentie voor hergebruik: Creative Commons Naamsvermelding 4.0."
-    url: https://creativecommons.org/licenses/by/4.0/deed.nl
-  version: '1.0.19+230203.22'
+    name: "Copyright (c) Aedes vereniging van woningcorporaties"
+    url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
+  version: '1.1.0+230422.8'
 servers:
   - url: https://bfg.vera.io:{port}/{basePath}
     description: Productieserver
@@ -88,6 +88,10 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Boekingen.Read
+          - BFG.Boekingen.ReadWrite
     post:
       tags:
       - 'Boekingen'
@@ -125,6 +129,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Boekingen.ReadWrite
     put:
       tags:
       - 'Boekingen'
@@ -157,6 +164,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Boekingen.ReadWrite
     patch:
       tags:
       - 'Boekingen'
@@ -190,6 +200,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Boekingen.ReadWrite
   /boekingen/{id}:
     get:
       tags:
@@ -224,6 +237,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Boekingen.Read
+          - BFG.Boekingen.ReadWrite
     put:
       tags:
       - 'Boekingen'
@@ -246,6 +263,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Boekingen-Boekingbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Boekingen.ReadWrite
       responses:
         '200':
           description: OK
@@ -294,6 +314,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Boekingen.ReadWrite
   /debiteuren:
     get:
       tags:
@@ -341,6 +364,10 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Debiteuren.Read
+          - BFG.Debiteuren.ReadWrite
     post:
       tags:
       - 'Debiteuren'
@@ -378,6 +405,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Debiteuren.ReadWrite
     put:
       tags:
       - 'Debiteuren'
@@ -410,6 +440,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Debiteuren.ReadWrite
     patch:
       tags:
       - 'Debiteuren'
@@ -443,6 +476,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Debiteuren.ReadWrite
   /debiteuren/{id}:
     get:
       tags:
@@ -477,6 +513,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Debiteuren.Read
+          - BFG.Debiteuren.ReadWrite
     put:
       tags:
       - 'Debiteuren'
@@ -499,6 +539,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Debiteuren-Debiteurbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Debiteuren.ReadWrite
       responses:
         '200':
           description: OK
@@ -547,8 +590,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BFG.Debiteuren.ReadWrite
 security:
   - ApiKeyAuth: []
+  - OAuth2: 
+    - BFG.All.Read
+    - BFG.All.ReadWrite
+
 components:
   headers:
     X-Parameters-Aantal:
@@ -578,6 +628,19 @@ components:
       type: apiKey
       in: header
       name: X-API-KEY
+    OAuth2:
+      type: oauth2
+      description: Deze API gebruikt OAuth2 met 'implicit grant flow'.)
+      flows:
+        implicit:
+          authorizationUrl: https://api.vera.nl/oauth2/authorize
+          scopes:
+            BFG.All.Read: alleen lezen van alle resources
+            BFG.All.ReadWrite: lezen en schrijven van alle resources
+            BFG.Boekingen.Read: alleen lezen van Boekingen
+            BFG.Boekingen.ReadWrite: lezen en schrijven van Boekingen
+            BFG.Debiteuren.Read: alleen lezen van Debiteuren
+            BFG.Debiteuren.ReadWrite: lezen en schrijven van Debiteuren
   responses:
     NietGeautoriseerd:
       description: Unauthorized
@@ -708,20 +771,61 @@ components:
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
           allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedatasoort RELATIESOORT.'
+          - $ref: '#/components/schemas/Referentiedata-sleutels'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
         detailSoort:
           allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedatasoort RELATIEDETAILSOORT.'
+          - $ref: '#/components/schemas/Referentiedata-sleutels'
+          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon.'
         rollen:
+          description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
           type: array
           items:
-            type: string
-            format: uri
-          description: Referentie naar Relatierol in bronsysteem Relaties
+            $ref: '#/components/schemas/Relatierol-sleutels'
+    Referentiedata-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.
+        naam:
+          type: string
+          format: any
+          description: De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.
+    Relatierol-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
     Boekingen-Boekingbericht:
-      allOf:
+      allOf:    
         - $ref: '#/components/schemas/Boekingen-Boeking'
         - $ref: '#/components/schemas/Bericht-basis'
     Boekingen-Boeking:
@@ -802,6 +906,10 @@ components:
           type: number
           format: float
           description: Totaal Bedrag btw.
+        crediteur:
+          allOf:
+          - $ref: '#/components/schemas/Crediteur-sleutels'
+          description: De crediteur van de boeking.
         debiteur:
           allOf:
           - $ref: '#/components/schemas/Boekingen-Debiteur'
@@ -828,6 +936,25 @@ components:
           format: float
           description: Het saldo of openstaande bedrag van de boeking.
     Betalingsregeling-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+    Crediteur-sleutels:
       type: object
       properties:
         id:
@@ -905,8 +1032,8 @@ components:
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
           allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn. Referentiedatasoort OVEREENKOMSTSOORT.
+          - $ref: '#/components/schemas/Referentiedata-sleutels'
+          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn.
     Boekingen-Boekingdetail:
       type: object
       properties:
@@ -1024,7 +1151,7 @@ components:
           format: date
           description: Plandatum van afschrijven
     Debiteuren-Debiteurbericht:
-      allOf:
+      allOf:    
         - $ref: '#/components/schemas/Debiteuren-Debiteur'
         - $ref: '#/components/schemas/Bericht-basis'
     Debiteuren-Debiteur:
@@ -1099,50 +1226,40 @@ components:
         code:
           type: string
           format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken). In dit geval logisch om het mandaatid hier te gebruiken.
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: 'Soort machtiging: doorlopend/eenmalig. Referentiedatasoort MACHTIGINGSOORT.'
-        machtigingsnummer:
-          type: string
-          format: any
-          description: Het nummer van de machtiging
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De status van de machtiging/ Bijv. Actief, Ingetrokken, . Referentiedatasoort MACHTIGINGSTATUS.
         afgiftedatum:
           type: string
           format: date
           description: De afgiftedatum van de machtiging
-        rekening:
-          allOf:
-          - $ref: '#/components/schemas/Betaalgegeven-sleutels'
-          description: De BIC kode van de bank van de debiteur
-    Betaalgegeven-sleutels:
-      type: object
-      properties:
-        id:
+        boekingen:
+          description: De boekingen behorende bij de incassomachtiging.
+          type: array
+          items:
+            $ref: '#/components/schemas/Boeking-sleutels'
+        incassantId:
           type: string
           format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
+          description: Het incassantId van de machtiging.
+        kenmerkMachtiging:
           type: string
           format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
+          description: Het kenmerk machtiging waarin het doel van de machtiging staat beschreven. Bijvoorbeeld inschrijving regio Almere.
+        machtigingsnummer:
           type: string
           format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        iban:
-          type: string
-          format: any
-          description: Het International Bank Account Number. Identificeert elke rekeninghouder, inclusief bank en vestigingsland.
-        rekeningnummer:
-          type: string
-          format: any
-          description: Het rekeningnummer.
+          description: Het nummer van de machtiging.
+        maximumBedrag:
+          type: number
+          format: float
+          description: Het maximale bedrag dat per incasso geincasseerd mag worden.
     Bericht-basis:
       type: object
       properties:
