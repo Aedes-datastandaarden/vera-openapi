@@ -7,6 +7,7 @@
 - [Toelichting](#Toelichting)
 - [Definities](#Definities)
 - [Toepassing](#Toepassing)
+- [Referentiedata](#Referentiedata)
 
 ## Inleiding
 De mappen **Informatiedomeinen** en **Ketenprocessen** bevatten alle OpenAPI-specificaties (YAML).
@@ -97,24 +98,27 @@ https://github.com/vereniging-corponet/vera-openapi/blob/main/docs/brongegevens.
 
 - Voor de VERA API wordt aangesloten bij de Semantic versioning 2.0.0. Een gedetailleerde uitleg over de impact van de versies die uigebracht worden door VERA is hier te vinden: https://cora.wikixl.nl/index.php/VERA_Release_en_versiebeleid
 
-
-## Definities
-
-![alt text](openapi-per-model.png)
-
-- in de API's worden entiteiten geprefixt met de naam van de resource
-
+- in de API's van de ketenprocessen worden entiteiten geprefixt met de naam van de resource
 
 ## Toepassing
+VERA defineert Informatiedomeinen als geheel van gerelateerde informatieobjecten en informatiebronnen. Een Informatiebron wordt ook wel aangeduid als Kernpakket. VERA levert hiervoor per Informatiedomein een API.
 
-Volgens de definitie bevinden systemen met functies die sterk onderling verwand zijn zich binnen een Informatiedomein. Deze systemen worden ook wel kernpakketten genoemd. Bijvoorbeeld een Relatiebeheerpakket. Hiervoor zijn de API's bedoeld van de Informatiedomeinen.
-
-De Ketenproces-API's zijn voor (sub)systemen die een ketenproces implementeren. Deze subsystemen agregeren (mogelijk) informatie uit kernpakketten via een Informatiedomein-API's.
+Daarnaast kent VERA zogenaamde ketenprocessen. Het subsysteem dat een ketenproces implementeert kan gegevens uit meerdere Informatiedomeinen nodig hebben. Hiervoor levert VERA per ketenproces een API.
 
 ![alt text](matrix-apis.png)
 
 ## Data API's
 
-- In de VERA standaard en dus ook de VERA Open API is veel informatie (data) aanwezig. Op de VERA Wiki is inzicht te vinden in deze informatie. Naast deze uitgebreide documentatie is middels onderstaande URL een Excel bestand te downloaden om eenvoudig als gebruiken te kunnen zoeken naar specifieke termen. De Excel bevat alle data over de verschillende informatiedomeinen, ketenprocessen en referentiedata. Het bestand is de bron van de totstandkoming van alle API's. 
+- In de VERA-standaard en dus ook de VERA Open API is veel informatie (data) aanwezig. Op de VERA Wiki is inzicht te vinden in deze informatie. Naast deze uitgebreide documentatie is middels onderstaande URL een Excel bestand te downloaden om eenvoudig als gebruiken te kunnen zoeken naar specifieke termen. De Excel bevat alle data over de verschillende informatiedomeinen, ketenprocessen en referentiedata. Het bestand is de bron van de totstandkoming van alle API's. 
 
 https://github.com/vereniging-corponet/vera-openapi/blob/main/docs/brongegevens.xlsx
+
+## Referentiedata
+
+De VERA-standaard kent attributen die geen vrije waarde mogen hebben, maar alleen een waarde uit een waardeverzameling. Deze verzamelingen/lijsten zijn door VERA vastgelegd als Referentiedata. Lees meer hierover op: https://cora.wikixl.nl/index.php/VERA_Referentiedata
+
+Referentiedata bevindt zich in een eigen repository en wordt onafhankelijk van de OpenAPI-specificaties gereleased, zie: https://github.com/Aedes-datastandaarden/vera-referentiedata
+
+Een overzicht van welke lijst gekoppeld is aan welke entiteit (cross reference) staat hier: https://aedes-datastandaarden.github.io/vera-openapi/referentiedatacrossreference.html
+
+Let op: niet alle lijsten worden geleverd door VERA. In sommige gevallen wordt er verwezen naar bestaande lijsten, zoals ISO taal- en landcodes en anders heeft de leverancier vrijheid eigen codes te gebruiken.
