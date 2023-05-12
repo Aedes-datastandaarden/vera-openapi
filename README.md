@@ -38,16 +38,16 @@ Zie ook de toeliching hieronder.
 ### Informatiedomeinen
 |Informatiedomein|Wiki pagina|
 |-----|--------|
-|[Algemeen](https://aedes-datastandaarden.github.io/vera-openapi/Informatiedomeinen/Algemeen.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-d4138613-f794-994f-0f7f-0b7de2fd3349)|
-|[Dossier](https://aedes-datastandaarden.github.io/vera-openapi/Informatiedomeinen/Dossier.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-a8b47281-62dc-76a6-3735-453b1beaf96b)|
-|[Financien](https://aedes-datastandaarden.github.io/vera-openapi/Informatiedomeinen/Financien.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-41fb1bd2-4b91-ea47-7dff-db574c9399e5)|
-|[Kwaliteit](https://aedes-datastandaarden.github.io/vera-openapi/Informatiedomeinen/Kwaliteit.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-692503e5-9a55-fd05-4fd4-a7b01bf700db)|
-|[Onderhoud](https://aedes-datastandaarden.github.io/vera-openapi/Informatiedomeinen/Onderhoud.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-183e19c4-6fae-3295-e6a0-3f419c3aea7c)|
-|[Overeenkomsten](https://aedes-datastandaarden.github.io/vera-openapi/Informatiedomeinen/Overeenkomsten.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-11081b07-fb8e-29e4-227e-3cf180cfdf64)|
-|[Projectontwikkeling](https://aedes-datastandaarden.github.io/vera-openapi/Informatiedomeinen/Projectontwikkeling.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-557722c5-12e2-e5db-49f9-ffae6d1003bb)|
-|[Relaties](https://aedes-datastandaarden.github.io/vera-openapi/Informatiedomeinen/Relaties.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-72b1bace-57ce-7032-b146-c8c79737baf3)|
-|[Vastgoed](https://aedes-datastandaarden.github.io/vera-openapi/Informatiedomeinen/Vastgoed.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-202f11ee-a256-58f4-c730-a824b06c4131)|
-|[Woonruimteverdeling](https://aedes-datastandaarden.github.io/vera-openapi/Informatiedomeinen/Woonruimteverdeling.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-ec3d5dd9-737d-411a-4bc7-a97df6951a0e)|
+|[Algemeen](https://aedes-datastandaarden.github.io/vera-openapi/Informatiedomeinen/Algemeen.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-75cf48f9-bee3-9cd0-43d6-0b4140f3fb16)|
+|[Dossier](https://aedes-datastandaarden.github.io/vera-openapi/Informatiedomeinen/Dossier.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-b8b569d0-c382-5927-82e4-cdcba0655257)|
+|[Financien](https://aedes-datastandaarden.github.io/vera-openapi/Informatiedomeinen/Financien.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-4bccedd9-6307-d3b3-c464-d6564493cd0f)|
+|[Kwaliteit](https://aedes-datastandaarden.github.io/vera-openapi/Informatiedomeinen/Kwaliteit.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-f624fa76-79d1-7268-d10c-82582b90bd59)|
+|[Onderhoud](https://aedes-datastandaarden.github.io/vera-openapi/Informatiedomeinen/Onderhoud.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-c26eaadc-92ae-385c-33b0-ec7513a609fa)|
+|[Overeenkomsten](https://aedes-datastandaarden.github.io/vera-openapi/Informatiedomeinen/Overeenkomsten.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-37ab7422-77eb-56d0-a2b8-150ce264e85d)|
+|[Projectontwikkeling](https://aedes-datastandaarden.github.io/vera-openapi/Informatiedomeinen/Projectontwikkeling.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-52c10659-b9da-c240-ffa7-ad029a6b33f9)|
+|[Relaties](https://aedes-datastandaarden.github.io/vera-openapi/Informatiedomeinen/Relaties.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-0d74399c-6253-5994-9a5c-187f2bacb069)|
+|[Vastgoed](https://aedes-datastandaarden.github.io/vera-openapi/Informatiedomeinen/Vastgoed.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-d5f32972-bc8e-a4a2-2ddb-2fde55fb9f3b)|
+|[Woonruimteverdeling](https://aedes-datastandaarden.github.io/vera-openapi/Informatiedomeinen/Woonruimteverdeling.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-99995bab-2669-578e-149b-c167dbe8dc3d)|
 
 
 
