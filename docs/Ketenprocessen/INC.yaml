@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Incasso
-  description: API-specificatie van ketenproces 'Incasso'. Deze specificatie is gebaseerd op VERA versie 4.1.0+230422.8
+  description: API-specificatie van ketenproces 'Incasso'. Deze specificatie is gebaseerd op VERA versie 4.1.1+230512.44
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Copyright (c) Aedes vereniging van woningcorporaties"
     url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
-  version: '1.1.0+230422.8'
+  version: '1.1.1+230512.44'
 servers:
   - url: https://inc.vera.io:{port}/{basePath}
     description: Productieserver
@@ -29,7 +29,7 @@ tags:
 paths:
   /ping:
     get:
-      description: |
+      summary: |
         Een ping wordt beantwoord met response code 200
       operationId: ping
       responses:
@@ -45,7 +45,7 @@ paths:
     get:
       tags:
       - 'Betalingsregelingen'
-      description: Ophalen van Betalingsregelingen
+      summary: Ophalen van Betalingsregelingen
       operationId: listBetalingsregelingen
       parameters:
       - name: params
@@ -95,7 +95,7 @@ paths:
     post:
       tags:
       - 'Betalingsregelingen'
-      description: Voegt een nieuw(e) Betalingsregeling toe.
+      summary: Voegt een nieuw(e) Betalingsregeling toe.
       operationId: createBetalingsregeling
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
@@ -135,7 +135,7 @@ paths:
     put:
       tags:
       - 'Betalingsregelingen'
-      description: |
+      summary: |
         Vervangen van een Betalingsregeling op basis van overeenkomstige sleutelvelden.
       operationId: replaceBetalingsregeling
       parameters:
@@ -170,7 +170,7 @@ paths:
     patch:
       tags:
       - 'Betalingsregelingen'
-      description: |
+      summary: |
         Wijzigen van afzonderlijke attributen van een Betalingsregeling. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
       operationId: updateBetalingsregeling
@@ -207,7 +207,7 @@ paths:
     get:
       tags:
       - 'Betalingsregelingen'
-      description: Retourneert een Betalingsregeling met de gegeven identifier
+      summary: Retourneert een Betalingsregeling met de gegeven identifier
       operationId: readBetalingsregelingById
       parameters:
       - name: id
@@ -244,7 +244,7 @@ paths:
     put:
       tags:
       - 'Betalingsregelingen'
-      description: Vervangen van een Betalingsregeling
+      summary: Vervangen van een Betalingsregeling
       operationId: replaceBetalingsregelingById
       parameters:
       - name: 'id'
@@ -282,7 +282,7 @@ paths:
     patch:
       tags:
       - 'Betalingsregelingen'
-      description: Wijzigen van een Betalingsregeling
+      summary: Wijzigen van een Betalingsregeling
       operationId: updateBetalingsregelingById
       parameters:
       - name: 'id'
@@ -321,7 +321,7 @@ paths:
     get:
       tags:
       - 'ExterneIncassos'
-      description: Ophalen van ExterneIncassos
+      summary: Ophalen van ExterneIncassos
       operationId: listExterneIncassos
       parameters:
       - name: params
@@ -371,7 +371,7 @@ paths:
     post:
       tags:
       - 'ExterneIncassos'
-      description: Voegt een nieuw(e) ExterneIncasso toe.
+      summary: Voegt een nieuw(e) ExterneIncasso toe.
       operationId: createExterneIncasso
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
@@ -411,7 +411,7 @@ paths:
     put:
       tags:
       - 'ExterneIncassos'
-      description: |
+      summary: |
         Vervangen van een ExterneIncasso op basis van overeenkomstige sleutelvelden.
       operationId: replaceExterneIncasso
       parameters:
@@ -446,7 +446,7 @@ paths:
     patch:
       tags:
       - 'ExterneIncassos'
-      description: |
+      summary: |
         Wijzigen van afzonderlijke attributen van een ExterneIncasso. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
       operationId: updateExterneIncasso
@@ -483,7 +483,7 @@ paths:
     get:
       tags:
       - 'ExterneIncassos'
-      description: Retourneert een ExterneIncasso met de gegeven identifier
+      summary: Retourneert een ExterneIncasso met de gegeven identifier
       operationId: readExterneIncassoById
       parameters:
       - name: id
@@ -520,7 +520,7 @@ paths:
     put:
       tags:
       - 'ExterneIncassos'
-      description: Vervangen van een ExterneIncasso
+      summary: Vervangen van een ExterneIncasso
       operationId: replaceExterneIncassoById
       parameters:
       - name: 'id'
@@ -558,7 +558,7 @@ paths:
     patch:
       tags:
       - 'ExterneIncassos'
-      description: Wijzigen van een ExterneIncasso
+      summary: Wijzigen van een ExterneIncasso
       operationId: updateExterneIncassoById
       parameters:
       - name: 'id'
@@ -630,10 +630,20 @@ components:
       name: X-API-KEY
     OAuth2:
       type: oauth2
-      description: Deze API gebruikt OAuth2 met 'implicit grant flow'.)
+      description: Deze API ondersteunt OAuth2 met flows Authorization Code en Client Credentials
       flows:
-        implicit:
-          authorizationUrl: https://api.vera.nl/oauth2/authorize
+        authorizationCode:
+          authorizationUrl: /oauth/authorize
+          tokenUrl: /oauth/token
+          scopes:
+            INC.All.Read: alleen lezen van alle resources
+            INC.All.ReadWrite: lezen en schrijven van alle resources
+            INC.Betalingsregelingen.Read: alleen lezen van Betalingsregelingen
+            INC.Betalingsregelingen.ReadWrite: lezen en schrijven van Betalingsregelingen
+            INC.ExterneIncassos.Read: alleen lezen van ExterneIncassos
+            INC.ExterneIncassos.ReadWrite: lezen en schrijven van ExterneIncassos
+        clientCredentials:
+          tokenUrl: /oauth/token
           scopes:
             INC.All.Read: alleen lezen van alle resources
             INC.All.ReadWrite: lezen en schrijven van alle resources
@@ -767,40 +777,17 @@ components:
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
           allOf:
-          - $ref: '#/components/schemas/Referentiedata-sleutels'
-          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedatasoort RELATIESOORT.'
         detailSoort:
           allOf:
-          - $ref: '#/components/schemas/Referentiedata-sleutels'
-          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon.'
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedatasoort RELATIEDETAILSOORT.'
         rollen:
           description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
           type: array
           items:
             $ref: '#/components/schemas/Relatierol-sleutels'
-    Referentiedata-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.
-        naam:
-          type: string
-          format: any
-          description: De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.
     Relatierol-sleutels:
       type: object
       properties:
@@ -857,31 +844,12 @@ components:
           description: Het betaalgegeven waarmee de betalingsregeling wordt betaald. Dit kan bijvoorbeeld het rekeningnummer zijn van de relatie.
         incassomachtiging:
           allOf:
-          - $ref: '#/components/schemas/Incassomachtiging-sleutels'
+          - $ref: '#/components/schemas/Betalingsregelingen-Incassomachtiging'
           description: De digitale machtiging voor het uitvoeren van de incassoopdrachten. SEPA.
         incassomoment:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: Het moment waarop de incasso wordt gedaan. Referentiedatasoort INCASSOMOMENT.
-    Incassomachtiging-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken). In dit geval logisch om het mandaatid hier te gebruiken.
     Betalingsregelingen-Betalingsregelingbericht:
       allOf:    
         - $ref: '#/components/schemas/Betalingsregelingen-Betalingsregeling'
@@ -1018,8 +986,8 @@ components:
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
           allOf:
-          - $ref: '#/components/schemas/Referentiedata-sleutels'
-          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn.
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn. Referentiedatasoort OVEREENKOMSTSOORT.
     Betalingsregelingen-BetalingsregelingTermijn:
       type: object
       properties:

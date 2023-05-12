@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Beheer Overeenkomstgegevens
-  description: API-specificatie van ketenproces 'Beheer Overeenkomstgegevens'. Deze specificatie is gebaseerd op VERA versie 4.1.0+230422.8
+  description: API-specificatie van ketenproces 'Beheer Overeenkomstgegevens'. Deze specificatie is gebaseerd op VERA versie 4.1.1+230512.44
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Copyright (c) Aedes vereniging van woningcorporaties"
     url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
-  version: '1.1.0+230422.8'
+  version: '1.1.1+230512.44'
 servers:
   - url: https://bog.vera.io:{port}/{basePath}
     description: Productieserver
@@ -29,7 +29,7 @@ tags:
 paths:
   /ping:
     get:
-      description: |
+      summary: |
         Een ping wordt beantwoord met response code 200
       operationId: ping
       responses:
@@ -45,7 +45,7 @@ paths:
     get:
       tags:
       - 'Overeenkomsten'
-      description: Ophalen van Overeenkomsten
+      summary: Ophalen van Overeenkomsten
       operationId: listOvereenkomsten
       parameters:
       - name: params
@@ -95,7 +95,7 @@ paths:
     post:
       tags:
       - 'Overeenkomsten'
-      description: Voegt een nieuw(e) Overeenkomst toe.
+      summary: Voegt een nieuw(e) Overeenkomst toe.
       operationId: createOvereenkomst
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
@@ -135,7 +135,7 @@ paths:
     put:
       tags:
       - 'Overeenkomsten'
-      description: |
+      summary: |
         Vervangen van een Overeenkomst op basis van overeenkomstige sleutelvelden.
       operationId: replaceOvereenkomst
       parameters:
@@ -170,7 +170,7 @@ paths:
     patch:
       tags:
       - 'Overeenkomsten'
-      description: |
+      summary: |
         Wijzigen van afzonderlijke attributen van een Overeenkomst. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
       operationId: updateOvereenkomst
@@ -207,7 +207,7 @@ paths:
     get:
       tags:
       - 'Overeenkomsten'
-      description: Retourneert een Overeenkomst met de gegeven identifier
+      summary: Retourneert een Overeenkomst met de gegeven identifier
       operationId: readOvereenkomstById
       parameters:
       - name: id
@@ -244,7 +244,7 @@ paths:
     put:
       tags:
       - 'Overeenkomsten'
-      description: Vervangen van een Overeenkomst
+      summary: Vervangen van een Overeenkomst
       operationId: replaceOvereenkomstById
       parameters:
       - name: 'id'
@@ -282,7 +282,7 @@ paths:
     patch:
       tags:
       - 'Overeenkomsten'
-      description: Wijzigen van een Overeenkomst
+      summary: Wijzigen van een Overeenkomst
       operationId: updateOvereenkomstById
       parameters:
       - name: 'id'
@@ -321,7 +321,7 @@ paths:
     get:
       tags:
       - 'Prijscomponenten'
-      description: Ophalen van Prijscomponenten
+      summary: Ophalen van Prijscomponenten
       operationId: listPrijscomponenten
       parameters:
       - name: params
@@ -371,7 +371,7 @@ paths:
     post:
       tags:
       - 'Prijscomponenten'
-      description: Voegt een nieuw(e) Prijscomponent toe.
+      summary: Voegt een nieuw(e) Prijscomponent toe.
       operationId: createPrijscomponent
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
@@ -411,7 +411,7 @@ paths:
     put:
       tags:
       - 'Prijscomponenten'
-      description: |
+      summary: |
         Vervangen van een Prijscomponent op basis van overeenkomstige sleutelvelden.
       operationId: replacePrijscomponent
       parameters:
@@ -446,7 +446,7 @@ paths:
     patch:
       tags:
       - 'Prijscomponenten'
-      description: |
+      summary: |
         Wijzigen van afzonderlijke attributen van een Prijscomponent. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
       operationId: updatePrijscomponent
@@ -483,7 +483,7 @@ paths:
     get:
       tags:
       - 'Prijscomponenten'
-      description: Retourneert een Prijscomponent met de gegeven identifier
+      summary: Retourneert een Prijscomponent met de gegeven identifier
       operationId: readPrijscomponentById
       parameters:
       - name: id
@@ -520,7 +520,7 @@ paths:
     put:
       tags:
       - 'Prijscomponenten'
-      description: Vervangen van een Prijscomponent
+      summary: Vervangen van een Prijscomponent
       operationId: replacePrijscomponentById
       parameters:
       - name: 'id'
@@ -558,7 +558,7 @@ paths:
     patch:
       tags:
       - 'Prijscomponenten'
-      description: Wijzigen van een Prijscomponent
+      summary: Wijzigen van een Prijscomponent
       operationId: updatePrijscomponentById
       parameters:
       - name: 'id'
@@ -630,10 +630,20 @@ components:
       name: X-API-KEY
     OAuth2:
       type: oauth2
-      description: Deze API gebruikt OAuth2 met 'implicit grant flow'.)
+      description: Deze API ondersteunt OAuth2 met flows Authorization Code en Client Credentials
       flows:
-        implicit:
-          authorizationUrl: https://api.vera.nl/oauth2/authorize
+        authorizationCode:
+          authorizationUrl: /oauth/authorize
+          tokenUrl: /oauth/token
+          scopes:
+            BOG.All.Read: alleen lezen van alle resources
+            BOG.All.ReadWrite: lezen en schrijven van alle resources
+            BOG.Overeenkomsten.Read: alleen lezen van Overeenkomsten
+            BOG.Overeenkomsten.ReadWrite: lezen en schrijven van Overeenkomsten
+            BOG.Prijscomponenten.Read: alleen lezen van Prijscomponenten
+            BOG.Prijscomponenten.ReadWrite: lezen en schrijven van Prijscomponenten
+        clientCredentials:
+          tokenUrl: /oauth/token
           scopes:
             BOG.All.Read: alleen lezen van alle resources
             BOG.All.ReadWrite: lezen en schrijven van alle resources
@@ -767,40 +777,17 @@ components:
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
           allOf:
-          - $ref: '#/components/schemas/Referentiedata-sleutels'
-          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon.'
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedatasoort RELATIESOORT.'
         detailSoort:
           allOf:
-          - $ref: '#/components/schemas/Referentiedata-sleutels'
-          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon.'
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedatasoort RELATIEDETAILSOORT.'
         rollen:
           description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
           type: array
           items:
             $ref: '#/components/schemas/Relatierol-sleutels'
-    Referentiedata-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.
-        naam:
-          type: string
-          format: any
-          description: De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.
     Relatierol-sleutels:
       type: object
       properties:
@@ -1329,8 +1316,8 @@ components:
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
           allOf:
-          - $ref: '#/components/schemas/Referentiedata-sleutels'
-          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn.
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn. Referentiedatasoort OVEREENKOMSTSOORT.
     Contactmoment-sleutels:
       type: object
       properties:
@@ -1352,8 +1339,8 @@ components:
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
           allOf:
-          - $ref: '#/components/schemas/Referentiedata-sleutels'
-          description: Het soort of onderwerp van het contactmoment. VERA zal hiervoor geen lijst leveren.
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort of onderwerp van het contactmoment. VERA zal hiervoor geen lijst leveren. Referentiedatasoort CONTACTMOMENTSOORT.
     Eenheid-sleutels:
       type: object
       properties:

@@ -9,7 +9,7 @@ info:
   license:
     name: "Copyright (c) Aedes vereniging van woningcorporaties"
     url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
-  version: '4.1.0+230422.8'
+  version: '4.1.1+230512.44'
 servers:
   - url: https://dossier.vera.io:{port}/{basePath}
     description: Productieserver
@@ -22,6 +22,8 @@ servers:
        basePath:
          default: v4
 tags:
+- name: AuthentiekeGegevens
+  description: Operaties met betrekking tot een AuthentiekGegeven
 - name: Dossiers
   description: Operaties met betrekking tot een Dossier
 - name: Informatieobjecten
@@ -49,7 +51,7 @@ tags:
 paths:
   /ping:
     get:
-      description: |
+      summary: |
         Een ping wordt beantwoord met response code 200
       operationId: ping
       responses:
@@ -61,11 +63,287 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+  /authentieke-gegevens:
+    get:
+      tags:
+      - 'AuthentiekeGegevens'
+      summary: Ophalen van AuthentiekeGegevens
+      operationId: listAuthentiekeGegevens
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/AuthentiekGegevenbericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuthentiekGegevenbericht'
+          headers:
+            X-Parameters-Aantal:
+              $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+              $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+              $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Dossier.AuthentiekeGegevens.Read
+          - Dossier.AuthentiekeGegevens.ReadWrite
+    post:
+      tags:
+      - 'AuthentiekeGegevens'
+      summary: Voegt een nieuw(e) AuthentiekGegeven toe.
+      operationId: createAuthentiekGegeven
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: AuthentiekGegeven
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthentiekGegevenbericht'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthentiekGegevenbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Dossier.AuthentiekeGegevens.ReadWrite
+    put:
+      tags:
+      - 'AuthentiekeGegevens'
+      summary: |
+        Vervangen van een AuthentiekGegeven op basis van overeenkomstige sleutelvelden.
+      operationId: replaceAuthentiekGegeven
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit AuthentiekGegeven
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthentiekGegevenbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Dossier.AuthentiekeGegevens.ReadWrite
+    patch:
+      tags:
+      - 'AuthentiekeGegevens'
+      summary: |
+        Wijzigen van afzonderlijke attributen van een AuthentiekGegeven. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateAuthentiekGegeven
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit AuthentiekGegeven
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthentiekGegevenbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Dossier.AuthentiekeGegevens.ReadWrite
+  /authentieke-gegevens/{id}:
+    get:
+      tags:
+      - 'AuthentiekeGegevens'
+      summary: Retourneert een AuthentiekGegeven met de gegeven identifier
+      operationId: readAuthentiekGegevenById
+      parameters:
+      - name: id
+        in: path
+        description: Id van AuthentiekGegeven om op te halen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthentiekGegevenbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Dossier.AuthentiekeGegevens.Read
+          - Dossier.AuthentiekeGegevens.ReadWrite
+    put:
+      tags:
+      - 'AuthentiekeGegevens'
+      summary: Vervangen van een AuthentiekGegeven
+      operationId: replaceAuthentiekGegevenById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van AuthentiekGegeven om te vervangen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit AuthentiekGegeven
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthentiekGegevenbericht'
+      security: 
+        - OAuth2: 
+          - Dossier.AuthentiekeGegevens.ReadWrite
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'AuthentiekeGegevens'
+      summary: Wijzigen van een AuthentiekGegeven
+      operationId: updateAuthentiekGegevenById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van AuthentiekGegeven om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit AuthentiekGegeven
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthentiekGegevenbericht'
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Dossier.AuthentiekeGegevens.ReadWrite
   /dossiers:
     get:
       tags:
       - 'Dossiers'
-      description: Ophalen van Dossiers
+      summary: Ophalen van Dossiers
       operationId: listDossiers
       parameters:
       - name: params
@@ -115,7 +393,7 @@ paths:
     post:
       tags:
       - 'Dossiers'
-      description: Voegt een nieuw(e) Dossier toe.
+      summary: Voegt een nieuw(e) Dossier toe.
       operationId: createDossier
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
@@ -155,7 +433,7 @@ paths:
     put:
       tags:
       - 'Dossiers'
-      description: |
+      summary: |
         Vervangen van een Dossier op basis van overeenkomstige sleutelvelden.
       operationId: replaceDossier
       parameters:
@@ -190,7 +468,7 @@ paths:
     patch:
       tags:
       - 'Dossiers'
-      description: |
+      summary: |
         Wijzigen van afzonderlijke attributen van een Dossier. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
       operationId: updateDossier
@@ -227,7 +505,7 @@ paths:
     get:
       tags:
       - 'Dossiers'
-      description: Retourneert een Dossier met de gegeven identifier
+      summary: Retourneert een Dossier met de gegeven identifier
       operationId: readDossierById
       parameters:
       - name: id
@@ -264,7 +542,7 @@ paths:
     put:
       tags:
       - 'Dossiers'
-      description: Vervangen van een Dossier
+      summary: Vervangen van een Dossier
       operationId: replaceDossierById
       parameters:
       - name: 'id'
@@ -302,7 +580,7 @@ paths:
     patch:
       tags:
       - 'Dossiers'
-      description: Wijzigen van een Dossier
+      summary: Wijzigen van een Dossier
       operationId: updateDossierById
       parameters:
       - name: 'id'
@@ -341,7 +619,7 @@ paths:
     get:
       tags:
       - 'Informatieobjecten'
-      description: Ophalen van Informatieobjecten
+      summary: Ophalen van Informatieobjecten
       operationId: listInformatieobjecten
       parameters:
       - name: params
@@ -391,7 +669,7 @@ paths:
     post:
       tags:
       - 'Informatieobjecten'
-      description: Voegt een nieuw(e) Informatieobject toe.
+      summary: Voegt een nieuw(e) Informatieobject toe.
       operationId: createInformatieobject
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
@@ -431,7 +709,7 @@ paths:
     put:
       tags:
       - 'Informatieobjecten'
-      description: |
+      summary: |
         Vervangen van een Informatieobject op basis van overeenkomstige sleutelvelden.
       operationId: replaceInformatieobject
       parameters:
@@ -466,7 +744,7 @@ paths:
     patch:
       tags:
       - 'Informatieobjecten'
-      description: |
+      summary: |
         Wijzigen van afzonderlijke attributen van een Informatieobject. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
       operationId: updateInformatieobject
@@ -503,7 +781,7 @@ paths:
     get:
       tags:
       - 'Informatieobjecten'
-      description: Retourneert een Informatieobject met de gegeven identifier
+      summary: Retourneert een Informatieobject met de gegeven identifier
       operationId: readInformatieobjectById
       parameters:
       - name: id
@@ -540,7 +818,7 @@ paths:
     put:
       tags:
       - 'Informatieobjecten'
-      description: Vervangen van een Informatieobject
+      summary: Vervangen van een Informatieobject
       operationId: replaceInformatieobjectById
       parameters:
       - name: 'id'
@@ -578,7 +856,7 @@ paths:
     patch:
       tags:
       - 'Informatieobjecten'
-      description: Wijzigen van een Informatieobject
+      summary: Wijzigen van een Informatieobject
       operationId: updateInformatieobjectById
       parameters:
       - name: 'id'
@@ -617,7 +895,7 @@ paths:
     get:
       tags:
       - 'Informatieobjectkenmerken'
-      description: Ophalen van Informatieobjectkenmerken
+      summary: Ophalen van Informatieobjectkenmerken
       operationId: listInformatieobjectkenmerken
       parameters:
       - name: params
@@ -667,7 +945,7 @@ paths:
     post:
       tags:
       - 'Informatieobjectkenmerken'
-      description: Voegt een nieuw(e) Informatieobjectkenmerk toe.
+      summary: Voegt een nieuw(e) Informatieobjectkenmerk toe.
       operationId: createInformatieobjectkenmerk
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
@@ -707,7 +985,7 @@ paths:
     put:
       tags:
       - 'Informatieobjectkenmerken'
-      description: |
+      summary: |
         Vervangen van een Informatieobjectkenmerk op basis van overeenkomstige sleutelvelden.
       operationId: replaceInformatieobjectkenmerk
       parameters:
@@ -742,7 +1020,7 @@ paths:
     patch:
       tags:
       - 'Informatieobjectkenmerken'
-      description: |
+      summary: |
         Wijzigen van afzonderlijke attributen van een Informatieobjectkenmerk. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
       operationId: updateInformatieobjectkenmerk
@@ -779,7 +1057,7 @@ paths:
     get:
       tags:
       - 'Informatieobjectkenmerken'
-      description: Retourneert een Informatieobjectkenmerk met de gegeven identifier
+      summary: Retourneert een Informatieobjectkenmerk met de gegeven identifier
       operationId: readInformatieobjectkenmerkById
       parameters:
       - name: id
@@ -816,7 +1094,7 @@ paths:
     put:
       tags:
       - 'Informatieobjectkenmerken'
-      description: Vervangen van een Informatieobjectkenmerk
+      summary: Vervangen van een Informatieobjectkenmerk
       operationId: replaceInformatieobjectkenmerkById
       parameters:
       - name: 'id'
@@ -854,7 +1132,7 @@ paths:
     patch:
       tags:
       - 'Informatieobjectkenmerken'
-      description: Wijzigen van een Informatieobjectkenmerk
+      summary: Wijzigen van een Informatieobjectkenmerk
       operationId: updateInformatieobjectkenmerkById
       parameters:
       - name: 'id'
@@ -893,7 +1171,7 @@ paths:
     get:
       tags:
       - 'Processen'
-      description: Ophalen van Processen
+      summary: Ophalen van Processen
       operationId: listProcessen
       parameters:
       - name: params
@@ -943,7 +1221,7 @@ paths:
     post:
       tags:
       - 'Processen'
-      description: Voegt een nieuw(e) Proces toe.
+      summary: Voegt een nieuw(e) Proces toe.
       operationId: createProces
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
@@ -983,7 +1261,7 @@ paths:
     put:
       tags:
       - 'Processen'
-      description: |
+      summary: |
         Vervangen van een Proces op basis van overeenkomstige sleutelvelden.
       operationId: replaceProces
       parameters:
@@ -1018,7 +1296,7 @@ paths:
     patch:
       tags:
       - 'Processen'
-      description: |
+      summary: |
         Wijzigen van afzonderlijke attributen van een Proces. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
       operationId: updateProces
@@ -1055,7 +1333,7 @@ paths:
     get:
       tags:
       - 'Processen'
-      description: Retourneert een Proces met de gegeven identifier
+      summary: Retourneert een Proces met de gegeven identifier
       operationId: readProcesById
       parameters:
       - name: id
@@ -1092,7 +1370,7 @@ paths:
     put:
       tags:
       - 'Processen'
-      description: Vervangen van een Proces
+      summary: Vervangen van een Proces
       operationId: replaceProcesById
       parameters:
       - name: 'id'
@@ -1130,7 +1408,7 @@ paths:
     patch:
       tags:
       - 'Processen'
-      description: Wijzigen van een Proces
+      summary: Wijzigen van een Proces
       operationId: updateProcesById
       parameters:
       - name: 'id'
@@ -1169,7 +1447,7 @@ paths:
     get:
       tags:
       - 'Procesrollen'
-      description: Ophalen van Procesrollen
+      summary: Ophalen van Procesrollen
       operationId: listProcesrollen
       parameters:
       - name: params
@@ -1219,7 +1497,7 @@ paths:
     post:
       tags:
       - 'Procesrollen'
-      description: Voegt een nieuw(e) Procesrol toe.
+      summary: Voegt een nieuw(e) Procesrol toe.
       operationId: createProcesrol
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
@@ -1259,7 +1537,7 @@ paths:
     put:
       tags:
       - 'Procesrollen'
-      description: |
+      summary: |
         Vervangen van een Procesrol op basis van overeenkomstige sleutelvelden.
       operationId: replaceProcesrol
       parameters:
@@ -1294,7 +1572,7 @@ paths:
     patch:
       tags:
       - 'Procesrollen'
-      description: |
+      summary: |
         Wijzigen van afzonderlijke attributen van een Procesrol. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
       operationId: updateProcesrol
@@ -1331,7 +1609,7 @@ paths:
     get:
       tags:
       - 'Procesrollen'
-      description: Retourneert een Procesrol met de gegeven identifier
+      summary: Retourneert een Procesrol met de gegeven identifier
       operationId: readProcesrolById
       parameters:
       - name: id
@@ -1368,7 +1646,7 @@ paths:
     put:
       tags:
       - 'Procesrollen'
-      description: Vervangen van een Procesrol
+      summary: Vervangen van een Procesrol
       operationId: replaceProcesrolById
       parameters:
       - name: 'id'
@@ -1406,7 +1684,7 @@ paths:
     patch:
       tags:
       - 'Procesrollen'
-      description: Wijzigen van een Procesrol
+      summary: Wijzigen van een Procesrol
       operationId: updateProcesrolById
       parameters:
       - name: 'id'
@@ -1445,7 +1723,7 @@ paths:
     get:
       tags:
       - 'Processtappen'
-      description: Ophalen van Processtappen
+      summary: Ophalen van Processtappen
       operationId: listProcesstappen
       parameters:
       - name: params
@@ -1495,7 +1773,7 @@ paths:
     post:
       tags:
       - 'Processtappen'
-      description: Voegt een nieuw(e) Processtap toe.
+      summary: Voegt een nieuw(e) Processtap toe.
       operationId: createProcesstap
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
@@ -1535,7 +1813,7 @@ paths:
     put:
       tags:
       - 'Processtappen'
-      description: |
+      summary: |
         Vervangen van een Processtap op basis van overeenkomstige sleutelvelden.
       operationId: replaceProcesstap
       parameters:
@@ -1570,7 +1848,7 @@ paths:
     patch:
       tags:
       - 'Processtappen'
-      description: |
+      summary: |
         Wijzigen van afzonderlijke attributen van een Processtap. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
       operationId: updateProcesstap
@@ -1607,7 +1885,7 @@ paths:
     get:
       tags:
       - 'Processtappen'
-      description: Retourneert een Processtap met de gegeven identifier
+      summary: Retourneert een Processtap met de gegeven identifier
       operationId: readProcesstapById
       parameters:
       - name: id
@@ -1644,7 +1922,7 @@ paths:
     put:
       tags:
       - 'Processtappen'
-      description: Vervangen van een Processtap
+      summary: Vervangen van een Processtap
       operationId: replaceProcesstapById
       parameters:
       - name: 'id'
@@ -1682,7 +1960,7 @@ paths:
     patch:
       tags:
       - 'Processtappen'
-      description: Wijzigen van een Processtap
+      summary: Wijzigen van een Processtap
       operationId: updateProcesstapById
       parameters:
       - name: 'id'
@@ -1721,7 +1999,7 @@ paths:
     get:
       tags:
       - 'Zaken'
-      description: Ophalen van Zaken
+      summary: Ophalen van Zaken
       operationId: listZaken
       parameters:
       - name: params
@@ -1771,7 +2049,7 @@ paths:
     post:
       tags:
       - 'Zaken'
-      description: Voegt een nieuw(e) Zaak toe.
+      summary: Voegt een nieuw(e) Zaak toe.
       operationId: createZaak
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
@@ -1811,7 +2089,7 @@ paths:
     put:
       tags:
       - 'Zaken'
-      description: |
+      summary: |
         Vervangen van een Zaak op basis van overeenkomstige sleutelvelden.
       operationId: replaceZaak
       parameters:
@@ -1846,7 +2124,7 @@ paths:
     patch:
       tags:
       - 'Zaken'
-      description: |
+      summary: |
         Wijzigen van afzonderlijke attributen van een Zaak. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
       operationId: updateZaak
@@ -1883,7 +2161,7 @@ paths:
     get:
       tags:
       - 'Zaken'
-      description: Retourneert een Zaak met de gegeven identifier
+      summary: Retourneert een Zaak met de gegeven identifier
       operationId: readZaakById
       parameters:
       - name: id
@@ -1920,7 +2198,7 @@ paths:
     put:
       tags:
       - 'Zaken'
-      description: Vervangen van een Zaak
+      summary: Vervangen van een Zaak
       operationId: replaceZaakById
       parameters:
       - name: 'id'
@@ -1958,7 +2236,7 @@ paths:
     patch:
       tags:
       - 'Zaken'
-      description: Wijzigen van een Zaak
+      summary: Wijzigen van een Zaak
       operationId: updateZaakById
       parameters:
       - name: 'id'
@@ -1997,7 +2275,7 @@ paths:
     get:
       tags:
       - 'Zaakkenmerken'
-      description: Ophalen van Zaakkenmerken
+      summary: Ophalen van Zaakkenmerken
       operationId: listZaakkenmerken
       parameters:
       - name: params
@@ -2047,7 +2325,7 @@ paths:
     post:
       tags:
       - 'Zaakkenmerken'
-      description: Voegt een nieuw(e) Zaakkenmerk toe.
+      summary: Voegt een nieuw(e) Zaakkenmerk toe.
       operationId: createZaakkenmerk
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
@@ -2087,7 +2365,7 @@ paths:
     put:
       tags:
       - 'Zaakkenmerken'
-      description: |
+      summary: |
         Vervangen van een Zaakkenmerk op basis van overeenkomstige sleutelvelden.
       operationId: replaceZaakkenmerk
       parameters:
@@ -2122,7 +2400,7 @@ paths:
     patch:
       tags:
       - 'Zaakkenmerken'
-      description: |
+      summary: |
         Wijzigen van afzonderlijke attributen van een Zaakkenmerk. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
       operationId: updateZaakkenmerk
@@ -2159,7 +2437,7 @@ paths:
     get:
       tags:
       - 'Zaakkenmerken'
-      description: Retourneert een Zaakkenmerk met de gegeven identifier
+      summary: Retourneert een Zaakkenmerk met de gegeven identifier
       operationId: readZaakkenmerkById
       parameters:
       - name: id
@@ -2196,7 +2474,7 @@ paths:
     put:
       tags:
       - 'Zaakkenmerken'
-      description: Vervangen van een Zaakkenmerk
+      summary: Vervangen van een Zaakkenmerk
       operationId: replaceZaakkenmerkById
       parameters:
       - name: 'id'
@@ -2234,7 +2512,7 @@ paths:
     patch:
       tags:
       - 'Zaakkenmerken'
-      description: Wijzigen van een Zaakkenmerk
+      summary: Wijzigen van een Zaakkenmerk
       operationId: updateZaakkenmerkById
       parameters:
       - name: 'id'
@@ -2273,7 +2551,7 @@ paths:
     get:
       tags:
       - 'Zaakobjecten'
-      description: Ophalen van Zaakobjecten
+      summary: Ophalen van Zaakobjecten
       operationId: listZaakobjecten
       parameters:
       - name: params
@@ -2323,7 +2601,7 @@ paths:
     post:
       tags:
       - 'Zaakobjecten'
-      description: Voegt een nieuw(e) Zaakobject toe.
+      summary: Voegt een nieuw(e) Zaakobject toe.
       operationId: createZaakobject
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
@@ -2363,7 +2641,7 @@ paths:
     put:
       tags:
       - 'Zaakobjecten'
-      description: |
+      summary: |
         Vervangen van een Zaakobject op basis van overeenkomstige sleutelvelden.
       operationId: replaceZaakobject
       parameters:
@@ -2398,7 +2676,7 @@ paths:
     patch:
       tags:
       - 'Zaakobjecten'
-      description: |
+      summary: |
         Wijzigen van afzonderlijke attributen van een Zaakobject. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
       operationId: updateZaakobject
@@ -2435,7 +2713,7 @@ paths:
     get:
       tags:
       - 'Zaakobjecten'
-      description: Retourneert een Zaakobject met de gegeven identifier
+      summary: Retourneert een Zaakobject met de gegeven identifier
       operationId: readZaakobjectById
       parameters:
       - name: id
@@ -2472,7 +2750,7 @@ paths:
     put:
       tags:
       - 'Zaakobjecten'
-      description: Vervangen van een Zaakobject
+      summary: Vervangen van een Zaakobject
       operationId: replaceZaakobjectById
       parameters:
       - name: 'id'
@@ -2510,7 +2788,7 @@ paths:
     patch:
       tags:
       - 'Zaakobjecten'
-      description: Wijzigen van een Zaakobject
+      summary: Wijzigen van een Zaakobject
       operationId: updateZaakobjectById
       parameters:
       - name: 'id'
@@ -2549,7 +2827,7 @@ paths:
     get:
       tags:
       - 'Zaakrollen'
-      description: Ophalen van Zaakrollen
+      summary: Ophalen van Zaakrollen
       operationId: listZaakrollen
       parameters:
       - name: params
@@ -2599,7 +2877,7 @@ paths:
     post:
       tags:
       - 'Zaakrollen'
-      description: Voegt een nieuw(e) Zaakrol toe.
+      summary: Voegt een nieuw(e) Zaakrol toe.
       operationId: createZaakrol
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
@@ -2639,7 +2917,7 @@ paths:
     put:
       tags:
       - 'Zaakrollen'
-      description: |
+      summary: |
         Vervangen van een Zaakrol op basis van overeenkomstige sleutelvelden.
       operationId: replaceZaakrol
       parameters:
@@ -2674,7 +2952,7 @@ paths:
     patch:
       tags:
       - 'Zaakrollen'
-      description: |
+      summary: |
         Wijzigen van afzonderlijke attributen van een Zaakrol. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
       operationId: updateZaakrol
@@ -2711,7 +2989,7 @@ paths:
     get:
       tags:
       - 'Zaakrollen'
-      description: Retourneert een Zaakrol met de gegeven identifier
+      summary: Retourneert een Zaakrol met de gegeven identifier
       operationId: readZaakrolById
       parameters:
       - name: id
@@ -2748,7 +3026,7 @@ paths:
     put:
       tags:
       - 'Zaakrollen'
-      description: Vervangen van een Zaakrol
+      summary: Vervangen van een Zaakrol
       operationId: replaceZaakrolById
       parameters:
       - name: 'id'
@@ -2786,7 +3064,7 @@ paths:
     patch:
       tags:
       - 'Zaakrollen'
-      description: Wijzigen van een Zaakrol
+      summary: Wijzigen van een Zaakrol
       operationId: updateZaakrolById
       parameters:
       - name: 'id'
@@ -2825,7 +3103,7 @@ paths:
     get:
       tags:
       - 'Zaakstatussen'
-      description: Ophalen van Zaakstatussen
+      summary: Ophalen van Zaakstatussen
       operationId: listZaakstatussen
       parameters:
       - name: params
@@ -2875,7 +3153,7 @@ paths:
     post:
       tags:
       - 'Zaakstatussen'
-      description: Voegt een nieuw(e) Zaakstatus toe.
+      summary: Voegt een nieuw(e) Zaakstatus toe.
       operationId: createZaakstatus
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
@@ -2915,7 +3193,7 @@ paths:
     put:
       tags:
       - 'Zaakstatussen'
-      description: |
+      summary: |
         Vervangen van een Zaakstatus op basis van overeenkomstige sleutelvelden.
       operationId: replaceZaakstatus
       parameters:
@@ -2950,7 +3228,7 @@ paths:
     patch:
       tags:
       - 'Zaakstatussen'
-      description: |
+      summary: |
         Wijzigen van afzonderlijke attributen van een Zaakstatus. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
       operationId: updateZaakstatus
@@ -2987,7 +3265,7 @@ paths:
     get:
       tags:
       - 'Zaakstatussen'
-      description: Retourneert een Zaakstatus met de gegeven identifier
+      summary: Retourneert een Zaakstatus met de gegeven identifier
       operationId: readZaakstatusById
       parameters:
       - name: id
@@ -3024,7 +3302,7 @@ paths:
     put:
       tags:
       - 'Zaakstatussen'
-      description: Vervangen van een Zaakstatus
+      summary: Vervangen van een Zaakstatus
       operationId: replaceZaakstatusById
       parameters:
       - name: 'id'
@@ -3062,7 +3340,7 @@ paths:
     patch:
       tags:
       - 'Zaakstatussen'
-      description: Wijzigen van een Zaakstatus
+      summary: Wijzigen van een Zaakstatus
       operationId: updateZaakstatusById
       parameters:
       - name: 'id'
@@ -3101,7 +3379,7 @@ paths:
     get:
       tags:
       - 'Zaaktypen'
-      description: Ophalen van Zaaktypen
+      summary: Ophalen van Zaaktypen
       operationId: listZaaktypen
       parameters:
       - name: params
@@ -3151,7 +3429,7 @@ paths:
     post:
       tags:
       - 'Zaaktypen'
-      description: Voegt een nieuw(e) Zaaktype toe.
+      summary: Voegt een nieuw(e) Zaaktype toe.
       operationId: createZaaktype
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
@@ -3191,7 +3469,7 @@ paths:
     put:
       tags:
       - 'Zaaktypen'
-      description: |
+      summary: |
         Vervangen van een Zaaktype op basis van overeenkomstige sleutelvelden.
       operationId: replaceZaaktype
       parameters:
@@ -3226,7 +3504,7 @@ paths:
     patch:
       tags:
       - 'Zaaktypen'
-      description: |
+      summary: |
         Wijzigen van afzonderlijke attributen van een Zaaktype. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
       operationId: updateZaaktype
@@ -3263,7 +3541,7 @@ paths:
     get:
       tags:
       - 'Zaaktypen'
-      description: Retourneert een Zaaktype met de gegeven identifier
+      summary: Retourneert een Zaaktype met de gegeven identifier
       operationId: readZaaktypeById
       parameters:
       - name: id
@@ -3300,7 +3578,7 @@ paths:
     put:
       tags:
       - 'Zaaktypen'
-      description: Vervangen van een Zaaktype
+      summary: Vervangen van een Zaaktype
       operationId: replaceZaaktypeById
       parameters:
       - name: 'id'
@@ -3338,7 +3616,7 @@ paths:
     patch:
       tags:
       - 'Zaaktypen'
-      description: Wijzigen van een Zaaktype
+      summary: Wijzigen van een Zaaktype
       operationId: updateZaaktypeById
       parameters:
       - name: 'id'
@@ -3410,13 +3688,47 @@ components:
       name: X-API-KEY
     OAuth2:
       type: oauth2
-      description: Deze API gebruikt OAuth2 met 'implicit grant flow'.)
+      description: Deze API ondersteunt OAuth2 met flows Authorization Code en Client Credentials
       flows:
-        implicit:
-          authorizationUrl: https://api.vera.nl/oauth2/authorize
+        authorizationCode:
+          authorizationUrl: /oauth/authorize
+          tokenUrl: /oauth/token
           scopes:
             Dossier.All.Read: alleen lezen van alle resources
             Dossier.All.ReadWrite: lezen en schrijven van alle resources
+            Dossier.AuthentiekeGegevens.Read: alleen lezen van AuthentiekeGegevens
+            Dossier.AuthentiekeGegevens.ReadWrite: lezen en schrijven van AuthentiekeGegevens
+            Dossier.Dossiers.Read: alleen lezen van Dossiers
+            Dossier.Dossiers.ReadWrite: lezen en schrijven van Dossiers
+            Dossier.Informatieobjecten.Read: alleen lezen van Informatieobjecten
+            Dossier.Informatieobjecten.ReadWrite: lezen en schrijven van Informatieobjecten
+            Dossier.Informatieobjectkenmerken.Read: alleen lezen van Informatieobjectkenmerken
+            Dossier.Informatieobjectkenmerken.ReadWrite: lezen en schrijven van Informatieobjectkenmerken
+            Dossier.Processen.Read: alleen lezen van Processen
+            Dossier.Processen.ReadWrite: lezen en schrijven van Processen
+            Dossier.Procesrollen.Read: alleen lezen van Procesrollen
+            Dossier.Procesrollen.ReadWrite: lezen en schrijven van Procesrollen
+            Dossier.Processtappen.Read: alleen lezen van Processtappen
+            Dossier.Processtappen.ReadWrite: lezen en schrijven van Processtappen
+            Dossier.Zaken.Read: alleen lezen van Zaken
+            Dossier.Zaken.ReadWrite: lezen en schrijven van Zaken
+            Dossier.Zaakkenmerken.Read: alleen lezen van Zaakkenmerken
+            Dossier.Zaakkenmerken.ReadWrite: lezen en schrijven van Zaakkenmerken
+            Dossier.Zaakobjecten.Read: alleen lezen van Zaakobjecten
+            Dossier.Zaakobjecten.ReadWrite: lezen en schrijven van Zaakobjecten
+            Dossier.Zaakrollen.Read: alleen lezen van Zaakrollen
+            Dossier.Zaakrollen.ReadWrite: lezen en schrijven van Zaakrollen
+            Dossier.Zaakstatussen.Read: alleen lezen van Zaakstatussen
+            Dossier.Zaakstatussen.ReadWrite: lezen en schrijven van Zaakstatussen
+            Dossier.Zaaktypen.Read: alleen lezen van Zaaktypen
+            Dossier.Zaaktypen.ReadWrite: lezen en schrijven van Zaaktypen
+        clientCredentials:
+          tokenUrl: /oauth/token
+          scopes:
+            Dossier.All.Read: alleen lezen van alle resources
+            Dossier.All.ReadWrite: lezen en schrijven van alle resources
+            Dossier.AuthentiekeGegevens.Read: alleen lezen van AuthentiekeGegevens
+            Dossier.AuthentiekeGegevens.ReadWrite: lezen en schrijven van AuthentiekeGegevens
             Dossier.Dossiers.Read: alleen lezen van Dossiers
             Dossier.Dossiers.ReadWrite: lezen en schrijven van Dossiers
             Dossier.Informatieobjecten.Read: alleen lezen van Informatieobjecten
@@ -3449,6 +3761,131 @@ components:
           schema:
             type: string
   schemas:
+    AuthentiekGegevenbericht:
+      allOf:    
+        - $ref: '#/components/schemas/AuthentiekGegeven'
+        - $ref: '#/components/schemas/Bericht-basis'
+    AuthentiekGegeven:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Geeft het gegevens type aan. Bijvoorbeeld geregistreerde inkomens, actueel inkomen, woongeschiedenis, naw. Referentiedatasoort AUTHENTIEKGEGEVENSOORT.
+        bron:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Geeft de bron van het gegeven aan. Bijv. MijnOverheid, Qii, IRF etc. Referentiedatasoort AUTHENTIEKGEGEVENBRONSOORT.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De De status van het gegeven. Bijv. Gevalideerd, Vervallen. Referentiedatasoort AUTHENTIEKGEGEVENSTATUS.
+        begindatum:
+          type: string
+          format: date-time
+          description: De datum waarop de gevalideerde gegevens zijn vastgelegd.
+        einddatum:
+          type: string
+          format: date-time
+          description: De datum waarop gevalideerde gegevens verlopen of er nieuwe gegevens zijn ingegaan (gevalideerd of zelf ingevuld).
+        gegevens:
+          type: string
+          format: any
+          description: De ruwe gegevens zoals ze uit de bron zijn opgehaald.
+        jaar:
+          type: integer
+          format: int32
+          description: Het jaar waarvoor de gegevens geldig zijn.
+        token:
+          type: string
+          format: any
+          description: Een eigen validatietoken op de gegevens.
+    Referentiedatabericht:
+      allOf:    
+        - $ref: '#/components/schemas/Referentiedata'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Referentiedata:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata-sleutels'
+          description: De soort van het referentiedata item. Bijvoorbeeld nationaliteit.
+        naam:
+          type: string
+          format: any
+          description: De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.
+        omschrijving:
+          type: string
+          format: any
+          description: De omschrijving van de referentiedata. Bijvoorbeeld De Nederlandse nationaliteit.
+        parent:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata-sleutels'
+          description: De bovenliggende referentiedata in het geval er sprake is van een hierarchische relatie tussen referentiedata.
+        begindatum:
+          type: string
+          format: date
+          description: De begindatum van het klasse item.
+        einddatum:
+          type: string
+          format: date
+          description: De einddatum van het klasse item.
+        sortering:
+          type: string
+          format: any
+          description: De sorteervolgorde van de referentiedata anders dan alfabetisch.
+    Referentiedata-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.
+        naam:
+          type: string
+          format: any
+          description: De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.
     Dossierbericht:
       allOf:    
         - $ref: '#/components/schemas/Dossier'
@@ -3513,19 +3950,19 @@ components:
           items:
             type: string
             format: uri
-          description: Referenties naar Cluster in informatiedomein Vastgoed
+          description: Referenties naar Cluster-sleutels in informatiedomein Vastgoed
         collectiefObjecten:
           type: array
           items:
             type: string
             format: uri
-          description: Referenties naar CollectiefObject in informatiedomein Vastgoed
+          description: Referenties naar CollectiefObject-sleutels in informatiedomein Vastgoed
         contactmomenten:
           type: array
           items:
             type: string
             format: uri
-          description: Referenties naar Contactmoment in informatiedomein Relaties
+          description: Referenties naar Contactmoment-sleutels in informatiedomein Relaties
         deelDossiers:
           description: Het dossier bevat onderliggende dossier(s).
           type: array
@@ -3540,126 +3977,52 @@ components:
           items:
             type: string
             format: uri
-          description: Referenties naar Eenheid in informatiedomein Vastgoed
+          description: Referenties naar Eenheid-sleutels in informatiedomein Vastgoed
         inkoopfacturen:
           type: array
           items:
             type: string
             format: uri
-          description: Referenties naar Factuur in informatiedomein Financien
+          description: Referenties naar Inkoopfactuur-sleutels in informatiedomein Financien
         inkoopopdrachten:
           type: array
           items:
             type: string
             format: uri
-          description: Referenties naar Inkoopopdracht in informatiedomein Financien
+          description: Referenties naar Inkoopopdracht-sleutels in informatiedomein Financien
         objecten:
           description: De gegevensobjecten die bij de zaak horen. Kan iedere klasse uit ons model zijn. Bijv. Overeenkomst, Onderhoudsverzoek etc.
           type: array
           items:
-            $ref: '#/components/schemas/Zaakobject'
+            $ref: '#/components/schemas/Zaakobject-sleutels'
         onderhoudsverzoeken:
           type: array
           items:
             type: string
             format: uri
-          description: Referenties naar Onderhoudsverzoek in informatiedomein Onderhoud
+          description: Referenties naar Onderhoudsverzoek-sleutels in informatiedomein Onderhoud
         overeenkomsten:
           type: array
           items:
             type: string
             format: uri
-          description: Referenties naar Overeenkomst in informatiedomein Overeenkomsten
+          description: Referenties naar Overeenkomst-sleutels in informatiedomein Overeenkomsten
         processen:
           description: Het dossier is gekoppeld aan/heeft betrekking op proces(sen).
           type: array
           items:
-            $ref: '#/components/schemas/Proces'
+            $ref: '#/components/schemas/Proces-sleutels'
         relaties:
           type: array
           items:
             type: string
             format: uri
-          description: Referenties naar Relatie in informatiedomein Relaties
+          description: Referenties naar Relatie-sleutels in informatiedomein Relaties
         zaken:
           description: Zaken die gekoppeld zijn aan dit dossier.
           type: array
           items:
-            $ref: '#/components/schemas/Zaak'
-    Referentiedatabericht:
-      allOf:    
-        - $ref: '#/components/schemas/Referentiedata'
-        - $ref: '#/components/schemas/Bericht-basis'
-    Referentiedata:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata-sleutels'
-          description: De soort van het referentiedata item. Bijvoorbeeld nationaliteit. Referentiedatasoort .
-        naam:
-          type: string
-          format: any
-          description: De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.
-        omschrijving:
-          type: string
-          format: any
-          description: De omschrijving van de referentiedata. Bijvoorbeeld De Nederlandse nationaliteit.
-        parent:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata-sleutels'
-          description: De bovenliggende referentiedata in het geval er sprake is van een hierarchische relatie tussen referentiedata. Referentiedatasoort .
-        begindatum:
-          type: string
-          format: date
-          description: De begindatum van het klasse item.
-        einddatum:
-          type: string
-          format: date
-          description: De einddatum van het klasse item.
-        sortering:
-          type: string
-          format: any
-          description: De sorteervolgorde van de referentiedata anders dan alfabetisch.
-    Referentiedata-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.
-        naam:
-          type: string
-          format: any
-          description: De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.
+            $ref: '#/components/schemas/Zaak-sleutels'
     Dossier-sleutels:
       type: object
       properties:
@@ -3679,11 +4042,7 @@ components:
           type: string
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-    Zaakobjectbericht:
-      allOf:    
-        - $ref: '#/components/schemas/Zaakobject'
-        - $ref: '#/components/schemas/Bericht-basis'
-    Zaakobject:
+    Zaakobject-sleutels:
       type: object
       properties:
         id:
@@ -3694,143 +4053,6 @@ components:
           type: string
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort gegevensobject. Kan iedere klasse uit ons model zijn. Bijv. Overeenkomst, Onderhoudsverzoek etc. Referentiedatasoort ZAAKOBJECTSOORT.
-    Procesbericht:
-      allOf:    
-        - $ref: '#/components/schemas/Proces'
-        - $ref: '#/components/schemas/Bericht-basis'
-    Proces:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: De omschrijving en definitie van het proces (bijvoorbeeld aanbieden woning). Referentiedatasoort PROCESSOORT.
-        bovenliggendProces:
-          allOf:
-          - $ref: '#/components/schemas/Proces-sleutels'
-          description: Specificeert het bijbehorende hoofdproces.
-        status:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: De status van de proces. Bijvoorbeeld;In behandeling, Afgesloten. Referentiedatasoort PROCESSTATUS.
-        begindatum:
-          type: string
-          format: date-time
-          description: Datum en tijd waarop het proces gestart is.
-        einddatum:
-          type: string
-          format: date-time
-          description: Datum en tijd waarop het proces afgesloten is.
-        verloopdatum:
-          type: string
-          format: date-time
-          description: Datum en tijd waarop het proces afgerond zou moeten zijn.
-        clusters:
-          type: array
-          items:
-            type: string
-            format: uri
-          description: Referenties naar Cluster in informatiedomein Vastgoed
-        collectiefObjecten:
-          type: array
-          items:
-            type: string
-            format: uri
-          description: Referenties naar CollectiefObject in informatiedomein Vastgoed
-        deelprocessen:
-          description: Specificeert de bijbehorende deelprocessen.
-          type: array
-          items:
-            $ref: '#/components/schemas/Proces-sleutels'
-        dossiers:
-          description: Het proces is gekoppeld aan/heeft betrekking op dossier(s).
-          type: array
-          items:
-            $ref: '#/components/schemas/Dossier-sleutels'
-        eenheden:
-          type: array
-          items:
-            type: string
-            format: uri
-          description: Referenties naar Eenheid in informatiedomein Vastgoed
-        inkoopfacturen:
-          type: array
-          items:
-            type: string
-            format: uri
-          description: Referenties naar Factuur in informatiedomein Financien
-        inkoopopdrachten:
-          type: array
-          items:
-            type: string
-            format: uri
-          description: Referenties naar Inkoopopdracht in informatiedomein Financien
-        niveau:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Specificeert het niveau van het proces. Bijvoorbeeld ketenproces, bedrijfsproces en werkproces. Referentiedatasoort PROCESNIVEAU.
-        objecten:
-          description: De gegevensobjecten die bij de zaak horen. Kan iedere klasse uit ons model zijn. Bijv. Overeenkomst, Onderhoudsverzoek etc.
-          type: array
-          items:
-            $ref: '#/components/schemas/Zaakobject'
-        onderhoudsverzoeken:
-          type: array
-          items:
-            type: string
-            format: uri
-          description: Referenties naar Onderhoudsverzoek in informatiedomein Onderhoud
-        overeenkomsten:
-          type: array
-          items:
-            type: string
-            format: uri
-          description: Referenties naar Overeenkomst in informatiedomein Overeenkomsten
-        prioriteit:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Prioriteit van het proces. Bijvoorbeeld;Hoog, Middel, Laag. Referentiedatasoort PRIORITEIT.
-        processtappen:
-          description: De taken/stappen die behoren bij het proces.
-          type: array
-          items:
-            $ref: '#/components/schemas/Processtap'
-        relaties:
-          type: array
-          items:
-            type: string
-            format: uri
-          description: Referenties naar Relatie in informatiedomein Relaties
-        rollen:
-          description: De rol(len) die een relatie uitoefent ten opzichte van het proces.
-          type: array
-          items:
-            $ref: '#/components/schemas/Procesrol'
-        zaken:
-          description: Het proces is gekoppeld aan/heeft betrekking op zaak(-en).
-          type: array
-          items:
-            $ref: '#/components/schemas/Zaak'
     Proces-sleutels:
       type: object
       properties:
@@ -3850,327 +4072,6 @@ components:
           type: string
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-    Processtapbericht:
-      allOf:    
-        - $ref: '#/components/schemas/Processtap'
-        - $ref: '#/components/schemas/Bericht-basis'
-    Processtap:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: De omschrijving en definitie van de processtap. Bijvoorbeeld keur inkoopfactuur goed of controleer huuropzegging. Referentiedatasoort PROCESSTAPSOORT.
-        status:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Status van de processtap. Bijvoorbeeld;In behandeling, Wachtstand, Afgerond. Referentiedatasoort PROCESSTAPSTATUS.
-        begindatum:
-          type: string
-          format: date-time
-          description: Datum en tijd waarop de processtap gestart is.
-        einddatum:
-          type: string
-          format: date-time
-          description: Datum en tijd waarop de processtap afgesloten is.
-        verloopdatum:
-          type: string
-          format: date-time
-          description: Datum en tijd waarop de processtap afgerond zou moeten zijn.
-        actie:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Actie die is uitgevoerd. Bijvoorbeeld;Doorsturen, Toewijzen, Stoppen. Referentiedatasoort PROCESSTAPACTIE.
-        positie:
-          type: integer
-          format: int32
-          description: De positie van de processtap binnen het proces ten opzichte van andere processtappen.
-        prioriteit:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Prioriteit van de processtap Bijvoorbeeld;Hoog, Middel, Laag. Referentiedatasoort PRIORITEIT.
-        proces:
-          allOf:
-          - $ref: '#/components/schemas/Proces-sleutels'
-          description: Het proces waar de processtap onderdeel van is.
-        rollen:
-          description: De rol(-len) die een relatie uitoefent ten opzichte van de processtap.
-          type: array
-          items:
-            $ref: '#/components/schemas/Procesrol'
-        vorigeProcesstappen:
-          description: De processtap(-en) die deze processtap geïnitieerd heeft.
-          type: array
-          items:
-            $ref: '#/components/schemas/Processtap-sleutels'
-    Procesrolbericht:
-      allOf:    
-        - $ref: '#/components/schemas/Procesrol'
-        - $ref: '#/components/schemas/Bericht-basis'
-    Procesrol:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        omschrijving:
-          type: string
-          format: any
-          description: Een beknopte omschrijving van de aard van de rol.
-        begindatum:
-          type: string
-          format: date-time
-          description: Geeft de startdatum van de geldigheid van de rol aan.
-        einddatum:
-          type: string
-          format: date-time
-          description: Geeft de einddatum van de geldigheid van de rol aan.
-        processen:
-          description: De proces(-sen) waar de rol betrekking op heeft.
-          type: array
-          items:
-            $ref: '#/components/schemas/Proces-sleutels'
-        processtappen:
-          description: De processtap(-pen) waar de rol betrekking op heeft.
-          type: array
-          items:
-            $ref: '#/components/schemas/Processtap-sleutels'
-        relatie:
-          type: string
-          format: uri
-          description: Referentie naar Relatie in informatiedomein Relaties
-        toelichtingRol:
-          type: string
-          format: any
-          description: Schriftelijke toelichting bij de rol.
-    Processtap-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-    Zaakbericht:
-      allOf:    
-        - $ref: '#/components/schemas/Zaak'
-        - $ref: '#/components/schemas/Bericht-basis'
-    Zaak:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        omschrijving:
-          type: string
-          format: any
-          description: Een beknopte omschrijving van de zaak.
-        toelichting:
-          type: string
-          format: any
-          description: Een beknopte toelichting op de zaak.
-        bovenliggendeZaak:
-          allOf:
-          - $ref: '#/components/schemas/Zaak-sleutels'
-          description: Specificeert de bijbehorende hoofdzaak.
-        begindatum:
-          type: string
-          format: date-time
-          description: De datum waarop met de uitvoering van de zaak gestart is.
-        einddatum:
-          type: string
-          format: date-time
-          description: De datum waarop de uitvoering van de zaak afgerond is.
-        registratiedatum:
-          type: string
-          format: date-time
-          description: De datum waarop de zaakbehandelende organisatie de zaak heeft geregistreerd.
-        publicatiedatum:
-          type: string
-          format: date-time
-          description: Datum waarop (het starten van) de zaak gepubliceerd is.
-        geplandeEinddatum:
-          type: string
-          format: date-time
-          description: De datum waarop volgens de planning verwacht wordt dat de zaak afgerond wordt.
-        uiterlijkeEinddatum:
-          type: string
-          format: date-time
-          description: De datum waarop de zaak uiterlijk dient afgehandeld te zijn.
-        archiefstatus:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: De fase waarin het zaakdossier zich vanuit het perspectief van archivering bevindt. Referentiedatasoort ARCHIEFSTATUS.
-        archiefActiedatum:
-          type: string
-          format: date-time
-          description: De datum waarop het gearchiveerde zaakdossier vernietigd dient te worden dan wel overgebracht moet worden naar een archiefbewaarplaats.
-        archiefnominatie:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden. Referentiedatasoort ARCHIEFNOMINATIE.
-        clusters:
-          type: array
-          items:
-            type: string
-            format: uri
-          description: Referenties naar Cluster in informatiedomein Vastgoed
-        collectiefObjecten:
-          type: array
-          items:
-            type: string
-            format: uri
-          description: Referenties naar CollectiefObject in informatiedomein Vastgoed
-        contactmomenten:
-          type: array
-          items:
-            type: string
-            format: uri
-          description: Referenties naar Contactmoment in informatiedomein Relaties
-        deelzaken:
-          description: Specificeert de bijbehorende deelzaken.
-          type: array
-          items:
-            $ref: '#/components/schemas/Zaak-sleutels'
-        dossier:
-          allOf:
-          - $ref: '#/components/schemas/Dossier-sleutels'
-          description: Het dossier dat aan de zaak gekoppeld is.
-        eenheden:
-          type: array
-          items:
-            type: string
-            format: uri
-          description: Referenties naar Eenheid in informatiedomein Vastgoed
-        gerelateerdeZaken:
-          description: Heeft één of meerdere gerelateerde interne of externe zaken.
-          type: array
-          items:
-            $ref: '#/components/schemas/Zaak-sleutels'
-        inkoopfacturen:
-          type: array
-          items:
-            type: string
-            format: uri
-          description: Referenties naar Factuur in informatiedomein Financien
-        inkoopopdrachten:
-          type: array
-          items:
-            type: string
-            format: uri
-          description: Referenties naar Inkoopopdracht in informatiedomein Financien
-        kenmerken:
-          description: Dit zijn eigenschappen behorend bij de zaak.
-          type: array
-          items:
-            $ref: '#/components/schemas/Zaakkenmerk'
-        objecten:
-          description: De gegevensobjecten die bij de zaak horen. Kan iedere klasse uit ons model zijn. Bijv. Overeenkomst, Onderhoudsverzoek etc.
-          type: array
-          items:
-            $ref: '#/components/schemas/Zaakobject'
-        onderhoudsverzoeken:
-          type: array
-          items:
-            type: string
-            format: uri
-          description: Referenties naar Onderhoudsverzoek in informatiedomein Onderhoud
-        overeenkomsten:
-          type: array
-          items:
-            type: string
-            format: uri
-          description: Referenties naar Overeenkomst in informatiedomein Overeenkomsten
-        processen:
-          description: De zaak is gekoppeld aan/heeft betrekking op proces(sen).
-          type: array
-          items:
-            $ref: '#/components/schemas/Proces-sleutels'
-        relaties:
-          type: array
-          items:
-            type: string
-            format: uri
-          description: Referenties naar Relatie in informatiedomein Relaties
-        resultaatOmschrijving:
-          type: string
-          format: any
-          description: Een beknopte omschrijving van het resultaat van de zaak.
-        resultaatToelichting:
-          type: string
-          format: any
-          description: Een beknopte toelichting op het resultaat van de zaak.
-        rollen:
-          description: De rollen op basis waarvan relaties betrokken zijn bij de zaak.
-          type: array
-          items:
-            $ref: '#/components/schemas/Zaakrol'
-        verantwoordelijkeOrganisatie:
-          type: string
-          format: any
-          description: Het RSIN (Rechtspersonen en Samenwerkingsverbanden Informatienummer) van de organisatie die verantwoordelijk is voor de behandeling van de gerelateerde zaak.
-        zaakstatussen:
-          description: De statussen die bereikt zijn gedurende de behandeling van de zaak.
-          type: array
-          items:
-            $ref: '#/components/schemas/Zaakstatus'
-        zaaktype:
-          allOf:
-          - $ref: '#/components/schemas/Zaaktype'
-          description: Zaaktype duidt de aard van de zaak aan en definieert daarmee de zaak.
     Zaak-sleutels:
       type: object
       properties:
@@ -4190,280 +4091,6 @@ components:
           type: string
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-    Zaakkenmerkbericht:
-      allOf:    
-        - $ref: '#/components/schemas/Zaakkenmerk'
-        - $ref: '#/components/schemas/Bericht-basis'
-    Zaakkenmerk:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        omschrijving:
-          type: string
-          format: any
-          description: De omschrijving van het zaakkenmerk.
-        waarde:
-          type: string
-          format: any
-          description: De waarde van het zaakkenmerk.
-        datatype:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het datatype van de waarde. Bijvoorbeeld: string, decimal, integer. Referentiedatasoort DATATYPE.'
-        groep:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: De groep van kenmerken behorend bij het zaakkenmerk. Referentiedatasoort ZAAKKENMERKGROEP.
-        zaken:
-          description: De zaken behorende bij het zaakkenmerk.
-          type: array
-          items:
-            $ref: '#/components/schemas/Zaak-sleutels'
-    Zaakrolbericht:
-      allOf:    
-        - $ref: '#/components/schemas/Zaakrol'
-        - $ref: '#/components/schemas/Bericht-basis'
-    Zaakrol:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Algemeen gehanteerde benaming van de aard van de rol. Referentiedatasoort ZAAKROL.
-        omschrijving:
-          type: string
-          format: any
-          description: Een beknopte omschrijving van de aard van de rol.
-        begindatum:
-          type: string
-          format: date-time
-          description: Geeft de startdatum van de geldigheid van de rol aan.
-        einddatum:
-          type: string
-          format: date-time
-          description: Geeft de einddatum van de geldigheid van de rol aan.
-        afwijkendContactgegegeven:
-          type: string
-          format: uri
-          description: Referentie naar Contactgegeven in informatiedomein Relaties
-        indicatieGemachtigde:
-          type: boolean
-          description: Indicatie of de betrokkene in de rol bij de zaak optreedt als gemachtigde van een andere betrokkene bij die zaak.
-        relatie:
-          type: string
-          format: uri
-          description: Referentie naar Relatie in informatiedomein Relaties
-        toelichtingRol:
-          type: string
-          format: any
-          description: Schriftelijke toelichting bij de rol.
-        zaak:
-          description: De zaak(-en) waarop de rol betrekking heeft.
-          type: array
-          items:
-            $ref: '#/components/schemas/Zaak-sleutels'
-        zaakstatussen:
-          description: De zaak(-en) statussen waarop de rol betrekking heeft.
-          type: array
-          items:
-            $ref: '#/components/schemas/Zaakstatus'
-    Zaakstatusbericht:
-      allOf:    
-        - $ref: '#/components/schemas/Zaakstatus'
-        - $ref: '#/components/schemas/Bericht-basis'
-    Zaakstatus:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: De aanduiding van de status middels een statustype. Referentiedatasoort ZAAKSTATUSSOORT.
-        begindatum:
-          type: string
-          format: date-time
-          description: Het moment waarop de status is bereikt.
-        einddatum:
-          type: string
-          format: date-time
-          description: Het moment waarop de status verlopen is.
-        toelichting:
-          type: string
-          format: any
-          description: Toelichting over de status.
-        zaak:
-          allOf:
-          - $ref: '#/components/schemas/Zaak-sleutels'
-          description: De zaak waar de status betrekking op heeft.
-        zaakrol:
-          allOf:
-          - $ref: '#/components/schemas/Zaakrol-sleutels'
-          description: De rol van de bijbehorende relatie die de zaakstatus gezet heeft.
-    Zaakrol-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
-    Zaaktypebericht:
-      allOf:    
-        - $ref: '#/components/schemas/Zaaktype'
-        - $ref: '#/components/schemas/Bericht-basis'
-    Zaaktype:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Categorisering van de aard van een zaak van dit zaaktype. Referentiedatasoort ZAAKTYPESOORT.
-        detailSoort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Specificatie van de categorie ten aanzien van de aard van zaak van het zaaktype. Referentiedatasoort ZAAKTYPEDETAILSOORT.
-        generiekeOmschrijving:
-          type: string
-          format: any
-          description: Een beknopte generieke omschrijving van de aard van de zaak en van het zaaktype gerelateerd aan een sectorale ZTC.
-        omschrijving:
-          type: string
-          format: any
-          description: Een beknopte omschrijving van de aard van de zaak en van het zaaktype.
-        begindatum:
-          type: string
-          format: date-time
-          description: Met deze datum wordt aangegeven vanaf wanneer het zaaktype bestaat en toegepast kan worden.
-        einddatum:
-          type: string
-          format: date-time
-          description: Met deze datum wordt aangegeven vanaf wanneer het zaaktype niet meer bestaat en niet meer toegepast kan worden.
-        aanleiding:
-          type: string
-          format: any
-          description: Een omschrijving van de aanleiding die leidt tot het starten van een zaak van dit zaaktype.
-        archiefcode:
-          type: string
-          format: any
-          description: De systematische identificatie van zaakdossiers van dit zaaktype overeenkomstig logisch gestructureerde conventies, methoden en procedureregels.
-        doel:
-          type: string
-          format: any
-          description: Een omschrijving van het doel
-        domein:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Het domein waarbinnen het zaaktype is uitgewerkt. Referentiedatasoort ZAAKTYPEDOMEIN.
-        doorlooptijd:
-          type: integer
-          format: int32
-          description: De periode waarbinnen een zaak van dit zaaktype afgerond dient te zijn.
-        externePublicatie:
-          type: boolean
-          description: Aanduiding of (het starten van) een zaak van dit zaaktype gepubliceerd moet worden.
-        externePublicatietekst:
-          type: string
-          format: any
-          description: De generieke tekst ten behoeve van de publicatie van een zaak van dit zaaktype.
-        relatie:
-          type: string
-          format: uri
-          description: Referentie naar Relatie in informatiedomein Relaties
-        servicenorm:
-          type: integer
-          format: int32
-          description: De periode waarbinnen verwacht wordt dat een zaak van dit zaaktype afgerond wordt conform de geldende servicenormen van de zaakbehandelende organisatie.
-        trefwoord:
-          type: string
-          format: any
-          description: Een trefwoord waarmee een zaak van dit zaaktype kan worden gekarakteriseerd.
-        vertrouwelijkheid:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Aanduiding van de mate waarin zaakdossiers van een zaak van dit zaaktype voor de openbaarheid bestemd zijn. Referentiedatasoort VERTROUWELIJKHEID.
-        zaakstatussen:
-          description: De statussen die bereikt kunnen worden bij behandeling van een zaak van dit zaaktype.
-          type: array
-          items:
-            $ref: '#/components/schemas/Zaakstatus'
-        zaken:
-          description: De aanwezige/betreffende zaken van dit zaaktype.
-          type: array
-          items:
-            $ref: '#/components/schemas/Zaak-sleutels'
     Informatieobjectbericht:
       allOf:    
         - $ref: '#/components/schemas/Informatieobject'
@@ -4569,30 +4196,30 @@ components:
           items:
             type: string
             format: uri
-          description: Referenties naar Cluster in informatiedomein Vastgoed
+          description: Referenties naar Cluster-sleutels in informatiedomein Vastgoed
         collectiefObjecten:
           type: array
           items:
             type: string
             format: uri
-          description: Referenties naar CollectiefObject in informatiedomein Vastgoed
+          description: Referenties naar CollectiefObject-sleutels in informatiedomein Vastgoed
         contactmomenten:
           type: array
           items:
             type: string
             format: uri
-          description: Referenties naar Contactmoment in informatiedomein Relaties
+          description: Referenties naar Contactmoment-sleutels in informatiedomein Relaties
         dossiers:
           description: Het informatieobject is gekoppeld aan/heeft betrekking op dossier(s).
           type: array
           items:
-            $ref: '#/components/schemas/Dossier'
+            $ref: '#/components/schemas/Dossier-sleutels'
         eenheden:
           type: array
           items:
             type: string
             format: uri
-          description: Referenties naar Eenheid in informatiedomein Vastgoed
+          description: Referenties naar Eenheid-sleutels in informatiedomein Vastgoed
         externePublicatie:
           type: boolean
           description: Aanduiding of dit informatieobject extern gepubliceerd dient te worden.
@@ -4613,13 +4240,13 @@ components:
           items:
             type: string
             format: uri
-          description: Referenties naar Factuur in informatiedomein Financien
+          description: Referenties naar Inkoopfactuur-sleutels in informatiedomein Financien
         inkoopopdrachten:
           type: array
           items:
             type: string
             format: uri
-          description: Referenties naar Inkoopopdracht in informatiedomein Financien
+          description: Referenties naar Inkoopopdracht-sleutels in informatiedomein Financien
         isBijlageVan:
           allOf:
           - $ref: '#/components/schemas/Informatieobject-sleutels'
@@ -4628,30 +4255,30 @@ components:
           description: De gegevensobjecten die bij de zaak horen. Kan iedere klasse uit ons model zijn. Bijv. Overeenkomst, Onderhoudsverzoek etc.
           type: array
           items:
-            $ref: '#/components/schemas/Zaakobject'
+            $ref: '#/components/schemas/Zaakobject-sleutels'
         onderhoudsverzoeken:
           type: array
           items:
             type: string
             format: uri
-          description: Referenties naar Onderhoudsverzoek in informatiedomein Onderhoud
+          description: Referenties naar Onderhoudsverzoek-sleutels in informatiedomein Onderhoud
         overeenkomsten:
           type: array
           items:
             type: string
             format: uri
-          description: Referenties naar Overeenkomst in informatiedomein Overeenkomsten
+          description: Referenties naar Overeenkomst-sleutels in informatiedomein Overeenkomsten
         processen:
           description: Het informatieobject is gekoppeld aan/heeft betrekking op proces(sen).
           type: array
           items:
-            $ref: '#/components/schemas/Proces'
+            $ref: '#/components/schemas/Proces-sleutels'
         relaties:
           type: array
           items:
             type: string
             format: uri
-          description: Referenties naar Relatie in informatiedomein Relaties
+          description: Referenties naar Relatie-sleutels in informatiedomein Relaties
         taal:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
@@ -4672,7 +4299,7 @@ components:
           description: Het informatieobject is gekoppeld aan/heeft betrekking op zaak(-en).
           type: array
           items:
-            $ref: '#/components/schemas/Zaak'
+            $ref: '#/components/schemas/Zaak-sleutels'
     Informatieobject-sleutels:
       type: object
       properties:
@@ -4731,6 +4358,829 @@ components:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: De groep van kenmerken behorend bij het informatieobject kenmerk. Referentiedatasoort INFORMATIEOBJECTGROEP.
+    Procesbericht:
+      allOf:    
+        - $ref: '#/components/schemas/Proces'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Proces:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De omschrijving en definitie van het proces (bijvoorbeeld aanbieden woning). Referentiedatasoort PROCESSOORT.
+        bovenliggendProces:
+          allOf:
+          - $ref: '#/components/schemas/Proces-sleutels'
+          description: Specificeert het bijbehorende hoofdproces.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De status van de proces. Bijvoorbeeld;In behandeling, Afgesloten. Referentiedatasoort PROCESSTATUS.
+        begindatum:
+          type: string
+          format: date-time
+          description: Datum en tijd waarop het proces gestart is.
+        einddatum:
+          type: string
+          format: date-time
+          description: Datum en tijd waarop het proces afgesloten is.
+        verloopdatum:
+          type: string
+          format: date-time
+          description: Datum en tijd waarop het proces afgerond zou moeten zijn.
+        clusters:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: Referenties naar Cluster-sleutels in informatiedomein Vastgoed
+        collectiefObjecten:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: Referenties naar CollectiefObject-sleutels in informatiedomein Vastgoed
+        deelprocessen:
+          description: Specificeert de bijbehorende deelprocessen.
+          type: array
+          items:
+            $ref: '#/components/schemas/Proces-sleutels'
+        dossiers:
+          description: Het proces is gekoppeld aan/heeft betrekking op dossier(s).
+          type: array
+          items:
+            $ref: '#/components/schemas/Dossier-sleutels'
+        eenheden:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: Referenties naar Eenheid-sleutels in informatiedomein Vastgoed
+        inkoopfacturen:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: Referenties naar Inkoopfactuur-sleutels in informatiedomein Financien
+        inkoopopdrachten:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: Referenties naar Inkoopopdracht-sleutels in informatiedomein Financien
+        niveau:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Specificeert het niveau van het proces. Bijvoorbeeld ketenproces, bedrijfsproces en werkproces. Referentiedatasoort PROCESNIVEAU.
+        objecten:
+          description: De gegevensobjecten die bij de zaak horen. Kan iedere klasse uit ons model zijn. Bijv. Overeenkomst, Onderhoudsverzoek etc.
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaakobject-sleutels'
+        onderhoudsverzoeken:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: Referenties naar Onderhoudsverzoek-sleutels in informatiedomein Onderhoud
+        overeenkomsten:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: Referenties naar Overeenkomst-sleutels in informatiedomein Overeenkomsten
+        prioriteit:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Prioriteit van het proces. Bijvoorbeeld;Hoog, Middel, Laag. Referentiedatasoort PRIORITEIT.
+        processtappen:
+          description: De taken/stappen die behoren bij het proces.
+          type: array
+          items:
+            $ref: '#/components/schemas/Processtap-sleutels'
+        relaties:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: Referenties naar Relatie-sleutels in informatiedomein Relaties
+        rollen:
+          description: De rol(len) die een relatie uitoefent ten opzichte van het proces.
+          type: array
+          items:
+            $ref: '#/components/schemas/Procesrol-sleutels'
+        zaken:
+          description: Het proces is gekoppeld aan/heeft betrekking op zaak(-en).
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaak-sleutels'
+    Processtap-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Procesrol-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Procesrolbericht:
+      allOf:    
+        - $ref: '#/components/schemas/Procesrol'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Procesrol:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        omschrijving:
+          type: string
+          format: any
+          description: Een beknopte omschrijving van de aard van de rol.
+        begindatum:
+          type: string
+          format: date-time
+          description: Geeft de startdatum van de geldigheid van de rol aan.
+        einddatum:
+          type: string
+          format: date-time
+          description: Geeft de einddatum van de geldigheid van de rol aan.
+        processen:
+          description: De proces(-sen) waar de rol betrekking op heeft.
+          type: array
+          items:
+            $ref: '#/components/schemas/Proces-sleutels'
+        processtappen:
+          description: De processtap(-pen) waar de rol betrekking op heeft.
+          type: array
+          items:
+            $ref: '#/components/schemas/Processtap-sleutels'
+        relatie:
+          type: string
+          format: uri
+          description: Referentie naar Relatie-sleutels in informatiedomein Relaties
+        toelichtingRol:
+          type: string
+          format: any
+          description: Schriftelijke toelichting bij de rol.
+    Processtapbericht:
+      allOf:    
+        - $ref: '#/components/schemas/Processtap'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Processtap:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De omschrijving en definitie van de processtap. Bijvoorbeeld keur inkoopfactuur goed of controleer huuropzegging. Referentiedatasoort PROCESSTAPSOORT.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Status van de processtap. Bijvoorbeeld;In behandeling, Wachtstand, Afgerond. Referentiedatasoort PROCESSTAPSTATUS.
+        begindatum:
+          type: string
+          format: date-time
+          description: Datum en tijd waarop de processtap gestart is.
+        einddatum:
+          type: string
+          format: date-time
+          description: Datum en tijd waarop de processtap afgesloten is.
+        verloopdatum:
+          type: string
+          format: date-time
+          description: Datum en tijd waarop de processtap afgerond zou moeten zijn.
+        actie:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Actie die is uitgevoerd. Bijvoorbeeld;Doorsturen, Toewijzen, Stoppen. Referentiedatasoort PROCESSTAPACTIE.
+        positie:
+          type: integer
+          format: int32
+          description: De positie van de processtap binnen het proces ten opzichte van andere processtappen.
+        prioriteit:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Prioriteit van de processtap Bijvoorbeeld;Hoog, Middel, Laag. Referentiedatasoort PRIORITEIT.
+        proces:
+          allOf:
+          - $ref: '#/components/schemas/Proces-sleutels'
+          description: Het proces waar de processtap onderdeel van is.
+        rollen:
+          description: De rol(-len) die een relatie uitoefent ten opzichte van de processtap.
+          type: array
+          items:
+            $ref: '#/components/schemas/Procesrol-sleutels'
+        vorigeProcesstappen:
+          description: De processtap(-en) die deze processtap geïnitieerd heeft.
+          type: array
+          items:
+            $ref: '#/components/schemas/Processtap-sleutels'
+    Zaakbericht:
+      allOf:    
+        - $ref: '#/components/schemas/Zaak'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Zaak:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        omschrijving:
+          type: string
+          format: any
+          description: Een beknopte omschrijving van de zaak.
+        toelichting:
+          type: string
+          format: any
+          description: Een beknopte toelichting op de zaak.
+        bovenliggendeZaak:
+          allOf:
+          - $ref: '#/components/schemas/Zaak-sleutels'
+          description: Specificeert de bijbehorende hoofdzaak.
+        begindatum:
+          type: string
+          format: date-time
+          description: De datum waarop met de uitvoering van de zaak gestart is.
+        einddatum:
+          type: string
+          format: date-time
+          description: De datum waarop de uitvoering van de zaak afgerond is.
+        registratiedatum:
+          type: string
+          format: date-time
+          description: De datum waarop de zaakbehandelende organisatie de zaak heeft geregistreerd.
+        publicatiedatum:
+          type: string
+          format: date-time
+          description: Datum waarop (het starten van) de zaak gepubliceerd is.
+        geplandeEinddatum:
+          type: string
+          format: date-time
+          description: De datum waarop volgens de planning verwacht wordt dat de zaak afgerond wordt.
+        uiterlijkeEinddatum:
+          type: string
+          format: date-time
+          description: De datum waarop de zaak uiterlijk dient afgehandeld te zijn.
+        archiefstatus:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De fase waarin het zaakdossier zich vanuit het perspectief van archivering bevindt. Referentiedatasoort ARCHIEFSTATUS.
+        archiefActiedatum:
+          type: string
+          format: date-time
+          description: De datum waarop het gearchiveerde zaakdossier vernietigd dient te worden dan wel overgebracht moet worden naar een archiefbewaarplaats.
+        archiefnominatie:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden. Referentiedatasoort ARCHIEFNOMINATIE.
+        clusters:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: Referenties naar Cluster-sleutels in informatiedomein Vastgoed
+        collectiefObjecten:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: Referenties naar CollectiefObject-sleutels in informatiedomein Vastgoed
+        contactmomenten:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: Referenties naar Contactmoment-sleutels in informatiedomein Relaties
+        deelzaken:
+          description: Specificeert de bijbehorende deelzaken.
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaak-sleutels'
+        dossier:
+          allOf:
+          - $ref: '#/components/schemas/Dossier-sleutels'
+          description: Het dossier dat aan de zaak gekoppeld is.
+        eenheden:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: Referenties naar Eenheid-sleutels in informatiedomein Vastgoed
+        gerelateerdeZaken:
+          description: Heeft één of meerdere gerelateerde interne of externe zaken.
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaak-sleutels'
+        inkoopfacturen:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: Referenties naar Inkoopfactuur-sleutels in informatiedomein Financien
+        inkoopopdrachten:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: Referenties naar Inkoopopdracht-sleutels in informatiedomein Financien
+        kenmerken:
+          description: Dit zijn eigenschappen behorend bij de zaak.
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaakkenmerk-sleutels'
+        objecten:
+          description: De gegevensobjecten die bij de zaak horen. Kan iedere klasse uit ons model zijn. Bijv. Overeenkomst, Onderhoudsverzoek etc.
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaakobject-sleutels'
+        onderhoudsverzoeken:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: Referenties naar Onderhoudsverzoek-sleutels in informatiedomein Onderhoud
+        overeenkomsten:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: Referenties naar Overeenkomst-sleutels in informatiedomein Overeenkomsten
+        processen:
+          description: De zaak is gekoppeld aan/heeft betrekking op proces(sen).
+          type: array
+          items:
+            $ref: '#/components/schemas/Proces-sleutels'
+        relaties:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: Referenties naar Relatie-sleutels in informatiedomein Relaties
+        resultaatOmschrijving:
+          type: string
+          format: any
+          description: Een beknopte omschrijving van het resultaat van de zaak.
+        resultaatToelichting:
+          type: string
+          format: any
+          description: Een beknopte toelichting op het resultaat van de zaak.
+        rollen:
+          description: De rollen op basis waarvan relaties betrokken zijn bij de zaak.
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaakrol-sleutels'
+        verantwoordelijkeOrganisatie:
+          type: string
+          format: any
+          description: Het RSIN (Rechtspersonen en Samenwerkingsverbanden Informatienummer) van de organisatie die verantwoordelijk is voor de behandeling van de gerelateerde zaak.
+        zaakstatussen:
+          description: De statussen die bereikt zijn gedurende de behandeling van de zaak.
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaakstatus-sleutels'
+        zaaktype:
+          allOf:
+          - $ref: '#/components/schemas/Zaaktype-sleutels'
+          description: Zaaktype duidt de aard van de zaak aan en definieert daarmee de zaak.
+    Zaakkenmerk-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Zaakrol-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+    Zaakstatus-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Zaaktype-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Zaakkenmerkbericht:
+      allOf:    
+        - $ref: '#/components/schemas/Zaakkenmerk'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Zaakkenmerk:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        omschrijving:
+          type: string
+          format: any
+          description: De omschrijving van het zaakkenmerk.
+        waarde:
+          type: string
+          format: any
+          description: De waarde van het zaakkenmerk.
+        datatype:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het datatype van de waarde. Bijvoorbeeld: string, decimal, integer. Referentiedatasoort DATATYPE.'
+        groep:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De groep van kenmerken behorend bij het zaakkenmerk. Referentiedatasoort ZAAKKENMERKGROEP.
+        zaken:
+          description: De zaken behorende bij het zaakkenmerk.
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaak-sleutels'
+    Zaakobjectbericht:
+      allOf:    
+        - $ref: '#/components/schemas/Zaakobject'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Zaakobject:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort gegevensobject. Kan iedere klasse uit ons model zijn. Bijv. Overeenkomst, Onderhoudsverzoek etc. Referentiedatasoort ZAAKOBJECTSOORT.
+    Zaakrolbericht:
+      allOf:    
+        - $ref: '#/components/schemas/Zaakrol'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Zaakrol:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Algemeen gehanteerde benaming van de aard van de rol. Referentiedatasoort ZAAKROL.
+        omschrijving:
+          type: string
+          format: any
+          description: Een beknopte omschrijving van de aard van de rol.
+        begindatum:
+          type: string
+          format: date-time
+          description: Geeft de startdatum van de geldigheid van de rol aan.
+        einddatum:
+          type: string
+          format: date-time
+          description: Geeft de einddatum van de geldigheid van de rol aan.
+        afwijkendContactgegegeven:
+          type: string
+          format: uri
+          description: Referentie naar Contactgegeven-sleutels in informatiedomein Relaties
+        indicatieGemachtigde:
+          type: boolean
+          description: Indicatie of de betrokkene in de rol bij de zaak optreedt als gemachtigde van een andere betrokkene bij die zaak.
+        relatie:
+          type: string
+          format: uri
+          description: Referentie naar Relatie-sleutels in informatiedomein Relaties
+        toelichtingRol:
+          type: string
+          format: any
+          description: Schriftelijke toelichting bij de rol.
+        zaak:
+          description: De zaak(-en) waarop de rol betrekking heeft.
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaak-sleutels'
+        zaakstatussen:
+          description: De zaak(-en) statussen waarop de rol betrekking heeft.
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaakstatus-sleutels'
+    Zaakstatusbericht:
+      allOf:    
+        - $ref: '#/components/schemas/Zaakstatus'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Zaakstatus:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De aanduiding van de status middels een statustype. Referentiedatasoort ZAAKSTATUSSOORT.
+        begindatum:
+          type: string
+          format: date-time
+          description: Het moment waarop de status is bereikt.
+        einddatum:
+          type: string
+          format: date-time
+          description: Het moment waarop de status verlopen is.
+        toelichting:
+          type: string
+          format: any
+          description: Toelichting over de status.
+        zaak:
+          allOf:
+          - $ref: '#/components/schemas/Zaak-sleutels'
+          description: De zaak waar de status betrekking op heeft.
+        zaakrol:
+          allOf:
+          - $ref: '#/components/schemas/Zaakrol-sleutels'
+          description: De rol van de bijbehorende relatie die de zaakstatus gezet heeft.
+    Zaaktypebericht:
+      allOf:    
+        - $ref: '#/components/schemas/Zaaktype'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Zaaktype:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Categorisering van de aard van een zaak van dit zaaktype. Referentiedatasoort ZAAKTYPESOORT.
+        detailSoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Specificatie van de categorie ten aanzien van de aard van zaak van het zaaktype. Referentiedatasoort ZAAKTYPEDETAILSOORT.
+        generiekeOmschrijving:
+          type: string
+          format: any
+          description: Een beknopte generieke omschrijving van de aard van de zaak en van het zaaktype gerelateerd aan een sectorale ZTC.
+        omschrijving:
+          type: string
+          format: any
+          description: Een beknopte omschrijving van de aard van de zaak en van het zaaktype.
+        begindatum:
+          type: string
+          format: date-time
+          description: Met deze datum wordt aangegeven vanaf wanneer het zaaktype bestaat en toegepast kan worden.
+        einddatum:
+          type: string
+          format: date-time
+          description: Met deze datum wordt aangegeven vanaf wanneer het zaaktype niet meer bestaat en niet meer toegepast kan worden.
+        aanleiding:
+          type: string
+          format: any
+          description: Een omschrijving van de aanleiding die leidt tot het starten van een zaak van dit zaaktype.
+        archiefcode:
+          type: string
+          format: any
+          description: De systematische identificatie van zaakdossiers van dit zaaktype overeenkomstig logisch gestructureerde conventies, methoden en procedureregels.
+        doel:
+          type: string
+          format: any
+          description: Een omschrijving van het doel
+        domein:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het domein waarbinnen het zaaktype is uitgewerkt. Referentiedatasoort ZAAKTYPEDOMEIN.
+        doorlooptijd:
+          type: integer
+          format: int32
+          description: De periode waarbinnen een zaak van dit zaaktype afgerond dient te zijn.
+        externePublicatie:
+          type: boolean
+          description: Aanduiding of (het starten van) een zaak van dit zaaktype gepubliceerd moet worden.
+        externePublicatietekst:
+          type: string
+          format: any
+          description: De generieke tekst ten behoeve van de publicatie van een zaak van dit zaaktype.
+        relatie:
+          type: string
+          format: uri
+          description: Referentie naar Relatie-sleutels in informatiedomein Relaties
+        servicenorm:
+          type: integer
+          format: int32
+          description: De periode waarbinnen verwacht wordt dat een zaak van dit zaaktype afgerond wordt conform de geldende servicenormen van de zaakbehandelende organisatie.
+        trefwoord:
+          type: string
+          format: any
+          description: Een trefwoord waarmee een zaak van dit zaaktype kan worden gekarakteriseerd.
+        vertrouwelijkheid:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Aanduiding van de mate waarin zaakdossiers van een zaak van dit zaaktype voor de openbaarheid bestemd zijn. Referentiedatasoort VERTROUWELIJKHEID.
+        zaakstatussen:
+          description: De statussen die bereikt kunnen worden bij behandeling van een zaak van dit zaaktype.
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaakstatus-sleutels'
+        zaken:
+          description: De aanwezige/betreffende zaken van dit zaaktype.
+          type: array
+          items:
+            $ref: '#/components/schemas/Zaak-sleutels'
     Bericht-basis:
       type: object
       properties:
