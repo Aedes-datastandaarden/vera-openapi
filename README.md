@@ -23,16 +23,16 @@ Zie ook de toeliching hieronder.
 ### Ketenprocessen
 |Ketenproces |Wiki pagina|
 |-----|--------|
-|[Casemanagement](https://aedes-datastandaarden.github.io/vera-openapi/Ketenprocessen/BDO.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-439fdb24-4b5d-645b-303f-c91fec03983c)|
-|[Beheer Financiële gegevens](https://aedes-datastandaarden.github.io/vera-openapi/Ketenprocessen/BFG.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-9026c491-74a8-acea-c32a-00a765532ee0)|
-|[Beheer Overeenkomstgegevens](https://aedes-datastandaarden.github.io/vera-openapi/Ketenprocessen/BOG.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-2638f390-0c27-5081-6238-dc446883c118)|
-|[Beheer Relatiegegevens](https://aedes-datastandaarden.github.io/vera-openapi/Ketenprocessen/BRG.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-a30a9122-b51b-e5ea-0107-679aca55dc91)|
-|[Beheer Vastgoedgegevens](https://aedes-datastandaarden.github.io/vera-openapi/Ketenprocessen/BVG.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-782edca9-65cd-8619-9608-796b7a7acaa6)|
+|[Casemanagement](https://aedes-datastandaarden.github.io/vera-openapi/Ketenprocessen/BDO.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-e343225f-426a-e16c-194a-a1543ffcedb8)|
+|[Beheer Financiële gegevens](https://aedes-datastandaarden.github.io/vera-openapi/Ketenprocessen/BFG.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-30853da3-336e-6549-2f19-38f0690e77f5)|
+|[Beheer Overeenkomstgegevens](https://aedes-datastandaarden.github.io/vera-openapi/Ketenprocessen/BOG.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-b0387a07-5d2f-a9a3-06a1-5a26f4ad34f1)|
+|[Beheer Relatiegegevens](https://aedes-datastandaarden.github.io/vera-openapi/Ketenprocessen/BRG.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-9c203459-33f6-5a41-baa6-e68f92d28b8d)|
+|[Beheer Vastgoedgegevens](https://aedes-datastandaarden.github.io/vera-openapi/Ketenprocessen/BVG.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-153e76a5-78bc-d9ad-8b10-08409b2cfa61)|
 |[Incasso](https://aedes-datastandaarden.github.io/vera-openapi/Ketenprocessen/INC.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-9a188567-a9cb-9ff9-7f03-ea69d2a570a1)|
-|[Kwaliteitsmanagement](https://aedes-datastandaarden.github.io/vera-openapi/Ketenprocessen/KMT.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-65dbf027-db8d-1c97-31a8-a2b93125bd51)|
-|[Onderhouden Eenheden](https://aedes-datastandaarden.github.io/vera-openapi/Ketenprocessen/OHD.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-b5f5fed0-475c-8199-a2af-befed93eb48d)|
-|[Verhuren Eenheden](https://aedes-datastandaarden.github.io/vera-openapi/Ketenprocessen/VHE.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-4a21e08f-afbf-c128-ac34-4e0b618e4fc9)|
-|[Woonruimteverdeling](https://aedes-datastandaarden.github.io/vera-openapi/Ketenprocessen/WRV.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-b4fc946a-61bf-115b-104b-868e6daa6d05)|
+|[Kwaliteitsmanagement](https://aedes-datastandaarden.github.io/vera-openapi/Ketenprocessen/KMT.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-be82da10-cb8d-de28-a04c-5457ef38dbe8)|
+|[Onderhouden Eenheden](https://aedes-datastandaarden.github.io/vera-openapi/Ketenprocessen/OHD.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-8854d1b3-afda-645f-8e54-87186dd7c19b)|
+|[Verhuren Eenheden](https://aedes-datastandaarden.github.io/vera-openapi/Ketenprocessen/VHE.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-e64d60f1-f63b-fd2c-4ab0-3b6b173ae5d1)|
+|[Woonruimteverdeling](https://aedes-datastandaarden.github.io/vera-openapi/Ketenprocessen/WRV.html)|[Wiki](https://cora.wikixl.nl/index.php/Id-1e62e15e-324e-dbff-372e-d9564c5a317d)|
 
 
 ### Informatiedomeinen
