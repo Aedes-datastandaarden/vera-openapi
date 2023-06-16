@@ -9,7 +9,7 @@ info:
   license:
     name: "Copyright (c) Aedes vereniging van woningcorporaties"
     url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
-  version: '4.1.1+230512.44'
+  version: '4.1.2+230616.14'
 servers:
   - url: https://relaties.vera.io:{port}/{basePath}
     description: Productieserver
@@ -32,6 +32,8 @@ tags:
   description: Operaties met betrekking tot een Afspraakverzoek
 - name: Betaalgegevens
   description: Operaties met betrekking tot een Betaalgegeven
+- name: Communicatievoorkeuren
+  description: Operaties met betrekking tot een Communicatievoorkeur
 - name: Contactgegevens
   description: Operaties met betrekking tot een Contactgegeven
 - name: Contactmomenten
@@ -69,6 +71,8 @@ paths:
       responses:
         '200':
           description: OK
+        '408':
+          description: Request Timeout
         default:
           description: Onverwachte fout
           content:
@@ -1455,6 +1459,282 @@ paths:
       security: 
         - OAuth2: 
           - Relaties.Betaalgegevens.ReadWrite
+  /communicatievoorkeuren:
+    get:
+      tags:
+      - 'Communicatievoorkeuren'
+      summary: Ophalen van Communicatievoorkeuren
+      operationId: listCommunicatievoorkeuren
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Communicatievoorkeurbericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Communicatievoorkeurbericht'
+          headers:
+            X-Parameters-Aantal:
+              $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+              $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+              $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Relaties.Communicatievoorkeuren.Read
+          - Relaties.Communicatievoorkeuren.ReadWrite
+    post:
+      tags:
+      - 'Communicatievoorkeuren'
+      summary: Voegt een nieuw(e) Communicatievoorkeur toe.
+      operationId: createCommunicatievoorkeur
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Communicatievoorkeur
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Communicatievoorkeurbericht'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Communicatievoorkeurbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Relaties.Communicatievoorkeuren.ReadWrite
+    put:
+      tags:
+      - 'Communicatievoorkeuren'
+      summary: |
+        Vervangen van een Communicatievoorkeur op basis van overeenkomstige sleutelvelden.
+      operationId: replaceCommunicatievoorkeur
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Communicatievoorkeur
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Communicatievoorkeurbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Relaties.Communicatievoorkeuren.ReadWrite
+    patch:
+      tags:
+      - 'Communicatievoorkeuren'
+      summary: |
+        Wijzigen van afzonderlijke attributen van een Communicatievoorkeur. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateCommunicatievoorkeur
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Communicatievoorkeur
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Communicatievoorkeurbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Relaties.Communicatievoorkeuren.ReadWrite
+  /communicatievoorkeuren/{id}:
+    get:
+      tags:
+      - 'Communicatievoorkeuren'
+      summary: Retourneert een Communicatievoorkeur met de gegeven identifier
+      operationId: readCommunicatievoorkeurById
+      parameters:
+      - name: id
+        in: path
+        description: Id van Communicatievoorkeur om op te halen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Communicatievoorkeurbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Relaties.Communicatievoorkeuren.Read
+          - Relaties.Communicatievoorkeuren.ReadWrite
+    put:
+      tags:
+      - 'Communicatievoorkeuren'
+      summary: Vervangen van een Communicatievoorkeur
+      operationId: replaceCommunicatievoorkeurById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Communicatievoorkeur om te vervangen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Communicatievoorkeur
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Communicatievoorkeurbericht'
+      security: 
+        - OAuth2: 
+          - Relaties.Communicatievoorkeuren.ReadWrite
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Communicatievoorkeuren'
+      summary: Wijzigen van een Communicatievoorkeur
+      operationId: updateCommunicatievoorkeurById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Communicatievoorkeur om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Communicatievoorkeur
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Communicatievoorkeurbericht'
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Relaties.Communicatievoorkeuren.ReadWrite
   /contactgegevens:
     get:
       tags:
@@ -5374,6 +5654,8 @@ components:
             Relaties.Afspraakverzoeken.ReadWrite: lezen en schrijven van Afspraakverzoeken
             Relaties.Betaalgegevens.Read: alleen lezen van Betaalgegevens
             Relaties.Betaalgegevens.ReadWrite: lezen en schrijven van Betaalgegevens
+            Relaties.Communicatievoorkeuren.Read: alleen lezen van Communicatievoorkeuren
+            Relaties.Communicatievoorkeuren.ReadWrite: lezen en schrijven van Communicatievoorkeuren
             Relaties.Contactgegevens.Read: alleen lezen van Contactgegevens
             Relaties.Contactgegevens.ReadWrite: lezen en schrijven van Contactgegevens
             Relaties.Contactmomenten.Read: alleen lezen van Contactmomenten
@@ -5417,6 +5699,8 @@ components:
             Relaties.Afspraakverzoeken.ReadWrite: lezen en schrijven van Afspraakverzoeken
             Relaties.Betaalgegevens.Read: alleen lezen van Betaalgegevens
             Relaties.Betaalgegevens.ReadWrite: lezen en schrijven van Betaalgegevens
+            Relaties.Communicatievoorkeuren.Read: alleen lezen van Communicatievoorkeuren
+            Relaties.Communicatievoorkeuren.ReadWrite: lezen en schrijven van Communicatievoorkeuren
             Relaties.Contactgegevens.Read: alleen lezen van Contactgegevens
             Relaties.Contactgegevens.ReadWrite: lezen en schrijven van Contactgegevens
             Relaties.Contactmomenten.Read: alleen lezen van Contactmomenten
@@ -5961,6 +6245,46 @@ components:
           allOf:
           - $ref: '#/components/schemas/Relatie-sleutels'
           description: De relatie behorend bij het betaalgegeven.
+    Communicatievoorkeurbericht:
+      allOf:    
+        - $ref: '#/components/schemas/Communicatievoorkeur'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Communicatievoorkeur:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort communicatievoorkeur. bijv. nieuwbrief of magazine Referentiedatasoort COMMUNICATIEVOORKEURSOORT.
+        begindatum:
+          type: string
+          format: date
+          description: De begindatum waarop de relatie benaderd kan worden.
+        einddatum:
+          type: string
+          format: date
+          description: De einddatum waarop relatie niet meer benaderd mag worden.
+        contactgegevens:
+          description: Het contactgegeven van de relatie die gebruikt kan worden voor de communicatievoorkeur soort.
+          type: array
+          items:
+            $ref: '#/components/schemas/Contactgegeven-sleutels'
     Contactgegeven-basis:
       type: object
       properties:
@@ -6195,6 +6519,10 @@ components:
             type: string
             format: any
             description: De achternaam van de natuurlijk persoon zoals deze wenst te worden aangeschreven.
+          account:
+            allOf:
+            - $ref: '#/components/schemas/Account'
+            description: Het account van de natuurlijke persoon om gebruik te maken van digitale diensten van de corporatie.
           achternaam:
             type: string
             format: any
@@ -6519,7 +6847,13 @@ components:
         communicatievoorkeur:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het communicatiekanaal waarop de relatie bij voorkeur benaderd wil worden. Bijvoorbeeld: Telefoon, E-mail, Social media etc. Referentiedatasoort CONTACTGEGEVENSOORT.'
+          description: 'Het communicatiekanaal waarop de relatie bij voorkeur benaderd wil worden. Bijvoorbeeld: Telefoon, E-mail, Social media etc. OBSOLETE Referentiedatasoort CONTACTGEGEVENSOORT.'
+          deprecated: true
+        communicatievoorkeuren:
+          description: De verschillende communicatievoorkeuren van een relatie met bijbehorende contactgegeven waarvoor de voorkeur geldt. Bijv. nieuwsbrief en e-mail. Communicatie omtrent de dienstverlening hoeft geen toestemming voor uitgevraagd te worden.
+          type: array
+          items:
+            $ref: '#/components/schemas/Communicatievoorkeur-sleutels'
         contactgegevens:
           description: De contactgegevens van de relatie.
           type: array
@@ -6608,6 +6942,29 @@ components:
           type: string
           format: any
           description: Het rekeningnummer.
+    Communicatievoorkeur-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort communicatievoorkeur. bijv. nieuwbrief of magazine Referentiedatasoort COMMUNICATIEVOORKEURSOORT.
     Contactmoment-sleutels:
       type: object
       properties:

@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Woonruimteverdeling
-  description: API-specificatie van ketenproces 'Woonruimteverdeling'. Deze specificatie is gebaseerd op VERA versie 4.1.1+230512.44
+  description: API-specificatie van ketenproces 'Woonruimteverdeling'. Deze specificatie is gebaseerd op VERA versie 4.1.2+230616.14
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Copyright (c) Aedes vereniging van woningcorporaties"
     url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
-  version: '3.1.1+230512.44'
+  version: '3.1.2+230616.14'
 servers:
   - url: https://wrv.vera.io:{port}/{basePath}
     description: Productieserver
@@ -57,6 +57,8 @@ paths:
       responses:
         '200':
           description: OK
+        '408':
+          description: Request Timeout
         default:
           description: Onverwachte fout
           content:
@@ -4198,6 +4200,69 @@ components:
           type: string
           format: any
           description: De naam van de cluster.
+    Eenheden-Communicatievoorkeur:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort communicatievoorkeur. bijv. nieuwbrief of magazine Referentiedatasoort COMMUNICATIEVOORKEURSOORT.
+        begindatum:
+          type: string
+          format: date
+          description: De begindatum waarop de relatie benaderd kan worden.
+        einddatum:
+          type: string
+          format: date
+          description: De einddatum waarop relatie niet meer benaderd mag worden.
+        contactgegevens:
+          description: Het contactgegeven van de relatie die gebruikt kan worden voor de communicatievoorkeur soort.
+          type: array
+          items:
+            $ref: '#/components/schemas/Contactgegeven-sleutels'
+    Contactgegeven-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort communicatie. Bijvoorbeeld: Telefoon, E-mail, .Social media etc. Referentiedatasoort CONTACTGEGEVENSOORT.'
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De status van het contactgegeven. Bijv. Aangemaakt, Gevalideerd, Ongeldig etc. Referentiedatasoort CONTACTGEGEVENSTATUS.
     Eenheden-Contactgegeven-basis:
       type: object
       properties:
@@ -4427,7 +4492,8 @@ components:
         overigeVertrekkenTotaalOppervlakte:
           type: number
           format: float
-          description: Het totaal aan oppervlakte van overige vertrekken. Met overige vertrekken worden de ruimtes bedoeld die ook in de categorie overige ruimtes vallen bij het bepalen van de woningwaarderingspunten.
+          description: OBSOLETE
+          deprecated: true
         panden:
           description: De panden behorend bij een eenheid.
           type: array
@@ -4526,11 +4592,13 @@ components:
         woonvertrekInhoud:
           type: number
           format: float
-          description: De inhoud van de eenheid in m3 waarin gewoond kan worden.
+          description: OBSOLETE
+          deprecated: true
         woonvertrekkenTotaalOppervlakte:
           type: number
           format: float
-          description: Het totaal aan oppervlakte van woonvertrekken. Met woonvertrekken worden de ruimtes bedoeld die ook in de categorie woonvertrekken vallen bij het bepalen van de woningwaarderingspunten.
+          description: OBSOLETE
+          deprecated: true
         woonvorm:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
@@ -4829,7 +4897,13 @@ components:
         communicatievoorkeur:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het communicatiekanaal waarop de relatie bij voorkeur benaderd wil worden. Bijvoorbeeld: Telefoon, E-mail, Social media etc. Referentiedatasoort CONTACTGEGEVENSOORT.'
+          description: 'Het communicatiekanaal waarop de relatie bij voorkeur benaderd wil worden. Bijvoorbeeld: Telefoon, E-mail, Social media etc. OBSOLETE Referentiedatasoort CONTACTGEGEVENSOORT.'
+          deprecated: true
+        communicatievoorkeuren:
+          description: De verschillende communicatievoorkeuren van een relatie met bijbehorende contactgegeven waarvoor de voorkeur geldt. Bijv. nieuwsbrief en e-mail. Communicatie omtrent de dienstverlening hoeft geen toestemming voor uitgevraagd te worden.
+          type: array
+          items:
+            $ref: '#/components/schemas/Communicatievoorkeur-sleutels'
         contactgegevens:
           description: De contactgegevens van de relatie.
           type: array
@@ -4840,6 +4914,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Eenheden-Relatierol'
+    Communicatievoorkeur-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort communicatievoorkeur. bijv. nieuwbrief of magazine Referentiedatasoort COMMUNICATIEVOORKEURSOORT.
     Eenheden-RelatieAdres:
       type: object
       properties:
@@ -5361,7 +5458,7 @@ components:
         bron:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Geeft de bron van het gegeven aan. Bijv. MijnOverheid, Qii, IRF etc. Referentiedatasoort AUTHENTIEKGEGEVENBRONSOORT.
+          description: Geeft de bron van het gegeven aan. Bijv. MijnOverheid, Qii, IRF etc. Referentiedatasoort AUTHENTIEKGEGEVENBRON.
         jaar:
           type: integer
           format: int32
@@ -5866,7 +5963,8 @@ components:
         communicatievoorkeur:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het communicatiekanaal waarop de relatie bij voorkeur benaderd wil worden. Bijvoorbeeld: Telefoon, E-mail, Social media etc. Referentiedatasoort CONTACTGEGEVENSOORT.'
+          description: 'Het communicatiekanaal waarop de relatie bij voorkeur benaderd wil worden. Bijvoorbeeld: Telefoon, E-mail, Social media etc. OBSOLETE Referentiedatasoort CONTACTGEGEVENSOORT.'
+          deprecated: true
         contactgegevens:
           description: De contactgegevens van de relatie.
           type: array
@@ -6497,6 +6595,7 @@ components:
           account:
             allOf:
             - $ref: '#/components/schemas/Overeenkomstkoppelingen-Account'
+            description: Het account van de natuurlijke persoon om gebruik te maken van digitale diensten van de corporatie.
           achternaam:
             type: string
             format: any
@@ -6767,6 +6866,42 @@ components:
           type: string
           format: any
           description: De naam van de cluster.
+    Publicaties-Communicatievoorkeur:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort communicatievoorkeur. bijv. nieuwbrief of magazine Referentiedatasoort COMMUNICATIEVOORKEURSOORT.
+        begindatum:
+          type: string
+          format: date
+          description: De begindatum waarop de relatie benaderd kan worden.
+        einddatum:
+          type: string
+          format: date
+          description: De einddatum waarop relatie niet meer benaderd mag worden.
+        contactgegevens:
+          description: Het contactgegeven van de relatie die gebruikt kan worden voor de communicatievoorkeur soort.
+          type: array
+          items:
+            $ref: '#/components/schemas/Contactgegeven-sleutels'
     Publicaties-Contactgegeven-basis:
       type: object
       properties:
@@ -6890,12 +7025,14 @@ components:
         bewoonbareVertrekkenTotaalInhoud:
           type: integer
           format: int32
+          description: OBSOLETE
+          deprecated: true
         brutohuur:
           type: number
           format: float
           description: De brutohuur in euro's die geregistreerd staat bij de eenheid. De brutohuur is de netto huur (of kale huur) inclusief alle huurcomponenten en inclusief BTW.
         buitenruimten:
-          description: Bij de eenheid kan ook een buitenruimte horen die zelf geen vertrek is (Tuin, terras, etc.). OBSOLETE Referentiedatasoort EENHEIDBUITENRUIMTE.
+          description: OBSOLETE Referentiedatasoort EENHEIDBUITENRUIMTE.
           type: array
           items:
             $ref: '#/components/schemas/Referentiedata'
@@ -6994,7 +7131,8 @@ components:
         overigeVertrekkenTotaalOppervlakte:
           type: number
           format: float
-          description: Het totaal aan oppervlakte van overige vertrekken. Met overige vertrekken worden de ruimtes bedoeld die ook in de categorie overige ruimtes vallen bij het bepalen van de woningwaarderingspunten.
+          description: OBSOLETE
+          deprecated: true
         panden:
           description: De panden behorend bij een eenheid.
           type: array
@@ -7103,11 +7241,13 @@ components:
         woonvertrekInhoud:
           type: number
           format: float
-          description: De inhoud van de eenheid in m3 waarin gewoond kan worden.
+          description: OBSOLETE
+          deprecated: true
         woonvertrekkenTotaalOppervlakte:
           type: number
           format: float
-          description: Het totaal aan oppervlakte van woonvertrekken. Met woonvertrekken worden de ruimtes bedoeld die ook in de categorie woonvertrekken vallen bij het bepalen van de woningwaarderingspunten.
+          description: OBSOLETE
+          deprecated: true
         woonvorm:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
@@ -7567,7 +7707,13 @@ components:
         communicatievoorkeur:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het communicatiekanaal waarop de relatie bij voorkeur benaderd wil worden. Bijvoorbeeld: Telefoon, E-mail, Social media etc. Referentiedatasoort CONTACTGEGEVENSOORT.'
+          description: 'Het communicatiekanaal waarop de relatie bij voorkeur benaderd wil worden. Bijvoorbeeld: Telefoon, E-mail, Social media etc. OBSOLETE Referentiedatasoort CONTACTGEGEVENSOORT.'
+          deprecated: true
+        communicatievoorkeuren:
+          description: De verschillende communicatievoorkeuren van een relatie met bijbehorende contactgegeven waarvoor de voorkeur geldt. Bijv. nieuwsbrief en e-mail. Communicatie omtrent de dienstverlening hoeft geen toestemming voor uitgevraagd te worden.
+          type: array
+          items:
+            $ref: '#/components/schemas/Communicatievoorkeur-sleutels'
         contactgegevens:
           description: De contactgegevens van de relatie.
           type: array
@@ -8766,6 +8912,42 @@ components:
             type: string
             format: any
             description: De woonplaats waarin het adres zich bevindt.
+    Relaties-Communicatievoorkeur:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort communicatievoorkeur. bijv. nieuwbrief of magazine Referentiedatasoort COMMUNICATIEVOORKEURSOORT.
+        begindatum:
+          type: string
+          format: date
+          description: De begindatum waarop de relatie benaderd kan worden.
+        einddatum:
+          type: string
+          format: date
+          description: De einddatum waarop relatie niet meer benaderd mag worden.
+        contactgegevens:
+          description: Het contactgegeven van de relatie die gebruikt kan worden voor de communicatievoorkeur soort.
+          type: array
+          items:
+            $ref: '#/components/schemas/Contactgegeven-sleutels'
     Relaties-Contactgegeven:
       type: object
       properties:
@@ -8952,6 +9134,7 @@ components:
           account:
             allOf:
             - $ref: '#/components/schemas/Relaties-Account'
+            description: Het account van de natuurlijke persoon om gebruik te maken van digitale diensten van de corporatie.
           achternaam:
             type: string
             format: any
@@ -9151,7 +9334,13 @@ components:
         communicatievoorkeur:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het communicatiekanaal waarop de relatie bij voorkeur benaderd wil worden. Bijvoorbeeld: Telefoon, E-mail, Social media etc. Referentiedatasoort CONTACTGEGEVENSOORT.'
+          description: 'Het communicatiekanaal waarop de relatie bij voorkeur benaderd wil worden. Bijvoorbeeld: Telefoon, E-mail, Social media etc. OBSOLETE Referentiedatasoort CONTACTGEGEVENSOORT.'
+          deprecated: true
+        communicatievoorkeuren:
+          description: De verschillende communicatievoorkeuren van een relatie met bijbehorende contactgegeven waarvoor de voorkeur geldt. Bijv. nieuwsbrief en e-mail. Communicatie omtrent de dienstverlening hoeft geen toestemming voor uitgevraagd te worden.
+          type: array
+          items:
+            $ref: '#/components/schemas/Communicatievoorkeur-sleutels'
         contactgegevens:
           description: De contactgegevens van de relatie.
           type: array
@@ -9648,16 +9837,18 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        nettoMaandinkomen:
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort inkomen. Bijv. netto of bruto maand of jaarinkomen. Referentiedatasoort INKOMENSSOORT.
+        controledatum:
+          type: string
+          format: date-time
+          description: De datum en tijd waarop de inkomensgegevens zijn gecontroleerd.
+        bedrag:
           type: number
           format: float
-          description: Het netto maandinkomen in euro's van de natuurlijk persoon. OBSOLETE
-          deprecated: true
-        brutoMaandinkomen:
-          type: number
-          format: float
-          description: Het bruto maandinkomen in euro's van de natuurlijk persoon. OBSOLETE
-          deprecated: true
+          description: Het bedrag van het inkomen.
         bron:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
@@ -9667,14 +9858,24 @@ components:
           format: float
           description: Het bruto jaarinkomen in euro's van de natuurlijk persoon. OBSOLETE
           deprecated: true
-        controledatum:
-          type: string
-          format: date-time
-          description: De datum en tijd waarop de inkomensgegevens zijn gecontroleerd.
+        brutoMaandinkomen:
+          type: number
+          format: float
+          description: Het bruto maandinkomen in euro's van de natuurlijk persoon. OBSOLETE
+          deprecated: true
+        jaar:
+          type: integer
+          format: int32
+          description: Het jaar waarvoor het inkomen geldig is.
         nettoJaarinkomen:
           type: number
           format: float
           description: Het netto jaarinkomen in euro's van de natuurlijk persoon. OBSOLETE
+          deprecated: true
+        nettoMaandinkomen:
+          type: number
+          format: float
+          description: Het netto maandinkomen in euro's van de natuurlijk persoon. OBSOLETE
           deprecated: true
     Toewijzingen-Kandidaat:
       type: object
@@ -9757,10 +9958,11 @@ components:
             format: any
             description: De initialen van de natuurlijk persoon.
           inkomens:
-            description: De inkomens van de natuurlijk persoon.
+            description: obsolete
             type: array
             items:
               $ref: '#/components/schemas/Toewijzingen-Inkomen'
+            deprecated: true
           opleiding:
             allOf:
             - $ref: '#/components/schemas/Toewijzingen-Opleiding'
@@ -10030,6 +10232,10 @@ components:
           type: integer
           format: int32
           description: Aantal personen waaruit het huishouden bestaat waaraan de woning is toegewezen.
+        inkomen:
+          allOf:
+          - $ref: '#/components/schemas/Toewijzingen-Inkomen'
+          description: Het rekeninkomen waar de toewijzing op is gebaseerd.
         isOuderenhuishouden:
           type: boolean
           description: Geeft aan of de kandidaat, of één van diens medebewoners, op 1 januari van het jaar van toewijzen de pensioengerechtigde leeftijd bereikt.
@@ -10049,12 +10255,14 @@ components:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: De indicatie of de toewijzing passend is volgens de wetgeving of valt binnen de vrij toe te wijzen ruimte. Referentiedatasoort PASSENDHEIDSSOORT.
-        Rekenhuur:
+        rekenhuur:
           type: number
           format: float
-        Rekeninkomen:
+          description: De huurprijs ten tijde van de toewijzing. (Bij sociale huur de rekenhuur conform de wet op de huurtoeslag.)
+        rekeninkomen:
           type: number
           format: float
+          description: Het huishoudinkomen dat gebruikt is als toets inkomen bij de toewijzing. (Bij sociale huur het rekeninkomen conform de wet op de huurtoeslag.)
         rekenvermogen:
           type: number
           format: float

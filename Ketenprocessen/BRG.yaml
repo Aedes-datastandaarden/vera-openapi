@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Beheer Relatiegegevens
-  description: API-specificatie van ketenproces 'Beheer Relatiegegevens'. Deze specificatie is gebaseerd op VERA versie 4.1.1+230512.44
+  description: API-specificatie van ketenproces 'Beheer Relatiegegevens'. Deze specificatie is gebaseerd op VERA versie 4.1.2+230616.14
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Copyright (c) Aedes vereniging van woningcorporaties"
     url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
-  version: '1.1.1+230512.44'
+  version: '1.1.2+230616.14'
 servers:
   - url: https://brg.vera.io:{port}/{basePath}
     description: Productieserver
@@ -39,6 +39,8 @@ paths:
       responses:
         '200':
           description: OK
+        '408':
+          description: Request Timeout
         default:
           description: Onverwachte fout
           content:
@@ -1271,7 +1273,7 @@ components:
           format: any
           description: Het International Bank Account Number. Identificeert elke rekeninghouder, inclusief bank en vestigingsland.
         incassomachtigingen:
-          description: De incassomachtigingen van de relatie. OBSOLETE Incassomachtigingen worden gekoppeld via een Betaalwijze aan overeenkomsten en betalingsregelingen
+          description: OBSOLETE Met de uitwerking van de klasse Betaalwijze is de incassomachtiging verplaatst naar Betaalwijze (waar een link is naar Betaalrekening en het doel van de machtiging, een overeenkomst of een betalingsregeling)
           type: array
           items:
             $ref: '#/components/schemas/Betaalgegevens-Incassomachtiging'
@@ -1777,6 +1779,69 @@ components:
             type: string
             format: any
             description: De woonplaats waarin het adres zich bevindt.
+    Relaties-Communicatievoorkeur:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort communicatievoorkeur. bijv. nieuwbrief of magazine Referentiedatasoort COMMUNICATIEVOORKEURSOORT.
+        begindatum:
+          type: string
+          format: date
+          description: De begindatum waarop de relatie benaderd kan worden.
+        einddatum:
+          type: string
+          format: date
+          description: De einddatum waarop relatie niet meer benaderd mag worden.
+        contactgegevens:
+          description: Het contactgegeven van de relatie die gebruikt kan worden voor de communicatievoorkeur soort.
+          type: array
+          items:
+            $ref: '#/components/schemas/Contactgegeven-sleutels'
+    Contactgegeven-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort communicatie. Bijvoorbeeld: Telefoon, E-mail, .Social media etc. Referentiedatasoort CONTACTGEGEVENSOORT.'
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De status van het contactgegeven. Bijv. Aangemaakt, Gevalideerd, Ongeldig etc. Referentiedatasoort CONTACTGEGEVENSTATUS.
     Relaties-Contactgegeven:
       type: object
       properties:
@@ -1861,6 +1926,7 @@ components:
           account:
             allOf:
             - $ref: '#/components/schemas/Relaties-Account'
+            description: Het account van de natuurlijke persoon om gebruik te maken van digitale diensten van de corporatie.
           achternaam:
             type: string
             format: any
@@ -2020,7 +2086,13 @@ components:
         communicatievoorkeur:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het communicatiekanaal waarop de relatie bij voorkeur benaderd wil worden. Bijvoorbeeld: Telefoon, E-mail, Social media etc. Referentiedatasoort CONTACTGEGEVENSOORT.'
+          description: 'Het communicatiekanaal waarop de relatie bij voorkeur benaderd wil worden. Bijvoorbeeld: Telefoon, E-mail, Social media etc. OBSOLETE Referentiedatasoort CONTACTGEGEVENSOORT.'
+          deprecated: true
+        communicatievoorkeuren:
+          description: De verschillende communicatievoorkeuren van een relatie met bijbehorende contactgegeven waarvoor de voorkeur geldt. Bijv. nieuwsbrief en e-mail. Communicatie omtrent de dienstverlening hoeft geen toestemming voor uitgevraagd te worden.
+          type: array
+          items:
+            $ref: '#/components/schemas/Communicatievoorkeur-sleutels'
         contactgegevens:
           description: De contactgegevens van de relatie.
           type: array
@@ -2036,6 +2108,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Relaties-Relatierol'
+    Communicatievoorkeur-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort communicatievoorkeur. bijv. nieuwbrief of magazine Referentiedatasoort COMMUNICATIEVOORKEURSOORT.
     Relaties-Relatiebericht:
       allOf:    
         - $ref: '#/components/schemas/Relaties-Relatie'
