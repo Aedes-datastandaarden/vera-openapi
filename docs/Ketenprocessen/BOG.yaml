@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Beheer Overeenkomstgegevens
-  description: API-specificatie van ketenproces 'Beheer Overeenkomstgegevens'. Deze specificatie is gebaseerd op VERA versie 4.1.2+230616.14
+  description: API-specificatie van ketenproces 'Beheer Overeenkomstgegevens'. Deze specificatie is gebaseerd op VERA versie 4.1.3+230929.8
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Copyright (c) Aedes vereniging van woningcorporaties"
     url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
-  version: '1.1.2+230616.14'
+  version: '1.1.3+230929.8'
 servers:
   - url: https://bog.vera.io:{port}/{basePath}
     description: Productieserver
@@ -676,6 +676,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -750,6 +758,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -773,6 +789,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -805,6 +829,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -824,6 +856,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -854,57 +894,38 @@ components:
           description: Het (maximale) bedrag of het percentage van het totaal die via deze betaalwijze betaald moet worden.
         incassomachtiging:
           allOf:
-          - $ref: '#/components/schemas/Incassomachtiging-sleutels'
+          - $ref: '#/components/schemas/Overeenkomsten-Incassomachtiging'
           description: De digitale machtiging voor het uitvoeren van de incassoopdrachten. SEPA.
         incassomoment:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: Het moment waarop de incasso wordt gedaan. Referentiedatasoort INCASSOMOMENT.
-    Incassomachtiging-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken). In dit geval logisch om het mandaatid hier te gebruiken.
     Overeenkomsten-Huurovereenkomst:
       allOf:
       - $ref: '#/components/schemas/Overeenkomsten-Overeenkomst-basis'
       - type: object
         properties:
+          opzegdatum:
+            type: string
+            format: date
+            description: De datum dat de overeenkomst is opgezegd door de huurder.
+          huurHerzieningsdatum:
+            type: string
+            format: date
+            description: De datum dat de huurprijs van de huurovereenkomst is aangepast.
           afwijkendeBetaler:
             allOf:
-            - $ref: '#/components/schemas/Overeenkomsten-Relatie'
+            - $ref: '#/components/schemas/Relatie-sleutels'
             description: De relatie die betaalt in het geval de huurder niet zelf de overeenkomst betaalt. OBSOLETE.
             deprecated: true
           afwijkendeBetalerIncassowijze:
             allOf:
             - $ref: '#/components/schemas/Referentiedata'
-            description: OBSOLETE Referentiedatasoort INCASSOWIJZE.
+            description: De wijze van incasso waarop de huurovereenkomst wordt betaald door de afwijkende betaler. OBSOLETE. Referentiedatasoort INCASSOWIJZE.
             deprecated: true
           bepaaldeTijd:
             type: boolean
             description: De waarde die aangeeft of er sprake is van een tijdelijke huurovereenkomst.
-          bewakingsstatus:
-            allOf:
-            - $ref: '#/components/schemas/Referentiedata'
-            description:  Referentiedatasoort BEWAKINGSSTATUS.
-          bijzondereDoelgroep:
-            allOf:
-            - $ref: '#/components/schemas/Referentiedata'
-            description:  Referentiedatasoort BIJZONDEREDOELGROEP.
           brutohuur:
             type: number
             format: float
@@ -912,23 +933,34 @@ components:
           btw:
             type: boolean
             description: De waarde geeft aan of er BTW wordt geheven over de overeenkomst.
-          huurHerzieningsdatum:
-            type: string
-            format: date
-            description: De datum dat de huurprijs van de huurovereenkomst is aangepast.
+          eenheden:
+            description: De eenheden waarop een overeenkomst van toepassing is. Hiermee is het mogelijk om een overeenkomst af te sluiten voor meerdere eenheden (verzamelovereenkomst)
+            type: array
+            items:
+              $ref: '#/components/schemas/Eenheid-sleutels'
+          huurgeschillen:
+            description: Verwijzing naar eventuele huurgeschillen van toepassing op de huurovereenkomst.
+            type: array
+            items:
+              $ref: '#/components/schemas/Huurgeschil-sleutels'
+          huurtoeslagen:
+            description: De huurtoeslagen behorende bij de huurovereenkomst.
+            type: array
+            items:
+              $ref: '#/components/schemas/Huurtoeslag-sleutels'
           maatschappelijkLabel:
             allOf:
             - $ref: '#/components/schemas/Referentiedata'
             description: 'Het label waarmee het maatschappelijk en economisch  belang van de dienstverlening wordt aangegeven bij de verhuring: DAEB of niet-DAEB. Het label op de huurovereenkomst kan afwijken van het maatschappelijk label van de eenheid. Hiermee kan worden aangegeven dat een eenheid die behoort tot de niet-DAEB tak als DAEB-verhuring verantwoord moet worden. Referentiedatasoort MAATSCHAPPELIJKLABEL.'
-          prolongatieInterval:
-            type: string
-            format: duration
-            pattern: '^(-?)P(?=\d|T\d)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)([DW]))?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?)?$'
-            description: De interval die aangeeft na hoeveel tijd er wordt geprolongeerd op de overeenkomst.
-          prolongatieTotDatum:
-            type: string
-            format: date
-            description: De overeenkomst is geprolongeerd tot deze datum
+          onderhoudsverzoeken:
+            description: De uitgevoerde en lopende onderhoudsverzoeken binnen de contractperiode van de overeenkomst. Onder andere een onderhoudsverzoek voor de uitvoering van de mutatiewerkzaamheden (en de inspectieorder).
+            type: array
+            items:
+              $ref: '#/components/schemas/Onderhoudsverzoek-sleutels'
+          opzegtermijn:
+            allOf:
+            - $ref: '#/components/schemas/Referentiedata'
+            description: De opzegtermijn van de overeenkomst. Referentiedatasoort OPZEGTERMIJN.
           rekenhuur:
             type: number
             format: float
@@ -958,6 +990,114 @@ components:
             type: number
             format: float
             description: De rente van de waarborgsom op de overeenkomst. Deze waarde wordt in Euro's aangegeven en is cumulatief over de volledige looptijd van de huurovereenkomst.
+    Eenheid-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Huurgeschil-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Huurtoeslag-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Onderhoudsverzoek-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
     Overeenkomsten-Incassomachtiging:
       type: object
       properties:
@@ -973,6 +1113,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1034,6 +1182,11 @@ components:
       - $ref: '#/components/schemas/Overeenkomsten-Overeenkomst-basis'
       - type: object
         properties:
+          eenheden:
+            description: De eenheden waarop een overeenkomst van toepassing is. Hiermee is het mogelijk om een overeenkomst af te sluiten voor meerdere eenheden (verzamelovereenkomst)
+            type: array
+            items:
+              $ref: '#/components/schemas/Eenheid-sleutels'
           koopsom:
             type: number
             format: float
@@ -1061,6 +1214,43 @@ components:
             type: number
             format: float
             description: Het bedrag dat de koper betaald aan VVE inclusief BTW. De koper heeft geen recht op VVE als er geen bedrag is ingevuld.
+    Overeenkomsten-NatuurlijkPersoon:
+      allOf:
+      - $ref: '#/components/schemas/Overeenkomsten-Relatie-basis'
+      - type: object
+        properties:
+          aanhef:
+            type: string
+            format: any
+            description: De aanhef of aanspreking is een (meestal vriendelijke) introducerende zin van een brief of e-mail. Het gaat doorgaans om standaardformuleringen waarmee de schrijver zich tot de geadresseerde richt.
+          aanschrijfnaam:
+            type: string
+            format: any
+            description: De achternaam van de natuurlijk persoon zoals deze wenst te worden aangeschreven.
+          achternaam:
+            type: string
+            format: any
+            description: De achternaam van de natuurlijk persoon.
+          initialen:
+            type: string
+            format: any
+            description: De initialen van de natuurlijk persoon.
+          roepnaam:
+            type: string
+            format: any
+            description: De roepnaam van de natuurlijk persoon.
+          tussenvoegsels:
+            type: string
+            format: any
+            description: De tussenvoegsels behorende bij de naam.
+          voorletters:
+            type: string
+            format: any
+            description: Een voorletter is een afkorting van een voornaam, die in adressering veel wordt gebruikt. De voorletters geven in combinatie met de achternaam meestal een duidelijk onderscheid tussen leden van hetzelfde gezin of dezelfde familie. Indien iemand meerdere voornamen heeft dan worden de voorletters door een punt gescheiden.
+          voornaam:
+            type: string
+            format: any
+            description: De voornaam van de natuurlijk persoon.
     Overeenkomsten-Onderhoudsovereenkomst:
       allOf:
       - $ref: '#/components/schemas/Overeenkomsten-Overeenkomst-basis'
@@ -1082,11 +1272,22 @@ components:
             allOf:
             - $ref: '#/components/schemas/CollectiefObject-sleutels'
             description: Het collectief object waarop een onderhoudsovereenkomst van toepassing is.
-          orders:
+          eenheden:
+            description: De eenheden waarop een overeenkomst van toepassing is. Hiermee is het mogelijk om een overeenkomst af te sluiten voor meerdere eenheden (verzamelovereenkomst)
+            type: array
+            items:
+              $ref: '#/components/schemas/Eenheid-sleutels'
+          onderhoudsorders:
             description: De onderhoudsorders die op basis van deze overeenkomst zijn toegekend.
             type: array
             items:
               $ref: '#/components/schemas/Onderhoudsorder-sleutels'
+          orders:
+            description: De onderhoudsorders die op basis van deze overeenkomst zijn toegekend. OBSOLETE.
+            type: array
+            items:
+              $ref: '#/components/schemas/Onderhoudsorder-sleutels'
+            deprecated: true
           specialismen:
             description: Het specialismen die de opdrachtnemer kan uitvoeren. Voorbeelden zijn Timmerman, Loodgieter, etc. Referentiedatasoort ONDERHOUDSPECIALISME.
             type: array
@@ -1107,6 +1308,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1126,6 +1335,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1149,6 +1366,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1168,6 +1393,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1187,6 +1420,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1222,10 +1463,31 @@ components:
         verstuurdatum:
           type: string
           format: date-time
-          description: De datum waarop de overeenkomst is verstuurd.
+          description: Het tijdstip waarop de overeenkomst is verstuurd.
+        prolongatiedatum:
+          type: string
+          format: date
+          description: De datum per wanneer de prolongatieperiode is gestart.
+        prolongatieInterval:
+          type: string
+          format: duration
+          pattern: '^(-?)P(?=\d|T\d)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)([DW]))?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?)?$'
+          description: De interval die aangeeft na hoeveel tijd er wordt geprolongeerd op de overeenkomst.
+        prolongatieTotDatum:
+          type: string
+          format: date
+          description: De overeenkomst is geprolongeerd tot deze datum.
         voorlopigeEinddatum:
           type: string
           format: date
+        facturatiebegindatum:
+          type: string
+          format: date
+          description: De datum per wanneer de eerste factuur gaat lopen. Bijvoorbeeld per wanneer de huur ingaat. Indien afwijkend t.o.v. overeenkomst begindatum.
+        facturatieeinddatum:
+          type: string
+          format: date
+          description: De datum tot wanneer de laatste factuur moet lopen. Indien afwijkend t.o.v. overeenkomst einddatum
         versturenStatus:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
@@ -1253,11 +1515,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Contactmoment-sleutels'
-        eenheden:
-          description: De eenheden waarop een overeenkomst van toepassing is. Hiermee is het mogelijk om een overeenkomst af te sluiten voor meerdere eenheden (verzamelovereenkomst)
-          type: array
-          items:
-            $ref: '#/components/schemas/Eenheid-sleutels'
         eindeDetailReden:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
@@ -1312,6 +1569,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1335,6 +1600,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1343,25 +1616,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: Het soort of onderwerp van het contactmoment. VERA zal hiervoor geen lijst leveren. Referentiedatasoort CONTACTMOMENTSOORT.
-    Eenheid-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
     Garantie-sleutels:
       type: object
       properties:
@@ -1377,25 +1631,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
+        idOrganisatie:
           type: string
           format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-    Onderhoudsverzoek-sleutels:
-      type: object
-      properties:
-        id:
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
           type: string
           format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1426,6 +1669,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1470,7 +1721,32 @@ components:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: Geeft aan wat de reden was voor het aanpassen van het prijscomponent. Referentiedatasoort PRIJSCOMPONENTWIJZIGINGSREDEN.
-    Overeenkomsten-Relatie:
+    Overeenkomsten-Rechtspersoon:
+      allOf:
+      - $ref: '#/components/schemas/Overeenkomsten-Relatie-basis'
+      - type: object
+        properties:
+          kvkNummer:
+            type: string
+            format: any
+            description: Het KVK nummer van de rechtspersoon.
+          globaalLocatienummer:
+            type: string
+            format: any
+            description: Een wereldwijd nummer ter identificatie van een partij of locatie. Het dertiencijferige nummer (GLN) wordt uitgegeven door GS1.
+          naam:
+            type: string
+            format: any
+            description: De naam de rechtspersoon.
+          btwNummer:
+            type: string
+            format: any
+            description: Het BTW nummer van de rechtspersoon.
+          organisatievorm:
+            allOf:
+            - $ref: '#/components/schemas/Referentiedata'
+            description: 'De organisatievorm van de rechtspersoon. Bijvoorbeeld: BV, NV, stichting of vereniging. Ook wel rechtsvorm genoemd. Referentiedatasoort ORGANISATIEVORM.'
+    Overeenkomsten-Relatie-basis:
       type: object
       properties:
         id:
@@ -1485,6 +1761,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1497,11 +1781,20 @@ components:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedatasoort RELATIEDETAILSOORT.'
+        relaties:
+          description: De contactpersonen behorend bij de rechtspersoon.
+          type: array
+          items:
+            $ref: '#/components/schemas/Relatie-sleutels'
         rollen:
           description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
           type: array
           items:
             $ref: '#/components/schemas/Overeenkomsten-Relatierol'
+    Overeenkomsten-Relatie:
+      oneOf:
+        - $ref: '#/components/schemas/Overeenkomsten-NatuurlijkPersoon'
+        - $ref: '#/components/schemas/Overeenkomsten-Rechtspersoon'
     Overeenkomsten-Relatierol:
       type: object
       properties:
@@ -1517,6 +1810,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1546,10 +1847,16 @@ components:
             type: number
             format: float
             description: Het bedrag inclusief BTW in euro's dat betaald dient te worden voor de serviceovereenkomst. Naast huurders, kunnen ook andere relaties een serviceovereenkomst afsluiten met de woningcorporatie. Dit veld geeft het bedrag aan dat de relatie voor de dienstverlening betaalt.
+          eenheden:
+            description: De eenheden waarop een overeenkomst van toepassing is. Hiermee is het mogelijk om een overeenkomst af te sluiten voor meerdere eenheden (verzamelovereenkomst)
+            type: array
+            items:
+              $ref: '#/components/schemas/Eenheid-sleutels'
           samenwerkingsverband:
             allOf:
             - $ref: '#/components/schemas/Referentiedata'
-            description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc. Referentiedatasoort SAMENWERKINGSVERBAND.
+            description: Het regionale samenwerkingsverband waarvoor de serviceovereenkomst/inschrijving geldt. Bijv. Stadsregio Amsterdam, Regio Utrecht etc. OBSOLETE. Referentiedatasoort SAMENWERKINGSVERBAND.
+            deprecated: true
     Prijscomponenten-Prijscomponentbericht:
       allOf:    
         - $ref: '#/components/schemas/Prijscomponenten-Prijscomponent'
@@ -1569,6 +1876,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1661,6 +1976,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1688,7 +2011,7 @@ components:
         beschrijving:
           type: string
           format: any
-          description: Beschrijving van het informatieobject.
+          description: Beschrijving van het informatieobject. Dit kan ook de (volledige) inhoud zijn van een memo of notitie.
         status:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
@@ -1752,7 +2075,7 @@ components:
         formaat:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het digitale formaat (IANA media type) van het informatieobject. Referentiedatasoort INFORMATIEOBJECTFORMAAT.
+          description: 'Het digitale formaat (IANA media type) van het informatieobject.  Bijv. code:png naam:image/png. Referentiedatasoort INFORMATIEOBJECTFORMAAT.'
         gebruiksrechten:
           type: string
           format: any
@@ -1802,6 +2125,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1813,6 +2144,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any

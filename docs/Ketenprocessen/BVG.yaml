@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Beheer Vastgoedgegevens
-  description: API-specificatie van ketenproces 'Beheer Vastgoedgegevens'. Deze specificatie is gebaseerd op VERA versie 4.1.2+230616.14
+  description: API-specificatie van ketenproces 'Beheer Vastgoedgegevens'. Deze specificatie is gebaseerd op VERA versie 4.1.3+230929.8
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Copyright (c) Aedes vereniging van woningcorporaties"
     url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
-  version: '1.1.2+230616.14'
+  version: '1.1.3+230929.8'
 servers:
   - url: https://bvg.vera.io:{port}/{basePath}
     description: Productieserver
@@ -22,6 +22,12 @@ servers:
        basePath:
          default: v1
 tags:
+- name: BouwkundigElementen
+  description: Operaties met betrekking tot een BouwkundigElement
+- name: Clusters
+  description: Operaties met betrekking tot een Cluster
+- name: Eenheden
+  description: Operaties met betrekking tot een Eenheid
 - name: WoningwaarderingResultaten
   description: Operaties met betrekking tot een WoningwaarderingResultaat
 paths:
@@ -41,6 +47,834 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+  /bouwkundig-elementen:
+    get:
+      tags:
+      - 'BouwkundigElementen'
+      summary: Ophalen van BouwkundigElementen
+      operationId: listBouwkundigElementen
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/BouwkundigElementen-BouwkundigElementbericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BouwkundigElementen-BouwkundigElementbericht'
+          headers:
+            X-Parameters-Aantal:
+              $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+              $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+              $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.BouwkundigElementen.Read
+          - BVG.BouwkundigElementen.ReadWrite
+    post:
+      tags:
+      - 'BouwkundigElementen'
+      summary: Voegt een nieuw(e) BouwkundigElement toe.
+      operationId: createBouwkundigElement
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: BouwkundigElement
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BouwkundigElementen-BouwkundigElementbericht'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BouwkundigElementen-BouwkundigElementbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.BouwkundigElementen.ReadWrite
+    put:
+      tags:
+      - 'BouwkundigElementen'
+      summary: |
+        Vervangen van een BouwkundigElement op basis van overeenkomstige sleutelvelden.
+      operationId: replaceBouwkundigElement
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit BouwkundigElement
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BouwkundigElementen-BouwkundigElementbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.BouwkundigElementen.ReadWrite
+    patch:
+      tags:
+      - 'BouwkundigElementen'
+      summary: |
+        Wijzigen van afzonderlijke attributen van een BouwkundigElement. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateBouwkundigElement
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit BouwkundigElement
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BouwkundigElementen-BouwkundigElementbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.BouwkundigElementen.ReadWrite
+  /bouwkundig-elementen/{id}:
+    get:
+      tags:
+      - 'BouwkundigElementen'
+      summary: Retourneert een BouwkundigElement met de gegeven identifier
+      operationId: readBouwkundigElementById
+      parameters:
+      - name: id
+        in: path
+        description: Id van BouwkundigElement om op te halen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BouwkundigElementen-BouwkundigElementbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.BouwkundigElementen.Read
+          - BVG.BouwkundigElementen.ReadWrite
+    put:
+      tags:
+      - 'BouwkundigElementen'
+      summary: Vervangen van een BouwkundigElement
+      operationId: replaceBouwkundigElementById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van BouwkundigElement om te vervangen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit BouwkundigElement
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BouwkundigElementen-BouwkundigElementbericht'
+      security: 
+        - OAuth2: 
+          - BVG.BouwkundigElementen.ReadWrite
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'BouwkundigElementen'
+      summary: Wijzigen van een BouwkundigElement
+      operationId: updateBouwkundigElementById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van BouwkundigElement om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit BouwkundigElement
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BouwkundigElementen-BouwkundigElementbericht'
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.BouwkundigElementen.ReadWrite
+  /clusters:
+    get:
+      tags:
+      - 'Clusters'
+      summary: Ophalen van Clusters
+      operationId: listClusters
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Clusters-Clusterbericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Clusters-Clusterbericht'
+          headers:
+            X-Parameters-Aantal:
+              $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+              $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+              $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.Clusters.Read
+          - BVG.Clusters.ReadWrite
+    post:
+      tags:
+      - 'Clusters'
+      summary: Voegt een nieuw(e) Cluster toe.
+      operationId: createCluster
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Cluster
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Clusters-Clusterbericht'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Clusters-Clusterbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.Clusters.ReadWrite
+    put:
+      tags:
+      - 'Clusters'
+      summary: |
+        Vervangen van een Cluster op basis van overeenkomstige sleutelvelden.
+      operationId: replaceCluster
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Cluster
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Clusters-Clusterbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.Clusters.ReadWrite
+    patch:
+      tags:
+      - 'Clusters'
+      summary: |
+        Wijzigen van afzonderlijke attributen van een Cluster. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateCluster
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Cluster
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Clusters-Clusterbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.Clusters.ReadWrite
+  /clusters/{id}:
+    get:
+      tags:
+      - 'Clusters'
+      summary: Retourneert een Cluster met de gegeven identifier
+      operationId: readClusterById
+      parameters:
+      - name: id
+        in: path
+        description: Id van Cluster om op te halen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Clusters-Clusterbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.Clusters.Read
+          - BVG.Clusters.ReadWrite
+    put:
+      tags:
+      - 'Clusters'
+      summary: Vervangen van een Cluster
+      operationId: replaceClusterById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Cluster om te vervangen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Cluster
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Clusters-Clusterbericht'
+      security: 
+        - OAuth2: 
+          - BVG.Clusters.ReadWrite
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Clusters'
+      summary: Wijzigen van een Cluster
+      operationId: updateClusterById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Cluster om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Cluster
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Clusters-Clusterbericht'
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.Clusters.ReadWrite
+  /eenheden:
+    get:
+      tags:
+      - 'Eenheden'
+      summary: Ophalen van Eenheden
+      operationId: listEenheden
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Eenheden-Eenheidbericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Eenheden-Eenheidbericht'
+          headers:
+            X-Parameters-Aantal:
+              $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+              $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+              $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.Eenheden.Read
+          - BVG.Eenheden.ReadWrite
+    post:
+      tags:
+      - 'Eenheden'
+      summary: Voegt een nieuw(e) Eenheid toe.
+      operationId: createEenheid
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Eenheid
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Eenheden-Eenheidbericht'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Eenheden-Eenheidbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.Eenheden.ReadWrite
+    put:
+      tags:
+      - 'Eenheden'
+      summary: |
+        Vervangen van een Eenheid op basis van overeenkomstige sleutelvelden.
+      operationId: replaceEenheid
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Eenheid
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Eenheden-Eenheidbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.Eenheden.ReadWrite
+    patch:
+      tags:
+      - 'Eenheden'
+      summary: |
+        Wijzigen van afzonderlijke attributen van een Eenheid. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateEenheid
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Eenheid
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Eenheden-Eenheidbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.Eenheden.ReadWrite
+  /eenheden/{id}:
+    get:
+      tags:
+      - 'Eenheden'
+      summary: Retourneert een Eenheid met de gegeven identifier
+      operationId: readEenheidById
+      parameters:
+      - name: id
+        in: path
+        description: Id van Eenheid om op te halen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Eenheden-Eenheidbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.Eenheden.Read
+          - BVG.Eenheden.ReadWrite
+    put:
+      tags:
+      - 'Eenheden'
+      summary: Vervangen van een Eenheid
+      operationId: replaceEenheidById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Eenheid om te vervangen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Eenheid
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Eenheden-Eenheidbericht'
+      security: 
+        - OAuth2: 
+          - BVG.Eenheden.ReadWrite
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Eenheden'
+      summary: Wijzigen van een Eenheid
+      operationId: updateEenheidById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Eenheid om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Eenheid
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Eenheden-Eenheidbericht'
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - BVG.Eenheden.ReadWrite
   /woningwaardering-resultaten:
     get:
       tags:
@@ -362,6 +1196,12 @@ components:
           scopes:
             BVG.All.Read: alleen lezen van alle resources
             BVG.All.ReadWrite: lezen en schrijven van alle resources
+            BVG.BouwkundigElementen.Read: alleen lezen van BouwkundigElementen
+            BVG.BouwkundigElementen.ReadWrite: lezen en schrijven van BouwkundigElementen
+            BVG.Clusters.Read: alleen lezen van Clusters
+            BVG.Clusters.ReadWrite: lezen en schrijven van Clusters
+            BVG.Eenheden.Read: alleen lezen van Eenheden
+            BVG.Eenheden.ReadWrite: lezen en schrijven van Eenheden
             BVG.WoningwaarderingResultaten.Read: alleen lezen van WoningwaarderingResultaten
             BVG.WoningwaarderingResultaten.ReadWrite: lezen en schrijven van WoningwaarderingResultaten
         clientCredentials:
@@ -369,6 +1209,12 @@ components:
           scopes:
             BVG.All.Read: alleen lezen van alle resources
             BVG.All.ReadWrite: lezen en schrijven van alle resources
+            BVG.BouwkundigElementen.Read: alleen lezen van BouwkundigElementen
+            BVG.BouwkundigElementen.ReadWrite: lezen en schrijven van BouwkundigElementen
+            BVG.Clusters.Read: alleen lezen van Clusters
+            BVG.Clusters.ReadWrite: lezen en schrijven van Clusters
+            BVG.Eenheden.Read: alleen lezen van Eenheden
+            BVG.Eenheden.ReadWrite: lezen en schrijven van Eenheden
             BVG.WoningwaarderingResultaten.Read: alleen lezen van WoningwaarderingResultaten
             BVG.WoningwaarderingResultaten.ReadWrite: lezen en schrijven van WoningwaarderingResultaten
   responses:
@@ -379,7 +1225,538 @@ components:
           schema:
             type: string
   schemas:
-    WoningwaarderingResultaten-Woningwaardering:
+    BouwkundigElementen-Bouwdeel:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        naam:
+          type: string
+          format: any
+          description: De naam van het bouwdeel.
+        omschrijving:
+          type: string
+          format: any
+          description: De omschrijving van het bouwdeel.
+        gebouw:
+          allOf:
+          - $ref: '#/components/schemas/Gebouw-sleutels'
+          description: Het gebouw behorend bij het bouwdeel.
+        pand:
+          allOf:
+          - $ref: '#/components/schemas/Pand-sleutels'
+          description: Het pand behorend bij het bouwdeel.
+    Gebouw-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Pand-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    BouwkundigElementen-BouwkundigElementbericht:
+      allOf:    
+        - $ref: '#/components/schemas/BouwkundigElementen-BouwkundigElement'
+        - $ref: '#/components/schemas/Bericht-basis'
+    BouwkundigElementen-BouwkundigElement:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        naam:
+          type: string
+          format: any
+          description: De naam van het bouwkundig element.
+        omschrijving:
+          type: string
+          format: any
+          description: De omschrijving van het bouwkundig element.
+        serienummer:
+          type: string
+          format: any
+          description: Serienummer van het bouwkundige element.
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort bouwkundig element. Referentiedatasoort BOUWKUNDIGELEMENTSOORT.
+        detailSoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort bouwkundig element. Referentiedatasoort BOUWKUNDIGELEMENTDETAILSOORT.
+        begindatum:
+          type: string
+          format: date
+          description: De begindatum van het bouwkundige element.
+        einddatum:
+          type: string
+          format: date
+          description: De einddatum het bouwkundige element
+        plaatsingdatum:
+          type: string
+          format: date-time
+          description: De datum waarop het bouwkundig element is aangebracht.
+        bouwdeel:
+          allOf:
+          - $ref: '#/components/schemas/BouwkundigElementen-Bouwdeel'
+          description: Het bouwdeel behorend bij het bouwkundig element.
+        cluster:
+          allOf:
+          - $ref: '#/components/schemas/Cluster-sleutels'
+          description: Het cluster waarbinnen het bouwkundig element valt.
+        eenheid:
+          allOf:
+          - $ref: '#/components/schemas/Eenheid-sleutels'
+          description: De eenheid waarbinnen het bouwkundig element valt.
+        garanties:
+          description: De garanties behorend bij het bouwkundig element.
+          type: array
+          items:
+            $ref: '#/components/schemas/BouwkundigElementen-Garantie'
+        locatie:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De locatie waar het bouwkundig element zich bevindt. Bijvoorbeeld huiskamer of toilet. Referentiedatasoort DEFECTLOCATIE.
+        overeenkomsten:
+          description: De onderhoudsovereenkomsten die voor het bouwkundigelement gelden.
+          type: array
+          items:
+            $ref: '#/components/schemas/Overeenkomst-sleutels'
+        plaatsing:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Op welke wijze het bouwkundig element is aangebracht. Bijv. bij de bouw, renovatie, onderhoud of door huurder. Referentiedatasoort BOUWKUNDIGELEMENTPLAATSING.
+        relaties:
+          description: Bijv. de eigenaar of beheerder van het bouwkundig element, bijvoorbeeld de corporatie, een instelling, particulier of een VvE in een gemengd (verkoop/verhuur) gebouw.
+          type: array
+          items:
+            $ref: '#/components/schemas/BouwkundigElementen-Relatie'
+    Referentiedata:
+      type: object
+      properties:
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.
+        naam:
+          type: string
+          format: any
+          description: De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.
+    Cluster-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        naam:
+          type: string
+          format: any
+          description: De naam van de cluster.
+    Eenheid-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Overeenkomst-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn. Referentiedatasoort OVEREENKOMSTSOORT.
+    BouwkundigElementen-Garantie:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        omschrijving:
+          type: string
+          format: any
+          description: De omschrijving van de garantie.
+        begindatum:
+          type: string
+          format: date
+          description: De begindatum van de garantie.
+        einddatum:
+          type: string
+          format: date
+          description: De einddatum van de garantie.
+        relatie:
+          allOf:
+          - $ref: '#/components/schemas/BouwkundigElementen-Relatie'
+          description: De leverancier die het product of dienst heeft geleverd.
+    BouwkundigElementen-Onderhoudsleverancier:
+      allOf:
+      - $ref: '#/components/schemas/BouwkundigElementen-Rechtspersoon-basis'
+      - type: object
+        properties:
+          specialisme:
+            allOf:
+            - $ref: '#/components/schemas/Referentiedata'
+            description: Het specialisme van de onderhoudsleverancier. Bijv. Schilder, Verwarmingsmonteur, hovenier etc. Referentiedatasoort ONDERHOUDSPECIALISME.
+    BouwkundigElementen-Rechtspersoon-basis:
+      allOf:
+      - $ref: '#/components/schemas/BouwkundigElementen-Relatie-basis'
+      - type: object
+        properties:
+          globaalLocatienummer:
+            type: string
+            format: any
+            description: Een wereldwijd nummer ter identificatie van een partij of locatie. Het dertiencijferige nummer (GLN) wordt uitgegeven door GS1.
+          naam:
+            type: string
+            format: any
+            description: De naam de rechtspersoon.
+          btwNummer:
+            type: string
+            format: any
+            description: Het BTW nummer van de rechtspersoon.
+          kvkNummer:
+            type: string
+            format: any
+            description: Het KVK nummer van de rechtspersoon.
+          organisatievorm:
+            allOf:
+            - $ref: '#/components/schemas/Referentiedata'
+            description: 'De organisatievorm van de rechtspersoon. Bijvoorbeeld: BV, NV, stichting of vereniging. Ook wel rechtsvorm genoemd. Referentiedatasoort ORGANISATIEVORM.'
+    BouwkundigElementen-Rechtspersoon:
+      allOf:
+      - $ref: '#/components/schemas/BouwkundigElementen-Rechtspersoon-basis'
+      - type: object
+    BouwkundigElementen-Relatie-basis:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedatasoort RELATIESOORT.'
+        detailSoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedatasoort RELATIEDETAILSOORT.'
+        contactgegevens:
+          description: De contactgegevens van de relatie.
+          type: array
+          items:
+            $ref: '#/components/schemas/Contactgegeven-sleutels'
+        relaties:
+          description: De gerelateerde relaties. Bijv. contactpersonen, huishoudleden etc.
+          type: array
+          items:
+            $ref: '#/components/schemas/Relatie-sleutels'
+        rollen:
+          description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
+          type: array
+          items:
+            $ref: '#/components/schemas/BouwkundigElementen-Relatierol'
+    Contactgegeven-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort communicatie. Bijvoorbeeld: Telefoon, E-mail, .Social media etc. Referentiedatasoort CONTACTGEGEVENSOORT.'
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De status van het contactgegeven. Bijv. Aangemaakt, Gevalideerd, Ongeldig etc. Referentiedatasoort CONTACTGEGEVENSTATUS.
+    Relatie-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedatasoort RELATIESOORT.'
+        detailSoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedatasoort RELATIEDETAILSOORT.'
+        rollen:
+          description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Relatierol-sleutels'
+    Relatierol-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    BouwkundigElementen-Relatie:
+      oneOf:
+        - $ref: '#/components/schemas/BouwkundigElementen-Rechtspersoon'
+    BouwkundigElementen-Relatierol:
       type: object
       properties:
         id:
@@ -398,6 +1775,1893 @@ components:
           type: string
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort rol van de relatie. Bijvoorbeeld Klant, Prospect, Leverancier, Medewerker, Team etc. Referentiedatasoort RELATIEROLSOORT.
+        naam:
+          type: string
+          format: any
+          description: De naam van de relatie rol.
+    Clusters-Clusterbericht:
+      allOf:    
+        - $ref: '#/components/schemas/Clusters-Cluster'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Clusters-Cluster:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort cluster. Bijvoorbeeld, nieuwbouwcluster, onderhoudscluster, financieel cluster. Referentiedatasoort CLUSTERSOORT.
+        naam:
+          type: string
+          format: any
+          description: De naam van de cluster.
+        omschrijving:
+          type: string
+          format: any
+          description: De omschrijving van de cluster.
+        bovenliggendeCluster:
+          allOf:
+          - $ref: '#/components/schemas/Cluster-sleutels'
+          description: Het bovenliggende / overkoepelende cluster waar dit cluster eventueel onderdeel van is.
+        begindatum:
+          type: string
+          format: date
+          description: De begindatum van de cluster.
+        einddatum:
+          type: string
+          format: date
+          description: De einddatum van de cluster.
+        collectieveObjecten:
+          description: De collectieve objecten behorend bij de cluster.
+          type: array
+          items:
+            $ref: '#/components/schemas/CollectiefObject-sleutels'
+        conditiemeting:
+          allOf:
+          - $ref: '#/components/schemas/Conditiemeting-sleutels'
+          description: Aan een cluster kunnen meerdere conditiescores conform de NEN 2767 gekoppeld worden (per tijdvak).
+        eenheden:
+          description: De eenheden behorend bij de cluster.
+          type: array
+          items:
+            $ref: '#/components/schemas/Clusters-Eenheid'
+        garanties:
+          description: De garanties behorend bij de cluster.
+          type: array
+          items:
+            $ref: '#/components/schemas/Garantie-sleutels'
+        geometrie:
+          allOf:
+          - $ref: '#/components/schemas/Clusters-Geometrie'
+          description: De geometrie van de cluster.
+        overeenkomsten:
+          description: De onderhoudsovereenkomsten die voor het cluster gelden.
+          type: array
+          items:
+            $ref: '#/components/schemas/Overeenkomst-sleutels'
+        relaties:
+          description: De relaties die een speciale rol spelen voor het cluster bijvoorbeeld een Vereniging van eigenaren, een onderhoudsbedrijf, projectleider etc.
+          type: array
+          items:
+            $ref: '#/components/schemas/Clusters-Relatie'
+    CollectiefObject-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Conditiemeting-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Garantie-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Clusters-Eenheid:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'De dienstverlening (soort) die geboden kan worden met de eenheid. Voorbeeld: Woonruimte, Bedrijfsruimte, Parkeergelegenheid. Referentiedatasoort EENHEIDSOORT.'
+        detailSoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het type van de eenheid. Bijvoorbeeld: Hoekwoning, Tussenwoning, Flat, Maisonnette. Hiervoor wordt de lijst van de waarderingskamer als uitgangspunt genomen. Referentiedatasoort EENHEIDDETAILSOORT.'
+    Clusters-Geometrie-basis:
+      type: object
+      properties:
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'soort Geometrie: punt of omtrek Referentiedatasoort GEOMETRIESOORT.'
+    Clusters-Geometrie:
+      oneOf:
+        - $ref: '#/components/schemas/Clusters-Punt'
+        - $ref: '#/components/schemas/Clusters-Geometrie-basis'
+    Clusters-NatuurlijkPersoon:
+      allOf:
+      - $ref: '#/components/schemas/Clusters-Relatie-basis'
+      - type: object
+        properties:
+          aanhef:
+            type: string
+            format: any
+            description: De aanhef of aanspreking is een (meestal vriendelijke) introducerende zin van een brief of e-mail. Het gaat doorgaans om standaardformuleringen waarmee de schrijver zich tot de geadresseerde richt.
+          aanschrijfnaam:
+            type: string
+            format: any
+            description: De achternaam van de natuurlijk persoon zoals deze wenst te worden aangeschreven.
+          achternaam:
+            type: string
+            format: any
+            description: De achternaam van de natuurlijk persoon.
+          initialen:
+            type: string
+            format: any
+            description: De initialen van de natuurlijk persoon.
+          roepnaam:
+            type: string
+            format: any
+            description: De roepnaam van de natuurlijk persoon.
+          tussenvoegsels:
+            type: string
+            format: any
+            description: De tussenvoegsels behorende bij de naam.
+          voorletters:
+            type: string
+            format: any
+            description: Een voorletter is een afkorting van een voornaam, die in adressering veel wordt gebruikt. De voorletters geven in combinatie met de achternaam meestal een duidelijk onderscheid tussen leden van hetzelfde gezin of dezelfde familie. Indien iemand meerdere voornamen heeft dan worden de voorletters door een punt gescheiden.
+          voornaam:
+            type: string
+            format: any
+            description: De voornaam van de natuurlijk persoon.
+    Clusters-Punt:
+      allOf:
+      - $ref: '#/components/schemas/Clusters-Geometrie-basis'
+      - type: object
+        properties:
+          breedtegraad:
+            type: number
+            format: float
+            description: De breedtegraad.
+          lengtegraad:
+            type: number
+            format: float
+            description: De lengtegraad.
+    Clusters-Rechtspersoon:
+      allOf:
+      - $ref: '#/components/schemas/Clusters-Relatie-basis'
+      - type: object
+        properties:
+          kvkNummer:
+            type: string
+            format: any
+            description: Het KVK nummer van de rechtspersoon.
+          globaalLocatienummer:
+            type: string
+            format: any
+            description: Een wereldwijd nummer ter identificatie van een partij of locatie. Het dertiencijferige nummer (GLN) wordt uitgegeven door GS1.
+          naam:
+            type: string
+            format: any
+            description: De naam de rechtspersoon.
+          btwNummer:
+            type: string
+            format: any
+            description: Het BTW nummer van de rechtspersoon.
+          organisatievorm:
+            allOf:
+            - $ref: '#/components/schemas/Referentiedata'
+            description: 'De organisatievorm van de rechtspersoon. Bijvoorbeeld: BV, NV, stichting of vereniging. Ook wel rechtsvorm genoemd. Referentiedatasoort ORGANISATIEVORM.'
+    Clusters-Relatie-basis:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedatasoort RELATIESOORT.'
+        detailSoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedatasoort RELATIEDETAILSOORT.'
+        relaties:
+          description: De gerelateerde relaties. Bijv. contactpersonen, huishoudleden etc.
+          type: array
+          items:
+            $ref: '#/components/schemas/Relatie-sleutels'
+        rollen:
+          description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Clusters-Relatierol'
+    Clusters-Relatie:
+      oneOf:
+        - $ref: '#/components/schemas/Clusters-NatuurlijkPersoon'
+        - $ref: '#/components/schemas/Clusters-Rechtspersoon'
+    Clusters-Relatierol:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort rol van de relatie. Bijvoorbeeld Klant, Prospect, Leverancier, Medewerker, Team etc. Referentiedatasoort RELATIEROLSOORT.
+        naam:
+          type: string
+          format: any
+          description: De naam van de relatie rol.
+    Eenheden-Adres-basis:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort adres. Bijv. eenheidadres, postadres of buitenlands adres. Referentiedatasoort ADRESSOORT.
+        adres:
+          type: string
+          format: any
+          description: 'De samenstelling van de attributen: straatnaam, huisnummer, huisletter en huisnummerToevoeging.'
+        huisletter:
+          type: string
+          format: any
+          description: De huisletter door of namens het gemeentebestuur ten aanzien van een adresseerbaar object toegekende toevoeging aan een huisnummer in de vorm van een alfanumeriek teken.
+        huisnummer:
+          type: string
+          format: any
+          description: Het huisnummer dat door of namens het gemeentebestuur ten aanzien van een adresseerbaar object toegekende nummering.
+        huisnummerToevoeging:
+          type: string
+          format: any
+          description: De huisnummer toevoeging van het adres.
+        postcode:
+          type: string
+          format: any
+          description: De postcode van het adres.
+        straatnaam:
+          type: string
+          format: any
+          description: De straatnaam behorend bij het adres.
+    Eenheden-Adres:
+      oneOf:
+        - $ref: '#/components/schemas/Eenheden-Eenheidadres'
+        - $ref: '#/components/schemas/Eenheden-Adres-basis'
+    Eenheden-AdresseerbaarObjectBasisregistratie:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        bagGebruikersOppervlakte:
+          type: integer
+          format: int32
+          description: De gebruikersoppervlakte zoals in de BAG beschreven.
+        bagGebruiksdoelen:
+          description: De categorisering van de gebruiksdoelen van het betreffende verblijfsobject, zoals dit formeel door de overheid als zodanig is toegestaan. Referentiedatasoort GEBRUIKERSDOEL.
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
+        bagHoofdadres:
+          allOf:
+          - $ref: '#/components/schemas/Adres-sleutels'
+          description: Het hoofdadres van het adresseerbaar object uit de basisregistratie.
+        bagIdentificatie:
+          type: string
+          format: any
+          description: De unieke aanduiding van een adresseerbaar object. (standplaats, ligplaats, of verblijfsobject)
+        bagInOnderzoek:
+          type: boolean
+          description: De aanduiding waarmee wordt aangegeven dat een onderzoek wordt uitgevoerd naar de juistheid van een of meerdere gegevens van het betreffende object.
+        bagNevenadressen:
+          description: De adressen die gerelateerd zijn aan het adresseerbaar object uit de basisregistratie. Het hoofdadres maakt geen deel uit van deze collectie.
+          type: array
+          items:
+            $ref: '#/components/schemas/Adres-sleutels'
+        bagOfficieel:
+          type: boolean
+          description: De aanduiding waarmee kan worden aangegeven dat een object in de basisregistratie is opgenomen als gevolg van een feitelijke constatering, zonder dat er op het moment van opname sprake is van een formele grondslag voor deze opname.
+        bagOppervlakteVerblijfsobject:
+          type: integer
+          format: int32
+          description: De gebruiksoppervlakte van een verblijfsobject in gehele vierkante meters.
+        bagPandenBasisregistratie:
+          description: De panden die gerelateerd zijn aan het adresseerbaar object uit de basisregistratie.
+          type: array
+          items:
+            $ref: '#/components/schemas/Eenheden-BagPand'
+        bagStatus:
+          type: string
+          format: any
+          description: De fase van de levenscyclus van een standplaats, ligplaats of verblijfsobject waarin het betreffende object zich bevindt.
+        geometrie:
+          allOf:
+          - $ref: '#/components/schemas/Geometrie-sleutels'
+          description: De geometrie van het adresseerbaar object uit de basisregistratie.
+    Adres-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Geometrie-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'soort Geometrie: punt of omtrek Referentiedatasoort GEOMETRIESOORT.'
+    Eenheden-BagPand:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        bagIdentificatie:
+          type: string
+          format: any
+          description: Het BAG registratienummer van het pand zoals bekend is bij de BAG.
+        bagStatus:
+          type: string
+          format: any
+          description: De fase van de levenscyclus van een pand, waarin het betreffende pand zich bevindt. Dit attribuut is afkomstig uit de BAG.
+        bagInOnderzoek:
+          type: boolean
+          description: De aanduiding waarmee wordt aangegeven dat een onderzoek wordt uitgevoerd naar de juistheid van een of meerdere gegevens van het betreffende object.
+        bagOfficieel:
+          type: boolean
+          description: De aanduiding waarmee kan worden aangegeven dat een object in de basisregistratie is opgenomen als gevolg van een feitelijke constatering, zonder dat er op het moment van opname sprake is van een formele grondslag voor deze opname.
+        bagBouwdatum:
+          type: string
+          format: date
+          description: De aanduiding van het jaar waarin een pand oorspronkelijk als bouwkundig gereed is opgeleverd.
+    Eenheden-Beleidswaarde:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        achterstalligOnderhoud:
+          type: number
+          format: float
+          description: Bedrag aan achterstallig onderhoud dat als correctie is toegepast.
+        afkoopErfpacht:
+          type: number
+          format: float
+          description: Het bedrag aan afkoop erfpacht dat als correctie is toegepast.
+        beheerAfslag:
+          type: number
+          format: float
+          description: 'Beheer (beheer): eventuele extra beheeruitgaven die gepaard gaan met de sociale doelgroep.'
+        beheerskosten:
+          type: number
+          format: float
+          description: Beheerkosten op het moment van waarderen zoals toegepast in de beleidswaardeberekening.
+        beschikbaarheidAfslag:
+          type: number
+          format: float
+          description: 'Beschikbaarheid (doorexploiteren): in stand houden van een sociale portefeuille.'
+        betaalbaarheidAfslag:
+          type: number
+          format: float
+          description: 'Betaalbaarheid (huur): in stand houden van sociale huurprijzen passend bij de doelgroep.'
+        kwaliteitAfslag:
+          type: number
+          format: float
+          description: 'Kwaliteit (onderhoud): eventuele extra onderhoudsuitgaven voor het op lange termijn in stand houden van de portefeuille.'
+        marktwaarde:
+          allOf:
+          - $ref: '#/components/schemas/Eenheden-Marktwaarde'
+          description: De verwijzing naar de marktwaarde die ten grondslag ligt aan deze beleidswaarde.
+        onderhoudskosten:
+          type: number
+          format: float
+          description: Onderhoudskosten op het moment van waarderen zoals toegepast in de beleidswaardeberekening.
+        streefhuur:
+          type: number
+          format: float
+          description: Actuele streefhuur op het moment van waarderen zoals toegepast in de beleidswaardeberekening.
+        waarde:
+          type: number
+          format: float
+          description: 'De beleidswaarde van de eenheid waarde die rekening houdt met het beleid van de corporatie. Marktwaarde minus de afslagen voor beschikbaarheid, betaalbaarheid, kwaliteit en beheer, vormt de beleidswaarde (bron beleidswaarde WSW). Let op: het verslagjaar waarvoor de beleidswaarde is bepaald is het verslagjaar van de marktwaarde die de grondslag vormt van de beleidswaarde.'
+    Eenheden-Buurt:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        naam:
+          type: string
+          format: any
+          description: De naam van de buurt.
+    Eenheden-Cluster:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort cluster. Bijvoorbeeld, nieuwbouwcluster, onderhoudscluster, financieel cluster. Referentiedatasoort CLUSTERSOORT.
+        naam:
+          type: string
+          format: any
+          description: De naam van de cluster.
+    Eenheden-Eenheidbericht:
+      allOf:    
+        - $ref: '#/components/schemas/Eenheden-Eenheid'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Eenheden-Eenheid:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'De dienstverlening (soort) die geboden kan worden met de eenheid. Voorbeeld: Woonruimte, Bedrijfsruimte, Parkeergelegenheid. Referentiedatasoort EENHEIDSOORT.'
+        detailSoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het type van de eenheid. Bijvoorbeeld: Hoekwoning, Tussenwoning, Flat, Maisonnette. Hiervoor wordt de lijst van de waarderingskamer als uitgangspunt genomen. Referentiedatasoort EENHEIDDETAILSOORT.'
+        naam:
+          type: string
+          format: any
+          description: De naam van de eenheid.
+        omschrijving:
+          type: string
+          format: any
+          description: De omschrijving van de eenheid.
+        bouwnummer:
+          type: string
+          format: any
+          description: Het bouwnummer behorende bij de eenheid. Dit wordt aan een eenheid toegekend bij nieuwbouw van de eenheid. Vaak is op dat moment het adres van de eenheid nog niet bepaald.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van de eenheid, bijvoorbeeld: Leegstand, Uit beheer, Renovatie, Verhuurd, Verkocht Referentiedatasoort EENHEIDSTATUS.'
+        detailStatus:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'De detailstatus (ook wel substatus) van een status. De detailstatus geeft een extra reden op van de eenheid status die de eenheid heeft. Bijvoorbeeld: de status is Renovatie, de detailstatus geeft aan dat het om planmatig onderhoud gaat. Referentiedatasoort EENHEIDDETAILSTATUS.'
+        beginBouwdatum:
+          type: string
+          format: date
+          description: De begindatum van de bouw van de eenheid.
+        bouwjaar:
+          type: integer
+          format: int32
+          description: Het bouwjaar waarin de bouw van de woning is afgerond.
+        opleverdatum:
+          type: string
+          format: date
+          description: De opleverdatum van de eenheid. De bouw van de eenheid is dan gereed of de eenheid is beschikbaar voor een volgende gebruiker.
+        inExploitatiedatum:
+          type: string
+          format: date
+          description: De datum waarop de eenheid in exploitatie is gegaan. We spreken over exploitatie als de eenheid in beheer is met als doel dat er resultaat wordt behaald.
+        uitExploitatiedatum:
+          type: string
+          format: date
+          description: De datum waarop de eenheid uit exploitatie is gegaan, zowel het beheer als andere activiteiten stoppen.
+        aantalOnzelfstandigeEenheden:
+          type: integer
+          format: int32
+          description: Het aantal onzelfstandige eenheden (units, kamers) dat binnen de als geheel verhuurde eenheid valt. Bedoeld om het aantal onzelfstandige eenheden te kunnen verantwoorden in (verplichte) rapportages zoals dVi. Het attribuut wordt gebruikt als slechts één eenheid (met één huurovereenkomst) in het administratieve systeem is vastgelegd, in plaats van de (door VERA geadviseerde) registratie van alle eenheden met een bovenliggendeEenheid.
+        aanvullendeDoelgroep:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De aanvullende doelgroep waarvoor de woning het meest geschikt is en waarvoor meestal ook voorrang wordt verleend. Bijv. Ouderen, Geestelijk gehandicapten, Lichamelijk gehandicapten, GGZ-Patiënten etc. Eventueel te gebruiken in combinatie met doelgroep. Referentiedatasoort AANVULLENDEDOELGROEP.
+        adres:
+          allOf:
+          - $ref: '#/components/schemas/Eenheden-Adres'
+          description: Het adres van de eenheid.
+        adresseerbaarObjectBasisregistratie:
+          allOf:
+          - $ref: '#/components/schemas/Eenheden-AdresseerbaarObjectBasisregistratie'
+          description: Het adresseerbare object uit de BAG die overeenkomt met de eenheid.
+        beleidswaarde:
+          description: De beleidswaarden behorende bij de eenheid. Vanaf versie 4.0 wordt dit attribuut in meervoud geschreven
+          type: array
+          items:
+            $ref: '#/components/schemas/Eenheden-Beleidswaarde'
+        beoogdUitExploitatieDatum:
+          type: string
+          format: date
+          description: Verwachte datum waarop de eenheid aan het bezit zal worden onttrokken door sloop of verkoop.
+        bestemming:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Door de corporatie bepaalde bestemming van de eenheid bij mutatie (sloop, verkoop, huur). In AddresseerbaarObjectRegistratie wordt met het attribuut gebruiksdoel aangegeven wat volgens de gemeente het gebruiksdoel van de eenheid is (wonen, werken, zorg, enz.) Referentiedatasoort BESTEMMING.
+        bovenliggendeEenheid:
+          allOf:
+          - $ref: '#/components/schemas/Eenheid-sleutels'
+          description: De bovenliggende eenheid waarvan de eenheid onderdeel van uit maakt.
+        brutohuur:
+          type: number
+          format: float
+          description: De brutohuur in euro's die geregistreerd staat bij de eenheid. De brutohuur is de netto huur (of kale huur) inclusief alle huurcomponenten en inclusief BTW.
+        clusters:
+          description: De clusters waar de eenheid onderdeel van uitmaakt.
+          type: array
+          items:
+            $ref: '#/components/schemas/Eenheden-Cluster'
+        collectieveObjecten:
+          description: De collectieve objecten behorend bij de eenheid.
+          type: array
+          items:
+            $ref: '#/components/schemas/CollectiefObject-sleutels'
+        Criteria:
+          description: De voorwaarden waaraan de bewoner moet voldoen om in aanmerking te komen of voorrang te krijgen voor de eenheid.
+          type: array
+          items:
+            $ref: '#/components/schemas/Eenheden-Eenheidcriterium'
+        doelgroep:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De doelgroep waarvoor de eenheid bestemd is, bijv. zorgwoning, jongerenwoning, seniorenwoning, eengezinswoning, starterswoning etc. Eventueel te gebruiken in combinatie met aanvullendeDoelgroep. Referentiedatasoort DOELGROEP.
+        energieprestaties:
+          description: De huidige energieprestatie(s) van de eenheid.
+          type: array
+          items:
+            $ref: '#/components/schemas/Eenheden-Energieprestatie'
+        energievoorzieningen:
+          description: Voorzieningen met betrekking tot energie zoals zonnepanelen en oplaadpunten Referentiedatasoort EENHEIDENERGIEVOORZIENING.
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
+        etage:
+          type: integer
+          format: int32
+          description: De etage waarop de eenheid zich bevindt.
+        gebruiksoppervlakte:
+          type: integer
+          format: int32
+          description: De gebruiksoppervlakte van een eenheid(verblijfsobject) in gehele vierkante meters, gemeten conform NEN 2580. Te gebruiken voor verantwoording dVi. Naast gebruiksoppervlakte is ook een attribuut totaleOppervlakte beschikbaar.
+        inExploitatieReden:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'De reden voor het in exploitatie nemen van een eenheid. Bijvoorbeeld: verhuur of beheer namens andere eigenaren. Referentiedatasoort INEXPLOITATIEREDEN.'
+        interieur:
+          description: Binnenruimte van de woning zoals gemeubileerd en vloerbedekking in de woonkamer. Referentiedatasoort EENHEIDINTERIEUR.
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
+        isolatie:
+          description: Getroffen isolatie maatregelen in de eenheid. Referentiedatasoort EENHEIDISOLATIE.
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
+        juridischEigendomspercentage:
+          type: integer
+          format: int32
+          description: Het percentage juridisch eigendom zoals vastgelegd in de eigendomsakte.
+        kadastraalNummer:
+          type: string
+          format: any
+          description: Het kadastraalnummer behorend bij de eenheid.
+        kamersAantal:
+          type: integer
+          format: int32
+          description: Het aantal leefruimten en slaapkamers behorende bij de eenheid.
+        klimaatbeheersing:
+          description: Verzameling van kenmerken die het binnenklimaat (lucht, warmte en koeling) regelen in de eenheid. Referentiedatasoort EENHEIDKLIMAATBEHEERSING.
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
+        kwaliteitsniveau:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het kwaliteitsniveau van de eenheid. Referentiedatasoort KWALITEITSNIVEAU.
+        ligging:
+          description: 'De omschrijving van de situering van de eenheid behorend bij de eenheid. Bijvoorbeeld: Ligt aan drukke weg en vrij uitzicht Referentiedatasoort EENHEIDLIGGING.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
+        maatschappelijkLabel:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het label waarmee het maatschappelijk en economisch belang van de dienstverlening wordt aangegeven: behoort de eenheid tot de DAEB-tak of tot de niet-DAEB-tak. Het label op de eenheid kan afwijken van het maatschappelijk label van de huurovereenkomst. Hiermee kan worden aangegeven dat een eenheid die behoort tot de niet-DAEB tak als DAEB-verhuring verantwoord moet worden. Referentiedatasoort MAATSCHAPPELIJKLABEL.'
+        monumenten:
+          description: De aanduiding die aangeeft of de eenheid een monument is, en ook welke soort monument het is. Bijvoorbeeld rijksmonument, beschermd stadsgezicht etc. Een eenheid kan onder meerdere typen monumenten vallen. Referentiedatasoort EENHEIDMONUMENT.
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
+        onderhoudslabel:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het onderhoudslabel geeft aan hoe hoog of laag het onderhoudsniveau van het betreffende eenheid moet zijn. Hierbij wordt rekening gehouden met het soort bewoners en de toekomst van het pand. Referentiedatasoort ONDERHOUDSLABEL.
+        panden:
+          description: De panden behorend bij een eenheid.
+          type: array
+          items:
+            $ref: '#/components/schemas/Eenheden-Pand'
+        prijscomponenten:
+          description: De prijscomponenten behorend bij de eenheid. Bijvoorbeel huurcomponenten of maandelijkse lasten.
+          type: array
+          items:
+            $ref: '#/components/schemas/Eenheden-Prijscomponent'
+        rayon:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het rayon waar de eenheid in valt. Waarden zijn corporatiespecifiek en daarom niet in de referentiedata (bijlage G) beschreven. Referentiedatasoort RAYON.
+        rekenhuur:
+          type: number
+          format: float
+          description: De subsidiabele huur in euro's die geregistreerd staat bij de eenheid. De subsidiabele huur is het bedrag van de huur dat in aanmerking komt voor huurtoeslag.
+        relaties:
+          description: Bij.v de eigenaar, beheerder en contactpersonen die gekoppeld zijn aan de eenheid. Met de koppeling naar Relatierol kan de soort rol van de relatie ten opzichte van de eenheid vastgelegd worden.
+          type: array
+          items:
+            $ref: '#/components/schemas/Eenheden-Relatie'
+        ruimten:
+          description: De verschillende ruimtes behorend bij de eenheid Bij. 'Achtertuin' of 'Woonkamer'.
+          type: array
+          items:
+            $ref: '#/components/schemas/Eenheden-Ruimte'
+        sanitair:
+          description: Sanitaire voorzieningen Referentiedatasoort EENHEIDSANITAIR.
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
+        streefhuur:
+          type: number
+          format: float
+          description: De netto huur in euro's waarnaar de woningcorporatie streeft.
+        toegankelijkheidslabel:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het toegankelijkheidslabel van de eenheid. Bijvoorbeeld, de eenheid is geschikt voor minder validen. Referentiedatasoort TOEGANKELIJKHEIDSLABEL.
+        totaalInhoud:
+          type: number
+          format: float
+          description: De totale inhoud van de eenheid in m3. Zowel bewoonbare als onbewoonbare vertrekken worden hierbij meegeteld.
+        totaleOppervlakte:
+          type: number
+          format: float
+          description: 'De totale oppervlakte van een eenheid. Vertrekken die niet bewoonbaar zijn, worden hierbij meegeteld. Let op: niet te verwarren met de voor de dVi vereiste "gebruiksoppervlakte".'
+        uitExploitatieReden:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'De reden voor het uit exploitatie nemen van een eenheid. Voorbeeld: sloop. Referentiedatasoort UITEXPLOITATIEREDEN.'
+        verkoop:
+          type: boolean
+          description: De waarde die aangeeft of de eenheid beschikbaar is voor de verkoop.
+        vertrekkenAantal:
+          type: integer
+          format: int32
+          description: Het aantal vertrekken behorende bij de eenheid.
+        verwarmdeVertrekkenAantal:
+          type: integer
+          format: int32
+          description: Het aantal verwarmde vertrekken van de eenheid.
+        vestiging:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De vestiging van de vastgoedaanbieder die de woning heeft aangeboden. Referentiedatasoort VESTIGING.
+        volgnummer:
+          type: string
+          format: any
+          description: Het volgnummer van een eenheid, zoals een appartementsaanduiding, of een nummering van garageboxen.
+        vraagprijs:
+          type: number
+          format: float
+          description: De vraagprijs voor de verkoop van de eenheid.
+        Woningwaarderingstelsel:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het woningwaardering stelsel geeft aan welk puntensysteem voor de eenheid van toepassing is: het puntensysteem voor zelfstandige woonruimten, het puntensysteem voor onzelfstandige woonruimten, of het puntensysteem voor woonwagens en standplaatsen. Referentiedatasoort WONINGWAARDERINGSTELSEL.'
+        woonvorm:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De woonvorm van de eenheid. Bijvoorbeeld groepswonen. Referentiedatasoort WOONVORM.
+        wozEenheden:
+          description: De WOZ eenheden behorend bij de eenheid. Dit zijn de WOZ waarden behorende bij de eenheid.
+          type: array
+          items:
+            $ref: '#/components/schemas/Eenheden-WozEenheid'
+        zelfstandig:
+          type: boolean
+          description: Geeft aan of het een zelfstandige of onzelfstandige eenheid betreft. Dit gegeven wordt ook gebruikt bij het bepalen van het woningwaardering volgens het woningwaarderingsstelsel.
+        zorgfaciliteitOmschrijving:
+          type: string
+          format: any
+          description: De omschrijving van de zorgfaciliteit behorende bij de eenheid.
+    Eenheden-Eenheidadres:
+      allOf:
+      - $ref: '#/components/schemas/Eenheden-Adres-basis'
+      - type: object
+        properties:
+          buurt:
+            allOf:
+            - $ref: '#/components/schemas/Eenheden-Buurt'
+            description: De buurt behorend bij het adres.
+          gemeente:
+            allOf:
+            - $ref: '#/components/schemas/Eenheden-Gemeente'
+            description: De gemeente behorend bij het adres.
+          geometrie:
+            allOf:
+            - $ref: '#/components/schemas/Eenheden-Geometrie'
+            description: De geometrie van het adres.
+          land:
+            allOf:
+            - $ref: '#/components/schemas/Referentiedata'
+            description: Het land waarin het adres zich bevindt. Referentiedatasoort LAND.
+          wijk:
+            allOf:
+            - $ref: '#/components/schemas/Eenheden-Wijk'
+            description: De wijk behorend bij het adres.
+          woonplaats:
+            allOf:
+            - $ref: '#/components/schemas/Eenheden-Woonplaats'
+            description: De woonplaats waarin het adres zich bevindt.
+    Eenheden-Eenheidcriterium:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort criterium. Bijv. Binding, Groep, Indicatie, Urgentie. Referentiedatasoort EENHEIDCRITERIUMSOORT.
+        detailsoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort criterium op basis waarvan de woning passend is of waarop men voorang kan krijgen. Referentiedatasoort EENHEIDCRITERIUMDETAILSOORT.
+        aantalBovengrens:
+          type: number
+          format: float
+          description: Bovengrens, waarbij de eenheid van deze grootheid afhankelijk is van de soort regel, bijvoorbeeld personen, euro's, meters, etc.
+        aantalExact:
+          type: number
+          format: float
+          description: De exacte waarde. De eenheid van deze grootheid is afhankelijk van de soort regel, bijvoorbeeld personen, euro's, vierkante meters, etc.
+        aantalOndergrens:
+          type: number
+          format: float
+          description: Ondergrens, waarbij de eenheid van deze grootheid afhankelijk is van de soort regel, bijvoorbeeld personen, euro's of vierkante meters.
+        doelgroep:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De doelgroep waarop het criterium van toepassing is. Referentiedatasoort DOELGROEP.
+        toepassing:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Of het een selectie- of sorteercriterium betreft. Referentiedatasoort EENHEIDCRITERIUMTOEPASSING.
+    Eenheden-EenheidVoorwaarden:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        maximumAantalPersonen:
+          type: integer
+          format: int32
+          description: Het maximaal aantal personen waarvoor de eenheid geschikt is.
+        maximuminkomen:
+          type: number
+          format: float
+          description: Het maximuminkomen dat de bewoner moet hebben om in aanmerking te komen voor de eenheid.
+        maximumleeftijd:
+          type: integer
+          format: int32
+          description: De maximumleeftijd waaraan de bewoner moet voldoen om in aanmerking te komen voor de eenheid.
+        maximunleeftijd:
+          type: integer
+          format: int32
+          description: De maximumleeftijd waaraan de bewoner moet voldoen om in aanmerking te komen voor de eenheid. OBSOLETE
+          deprecated: true
+        minimumAantalPersonen:
+          type: integer
+          format: int32
+          description: Het minimum aantal personen waarvoor de eenheid geschikt is.
+        minimuminkomen:
+          type: number
+          format: float
+          description: Het minimuminkomen dat de bewoner moet hebben om in aanmerking te komen voor de eenheid.
+        minimumleeftijd:
+          type: integer
+          format: int32
+          description: De minimumleeftijd waaraan de bewoner moet voldoen om in aanmerking te komen voor de eenheid.
+        selectiecriteria:
+          description: De criteria waaraan men moet voldoen om in aanmerking te komen voor deze eenheid. Referentiedatasoort SELECTIECRITERIA.
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
+        voorrangscriteria:
+          description: De criteria waaraan men moet voldoen om voorrang te krijgen voor deze eenheid. Referentiedatasoort VOORRANGSCRITERIA.
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
+    Eenheden-Energieprestatie:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort energieprestatie. Bijv. Voorloping Energielabel, Energieprestatieindex,  etc.. Referentiedatasoort ENERGIEPRESTATIESOORT.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Geeft de status van de energieprestatie aan: Voorlopig of Definitief. Een voorlopige energieprestatie wordt ook wel "pré-label" genoemd. Een definitieve energieprestatie is afgemeld bij de Rijksoverheid. Referentiedatasoort ENERGIEPRESTATIESTATUS.'
+        begindatum:
+          type: string
+          format: date
+          description: De datum die aangeeft vanaf welk moment de energieprestatie geldt. Indien de energieprestatie is vastgesteld door een adviseur dan is deze datum gelijk aan de opnamedatum. Indien het een voorlopige energieprestatie (pré-label) is dan is de begindatum de datum waarop de energieprestatie is berekend op basis van de beschikbare woningkenmerken. De combinatie van start en einddatum geven een sluitende periode waarin een bepaald energielabel.
+        einddatum:
+          type: string
+          format: date
+          description: De datum die aangeeft tot welk moment de energieprestatie geldig is. Indien de energieprestatie een officiële status heft (afgemeld bij de Rijksoverheid) dan is dit de 'Geldig tot'-datum van de registratie. Indien het een voorlopige energieprestatie is, dan kan de einddatum leeg zijn.
+        registratiedatum:
+          type: string
+          format: date-time
+          description: De datum waarop de energieprestatie is geregistreerd bij de Rijksoverheid. Als sprake is van een voorlopige energieprestatie is geen registratiedatum bekend.
+        index:
+          type: number
+          format: float
+          description: De energieprestatie index van de eenheid. OBSOLETE
+          deprecated: true
+        label:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het energielabel voor woningen geeft met klassen (A**** tot en met G) en kleuren (groen tot en met rood) aan hoe energiezuinig een huis is ten opzichte van andere soortgelijke woningen. Energielabel A (donkergroen) is zuinig, energielabel G (rood) is onzuinig. Het energielabel is meestal een afgeleide van de waarde van de energieprestatie. Referentiedatasoort ENERGIELABEL.
+        waarde:
+          type: string
+          format: any
+          description: 'De door een adviseur gemeten waarde die hoort bij de energieprestatie. De energieprestatiesoort bepaalt wat deze waarde representeert. Bijvoorbeeld: Energie-index of EP2 (het energielabel  is daarvan dan afgeleid), compactheid of opgewekte duurzame energie. Bij een voorlopig energielabel is geen waarde van toepassing.'
+    Eenheden-Gemeente:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        naam:
+          type: string
+          format: any
+          description: De naam van de gemeente.
+        provincie:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De provincie waar de gemeente onderdeel van is. Referentiedatasoort PROVINCIE.
+        samenwerkingsverband:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het regionale samenwerkingsverband waarbinnen de gemeente deelneemt. Referentiedatasoort SAMENWERKINGSVERBAND.
+    Eenheden-Geometrie-basis:
+      type: object
+      properties:
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'soort Geometrie: punt of omtrek Referentiedatasoort GEOMETRIESOORT.'
+    Eenheden-Geometrie:
+      oneOf:
+        - $ref: '#/components/schemas/Eenheden-Punt'
+        - $ref: '#/components/schemas/Eenheden-Geometrie-basis'
+    Eenheden-Marktwaarde:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        beheersKosten:
+          type: number
+          format: float
+          description: Beheerkosten op het moment van waarderen zoals toegepast in de martkwaardeberekening.
+        contractJaarhuur:
+          type: number
+          format: float
+          description: De contractueel afgesproken jaarhuur op het moment van waarderen.
+        disconteringsvoet:
+          type: number
+          format: float
+          description: Disconteringsvoet op het moment van waarderen.
+        doorexploiterenDisconteringsvoet:
+          type: number
+          format: float
+          description: Disconteringsvoet doorexploiteren op het moment van waarderen.
+        leegwaarde:
+          type: number
+          format: float
+          description: De geschatte verkoopprijs op basis van de kosten koper, vrij van huur en overige lasten (Handboek MVS).
+        marktJaarhuur:
+          type: number
+          format: float
+          description: Actuele markt jaarhuur op het moment van waarderen.
+        onderhoudsKosten:
+          type: number
+          format: float
+          description: Onderhoudskosten op het moment van waarderen zoals toegepast in de martkwaardeberekening.
+        verhuurderheffing:
+          type: number
+          format: float
+          description: De verhuurderheffing voor de volledige DCF-periode. De heffing wordt berekend als een percentage van de WOZ-waarde (Handboek MVS).
+        verslagJaar:
+          type: integer
+          format: int32
+          description: Het verslagjaar waarop de marktwaarde bepaling betrekking heeft.
+        waarde:
+          type: number
+          format: float
+          description: De vastgestelde taxatiewaarde, ook wel marktwaarde in verhuurde staat.
+    Eenheden-NatuurlijkPersoon:
+      allOf:
+      - $ref: '#/components/schemas/Eenheden-Relatie-basis'
+      - type: object
+        properties:
+          aanhef:
+            type: string
+            format: any
+            description: De aanhef of aanspreking is een (meestal vriendelijke) introducerende zin van een brief of e-mail. Het gaat doorgaans om standaardformuleringen waarmee de schrijver zich tot de geadresseerde richt.
+          aanschrijfnaam:
+            type: string
+            format: any
+            description: De achternaam van de natuurlijk persoon zoals deze wenst te worden aangeschreven.
+          achternaam:
+            type: string
+            format: any
+            description: De achternaam van de natuurlijk persoon.
+          initialen:
+            type: string
+            format: any
+            description: De initialen van de natuurlijk persoon.
+          roepnaam:
+            type: string
+            format: any
+            description: De roepnaam van de natuurlijk persoon.
+          tussenvoegsels:
+            type: string
+            format: any
+            description: De tussenvoegsels behorende bij de naam.
+          voorletters:
+            type: string
+            format: any
+            description: Een voorletter is een afkorting van een voornaam, die in adressering veel wordt gebruikt. De voorletters geven in combinatie met de achternaam meestal een duidelijk onderscheid tussen leden van hetzelfde gezin of dezelfde familie. Indien iemand meerdere voornamen heeft dan worden de voorletters door een punt gescheiden.
+          voornaam:
+            type: string
+            format: any
+            description: De voornaam van de natuurlijk persoon.
+    Eenheden-Pand:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        liftAanwezig:
+          type: boolean
+          description: De aanduiding geeft aan of in het pand in lift aanwezig is.
+    Eenheden-Prijscomponent:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Geeft aan om welk soort prijscomponent het betreft. Bijvoorbeeld een component voor een eenheid, of een component voor een overeenkomst. Referentiedatasoort PRIJSCOMPONENTSOORT.
+        detailSoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Geeft aan om welk detail soort prijscomponent het betreft. Bijvoorbeeld of het om service kosten gaat. Referentiedatasoort PRIJSCOMPONENTDETAILSOORT.
+        begindatum:
+          type: string
+          format: date-time
+          description: De begindatum van het prijscomponent. Dit is de datum waarop het prijscomponent van toepassing is.
+        einddatum:
+          type: string
+          format: date-time
+          description: De datum die aangeeft dat het prijscomponent niet meer van toepassing is. Er is dan een nieuwer prijscomponent van toepassing.
+        bedrag:
+          type: number
+          format: float
+          description: Het bedrag in euro's van het prijscomponent exclusief BTW.
+        bedragInclusiefBtw:
+          type: number
+          format: float
+          description: Het bedrag in euro's van het prijscomponent inclusief BTW.
+        btw:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De BTW van het prijscomponent. Referentiedatasoort BTW.
+        wijzigingsreden:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Geeft aan wat de reden was voor het aanpassen van het prijscomponent. Referentiedatasoort PRIJSCOMPONENTWIJZIGINGSREDEN.
+    Eenheden-Punt:
+      allOf:
+      - $ref: '#/components/schemas/Eenheden-Geometrie-basis'
+      - type: object
+        properties:
+          breedtegraad:
+            type: number
+            format: float
+            description: De breedtegraad.
+          lengtegraad:
+            type: number
+            format: float
+            description: De lengtegraad.
+    Eenheden-Rechtspersoon:
+      allOf:
+      - $ref: '#/components/schemas/Eenheden-Relatie-basis'
+      - type: object
+        properties:
+          kvkNummer:
+            type: string
+            format: any
+            description: Het KVK nummer van de rechtspersoon.
+          globaalLocatienummer:
+            type: string
+            format: any
+            description: Een wereldwijd nummer ter identificatie van een partij of locatie. Het dertiencijferige nummer (GLN) wordt uitgegeven door GS1.
+          naam:
+            type: string
+            format: any
+            description: De naam de rechtspersoon.
+          btwNummer:
+            type: string
+            format: any
+            description: Het BTW nummer van de rechtspersoon.
+          organisatievorm:
+            allOf:
+            - $ref: '#/components/schemas/Referentiedata'
+            description: 'De organisatievorm van de rechtspersoon. Bijvoorbeeld: BV, NV, stichting of vereniging. Ook wel rechtsvorm genoemd. Referentiedatasoort ORGANISATIEVORM.'
+    Eenheden-Relatie-basis:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedatasoort RELATIESOORT.'
+        detailSoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedatasoort RELATIEDETAILSOORT.'
+        relaties:
+          description: De gerelateerde relaties. Bijv. contactpersonen, huishoudleden etc.
+          type: array
+          items:
+            $ref: '#/components/schemas/Relatie-sleutels'
+        rollen:
+          description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Eenheden-Relatierol'
+    Eenheden-Relatie:
+      oneOf:
+        - $ref: '#/components/schemas/Eenheden-NatuurlijkPersoon'
+        - $ref: '#/components/schemas/Eenheden-Rechtspersoon'
+    Eenheden-Relatierol:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort rol van de relatie. Bijvoorbeeld Klant, Prospect, Leverancier, Medewerker, Team etc. Referentiedatasoort RELATIEROLSOORT.
+        naam:
+          type: string
+          format: any
+          description: De naam van de relatie rol.
+    Eenheden-Ruimte:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort ruimte. Ruimtes worden verdeeld in vertrekken die meetellen voor de woningwaardering, buitenruimtes en overige ruimtes. Referentiedatasoort RUIMTESOORT.
+        detailSoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het detailsoort van de ruimte. Bijv. Slaapkamer, Dakteras, Tuin etc. Referentiedatasoort RUIMTEDETAILSOORT.
+        naam:
+          type: string
+          format: any
+          description: De omschrijving van de ruimte.
+        inhoud:
+          type: number
+          format: float
+          description: De inhoud van de ruimte in m3.
+        ligging:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De ligging van de ruimte. Referentiedatasoort RUIMTELIGGING.
+        oppervlakte:
+          type: number
+          format: float
+          description: De oppervlakte van de ruimte
+    Eenheden-Stadsdeel:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        naam:
+          type: string
+          format: any
+          description: De naam van het stadsdeel.
+    Eenheden-Vertrek:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort ruimte. Ruimtes worden verdeeld in vertrekken die meetellen voor de woningwaardering, buitenruimtes en overige ruimtes. Referentiedatasoort RUIMTESOORT.
+        detailSoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het detailsoort van de ruimte. Bijv. Slaapkamer, Dakteras, Tuin etc. Referentiedatasoort RUIMTEDETAILSOORT.
+        naam:
+          type: string
+          format: any
+          description: De omschrijving van de ruimte.
+        inhoud:
+          type: number
+          format: float
+          description: De inhoud van de ruimte in m3.
+        oppervlakte:
+          type: number
+          format: float
+          description: De oppervlakte van de ruimte
+    Eenheden-Wijk:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        naam:
+          type: string
+          format: any
+          description: De naam van de wijk.
+        stadsdeel:
+          allOf:
+          - $ref: '#/components/schemas/Eenheden-Stadsdeel'
+          description: Het stadsdeel van de wijk.
+    Eenheden-Woonplaats:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        naam:
+          type: string
+          format: any
+          description: De naam van de woonplaats.
+    Eenheden-WozEenheid:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        vastgesteldeWaarde:
+          type: number
+          format: float
+          description: De WOZ waarde in euro's die eventueel wordt doorberekend aan de eenheid.
+        waardepeildatum:
+          type: string
+          format: date
+          description: De datum waarop de WOZ waarde is vastgesteld.
+    WoningwaarderingResultaten-Woningwaardering:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort onderdeel van de woningwaardering. Bijv. Energielabel, Oppervlakte etc. Referentiedatasoort WONINGWAARDERINGSOORT.
         begindatum:
           type: string
           format: date
@@ -417,7 +3681,11 @@ components:
         punten:
           type: number
           format: float
-          description: Het aantal woningwaarderingsstelsel punten dat is toegekend.
+          description: Het aantal punten dat is toegekend op basis van het opgegeven aantal, voor de betreffende woningwaardering. Voor bepaalde woningwaarderingGroepen binnen een woningwaarderingstelsel geldt dat het aantal punten op groepsniveau bepaald wordt. In die gevallen kan het attribuut aantal punten in deze klasse leeg blijven
+        waarde:
+          type: string
+          format: any
+          description: Bevat een niet numerieke waarde van de woningwaardering.
     WoningwaarderingResultaten-WoningwaarderingCriterium:
       type: object
       properties:
@@ -433,6 +3701,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -441,6 +3717,10 @@ components:
           type: string
           format: any
           description: De naam van het woningwaardering element.
+        bovenliggendeCriterium:
+          allOf:
+          - $ref: '#/components/schemas/WoningwaarderingCriterium-sleutels'
+          description: Het bovenliggende criterium waarvan het vriterium onderdeel van uit maakt. Via deze constructie kunnen optellingen van punten worden vastgelegd.
         meeteenheid:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
@@ -449,17 +3729,33 @@ components:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: Het woningwaardering stelsel bevat een apart puntensystemen voor de eenheidssoorten zelfstandige woningen, kamers, woonwagens en woonwagenstandplaatsen. Dit attribuut geeft het toe te passen puntensysteem aan. Referentiedatasoort WONINGWAARDERINGSTELSEL.
-    Referentiedata:
+    WoningwaarderingCriterium-sleutels:
       type: object
       properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.
-        naam:
-          type: string
-          format: any
-          description: De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
     WoningwaarderingResultaten-WoningwaarderingCriteriumGroep:
       type: object
       properties:
@@ -475,6 +3771,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -510,6 +3814,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -554,6 +3866,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -587,25 +3907,10 @@ components:
           type: number
           format: float
           description: Het aantal woningwaarderingsstelsel punten dat is toegekend.
-    Eenheid-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        stelsel:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het woningwaardering stelsel geeft aan welk puntensysteem voor de eenheid van toepassing is: het puntensysteem voor zelfstandige woonruimten, het puntensysteem voor onzelfstandige woonruimten, of het puntensysteem voor woonwagens en standplaatsen. Referentiedatasoort WONINGWAARDERINGSTELSEL.'
     Bericht-basis:
       type: object
       properties:
@@ -650,6 +3955,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -677,7 +3990,7 @@ components:
         beschrijving:
           type: string
           format: any
-          description: Beschrijving van het informatieobject.
+          description: Beschrijving van het informatieobject. Dit kan ook de (volledige) inhoud zijn van een memo of notitie.
         status:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
@@ -741,7 +4054,7 @@ components:
         formaat:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het digitale formaat (IANA media type) van het informatieobject. Referentiedatasoort INFORMATIEOBJECTFORMAAT.
+          description: 'Het digitale formaat (IANA media type) van het informatieobject.  Bijv. code:png naam:image/png. Referentiedatasoort INFORMATIEOBJECTFORMAAT.'
         gebruiksrechten:
           type: string
           format: any
@@ -791,6 +4104,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -802,61 +4123,18 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
-    Relatie-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedatasoort RELATIESOORT.'
-        detailSoort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedatasoort RELATIEDETAILSOORT.'
-        rollen:
-          description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
-          type: array
-          items:
-            $ref: '#/components/schemas/Relatierol-sleutels'
-    Relatierol-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
     Sturingslabel:
       type: object
       properties:

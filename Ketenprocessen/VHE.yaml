@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Verhuren Eenheden
-  description: API-specificatie van ketenproces 'Verhuren Eenheden'. Deze specificatie is gebaseerd op VERA versie 4.1.2+230616.14
+  description: API-specificatie van ketenproces 'Verhuren Eenheden'. Deze specificatie is gebaseerd op VERA versie 4.1.3+230929.8
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Copyright (c) Aedes vereniging van woningcorporaties"
     url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
-  version: '1.1.2+230616.14'
+  version: '1.1.3+230929.8'
 servers:
   - url: https://vhe.vera.io:{port}/{basePath}
     description: Productieserver
@@ -962,6 +962,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -994,7 +1002,7 @@ components:
           description: De eenheden behorend bij de cluster.
           type: array
           items:
-            $ref: '#/components/schemas/Eenheid-sleutels'
+            $ref: '#/components/schemas/Clusters-Eenheid'
         geometrie:
           allOf:
           - $ref: '#/components/schemas/Clusters-Geometrie'
@@ -1008,7 +1016,7 @@ components:
           description: De relaties die een speciale rol spelen voor het cluster bijvoorbeeld een Vereniging van eigenaren, een onderhoudsbedrijf, projectleider etc.
           type: array
           items:
-            $ref: '#/components/schemas/Relatie-sleutels'
+            $ref: '#/components/schemas/Clusters-Relatie'
     Referentiedata:
       type: object
       properties:
@@ -1035,6 +1043,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1043,25 +1059,6 @@ components:
           type: string
           format: any
           description: De naam van de cluster.
-    Eenheid-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
     Overeenkomst-sleutels:
       type: object
       properties:
@@ -1077,6 +1074,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1085,57 +1090,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn. Referentiedatasoort OVEREENKOMSTSOORT.
-    Relatie-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedatasoort RELATIESOORT.'
-        detailSoort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedatasoort RELATIEDETAILSOORT.'
-        rollen:
-          description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
-          type: array
-          items:
-            $ref: '#/components/schemas/Relatierol-sleutels'
-    Relatierol-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
     Clusters-Eenheid:
       type: object
       properties:
@@ -1151,6 +1105,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1202,6 +1164,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1218,7 +1188,7 @@ components:
           description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
           type: array
           items:
-            $ref: '#/components/schemas/Relatierol-sleutels'
+            $ref: '#/components/schemas/Clusters-Relatierol'
     Clusters-Relatierol:
       type: object
       properties:
@@ -1234,6 +1204,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1261,6 +1239,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1312,6 +1298,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1349,6 +1343,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1372,6 +1374,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1380,6 +1390,10 @@ components:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: Het soort cluster. Bijvoorbeeld, nieuwbouwcluster, onderhoudscluster, financieel cluster. Referentiedatasoort CLUSTERSOORT.
+        naam:
+          type: string
+          format: any
+          description: De naam van de cluster.
     Eenheden-Eenheidbericht:
       allOf:    
         - $ref: '#/components/schemas/Eenheden-Eenheid'
@@ -1399,6 +1413,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1588,7 +1610,8 @@ components:
         overigeVertrekkenTotaalOppervlakte:
           type: number
           format: float
-          description: Het totaal aan oppervlakte van overige vertrekken. Met overige vertrekken worden de ruimtes bedoeld die ook in de categorie overige ruimtes vallen bij het bepalen van de woningwaarderingspunten.
+          description: Het totaal aan oppervlakte van overige vertrekken. Met overige vertrekken worden de ruimtes bedoeld die ook in de categorie overige ruimtes vallen bij het bepalen van de woningwaarderingspunten. OBSOLETE
+          deprecated: true
         panden:
           description: De panden behorend bij een eenheid.
           type: array
@@ -1675,11 +1698,13 @@ components:
         woonvertrekInhoud:
           type: number
           format: float
-          description: De inhoud van de eenheid in m3 waarin gewoond kan worden.
+          description: De inhoud van de eenheid in m3 waarin gewoond kan worden. OBSOLETE
+          deprecated: true
         woonvertrekkenTotaalOppervlakte:
           type: number
           format: float
-          description: Het totaal aan oppervlakte van woonvertrekken. Met woonvertrekken worden de ruimtes bedoeld die ook in de categorie woonvertrekken vallen bij het bepalen van de woningwaarderingspunten.
+          description: Het totaal aan oppervlakte van woonvertrekken. Met woonvertrekken worden de ruimtes bedoeld die ook in de categorie woonvertrekken vallen bij het bepalen van de woningwaarderingspunten. OBSOLETE
+          deprecated: true
         woonvorm:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
@@ -1706,6 +1731,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1750,6 +1783,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
@@ -1793,6 +1834,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1805,10 +1854,15 @@ components:
           type: number
           format: float
           description: Het maximuminkomen dat de bewoner moet hebben om in aanmerking te komen voor de eenheid.
-        maximunleeftijd:
+        maximumleeftijd:
           type: integer
           format: int32
           description: De maximumleeftijd waaraan de bewoner moet voldoen om in aanmerking te komen voor de eenheid.
+        maximunleeftijd:
+          type: integer
+          format: int32
+          description: De maximumleeftijd waaraan de bewoner moet voldoen om in aanmerking te komen voor de eenheid. OBSOLETE
+          deprecated: true
         minimumAantalPersonen:
           type: integer
           format: int32
@@ -1846,6 +1900,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1853,7 +1915,7 @@ components:
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort energieprestatie. Bijv. Voorloping Energielabel, Energieprestatieindex etc.. Referentiedatasoort ENERGIEPRESTATIESOORT.
+          description: Het soort energieprestatie. Bijv. Voorloping Energielabel, Energieprestatieindex,  etc.. Referentiedatasoort ENERGIEPRESTATIESOORT.
         status:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
@@ -1868,7 +1930,7 @@ components:
           description: De datum die aangeeft tot welk moment de energieprestatie geldig is. Indien de energieprestatie een officiële status heft (afgemeld bij de Rijksoverheid) dan is dit de 'Geldig tot'-datum van de registratie. Indien het een voorlopige energieprestatie is, dan kan de einddatum leeg zijn.
         registratiedatum:
           type: string
-          format: date
+          format: date-time
           description: De datum waarop de energieprestatie is geregistreerd bij de Rijksoverheid. Als sprake is van een voorlopige energieprestatie is geen registratiedatum bekend.
         index:
           type: number
@@ -1882,7 +1944,7 @@ components:
         waarde:
           type: string
           format: any
-          description: 'De door een adviseur vastgestelde, of afgeleide, waarde die hoort bij de energieprestatie. De waarde is afhankelijk van het soort energieprestatie: een energie-index of een EP2-score. Van deze waarde is het energielabel afgeleid. Als de energieprestatiesoort "Voorlopig energielabel" is, dan is er géén waarde bekend.'
+          description: 'De door een adviseur gemeten waarde die hoort bij de energieprestatie. De energieprestatiesoort bepaalt wat deze waarde representeert. Bijvoorbeeld: Energie-index of EP2 (het energielabel  is daarvan dan afgeleid), compactheid of opgewekte duurzame energie. Bij een voorlopig energielabel is geen waarde van toepassing.'
     Eenheden-Gemeente:
       type: object
       properties:
@@ -1898,6 +1960,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1929,6 +1999,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -1951,6 +2029,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -2002,6 +2088,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -2034,6 +2128,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -2061,6 +2163,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -2104,6 +2214,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -2127,6 +2245,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -2166,6 +2292,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -2193,6 +2327,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -2216,6 +2358,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -2267,6 +2417,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -2340,6 +2498,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -2411,6 +2577,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -2430,6 +2604,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -2467,6 +2649,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -2487,6 +2677,73 @@ components:
           allOf:
           - $ref: '#/components/schemas/Relatie-sleutels'
           description: De relatie behorend bij het adres.
+    Relatie-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedatasoort RELATIESOORT.'
+        detailSoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedatasoort RELATIEDETAILSOORT.'
+        rollen:
+          description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Relatierol-sleutels'
+    Relatierol-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
     Huuropzeggingen-Relatierol:
       type: object
       properties:
@@ -2502,6 +2759,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -2569,6 +2834,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -2596,7 +2869,7 @@ components:
         beschrijving:
           type: string
           format: any
-          description: Beschrijving van het informatieobject.
+          description: Beschrijving van het informatieobject. Dit kan ook de (volledige) inhoud zijn van een memo of notitie.
         status:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
@@ -2660,7 +2933,7 @@ components:
         formaat:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het digitale formaat (IANA media type) van het informatieobject. Referentiedatasoort INFORMATIEOBJECTFORMAAT.
+          description: 'Het digitale formaat (IANA media type) van het informatieobject.  Bijv. code:png naam:image/png. Referentiedatasoort INFORMATIEOBJECTFORMAAT.'
         gebruiksrechten:
           type: string
           format: any
@@ -2710,6 +2983,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
@@ -2721,6 +3002,14 @@ components:
           type: string
           format: any
           description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           format: any
