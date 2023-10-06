@@ -7,6 +7,7 @@
 - [Toelichting](#Toelichting)
 - [Definities](#Definities)
 - [Toepassing](#Toepassing)
+- [Implementatiestandaarden](#Implementatiestandaarden-VERA)
 - [Referentiedata](#Referentiedata)
 
 ## Inleiding
@@ -106,6 +107,9 @@ VERA defineert Informatiedomeinen als geheel van gerelateerde informatieobjecten
 Daarnaast kent VERA zogenaamde ketenprocessen. Het subsysteem dat een ketenproces implementeert kan gegevens uit meerdere Informatiedomeinen nodig hebben. Hiervoor levert VERA per ketenproces een API.
 
 ![alt text](matrix-apis.png)
+
+## Implementatiestandaarden VERA
+Naast de definitie van informatiedomeinen en ketenprocessen biedt VERA ook steeds meer standaarden rondom de implementatie van de gegevensuitwisseling. Deze standaarden bieden steeds meer zekerheid over de interoperabiliteit tussen systemen. Vanaf VERA 4.1.3 is de standaard rondom het gebruik van sleutels van objecten verder (id, idExtern, ..) uitgewerkt. Zie hiervoor de WIKI https://cora.wikixl.nl/index.php/Identificatie_objecten_in_VERA.
 
 ## Data API's
 
