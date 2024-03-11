@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Woonruimteverdeling
-  description: API-specificatie van ketenproces 'Woonruimteverdeling'. Deze specificatie is gebaseerd op VERA versie 4.1.3+230929.8
+  description: API-specificatie van ketenproces 'Woonruimteverdeling'. Deze specificatie is gebaseerd op VERA versie 4.1.4+240311.2
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Copyright (c) Aedes vereniging van woningcorporaties"
     url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
-  version: '3.1.3+230929.8'
+  version: '3.1.4+240311.2'
 servers:
   - url: https://wrv.vera.io:{port}/{basePath}
     description: Productieserver
@@ -4284,6 +4284,41 @@ components:
           type: string
           format: any
           description: De naam van de cluster.
+    Eenheden-CollectiefObject:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Bijvoorbeeld: fietsenstalling, galerij, lift etc. Referentiedatasoort COLLECTIEFOBJECTSOORT.'
+        naam:
+          type: string
+          format: any
+          description: De naam van het collectief object.
     Eenheden-Communicatievoorkeur:
       type: object
       properties:
@@ -4508,6 +4543,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Eenheden-Cluster'
+        collectieveObjecten:
+          description: De collectieve objecten behorend bij de eenheid.
+          type: array
+          items:
+            $ref: '#/components/schemas/Eenheden-CollectiefObject'
         criteria:
           description: De voorwaarden waaraan de bewoner moet voldoen om in aanmerking te komen of voorrang te krijgen voor de eenheid.
           type: array
@@ -4555,7 +4595,7 @@ components:
           format: int32
           description: Het aantal leefruimten en slaapkamers behorende bij de eenheid.
         klimaatbeheersing:
-          description: Verzameling van kenmerken die het binnenklimaat (lucht, warmte en koeling) regelen in de eenheid. Referentiedatasoort EENHEIDKLIMAATBEHEERSING.
+          description: Verzameling van kenmerken die het binnenklimaat (lucht, warmte en koeling) regelen in de eenheid. In de parent kan worden aangegeven of deze collectief of individueel is. Referentiedatasoort EENHEIDKLIMAATBEHEERSING.
           type: array
           items:
             $ref: '#/components/schemas/Referentiedata'
@@ -4589,6 +4629,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Referentiedata'
+        oppervlakten:
+          description: De verschillende oppervlakten die gedefinieerd zijn (bijv. vanuit de NEN) voor een eenheid. Bijv. het gebruiksoppervlak (GO) of functioneel nuttig oppervlak (FNO).
+          type: array
+          items:
+            $ref: '#/components/schemas/Eenheden-Oppervlakte'
         overigeVertrekkenTotaalOppervlakte:
           type: number
           format: float
@@ -4654,7 +4699,8 @@ components:
         totaleOppervlakte:
           type: number
           format: float
-          description: 'De totale oppervlakte van een eenheid. Vertrekken die niet bewoonbaar zijn, worden hierbij meegeteld. Let op: niet te verwarren met de voor de dVi vereiste "gebruiksoppervlakte".'
+          description: OBSOLETE
+          deprecated: true
         uitExploitatieReden:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
@@ -4837,6 +4883,14 @@ components:
     Eenheden-Energieprestatie:
       type: object
       properties:
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort energieprestatie. Bijv. Voorloping Energielabel, Energieprestatieindex,  etc.. Referentiedatasoort ENERGIEPRESTATIESOORT.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Geeft de status van de energieprestatie aan: Voorlopig of Definitief. Een voorlopige energieprestatie wordt ook wel "pré-label" genoemd. Een definitieve energieprestatie is afgemeld bij de Rijksoverheid. Referentiedatasoort ENERGIEPRESTATIESTATUS.'
         begindatum:
           type: string
           format: date
@@ -4854,6 +4908,10 @@ components:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: Het energielabel voor woningen geeft met klassen (A**** tot en met G) en kleuren (groen tot en met rood) aan hoe energiezuinig een huis is ten opzichte van andere soortgelijke woningen. Energielabel A (donkergroen) is zuinig, energielabel G (rood) is onzuinig. Het energielabel is meestal een afgeleide van de waarde van de energieprestatie. Referentiedatasoort ENERGIELABEL.
+        waarde:
+          type: string
+          format: any
+          description: 'De door een adviseur gemeten waarde die hoort bij de energieprestatie. De energieprestatiesoort bepaalt wat deze waarde representeert. Bijvoorbeeld: Energie-index of EP2 (het energielabel  is daarvan dan afgeleid), compactheid of opgewekte duurzame energie. Bij een voorlopig energielabel is geen waarde van toepassing.'
     Eenheden-Gemeente:
       type: object
       properties:
@@ -4880,6 +4938,33 @@ components:
       oneOf:
         - $ref: '#/components/schemas/Eenheden-Punt'
         - $ref: '#/components/schemas/Eenheden-Geometrie-basis'
+    Eenheden-Oppervlakte:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort oppervlakte. Bijv. GO (Gebruiksoppervlakte) of BVO (Brutovloeroppervlak) Referentiedatasoort OPPERVLAKTESOORT.
+        waarde:
+          type: string
+          format: any
+          description: De waarde van de oppervlakte in vierkante meters (m2)
     Eenheden-Pand:
       type: object
       properties:
@@ -5826,7 +5911,8 @@ components:
         totaleOppervlakte:
           type: number
           format: float
-          description: 'De totale oppervlakte van een eenheid. Vertrekken die niet bewoonbaar zijn, worden hierbij meegeteld. Let op: niet te verwarren met de voor de dVi vereiste "gebruiksoppervlakte".'
+          description: 'De totale oppervlakte van een eenheid. Vertrekken die niet bewoonbaar zijn, worden hierbij meegeteld. Let op: niet te verwarren met de voor de dVi vereiste "gebruiksoppervlakte". OBSOLETE'
+          deprecated: true
         zelfstandig:
           type: boolean
           description: Geeft aan of het een zelfstandige of onzelfstandige eenheid betreft. Dit gegeven wordt ook gebruikt bij het bepalen van het woningwaardering volgens het woningwaarderingsstelsel.
@@ -6070,6 +6156,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/Kandidaten-Inkomen'
+          nationaliteit:
+            allOf:
+            - $ref: '#/components/schemas/Referentiedata'
+            description: De nationaliteit van de natuurlijk persoon. Referentiedatasoort NATIONALITEIT.
           opleiding:
             allOf:
             - $ref: '#/components/schemas/Kandidaten-Opleiding'
@@ -6093,6 +6183,10 @@ components:
             type: string
             format: any
             description: De tussenvoegsels behorende bij de naam.
+          voorkeurstaal:
+            allOf:
+            - $ref: '#/components/schemas/Referentiedata'
+            description: De voorkeurstaal die de natuurlijk persoon voert. Gebruik ISO-639-1 Referentiedatasoort TAAL.
           voorrangsregelingen:
             allOf:
             - $ref: '#/components/schemas/Kandidaten-Voorrangsregeling'
@@ -7323,6 +7417,41 @@ components:
           type: string
           format: any
           description: De naam van de cluster.
+    Publicaties-CollectiefObject:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Bijvoorbeeld: fietsenstalling, galerij, lift etc. Referentiedatasoort COLLECTIEFOBJECTSOORT.'
+        naam:
+          type: string
+          format: any
+          description: De naam van het collectief object.
     Publicaties-Communicatievoorkeur:
       type: object
       properties:
@@ -7507,6 +7636,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Publicaties-Cluster'
+        collectieveObjecten:
+          description: De collectieve objecten behorend bij de eenheid.
+          type: array
+          items:
+            $ref: '#/components/schemas/Publicaties-CollectiefObject'
         criteria:
           description: De voorwaarden waaraan de bewoner moet voldoen om in aanmerking te komen of voorrang te krijgen voor de eenheid.
           type: array
@@ -7560,7 +7694,7 @@ components:
           format: int32
           description: Het aantal leefruimten en slaapkamers behorende bij de eenheid.
         klimaatbeheersing:
-          description: Verzameling van kenmerken die het binnenklimaat (lucht, warmte en koeling) regelen in de eenheid. Referentiedatasoort EENHEIDKLIMAATBEHEERSING.
+          description: Verzameling van kenmerken die het binnenklimaat (lucht, warmte en koeling) regelen in de eenheid. In de parent kan worden aangegeven of deze collectief of individueel is. Referentiedatasoort EENHEIDKLIMAATBEHEERSING.
           type: array
           items:
             $ref: '#/components/schemas/Referentiedata'
@@ -7593,6 +7727,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Referentiedata'
+        oppervlakten:
+          description: De verschillende oppervlakten die gedefinieerd zijn (bijv. vanuit de NEN) voor een eenheid. Bijv. het gebruiksoppervlak (GO) of functioneel nuttig oppervlak (FNO).
+          type: array
+          items:
+            $ref: '#/components/schemas/Publicaties-Oppervlakte'
         overigeVertrekkenTotaalOppervlakte:
           type: number
           format: float
@@ -7619,7 +7758,7 @@ components:
         rayon:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description:  Referentiedatasoort RAYON.
+          description: Het rayon waar de eenheid in valt. Waarden zijn corporatiespecifiek en daarom niet in de referentiedata beschreven. Referentiedatasoort RAYON.
         rekenhuur:
           type: number
           format: float
@@ -7662,7 +7801,8 @@ components:
         totaleOppervlakte:
           type: number
           format: float
-          description: 'De totale oppervlakte van een eenheid. Vertrekken die niet bewoonbaar zijn, worden hierbij meegeteld. Let op: niet te verwarren met de voor de dVi vereiste "gebruiksoppervlakte".'
+          description: OBSOLETE
+          deprecated: true
         uitExploitatiedatum:
           type: string
           format: date
@@ -7963,6 +8103,33 @@ components:
             type: string
             format: any
             description: De voornaam van de natuurlijk persoon.
+    Publicaties-Oppervlakte:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort oppervlakte. Bijv. GO (Gebruiksoppervlakte) of BVO (Brutovloeroppervlak) Referentiedatasoort OPPERVLAKTESOORT.
+        waarde:
+          type: string
+          format: any
+          description: De waarde van de oppervlakte in vierkante meters (m2)
     Publicaties-Pand:
       type: object
       properties:
@@ -8119,7 +8286,7 @@ components:
         contractvorm:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description:  Referentiedatasoort PUBLICATIECONTRACTVORM.
+          description: De contractvorm waarmee de eenheid wordt gepubliceerd. Referentiedatasoort PUBLICATIECONTRACTVORM.
         detailModel:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
@@ -9771,7 +9938,8 @@ components:
         totaleOppervlakte:
           type: number
           format: float
-          description: 'De totale oppervlakte van een eenheid. Vertrekken die niet bewoonbaar zijn, worden hierbij meegeteld. Let op: niet te verwarren met de voor de dVi vereiste "gebruiksoppervlakte".'
+          description: 'De totale oppervlakte van een eenheid. Vertrekken die niet bewoonbaar zijn, worden hierbij meegeteld. Let op: niet te verwarren met de voor de dVi vereiste "gebruiksoppervlakte". OBSOLETE'
+          deprecated: true
         zelfstandig:
           type: boolean
           description: Geeft aan of het een zelfstandige of onzelfstandige eenheid betreft. Dit gegeven wordt ook gebruikt bij het bepalen van het woningwaardering volgens het woningwaarderingsstelsel.
@@ -9944,7 +10112,7 @@ components:
           voorkeurstaal:
             allOf:
             - $ref: '#/components/schemas/Referentiedata'
-            description: De voorkeurstaal die de natuurlijk persoon voert. Referentiedatasoort TAAL.
+            description: De voorkeurstaal die de natuurlijk persoon voert. Gebruik ISO-639-1 Referentiedatasoort TAAL.
           voorletters:
             type: string
             format: any

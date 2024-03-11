@@ -9,7 +9,7 @@ info:
   license:
     name: "Copyright (c) Aedes vereniging van woningcorporaties"
     url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
-  version: '4.1.3+230929.8'
+  version: '4.1.4+240311.2'
 servers:
   - url: https://vastgoed.vera.io:{port}/{basePath}
     description: Productieserver
@@ -70,6 +70,8 @@ tags:
   description: Operaties met betrekking tot een KadasterPerceel
 - name: Marktwaarden
   description: Operaties met betrekking tot een Marktwaarde
+- name: Oppervlakten
+  description: Operaties met betrekking tot een Oppervlakte
 - name: Panden
   description: Operaties met betrekking tot een Pand
 - name: Postadressen
@@ -6745,6 +6747,282 @@ paths:
       security: 
         - OAuth2: 
           - Vastgoed.Marktwaarden.ReadWrite
+  /oppervlakten:
+    get:
+      tags:
+      - 'Oppervlakten'
+      summary: Ophalen van Oppervlakten
+      operationId: listOppervlakten
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Oppervlaktebericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Oppervlaktebericht'
+          headers:
+            X-Parameters-Aantal:
+              $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+              $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+              $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Vastgoed.Oppervlakten.Read
+          - Vastgoed.Oppervlakten.ReadWrite
+    post:
+      tags:
+      - 'Oppervlakten'
+      summary: Voegt een nieuw(e) Oppervlakte toe.
+      operationId: createOppervlakte
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Oppervlakte
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Oppervlaktebericht'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Oppervlaktebericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Vastgoed.Oppervlakten.ReadWrite
+    put:
+      tags:
+      - 'Oppervlakten'
+      summary: |
+        Vervangen van een Oppervlakte op basis van overeenkomstige sleutelvelden.
+      operationId: replaceOppervlakte
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Oppervlakte
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Oppervlaktebericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Vastgoed.Oppervlakten.ReadWrite
+    patch:
+      tags:
+      - 'Oppervlakten'
+      summary: |
+        Wijzigen van afzonderlijke attributen van een Oppervlakte. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateOppervlakte
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Oppervlakte
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Oppervlaktebericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Vastgoed.Oppervlakten.ReadWrite
+  /oppervlakten/{id}:
+    get:
+      tags:
+      - 'Oppervlakten'
+      summary: Retourneert een Oppervlakte met de gegeven identifier
+      operationId: readOppervlakteById
+      parameters:
+      - name: id
+        in: path
+        description: Id van Oppervlakte om op te halen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Oppervlaktebericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Vastgoed.Oppervlakten.Read
+          - Vastgoed.Oppervlakten.ReadWrite
+    put:
+      tags:
+      - 'Oppervlakten'
+      summary: Vervangen van een Oppervlakte
+      operationId: replaceOppervlakteById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Oppervlakte om te vervangen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Oppervlakte
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Oppervlaktebericht'
+      security: 
+        - OAuth2: 
+          - Vastgoed.Oppervlakten.ReadWrite
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Oppervlakten'
+      summary: Wijzigen van een Oppervlakte
+      operationId: updateOppervlakteById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Oppervlakte om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Oppervlakte
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Oppervlaktebericht'
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Vastgoed.Oppervlakten.ReadWrite
   /panden:
     get:
       tags:
@@ -11530,6 +11808,8 @@ components:
             Vastgoed.KadasterPercelen.ReadWrite: lezen en schrijven van KadasterPercelen
             Vastgoed.Marktwaarden.Read: alleen lezen van Marktwaarden
             Vastgoed.Marktwaarden.ReadWrite: lezen en schrijven van Marktwaarden
+            Vastgoed.Oppervlakten.Read: alleen lezen van Oppervlakten
+            Vastgoed.Oppervlakten.ReadWrite: lezen en schrijven van Oppervlakten
             Vastgoed.Panden.Read: alleen lezen van Panden
             Vastgoed.Panden.ReadWrite: lezen en schrijven van Panden
             Vastgoed.Postadressen.Read: alleen lezen van Postadressen
@@ -11617,6 +11897,8 @@ components:
             Vastgoed.KadasterPercelen.ReadWrite: lezen en schrijven van KadasterPercelen
             Vastgoed.Marktwaarden.Read: alleen lezen van Marktwaarden
             Vastgoed.Marktwaarden.ReadWrite: lezen en schrijven van Marktwaarden
+            Vastgoed.Oppervlakten.Read: alleen lezen van Oppervlakten
+            Vastgoed.Oppervlakten.ReadWrite: lezen en schrijven van Oppervlakten
             Vastgoed.Panden.Read: alleen lezen van Panden
             Vastgoed.Panden.ReadWrite: lezen en schrijven van Panden
             Vastgoed.Postadressen.Read: alleen lezen van Postadressen
@@ -12513,7 +12795,7 @@ components:
         detailSoort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort bouwkundig element. Referentiedatasoort BOUWKUNDIGELEMENTDETAILSOORT.
+          description: Het detailsoort bouwkundig element. De detailsoort is gekoppeld aan de objecttype van de Aedes ILS Referentiedatasoort BOUWKUNDIGELEMENTDETAILSOORT.
         begindatum:
           type: string
           format: date
@@ -12526,15 +12808,65 @@ components:
           allOf:
           - $ref: '#/components/schemas/Bouwdeel-sleutels'
           description: Het bouwdeel behorend bij het bouwkundig element.
+        brandwerendheid:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Aedes ILS - De brandwerendheidscore van het element vlg de NEN-EN 13501 classificering, indien van toepassing voor het specifieke element. Relatie met IFC codering (FireRating) Referentiedatasoort BRANDWERENDHEIDSCORE.
+        breedte:
+          type: number
+          format: float
+          description: Aedes ILS - Breedte van het bouwkundig element in milimeter, indien van toepassing voor het specifieke element.
+        constructief:
+          type: boolean
+          description: Aedes ILS - Geeft aan of het bouwkundig element onderdeel is van de constructie van de eenheid.
+        diameter:
+          type: number
+          format: float
+          description: Aedes ILS - Diameter van het bouwkundig element in milimeter, indien van toepassing voor het specifieke element.
+        diepte:
+          type: number
+          format: float
+          description: Aedes ILS - Diepte van het bouwkundig element in milimeter, indien van toepassing voor het specifieke element.
+        dikte:
+          type: number
+          format: float
+          description: Aedes ILS - Dikte van het bouwkundig element in milimeter, indien van toepassing voor het specifieke element.
+        exterieur:
+          type: boolean
+          description: Aedes ILS - Geeft aan of het bouwkundig element onderdeel is van het exterieur van de betreffende eenheid.
         garanties:
           description: De garanties behorend bij het bouwkundig element.
           type: array
           items:
             $ref: '#/components/schemas/Garantie-sleutels'
+        hoogte:
+          type: number
+          format: float
+          description: Aedes ILS - Hoogte van het bouwkundig element in milimeter, indien van toepassing voor het specifieke element.
+        inhoud:
+          type: number
+          format: float
+          description: Aedes ILS - Inhoud van het bouwkundig element in kubieke meter, indien van toepassing voor het specifieke element.
+        lengte:
+          type: number
+          format: float
+          description: Aedes ILS - Lengte van het bouwkundig element in milimeter, indien van toepassing voor het specifieke element.
         locatie:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: De locatie waar het bouwkundig element zich bevindt. Bijvoorbeeld huiskamer of toilet. Referentiedatasoort DEFECTLOCATIE.
+        materiaalDetailsoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Aedes ILS - het detailsoort van het materiaal waaruit het element bestaat. Referentiedatasoort MATERIAALDETAILSOORT.
+        materiaalSoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Aedes ILS - het soort van het materiaal waaruit het element bestaat. Referentiedatasoort MATERIAALSOORT.
+        oppervlakte:
+          type: number
+          format: float
+          description: Aedes ILS - Oppervlakte van het bouwkundig element in vierkante meters, indien van toepassing voor het specifieke element.
         overeenkomsten:
           type: array
           items:
@@ -13153,7 +13485,8 @@ components:
         gebruiksoppervlakte:
           type: integer
           format: int32
-          description: De gebruiksoppervlakte van een eenheid(verblijfsobject) in gehele vierkante meters, gemeten conform NEN 2580. Te gebruiken voor verantwoording dVi. Naast gebruiksoppervlakte is ook een attribuut totaleOppervlakte beschikbaar.
+          description: De gebruiksoppervlakte van een eenheid(verblijfsobject) in gehele vierkante meters, gemeten conform NEN 2580. Te gebruiken voor verantwoording dVi. Naast gebruiksoppervlakte is ook een attribuut totaleOppervlakte beschikbaar. OBSOLETE
+          deprecated: true
         inExploitatieReden:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
@@ -13181,7 +13514,7 @@ components:
           format: int32
           description: Het aantal leefruimten en slaapkamers behorende bij de eenheid.
         klimaatbeheersing:
-          description: Verzameling van kenmerken die het binnenklimaat (lucht, warmte en koeling) regelen in de eenheid. Referentiedatasoort EENHEIDKLIMAATBEHEERSING.
+          description: Verzameling van kenmerken die het binnenklimaat (lucht, warmte en koeling) regelen in de eenheid. In de parent kan worden aangegeven of deze collectief of individueel is. Referentiedatasoort EENHEIDKLIMAATBEHEERSING.
           type: array
           items:
             $ref: '#/components/schemas/Referentiedata'
@@ -13233,6 +13566,11 @@ components:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: Het onderhoudslabel geeft aan hoe hoog of laag het onderhoudsniveau van het betreffende eenheid moet zijn. Hierbij wordt rekening gehouden met het soort bewoners en de toekomst van het pand. Referentiedatasoort ONDERHOUDSLABEL.
+        oppervlakten:
+          description: De verschillende oppervlakten die gedefinieerd zijn (bijv. vanuit de NEN) voor een eenheid. Bijv. het gebruiksoppervlak (GO) of functioneel nuttig oppervlak (FNO).
+          type: array
+          items:
+            $ref: '#/components/schemas/Oppervlakte-sleutels'
         overeenkomsten:
           type: array
           items:
@@ -13272,6 +13610,10 @@ components:
           type: string
           format: any
           description: Het label van de eenheid die kan worden gebruikt voor de publicatie van de eenheid. Bijvoorbeeld Containerwoning, Atelierwoning, Duplexwoning, Appartement etc.
+        rayon:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het rayon waar de eenheid in valt. Waarden zijn corporatiespecifiek en daarom niet in de referentiedata beschreven. Referentiedatasoort RAYON.
         rekenhuur:
           type: number
           format: float
@@ -13320,7 +13662,8 @@ components:
         totaleOppervlakte:
           type: number
           format: float
-          description: 'De totale oppervlakte van een eenheid. Vertrekken die niet bewoonbaar zijn, worden hierbij meegeteld. Let op: niet te verwarren met de voor de dVi vereiste "gebruiksoppervlakte".'
+          description: 'De totale oppervlakte van een eenheid. Vertrekken die niet bewoonbaar zijn, worden hierbij meegeteld. Let op: niet te verwarren met de voor de dVi vereiste "gebruiksoppervlakte". OBSOLETE'
+          deprecated: true
         uitExploitatieReden:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
@@ -13475,6 +13818,25 @@ components:
           type: string
           format: any
           description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+    Oppervlakte-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
     Renovatie-sleutels:
       type: object
       properties:
@@ -14417,6 +14779,37 @@ components:
           type: number
           format: float
           description: De vastgestelde taxatiewaarde, ook wel marktwaarde in verhuurde staat.
+    Oppervlaktebericht:
+      allOf:    
+        - $ref: '#/components/schemas/Oppervlakte'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Oppervlakte:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort oppervlakte. Bijv. GO (Gebruiksoppervlakte) of BVO (Brutovloeroppervlak) Referentiedatasoort OPPERVLAKTESOORT.
+        waarde:
+          type: string
+          format: any
+          description: De waarde van de oppervlakte in vierkante meters (m2)
     Pandbericht:
       allOf:    
         - $ref: '#/components/schemas/Pand'
