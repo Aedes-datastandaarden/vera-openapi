@@ -97,7 +97,7 @@ Alle ophaal acties ondersteunen daarnaast een cursor als querystring parameter. 
 
 https://github.com/vereniging-corponet/vera-openapi/blob/main/docs/brongegevens.xlsx
 
-- Voor de VERA API wordt aangesloten bij de Semantic versioning 2.0.0. Een gedetailleerde uitleg over de impact van de versies die uigebracht worden door VERA is hier te vinden: https://cora.wikixl.nl/index.php/VERA_Release_en_versiebeleid
+- Voor de VERA API wordt aangesloten bij de Semantic versioning 2.0.0. Een gedetailleerde uitleg over de impact van de versies die uigebracht worden door VERA is hier te vinden: https://www.coraveraonline.nl/index.php/VERA_Release_en_versiebeleid
 
 - in de API's van de ketenprocessen worden entiteiten geprefixt met de naam van de resource
 
