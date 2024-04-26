@@ -109,7 +109,7 @@ Daarnaast kent VERA zogenaamde ketenprocessen. Het subsysteem dat een ketenproce
 ![alt text](matrix-apis.png)
 
 ## Implementatiestandaarden VERA
-Naast de definitie van informatiedomeinen en ketenprocessen biedt VERA ook steeds meer standaarden rondom de implementatie van de gegevensuitwisseling. Deze standaarden bieden steeds meer zekerheid over de interoperabiliteit tussen systemen. Vanaf VERA 4.1.3 is de standaard rondom het gebruik van sleutels van objecten verder (id, idExtern, ..) uitgewerkt. Zie hiervoor de WIKI https://cora.wikixl.nl/index.php/Identificatie_objecten_in_VERA.
+Naast de definitie van informatiedomeinen en ketenprocessen biedt VERA ook steeds meer standaarden rondom de implementatie van de gegevensuitwisseling. Deze standaarden bieden steeds meer zekerheid over de interoperabiliteit tussen systemen. Vanaf VERA 4.1.3 is de standaard rondom het gebruik van sleutels van objecten verder (id, idExtern, ..) uitgewerkt. Zie hiervoor de WIKI https://www.coraveraonline.nl/index.php/Richtlijnen#Identificatie_van_gegevensobjecten.
 
 ## Data API's
 
@@ -119,7 +119,7 @@ https://github.com/vereniging-corponet/vera-openapi/blob/main/docs/brongegevens.
 
 ## Referentiedata
 
-De VERA-standaard kent attributen die geen vrije waarde mogen hebben, maar alleen een waarde uit een waardeverzameling. Deze verzamelingen/lijsten zijn door VERA vastgelegd als Referentiedata. Lees meer hierover op: https://cora.wikixl.nl/index.php/VERA_Referentiedata
+De VERA-standaard kent attributen die geen vrije waarde mogen hebben, maar alleen een waarde uit een waardeverzameling. Deze verzamelingen/lijsten zijn door VERA vastgelegd als Referentiedata. Lees meer hierover op: https://www.coraveraonline.nl/index.php/Referentiedata
 
 Referentiedata bevindt zich in een eigen repository en wordt onafhankelijk van de OpenAPI-specificaties gereleased, zie: https://github.com/Aedes-datastandaarden/vera-referentiedata
 
