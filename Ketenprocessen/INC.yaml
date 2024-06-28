@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Incasso
-  description: API-specificatie van ketenproces 'Incasso'. Deze specificatie is gebaseerd op VERA versie 4.1.4+240311.2
+  description: API-specificatie van ketenproces 'Incasso'. Deze specificatie is gebaseerd op VERA versie 4.1.v4.1.5+240628.18
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Copyright (c) Aedes vereniging van woningcorporaties"
     url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
-  version: '1.1.4+240311.2'
+  version: '1.1.v4.1.5+240628.18'
 servers:
   - url: https://inc.vera.io:{port}/{basePath}
     description: Productieserver
@@ -957,7 +957,7 @@ components:
           - $ref: '#/components/schemas/Betalingsregelingen-Betaalwijze'
           description: De afgesproken betaalwijze voor de betalingsregeling
         boekingen:
-          description: De boekingen behorende bij de betalingsregeling.
+          description: De boekingen behorende bij de betalingsregeling. Dat kunnen de oorspronkelijke facturen betreffen en de boekingen voor de regeling.
           type: array
           items:
             $ref: '#/components/schemas/Betalingsregelingen-Boeking'
@@ -1101,10 +1101,42 @@ components:
           type: number
           format: float
           description: Initiële bedrag van de termijn.
+        boekingen:
+          description: De boeking waarmee (een gedeelte van) een of meerdere termijnen van de betalingsregeling is voldaan.
+          type: array
+          items:
+            $ref: '#/components/schemas/Boeking-sleutels'
         saldo:
           type: number
           format: float
           description: Het saldo of openstaande bedrag van de termijn.
+    Boeking-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          format: any
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          format: any
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          format: any
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          format: any
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
     Betalingsregelingen-Boeking:
       type: object
       properties:
@@ -1313,33 +1345,6 @@ components:
           type: number
           format: float
           description: Het saldo of openstaande bedrag.
-    Boeking-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        idOrganisatie:
-          type: string
-          format: any
-          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
-        idAdministratie:
-          type: string
-          format: any
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
     ExterneIncassos-ExterneIncassoActie:
       type: object
       properties:

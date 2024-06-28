@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Woonruimteverdeling
-  description: API-specificatie van ketenproces 'Woonruimteverdeling'. Deze specificatie is gebaseerd op VERA versie 4.1.4+240311.2
+  description: API-specificatie van ketenproces 'Woonruimteverdeling'. Deze specificatie is gebaseerd op VERA versie 4.1.v4.1.5+240628.18
   contact:
     name: VERA
     url: https://cora.wikixl.nl/index.php/VERA_Standaard
@@ -9,7 +9,7 @@ info:
   license:
     name: "Copyright (c) Aedes vereniging van woningcorporaties"
     url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
-  version: '3.1.4+240311.2'
+  version: '3.1.v4.1.5+240628.18'
 servers:
   - url: https://wrv.vera.io:{port}/{basePath}
     description: Productieserver
@@ -4992,6 +4992,10 @@ components:
           type: string
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort pand. Eengezins of meergezins. Referentiedatasoort PANDSOORT.
         kavelOppervlakte:
           type: number
           format: float
@@ -5123,13 +5127,12 @@ components:
         communicatievoorkeur:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het communicatiekanaal waarop de relatie bij voorkeur benaderd wil worden. Bijvoorbeeld: Telefoon, E-mail, Social media etc. OBSOLETE Referentiedatasoort CONTACTGEGEVENSOORT.'
-          deprecated: true
+          description: 'Het communicatiekanaal waarop de relatie bij voorkeur benaderd wil worden. Bijvoorbeeld: Telefoon, E-mail, Social media etc. Referentiedatasoort CONTACTGEGEVENSOORT.'
         communicatievoorkeuren:
           description: De verschillende communicatievoorkeuren van een relatie met bijbehorende contactgegeven waarvoor de voorkeur geldt. Bijv. nieuwsbrief en e-mail. Communicatie omtrent de dienstverlening hoeft geen toestemming voor uitgevraagd te worden.
           type: array
           items:
-            $ref: '#/components/schemas/Communicatievoorkeur-sleutels'
+            $ref: '#/components/schemas/Eenheden-Communicatievoorkeur'
         contactgegevens:
           description: De contactgegevens van de relatie.
           type: array
@@ -5140,29 +5143,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Eenheden-Relatierol'
-    Communicatievoorkeur-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort communicatievoorkeur. bijv. nieuwbrief of magazine Referentiedatasoort COMMUNICATIEVOORKEURSOORT.
     Eenheden-RelatieAdres:
       type: object
       properties:
@@ -5259,10 +5239,26 @@ components:
           type: string
           format: any
           description: De omschrijving van de ruimte.
+        breedte:
+          type: number
+          format: float
+          description: Breedte van de ruimte in milimeter.
+        hoogte:
+          type: number
+          format: float
+          description: Hoogte van de ruimte in milimeter.
         inhoud:
           type: number
           format: float
           description: De inhoud van de ruimte in m3.
+        klimaatbeheersing:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description:  Referentiedatasoort EENHEIDKLIMAATBEHEERSING.
+        lengte:
+          type: number
+          format: float
+          description: Lengte van de ruimte in milimeter.
         ligging:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
@@ -6188,9 +6184,10 @@ components:
             - $ref: '#/components/schemas/Referentiedata'
             description: De voorkeurstaal die de natuurlijk persoon voert. Gebruik ISO-639-1 Referentiedatasoort TAAL.
           voorrangsregelingen:
-            allOf:
-            - $ref: '#/components/schemas/Kandidaten-Voorrangsregeling'
-            description: 'De voorrangsregels waar de natuurlijk persoon gebruik van maakt. Bijvoorbeeld: Bindingen, indicaties, urgenties en overige voorrangsregelingen. De klasse voorrangsregeling bevindt zich in het woonruimteverdeling domein.'
+            description: De voorrangsregeling(en) die van toepassing was of waren voor de toewijzing binnen het woonruimteverdeelproces. Onderdeel van de reden van de toewijzing.
+            type: array
+            items:
+              $ref: '#/components/schemas/Kandidaten-Voorrangsregeling'
           woonsituatie:
             allOf:
             - $ref: '#/components/schemas/Kandidaten-Woonsituatie'
@@ -6357,8 +6354,7 @@ components:
         communicatievoorkeur:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het communicatiekanaal waarop de relatie bij voorkeur benaderd wil worden. Bijvoorbeeld: Telefoon, E-mail, Social media etc. OBSOLETE Referentiedatasoort CONTACTGEGEVENSOORT.'
-          deprecated: true
+          description: 'Het communicatiekanaal waarop de relatie bij voorkeur benaderd wil worden. Bijvoorbeeld: Telefoon, E-mail, Social media etc. Referentiedatasoort CONTACTGEGEVENSOORT.'
         contactgegevens:
           description: De contactgegevens van de relatie.
           type: array
@@ -8157,6 +8153,10 @@ components:
           type: string
           format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort pand. Eengezins of meergezins. Referentiedatasoort PANDSOORT.
         renovatie:
           allOf:
           - $ref: '#/components/schemas/Publicaties-Renovatie'
@@ -8396,13 +8396,12 @@ components:
         communicatievoorkeur:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het communicatiekanaal waarop de relatie bij voorkeur benaderd wil worden. Bijvoorbeeld: Telefoon, E-mail, Social media etc. OBSOLETE Referentiedatasoort CONTACTGEGEVENSOORT.'
-          deprecated: true
+          description: 'Het communicatiekanaal waarop de relatie bij voorkeur benaderd wil worden. Bijvoorbeeld: Telefoon, E-mail, Social media etc. Referentiedatasoort CONTACTGEGEVENSOORT.'
         communicatievoorkeuren:
           description: De verschillende communicatievoorkeuren van een relatie met bijbehorende contactgegeven waarvoor de voorkeur geldt. Bijv. nieuwsbrief en e-mail. Communicatie omtrent de dienstverlening hoeft geen toestemming voor uitgevraagd te worden.
           type: array
           items:
-            $ref: '#/components/schemas/Communicatievoorkeur-sleutels'
+            $ref: '#/components/schemas/Publicaties-Communicatievoorkeur'
         contactgegevens:
           description: De contactgegevens van de relatie.
           type: array
@@ -8501,10 +8500,26 @@ components:
           type: string
           format: any
           description: De omschrijving van de ruimte.
+        breedte:
+          type: number
+          format: float
+          description: Breedte van de ruimte in milimeter.
+        hoogte:
+          type: number
+          format: float
+          description: Hoogte van de ruimte in milimeter.
         inhoud:
           type: number
           format: float
           description: De inhoud van de ruimte in m3.
+        klimaatbeheersing:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description:  Referentiedatasoort EENHEIDKLIMAATBEHEERSING.
+        lengte:
+          type: number
+          format: float
+          description: Lengte van de ruimte in milimeter.
         ligging:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
@@ -10272,13 +10287,12 @@ components:
         communicatievoorkeur:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het communicatiekanaal waarop de relatie bij voorkeur benaderd wil worden. Bijvoorbeeld: Telefoon, E-mail, Social media etc. OBSOLETE Referentiedatasoort CONTACTGEGEVENSOORT.'
-          deprecated: true
+          description: 'Het communicatiekanaal waarop de relatie bij voorkeur benaderd wil worden. Bijvoorbeeld: Telefoon, E-mail, Social media etc. Referentiedatasoort CONTACTGEGEVENSOORT.'
         communicatievoorkeuren:
           description: De verschillende communicatievoorkeuren van een relatie met bijbehorende contactgegeven waarvoor de voorkeur geldt. Bijv. nieuwsbrief en e-mail. Communicatie omtrent de dienstverlening hoeft geen toestemming voor uitgevraagd te worden.
           type: array
           items:
-            $ref: '#/components/schemas/Communicatievoorkeur-sleutels'
+            $ref: '#/components/schemas/Relaties-Communicatievoorkeur'
         contactgegevens:
           description: De contactgegevens van de relatie.
           type: array
