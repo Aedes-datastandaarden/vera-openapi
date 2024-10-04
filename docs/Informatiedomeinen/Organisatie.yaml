@@ -9,7 +9,7 @@ info:
   license:
     name: "Copyright (c) Aedes vereniging van woningcorporaties"
     url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
-  version: '4.1.5+240628.18'
+  version: '4.1.6+241004.18'
 servers:
   - url: https://organisatie.vera.io:{port}/{basePath}
     description: Productieserver
@@ -24,6 +24,8 @@ servers:
 tags:
 - name: Medewerkers
   description: Operaties met betrekking tot een Medewerker
+- name: Medewerkerbudgetten
+  description: Operaties met betrekking tot een Medewerkerbudget
 - name: Medewerkerrollen
   description: Operaties met betrekking tot een Medewerkerrol
 - name: Organisaties
@@ -32,6 +34,10 @@ tags:
   description: Operaties met betrekking tot een OrganisatorischeEenheid
 - name: PersoneleFuncties
   description: Operaties met betrekking tot een PersoneleFunctie
+- name: Tijdsbestedingen
+  description: Operaties met betrekking tot een Tijdsbesteding
+- name: Vacatures
+  description: Operaties met betrekking tot een Vacature
 paths:
   /ping:
     get:
@@ -325,6 +331,282 @@ paths:
       security: 
         - OAuth2: 
           - Organisatie.Medewerkers.ReadWrite
+  /medewerkerbudgetten:
+    get:
+      tags:
+      - 'Medewerkerbudgetten'
+      summary: Ophalen van Medewerkerbudgetten
+      operationId: listMedewerkerbudgetten
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Medewerkerbudgetbericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Medewerkerbudgetbericht'
+          headers:
+            X-Parameters-Aantal:
+              $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+              $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+              $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Organisatie.Medewerkerbudgetten.Read
+          - Organisatie.Medewerkerbudgetten.ReadWrite
+    post:
+      tags:
+      - 'Medewerkerbudgetten'
+      summary: Voegt een nieuw(e) Medewerkerbudget toe.
+      operationId: createMedewerkerbudget
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Medewerkerbudget
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Medewerkerbudgetbericht'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Medewerkerbudgetbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Organisatie.Medewerkerbudgetten.ReadWrite
+    put:
+      tags:
+      - 'Medewerkerbudgetten'
+      summary: |
+        Vervangen van een Medewerkerbudget op basis van overeenkomstige sleutelvelden.
+      operationId: replaceMedewerkerbudget
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Medewerkerbudget
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Medewerkerbudgetbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Organisatie.Medewerkerbudgetten.ReadWrite
+    patch:
+      tags:
+      - 'Medewerkerbudgetten'
+      summary: |
+        Wijzigen van afzonderlijke attributen van een Medewerkerbudget. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateMedewerkerbudget
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Medewerkerbudget
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Medewerkerbudgetbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Organisatie.Medewerkerbudgetten.ReadWrite
+  /medewerkerbudgetten/{id}:
+    get:
+      tags:
+      - 'Medewerkerbudgetten'
+      summary: Retourneert een Medewerkerbudget met de gegeven identifier
+      operationId: readMedewerkerbudgetById
+      parameters:
+      - name: id
+        in: path
+        description: Id van Medewerkerbudget om op te halen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Medewerkerbudgetbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Organisatie.Medewerkerbudgetten.Read
+          - Organisatie.Medewerkerbudgetten.ReadWrite
+    put:
+      tags:
+      - 'Medewerkerbudgetten'
+      summary: Vervangen van een Medewerkerbudget
+      operationId: replaceMedewerkerbudgetById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Medewerkerbudget om te vervangen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Medewerkerbudget
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Medewerkerbudgetbericht'
+      security: 
+        - OAuth2: 
+          - Organisatie.Medewerkerbudgetten.ReadWrite
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Medewerkerbudgetten'
+      summary: Wijzigen van een Medewerkerbudget
+      operationId: updateMedewerkerbudgetById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Medewerkerbudget om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Medewerkerbudget
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Medewerkerbudgetbericht'
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Organisatie.Medewerkerbudgetten.ReadWrite
   /medewerkerrollen:
     get:
       tags:
@@ -1429,6 +1711,558 @@ paths:
       security: 
         - OAuth2: 
           - Organisatie.PersoneleFuncties.ReadWrite
+  /tijdsbestedingen:
+    get:
+      tags:
+      - 'Tijdsbestedingen'
+      summary: Ophalen van Tijdsbestedingen
+      operationId: listTijdsbestedingen
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Tijdsbestedingbericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tijdsbestedingbericht'
+          headers:
+            X-Parameters-Aantal:
+              $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+              $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+              $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Organisatie.Tijdsbestedingen.Read
+          - Organisatie.Tijdsbestedingen.ReadWrite
+    post:
+      tags:
+      - 'Tijdsbestedingen'
+      summary: Voegt een nieuw(e) Tijdsbesteding toe.
+      operationId: createTijdsbesteding
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Tijdsbesteding
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tijdsbestedingbericht'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tijdsbestedingbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Organisatie.Tijdsbestedingen.ReadWrite
+    put:
+      tags:
+      - 'Tijdsbestedingen'
+      summary: |
+        Vervangen van een Tijdsbesteding op basis van overeenkomstige sleutelvelden.
+      operationId: replaceTijdsbesteding
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Tijdsbesteding
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tijdsbestedingbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Organisatie.Tijdsbestedingen.ReadWrite
+    patch:
+      tags:
+      - 'Tijdsbestedingen'
+      summary: |
+        Wijzigen van afzonderlijke attributen van een Tijdsbesteding. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateTijdsbesteding
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Tijdsbesteding
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tijdsbestedingbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Organisatie.Tijdsbestedingen.ReadWrite
+  /tijdsbestedingen/{id}:
+    get:
+      tags:
+      - 'Tijdsbestedingen'
+      summary: Retourneert een Tijdsbesteding met de gegeven identifier
+      operationId: readTijdsbestedingById
+      parameters:
+      - name: id
+        in: path
+        description: Id van Tijdsbesteding om op te halen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tijdsbestedingbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Organisatie.Tijdsbestedingen.Read
+          - Organisatie.Tijdsbestedingen.ReadWrite
+    put:
+      tags:
+      - 'Tijdsbestedingen'
+      summary: Vervangen van een Tijdsbesteding
+      operationId: replaceTijdsbestedingById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Tijdsbesteding om te vervangen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Tijdsbesteding
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tijdsbestedingbericht'
+      security: 
+        - OAuth2: 
+          - Organisatie.Tijdsbestedingen.ReadWrite
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Tijdsbestedingen'
+      summary: Wijzigen van een Tijdsbesteding
+      operationId: updateTijdsbestedingById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Tijdsbesteding om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Tijdsbesteding
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tijdsbestedingbericht'
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Organisatie.Tijdsbestedingen.ReadWrite
+  /vacatures:
+    get:
+      tags:
+      - 'Vacatures'
+      summary: Ophalen van Vacatures
+      operationId: listVacatures
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Vacaturebericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Vacaturebericht'
+          headers:
+            X-Parameters-Aantal:
+              $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+              $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+              $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Organisatie.Vacatures.Read
+          - Organisatie.Vacatures.ReadWrite
+    post:
+      tags:
+      - 'Vacatures'
+      summary: Voegt een nieuw(e) Vacature toe.
+      operationId: createVacature
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Vacature
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Vacaturebericht'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vacaturebericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Organisatie.Vacatures.ReadWrite
+    put:
+      tags:
+      - 'Vacatures'
+      summary: |
+        Vervangen van een Vacature op basis van overeenkomstige sleutelvelden.
+      operationId: replaceVacature
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Vacature
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Vacaturebericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Organisatie.Vacatures.ReadWrite
+    patch:
+      tags:
+      - 'Vacatures'
+      summary: |
+        Wijzigen van afzonderlijke attributen van een Vacature. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateVacature
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Vacature
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Vacaturebericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Organisatie.Vacatures.ReadWrite
+  /vacatures/{id}:
+    get:
+      tags:
+      - 'Vacatures'
+      summary: Retourneert een Vacature met de gegeven identifier
+      operationId: readVacatureById
+      parameters:
+      - name: id
+        in: path
+        description: Id van Vacature om op te halen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vacaturebericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Organisatie.Vacatures.Read
+          - Organisatie.Vacatures.ReadWrite
+    put:
+      tags:
+      - 'Vacatures'
+      summary: Vervangen van een Vacature
+      operationId: replaceVacatureById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Vacature om te vervangen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Vacature
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Vacaturebericht'
+      security: 
+        - OAuth2: 
+          - Organisatie.Vacatures.ReadWrite
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Vacatures'
+      summary: Wijzigen van een Vacature
+      operationId: updateVacatureById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Vacature om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Vacature
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Vacaturebericht'
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Organisatie.Vacatures.ReadWrite
 security:
   - ApiKeyAuth: []
   - OAuth2: 
@@ -1476,6 +2310,8 @@ components:
             Organisatie.All.ReadWrite: lezen en schrijven van alle resources
             Organisatie.Medewerkers.Read: alleen lezen van Medewerkers
             Organisatie.Medewerkers.ReadWrite: lezen en schrijven van Medewerkers
+            Organisatie.Medewerkerbudgetten.Read: alleen lezen van Medewerkerbudgetten
+            Organisatie.Medewerkerbudgetten.ReadWrite: lezen en schrijven van Medewerkerbudgetten
             Organisatie.Medewerkerrollen.Read: alleen lezen van Medewerkerrollen
             Organisatie.Medewerkerrollen.ReadWrite: lezen en schrijven van Medewerkerrollen
             Organisatie.Organisaties.Read: alleen lezen van Organisaties
@@ -1484,6 +2320,10 @@ components:
             Organisatie.OrganisatorischeEenheden.ReadWrite: lezen en schrijven van OrganisatorischeEenheden
             Organisatie.PersoneleFuncties.Read: alleen lezen van PersoneleFuncties
             Organisatie.PersoneleFuncties.ReadWrite: lezen en schrijven van PersoneleFuncties
+            Organisatie.Tijdsbestedingen.Read: alleen lezen van Tijdsbestedingen
+            Organisatie.Tijdsbestedingen.ReadWrite: lezen en schrijven van Tijdsbestedingen
+            Organisatie.Vacatures.Read: alleen lezen van Vacatures
+            Organisatie.Vacatures.ReadWrite: lezen en schrijven van Vacatures
         clientCredentials:
           tokenUrl: /oauth/token
           scopes:
@@ -1491,6 +2331,8 @@ components:
             Organisatie.All.ReadWrite: lezen en schrijven van alle resources
             Organisatie.Medewerkers.Read: alleen lezen van Medewerkers
             Organisatie.Medewerkers.ReadWrite: lezen en schrijven van Medewerkers
+            Organisatie.Medewerkerbudgetten.Read: alleen lezen van Medewerkerbudgetten
+            Organisatie.Medewerkerbudgetten.ReadWrite: lezen en schrijven van Medewerkerbudgetten
             Organisatie.Medewerkerrollen.Read: alleen lezen van Medewerkerrollen
             Organisatie.Medewerkerrollen.ReadWrite: lezen en schrijven van Medewerkerrollen
             Organisatie.Organisaties.Read: alleen lezen van Organisaties
@@ -1499,6 +2341,10 @@ components:
             Organisatie.OrganisatorischeEenheden.ReadWrite: lezen en schrijven van OrganisatorischeEenheden
             Organisatie.PersoneleFuncties.Read: alleen lezen van PersoneleFuncties
             Organisatie.PersoneleFuncties.ReadWrite: lezen en schrijven van PersoneleFuncties
+            Organisatie.Tijdsbestedingen.Read: alleen lezen van Tijdsbestedingen
+            Organisatie.Tijdsbestedingen.ReadWrite: lezen en schrijven van Tijdsbestedingen
+            Organisatie.Vacatures.Read: alleen lezen van Vacatures
+            Organisatie.Vacatures.ReadWrite: lezen en schrijven van Vacatures
   responses:
     NietGeautoriseerd:
       description: Unauthorized
@@ -1516,27 +2362,21 @@ components:
       properties:
         id:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
         idExtern:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
         idGegevensbeheerder:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
         idOrganisatie:
           type: string
-          format: any
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          format: any
           description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
-          format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
         soort:
           allOf:
@@ -1554,11 +2394,28 @@ components:
           type: string
           format: date
           description: De datum laatste werkzaamheden van de medewerker.
+        arbeidsbeperkt:
+          type: boolean
+          description: Geeft aan of de medewerker arbeidsbeperkt is vlg. de definitie van de CAO Woondiensten (Wajongers met arbeidsvermogen, personen die onder de Participatiewet vallen en niet zelfstandig 100% van het minimumloon kunnen verdienen, mensen met een WSW-indicatie of personen met een WIW- of ID-baan.)
+        bestedingen:
+          description: Tijdsbestedingen van de medewerker
+          type: array
+          items:
+            $ref: '#/components/schemas/Tijdsbesteding-sleutels'
+        budgetten:
+          description: Persoonsgebonden budgetten
+          type: array
+          items:
+            $ref: '#/components/schemas/Medewerkerbudget-sleutels'
         functies:
           description: De rollen van de medewerker.
           type: array
           items:
             $ref: '#/components/schemas/PersoneleFunctie-sleutels'
+        leidinggevende:
+          allOf:
+          - $ref: '#/components/schemas/Medewerker-sleutels'
+          description: De leidinggevende van de medewerker
         organisatie:
           allOf:
           - $ref: '#/components/schemas/Organisatie-sleutels'
@@ -1586,27 +2443,21 @@ components:
       properties:
         id:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
         idExtern:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
         idGegevensbeheerder:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
         idOrganisatie:
           type: string
-          format: any
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          format: any
           description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
-          format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.
         soort:
           allOf:
@@ -1614,11 +2465,9 @@ components:
           description: De soort van het referentiedata item. Bijvoorbeeld nationaliteit.
         naam:
           type: string
-          format: any
           description: De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.
         omschrijving:
           type: string
-          format: any
           description: De omschrijving van de referentiedata. Bijvoorbeeld De Nederlandse nationaliteit.
         parent:
           allOf:
@@ -1634,92 +2483,139 @@ components:
           description: De einddatum van het klasse item.
         sortering:
           type: string
-          format: any
           description: De sorteervolgorde van de referentiedata anders dan alfabetisch.
     Referentiedata-sleutels:
       type: object
       properties:
         id:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
         idExtern:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
         idGegevensbeheerder:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
         idOrganisatie:
           type: string
-          format: any
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          format: any
           description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
-          format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.
         naam:
           type: string
-          format: any
           description: De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.
+    Tijdsbesteding-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+    Medewerkerbudget-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
     PersoneleFunctie-sleutels:
       type: object
       properties:
         id:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
         idExtern:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
         idGegevensbeheerder:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
         idOrganisatie:
           type: string
-          format: any
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          format: any
           description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
-          format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+    Medewerker-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort medewerker. Bijv. oproepkracht, inhuur, stagair etc. Referentiedatasoort MEDEWERKERSOORT.
     Organisatie-sleutels:
       type: object
       properties:
         id:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
         idExtern:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
         idGegevensbeheerder:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
         idOrganisatie:
           type: string
-          format: any
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          format: any
           description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
-          format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
         soort:
           allOf:
@@ -1730,55 +2626,100 @@ components:
       properties:
         id:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
         idExtern:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
         idGegevensbeheerder:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
         idOrganisatie:
           type: string
-          format: any
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          format: any
           description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
-          format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
     Medewerkerrol-sleutels:
       type: object
       properties:
         id:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
         idExtern:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
         idGegevensbeheerder:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
         idOrganisatie:
           type: string
-          format: any
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          format: any
           description: Dit verwijst naar de administratie waar het gegeven vandaan komt. Horende bij de idExtern.
         code:
           type: string
-          format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+    Medewerkerbudgetbericht:
+      allOf:    
+        - $ref: '#/components/schemas/Medewerkerbudget'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Medewerkerbudget:
+      type: object
+      properties:
+        id:
+          type: string
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: soort toegewezen budget voor de medewerker vanuit de organisatie, zoals bijvoorbeeld Loopbaanontwikkelingsbudget Referentiedatasoort MEDEWERKERBUDGETSOORT.
+        begindatum:
+          type: string
+          format: date
+          description: Begindatum waarop het budget gebruikt kan worden
+        einddatum:
+          type: string
+          format: date
+          description: Einddatum van het toegekende budget
+        bedrag:
+          type: number
+          format: float
+          description: Het budgetbedrag voor het specifieke budgetjaar
+        budgetjaar:
+          type: integer
+          format: int32
+          description: het jaar waarbinnen het budget valt
+        grootboekrekening:
+          type: string
+          format: uri
+          description: Referentie naar Grootboekrekening-sleutels in informatiedomein Financien
+        medewerker:
+          allOf:
+          - $ref: '#/components/schemas/Medewerker-sleutels'
+          description: medewerker waarvoor het persoonsgebonden budget is gereserveerd
+        saldo:
+          type: number
+          format: float
+          description: saldo - resterend beschikbaar bedrag voor uitnutting budget
     Medewerkerrolbericht:
       allOf:    
         - $ref: '#/components/schemas/Medewerkerrol'
@@ -1788,27 +2729,21 @@ components:
       properties:
         id:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
         idExtern:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
         idGegevensbeheerder:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
         idOrganisatie:
           type: string
-          format: any
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          format: any
           description: Dit verwijst naar de administratie waar het gegeven vandaan komt. Horende bij de idExtern.
         code:
           type: string
-          format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
         soort:
           allOf:
@@ -1826,37 +2761,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/Medewerker-sleutels'
           description: De medewerker met deze rol.
-    Medewerker-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          format: any
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        idOrganisatie:
-          type: string
-          format: any
-          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
-        idAdministratie:
-          type: string
-          format: any
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
-        code:
-          type: string
-          format: any
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort medewerker. Bijv. oproepkracht, inhuur, stagair etc. Referentiedatasoort MEDEWERKERSOORT.
     Organisatiebericht:
       allOf:    
         - $ref: '#/components/schemas/Organisatie'
@@ -1866,27 +2770,21 @@ components:
       properties:
         id:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
         idExtern:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
         idGegevensbeheerder:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
         idOrganisatie:
           type: string
-          format: any
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          format: any
           description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
-          format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
         soort:
           allOf:
@@ -1909,6 +2807,32 @@ components:
           type: string
           format: uri
           description: Referentie naar Relatie in informatiedomein Relaties
+        vacatures:
+          description: De vactures uitgegevens door de organisatie.
+          type: array
+          items:
+            $ref: '#/components/schemas/Vacature-sleutels'
+    Vacature-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
     OrganisatorischeEenheidbericht:
       allOf:    
         - $ref: '#/components/schemas/OrganisatorischeEenheid'
@@ -1918,35 +2842,27 @@ components:
       properties:
         id:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
         idExtern:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
         idGegevensbeheerder:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
         idOrganisatie:
           type: string
-          format: any
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          format: any
           description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
-          format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
         naam:
           type: string
-          format: any
           description: De naam van de organisatorische eenheid.
         omschrijving:
           type: string
-          format: any
           description: Korte omschrijving van de organisatorische eenheid/afdeling
         bovenliggendeOrganisatorischeEenheid:
           allOf:
@@ -1978,35 +2894,27 @@ components:
       properties:
         id:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
         idExtern:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
         idGegevensbeheerder:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
         idOrganisatie:
           type: string
-          format: any
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          format: any
           description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
-          format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
         naam:
           type: string
-          format: any
           description: De naam van de functie.
         omschrijving:
           type: string
-          format: any
           description: De beschrijving van de functie zoals in een FUBE is vastgelegd.
         begindatum:
           type: string
@@ -2016,6 +2924,10 @@ components:
           type: string
           format: date
           description: De einddatum van de functie.
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Indicatie van het soort functie zoals bijvoorbeeld een leidinggevende functie Referentiedatasoort PERSONELEFUNCTIESOORT.
         medewerkers:
           description: De medewerkers met deze functie.
           type: array
@@ -2039,8 +2951,121 @@ components:
           description: het maximale salaris van de schaal bij aanvang contract.
         schaal:
           type: string
-          format: any
           description: De salarisschaal waar de functie bij aanvang is ingeschaald.
+    Tijdsbestedingbericht:
+      allOf:    
+        - $ref: '#/components/schemas/Tijdsbesteding'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Tijdsbesteding:
+      type: object
+      properties:
+        id:
+          type: string
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort tijdsbesteding zoals Declarabel, niet-declarabel, afwezig Referentiedatasoort TIJDSBESTEDINGSOORT.
+        detailsoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'De detailsoort tijdsbesteding zoals bij Afwezig: Ziekte, Regulier verlof, Bijzonder verlof, Onbetaald verlof, etc. Referentiedatasoort TIJDSBESTEDINGDETAILSOORT.'
+        begindatum:
+          type: string
+          format: date-time
+          description: De begindatum en tijd van de tijdsbesteding.
+        einddatum:
+          type: string
+          format: date-time
+          description: De einddatum en tijd van de tijdsbesteding.
+        aantal:
+          type: number
+          format: float
+          description: Het aantal bestede eenheden tijd.
+        arbeidsovereenkomst:
+          type: string
+          format: uri
+          description: Referentie naar Arbeidsovereenkomst-sleutels in informatiedomein Overeenkomsten
+        medewerker:
+          allOf:
+          - $ref: '#/components/schemas/Medewerker-sleutels'
+          description: De medewerker waarvan de tijdsbesteding is
+        omschrijving:
+          type: string
+          description: Omschrijving van de tijdsbesteding
+        tijdseenheid:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: De meeteenheid in tijd waarin de besteding wordt gemeten. Bijv. uur, dag etc. Referentiedatasoort TIJDSEENHEID.
+    Vacaturebericht:
+      allOf:    
+        - $ref: '#/components/schemas/Vacature'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Vacature:
+      type: object
+      properties:
+        id:
+          type: string
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'verschillende soorten vacatures: tijdelijke inhuur, vast contract, etc Referentiedatasoort VACATURESOORT.'
+        begindatum:
+          type: string
+          format: date
+          description: ingangsdatum van de vacature
+        einddatum:
+          type: string
+          format: date
+          description: einddatum van de vacature
+        functie:
+          allOf:
+          - $ref: '#/components/schemas/PersoneleFunctie-sleutels'
+          description: Functie waar de vacature voor uitstaat
+        naam:
+          type: string
+          description: Naam van de vacature zoals gepubliceerd is
+        omschrijving:
+          type: string
+          description: Inhoudelijke beschrijving van de vacature
+        organisatorischeEenheid:
+          allOf:
+          - $ref: '#/components/schemas/OrganisatorischeEenheid-sleutels'
+          description: Organisatorische eenheid waar de vacature voor ingevuld moet worden
+        toelichting:
+          type: string
+          description: Wervende tekst van de vacature voor externe publicatie
     Bericht-basis:
       type: object
       properties:
@@ -2069,11 +3094,9 @@ components:
       properties:
         naam:
           type: string
-          format: any
           description: De naam van het niet bestaande attribuut. Bijv. Huurprognose.
         waarde:
           type: string
-          format: any
           description: De waarde van het niet bestaande attribuut. Bijv. €850,-.
     Sturingslabelbericht:
       allOf:    
@@ -2084,27 +3107,21 @@ components:
       properties:
         id:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
         idExtern:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
         idGegevensbeheerder:
           type: string
-          format: any
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
         idOrganisatie:
           type: string
-          format: any
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          format: any
           description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
-          format: any
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld DVI2014.
         soort:
           allOf:
@@ -2136,24 +3153,19 @@ components:
       properties:
         code:
           type: string
-          format: any
           description: Foutcode
         omschrijving:
           type: string
-          format: any
           description: Omschrijving van de fout
     TijdstipBericht:
       type: string
       format: date-time
     Referentienummer:
       type: string
-      format: any
     ZenderOrganisatie:
       type: string
-      format: any
     ZenderAdministratie:
       type: string
-      format: any
     Aantal:
       type: integer
     AantalPerPagina:
