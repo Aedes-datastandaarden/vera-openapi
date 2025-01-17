@@ -4,12 +4,12 @@ info:
   description: API-specificatie van informatiedomein Energie
   contact:
     name: VERA
-    url: https://cora.wikixl.nl/index.php/VERA_Standaard
+    url: https://www.coraveraonline.nl
     email: VERA@aedesdatastandaarden.nl
   license:
     name: "Copyright (c) Aedes vereniging van woningcorporaties"
     url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
-  version: '4.1.6+241004.18'
+  version: '4.2.0+250117.7'
 servers:
   - url: https://energie.vera.io:{port}/{basePath}
     description: Productieserver
@@ -24,8 +24,20 @@ servers:
 tags:
 - name: Energieprestaties
   description: Operaties met betrekking tot een Energieprestatie
+- name: Energieprestatiemetingen
+  description: Operaties met betrekking tot een Energieprestatiemeting
 - name: Energieprestatievergoedingen
   description: Operaties met betrekking tot een Energieprestatievergoeding
+- name: Monitorintervallen
+  description: Operaties met betrekking tot een Monitorinterval
+- name: Monitorlogs
+  description: Operaties met betrekking tot een Monitorlog
+- name: Monitorlogregels
+  description: Operaties met betrekking tot een Monitorlogregel
+- name: Monitormetingen
+  description: Operaties met betrekking tot een Monitormeting
+- name: Monitorwaarden
+  description: Operaties met betrekking tot een Monitorwaarde
 paths:
   /ping:
     get:
@@ -68,11 +80,12 @@ paths:
         '200':
           description: OK
           content:
-            'application/json':
+            application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/Energieprestatiebericht'
+                maxItems: 100
           headers:
             X-Parameters-Aantal:
               $ref: '#/components/headers/X-Parameters-Aantal'
@@ -87,7 +100,7 @@ paths:
         default:
           description: Onverwachte fout
           content:
-            'application/json':
+            application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
       security: 
@@ -319,6 +332,283 @@ paths:
       security: 
         - OAuth2: 
           - Energie.Energieprestaties.ReadWrite
+  /energieprestatiemetingen:
+    get:
+      tags:
+      - 'Energieprestatiemetingen'
+      summary: Ophalen van Energieprestatiemetingen
+      operationId: listEnergieprestatiemetingen
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Energieprestatiemetingbericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Energieprestatiemetingbericht'
+                maxItems: 100
+          headers:
+            X-Parameters-Aantal:
+              $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+              $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+              $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Energieprestatiemetingen.Read
+          - Energie.Energieprestatiemetingen.ReadWrite
+    post:
+      tags:
+      - 'Energieprestatiemetingen'
+      summary: Voegt een nieuw(e) Energieprestatiemeting toe.
+      operationId: createEnergieprestatiemeting
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Energieprestatiemeting
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Energieprestatiemetingbericht'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Energieprestatiemetingbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Energieprestatiemetingen.ReadWrite
+    put:
+      tags:
+      - 'Energieprestatiemetingen'
+      summary: |
+        Vervangen van een Energieprestatiemeting op basis van overeenkomstige sleutelvelden.
+      operationId: replaceEnergieprestatiemeting
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Energieprestatiemeting
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Energieprestatiemetingbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Energieprestatiemetingen.ReadWrite
+    patch:
+      tags:
+      - 'Energieprestatiemetingen'
+      summary: |
+        Wijzigen van afzonderlijke attributen van een Energieprestatiemeting. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateEnergieprestatiemeting
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Energieprestatiemeting
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Energieprestatiemetingbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Energieprestatiemetingen.ReadWrite
+  /energieprestatiemetingen/{id}:
+    get:
+      tags:
+      - 'Energieprestatiemetingen'
+      summary: Retourneert een Energieprestatiemeting met de gegeven identifier
+      operationId: readEnergieprestatiemetingById
+      parameters:
+      - name: id
+        in: path
+        description: Id van Energieprestatiemeting om op te halen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Energieprestatiemetingbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Energieprestatiemetingen.Read
+          - Energie.Energieprestatiemetingen.ReadWrite
+    put:
+      tags:
+      - 'Energieprestatiemetingen'
+      summary: Vervangen van een Energieprestatiemeting
+      operationId: replaceEnergieprestatiemetingById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Energieprestatiemeting om te vervangen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Energieprestatiemeting
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Energieprestatiemetingbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Energieprestatiemetingen.ReadWrite
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Energieprestatiemetingen'
+      summary: Wijzigen van een Energieprestatiemeting
+      operationId: updateEnergieprestatiemetingById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Energieprestatiemeting om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Energieprestatiemeting
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Energieprestatiemetingbericht'
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Energieprestatiemetingen.ReadWrite
   /energieprestatievergoedingen:
     get:
       tags:
@@ -344,11 +634,12 @@ paths:
         '200':
           description: OK
           content:
-            'application/json':
+            application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/Energieprestatievergoedingbericht'
+                maxItems: 100
           headers:
             X-Parameters-Aantal:
               $ref: '#/components/headers/X-Parameters-Aantal'
@@ -363,7 +654,7 @@ paths:
         default:
           description: Onverwachte fout
           content:
-            'application/json':
+            application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
       security: 
@@ -595,6 +886,1391 @@ paths:
       security: 
         - OAuth2: 
           - Energie.Energieprestatievergoedingen.ReadWrite
+  /monitorintervallen:
+    get:
+      tags:
+      - 'Monitorintervallen'
+      summary: Ophalen van Monitorintervallen
+      operationId: listMonitorintervallen
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Monitorintervalbericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Monitorintervalbericht'
+                maxItems: 100
+          headers:
+            X-Parameters-Aantal:
+              $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+              $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+              $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorintervallen.Read
+          - Energie.Monitorintervallen.ReadWrite
+    post:
+      tags:
+      - 'Monitorintervallen'
+      summary: Voegt een nieuw(e) Monitorinterval toe.
+      operationId: createMonitorinterval
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Monitorinterval
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitorintervalbericht'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Monitorintervalbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorintervallen.ReadWrite
+    put:
+      tags:
+      - 'Monitorintervallen'
+      summary: |
+        Vervangen van een Monitorinterval op basis van overeenkomstige sleutelvelden.
+      operationId: replaceMonitorinterval
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Monitorinterval
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitorintervalbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorintervallen.ReadWrite
+    patch:
+      tags:
+      - 'Monitorintervallen'
+      summary: |
+        Wijzigen van afzonderlijke attributen van een Monitorinterval. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateMonitorinterval
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Monitorinterval
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitorintervalbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorintervallen.ReadWrite
+  /monitorintervallen/{id}:
+    get:
+      tags:
+      - 'Monitorintervallen'
+      summary: Retourneert een Monitorinterval met de gegeven identifier
+      operationId: readMonitorintervalById
+      parameters:
+      - name: id
+        in: path
+        description: Id van Monitorinterval om op te halen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Monitorintervalbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorintervallen.Read
+          - Energie.Monitorintervallen.ReadWrite
+    put:
+      tags:
+      - 'Monitorintervallen'
+      summary: Vervangen van een Monitorinterval
+      operationId: replaceMonitorintervalById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Monitorinterval om te vervangen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Monitorinterval
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitorintervalbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorintervallen.ReadWrite
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Monitorintervallen'
+      summary: Wijzigen van een Monitorinterval
+      operationId: updateMonitorintervalById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Monitorinterval om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Monitorinterval
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitorintervalbericht'
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorintervallen.ReadWrite
+  /monitorlogs:
+    get:
+      tags:
+      - 'Monitorlogs'
+      summary: Ophalen van Monitorlogs
+      operationId: listMonitorlogs
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Monitorlogbericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Monitorlogbericht'
+                maxItems: 100
+          headers:
+            X-Parameters-Aantal:
+              $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+              $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+              $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorlogs.Read
+          - Energie.Monitorlogs.ReadWrite
+    post:
+      tags:
+      - 'Monitorlogs'
+      summary: Voegt een nieuw(e) Monitorlog toe.
+      operationId: createMonitorlog
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Monitorlog
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitorlogbericht'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Monitorlogbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorlogs.ReadWrite
+    put:
+      tags:
+      - 'Monitorlogs'
+      summary: |
+        Vervangen van een Monitorlog op basis van overeenkomstige sleutelvelden.
+      operationId: replaceMonitorlog
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Monitorlog
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitorlogbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorlogs.ReadWrite
+    patch:
+      tags:
+      - 'Monitorlogs'
+      summary: |
+        Wijzigen van afzonderlijke attributen van een Monitorlog. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateMonitorlog
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Monitorlog
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitorlogbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorlogs.ReadWrite
+  /monitorlogs/{id}:
+    get:
+      tags:
+      - 'Monitorlogs'
+      summary: Retourneert een Monitorlog met de gegeven identifier
+      operationId: readMonitorlogById
+      parameters:
+      - name: id
+        in: path
+        description: Id van Monitorlog om op te halen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Monitorlogbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorlogs.Read
+          - Energie.Monitorlogs.ReadWrite
+    put:
+      tags:
+      - 'Monitorlogs'
+      summary: Vervangen van een Monitorlog
+      operationId: replaceMonitorlogById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Monitorlog om te vervangen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Monitorlog
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitorlogbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorlogs.ReadWrite
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Monitorlogs'
+      summary: Wijzigen van een Monitorlog
+      operationId: updateMonitorlogById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Monitorlog om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Monitorlog
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitorlogbericht'
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorlogs.ReadWrite
+  /monitorlogregels:
+    get:
+      tags:
+      - 'Monitorlogregels'
+      summary: Ophalen van Monitorlogregels
+      operationId: listMonitorlogregels
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Monitorlogregelbericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Monitorlogregelbericht'
+                maxItems: 100
+          headers:
+            X-Parameters-Aantal:
+              $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+              $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+              $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorlogregels.Read
+          - Energie.Monitorlogregels.ReadWrite
+    post:
+      tags:
+      - 'Monitorlogregels'
+      summary: Voegt een nieuw(e) Monitorlogregel toe.
+      operationId: createMonitorlogregel
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Monitorlogregel
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitorlogregelbericht'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Monitorlogregelbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorlogregels.ReadWrite
+    put:
+      tags:
+      - 'Monitorlogregels'
+      summary: |
+        Vervangen van een Monitorlogregel op basis van overeenkomstige sleutelvelden.
+      operationId: replaceMonitorlogregel
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Monitorlogregel
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitorlogregelbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorlogregels.ReadWrite
+    patch:
+      tags:
+      - 'Monitorlogregels'
+      summary: |
+        Wijzigen van afzonderlijke attributen van een Monitorlogregel. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateMonitorlogregel
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Monitorlogregel
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitorlogregelbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorlogregels.ReadWrite
+  /monitorlogregels/{id}:
+    get:
+      tags:
+      - 'Monitorlogregels'
+      summary: Retourneert een Monitorlogregel met de gegeven identifier
+      operationId: readMonitorlogregelById
+      parameters:
+      - name: id
+        in: path
+        description: Id van Monitorlogregel om op te halen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Monitorlogregelbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorlogregels.Read
+          - Energie.Monitorlogregels.ReadWrite
+    put:
+      tags:
+      - 'Monitorlogregels'
+      summary: Vervangen van een Monitorlogregel
+      operationId: replaceMonitorlogregelById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Monitorlogregel om te vervangen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Monitorlogregel
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitorlogregelbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorlogregels.ReadWrite
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Monitorlogregels'
+      summary: Wijzigen van een Monitorlogregel
+      operationId: updateMonitorlogregelById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Monitorlogregel om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Monitorlogregel
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitorlogregelbericht'
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorlogregels.ReadWrite
+  /monitormetingen:
+    get:
+      tags:
+      - 'Monitormetingen'
+      summary: Ophalen van Monitormetingen
+      operationId: listMonitormetingen
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Monitormetingbericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Monitormetingbericht'
+                maxItems: 100
+          headers:
+            X-Parameters-Aantal:
+              $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+              $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+              $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitormetingen.Read
+          - Energie.Monitormetingen.ReadWrite
+    post:
+      tags:
+      - 'Monitormetingen'
+      summary: Voegt een nieuw(e) Monitormeting toe.
+      operationId: createMonitormeting
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Monitormeting
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitormetingbericht'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Monitormetingbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitormetingen.ReadWrite
+    put:
+      tags:
+      - 'Monitormetingen'
+      summary: |
+        Vervangen van een Monitormeting op basis van overeenkomstige sleutelvelden.
+      operationId: replaceMonitormeting
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Monitormeting
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitormetingbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitormetingen.ReadWrite
+    patch:
+      tags:
+      - 'Monitormetingen'
+      summary: |
+        Wijzigen van afzonderlijke attributen van een Monitormeting. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateMonitormeting
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Monitormeting
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitormetingbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitormetingen.ReadWrite
+  /monitormetingen/{id}:
+    get:
+      tags:
+      - 'Monitormetingen'
+      summary: Retourneert een Monitormeting met de gegeven identifier
+      operationId: readMonitormetingById
+      parameters:
+      - name: id
+        in: path
+        description: Id van Monitormeting om op te halen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Monitormetingbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitormetingen.Read
+          - Energie.Monitormetingen.ReadWrite
+    put:
+      tags:
+      - 'Monitormetingen'
+      summary: Vervangen van een Monitormeting
+      operationId: replaceMonitormetingById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Monitormeting om te vervangen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Monitormeting
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitormetingbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitormetingen.ReadWrite
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Monitormetingen'
+      summary: Wijzigen van een Monitormeting
+      operationId: updateMonitormetingById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Monitormeting om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Monitormeting
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitormetingbericht'
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitormetingen.ReadWrite
+  /monitorwaarden:
+    get:
+      tags:
+      - 'Monitorwaarden'
+      summary: Ophalen van Monitorwaarden
+      operationId: listMonitorwaarden
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Monitorwaardebericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Monitorwaardebericht'
+                maxItems: 100
+          headers:
+            X-Parameters-Aantal:
+              $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+              $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+              $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorwaarden.Read
+          - Energie.Monitorwaarden.ReadWrite
+    post:
+      tags:
+      - 'Monitorwaarden'
+      summary: Voegt een nieuw(e) Monitorwaarde toe.
+      operationId: createMonitorwaarde
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Monitorwaarde
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitorwaardebericht'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Monitorwaardebericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorwaarden.ReadWrite
+    put:
+      tags:
+      - 'Monitorwaarden'
+      summary: |
+        Vervangen van een Monitorwaarde op basis van overeenkomstige sleutelvelden.
+      operationId: replaceMonitorwaarde
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Monitorwaarde
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitorwaardebericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorwaarden.ReadWrite
+    patch:
+      tags:
+      - 'Monitorwaarden'
+      summary: |
+        Wijzigen van afzonderlijke attributen van een Monitorwaarde. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateMonitorwaarde
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Monitorwaarde
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitorwaardebericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorwaarden.ReadWrite
+  /monitorwaarden/{id}:
+    get:
+      tags:
+      - 'Monitorwaarden'
+      summary: Retourneert een Monitorwaarde met de gegeven identifier
+      operationId: readMonitorwaardeById
+      parameters:
+      - name: id
+        in: path
+        description: Id van Monitorwaarde om op te halen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Monitorwaardebericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorwaarden.Read
+          - Energie.Monitorwaarden.ReadWrite
+    put:
+      tags:
+      - 'Monitorwaarden'
+      summary: Vervangen van een Monitorwaarde
+      operationId: replaceMonitorwaardeById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Monitorwaarde om te vervangen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Monitorwaarde
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitorwaardebericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorwaarden.ReadWrite
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Monitorwaarden'
+      summary: Wijzigen van een Monitorwaarde
+      operationId: updateMonitorwaardeById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Monitorwaarde om te wijzigen
+        required: true
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Monitorwaarde
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitorwaardebericht'
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Energie.Monitorwaarden.ReadWrite
 security:
   - ApiKeyAuth: []
   - OAuth2: 
@@ -642,8 +2318,20 @@ components:
             Energie.All.ReadWrite: lezen en schrijven van alle resources
             Energie.Energieprestaties.Read: alleen lezen van Energieprestaties
             Energie.Energieprestaties.ReadWrite: lezen en schrijven van Energieprestaties
+            Energie.Energieprestatiemetingen.Read: alleen lezen van Energieprestatiemetingen
+            Energie.Energieprestatiemetingen.ReadWrite: lezen en schrijven van Energieprestatiemetingen
             Energie.Energieprestatievergoedingen.Read: alleen lezen van Energieprestatievergoedingen
             Energie.Energieprestatievergoedingen.ReadWrite: lezen en schrijven van Energieprestatievergoedingen
+            Energie.Monitorintervallen.Read: alleen lezen van Monitorintervallen
+            Energie.Monitorintervallen.ReadWrite: lezen en schrijven van Monitorintervallen
+            Energie.Monitorlogs.Read: alleen lezen van Monitorlogs
+            Energie.Monitorlogs.ReadWrite: lezen en schrijven van Monitorlogs
+            Energie.Monitorlogregels.Read: alleen lezen van Monitorlogregels
+            Energie.Monitorlogregels.ReadWrite: lezen en schrijven van Monitorlogregels
+            Energie.Monitormetingen.Read: alleen lezen van Monitormetingen
+            Energie.Monitormetingen.ReadWrite: lezen en schrijven van Monitormetingen
+            Energie.Monitorwaarden.Read: alleen lezen van Monitorwaarden
+            Energie.Monitorwaarden.ReadWrite: lezen en schrijven van Monitorwaarden
         clientCredentials:
           tokenUrl: /oauth/token
           scopes:
@@ -651,8 +2339,20 @@ components:
             Energie.All.ReadWrite: lezen en schrijven van alle resources
             Energie.Energieprestaties.Read: alleen lezen van Energieprestaties
             Energie.Energieprestaties.ReadWrite: lezen en schrijven van Energieprestaties
+            Energie.Energieprestatiemetingen.Read: alleen lezen van Energieprestatiemetingen
+            Energie.Energieprestatiemetingen.ReadWrite: lezen en schrijven van Energieprestatiemetingen
             Energie.Energieprestatievergoedingen.Read: alleen lezen van Energieprestatievergoedingen
             Energie.Energieprestatievergoedingen.ReadWrite: lezen en schrijven van Energieprestatievergoedingen
+            Energie.Monitorintervallen.Read: alleen lezen van Monitorintervallen
+            Energie.Monitorintervallen.ReadWrite: lezen en schrijven van Monitorintervallen
+            Energie.Monitorlogs.Read: alleen lezen van Monitorlogs
+            Energie.Monitorlogs.ReadWrite: lezen en schrijven van Monitorlogs
+            Energie.Monitorlogregels.Read: alleen lezen van Monitorlogregels
+            Energie.Monitorlogregels.ReadWrite: lezen en schrijven van Monitorlogregels
+            Energie.Monitormetingen.Read: alleen lezen van Monitormetingen
+            Energie.Monitormetingen.ReadWrite: lezen en schrijven van Monitormetingen
+            Energie.Monitorwaarden.Read: alleen lezen van Monitorwaarden
+            Energie.Monitorwaarden.ReadWrite: lezen en schrijven van Monitorwaarden
   responses:
     NietGeautoriseerd:
       description: Unauthorized
@@ -800,6 +2500,89 @@ components:
         naam:
           type: string
           description: De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.
+    Energieprestatiemetingbericht:
+      allOf:    
+        - $ref: '#/components/schemas/Energieprestatiemeting'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Energieprestatiemeting:
+      type: object
+      properties:
+        id:
+          type: string
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        begindatum:
+          type: string
+          format: date-time
+          description: De begindatum van de periode waarover een meting is vastgelegd.
+        einddatum:
+          type: string
+          format: date-time
+          description: De einddatum van de periode waarover een meting is vastgelegd.
+        eenheid:
+          type: string
+          format: uri
+          description: Referentie naar Eenheid in informatiedomein Vastgoed
+        monitorwaarden:
+          description: De gemeten totale waarden van de energrieprestatiemeting binnen de opgegeven begin- en einddatum.
+          type: array
+          items:
+            $ref: '#/components/schemas/Monitorwaarde'
+        project:
+          type: string
+          format: uri
+          description: Referentie naar Project in informatiedomein Projectontwikkeling
+    Monitorwaardebericht:
+      allOf:    
+        - $ref: '#/components/schemas/Monitorwaarde'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Monitorwaarde:
+      type: object
+      properties:
+        id:
+          type: string
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort monitorwaarde. Bijv. Energie vraag tapwater, Verbruik ruimteverwarming, Energieverbruik Laag etc. Referentiedatasoort MONITORWAARDESOORT.
+        tijdstip:
+          type: integer
+          format: int32
+          description: Het tijdstip van de gemeten waarde in POSIX.
+        waarde:
+          type: number
+          format: float
+          description: De door een monitorsysteem gemeten waarde.
     Energieprestatievergoedingbericht:
       allOf:    
         - $ref: '#/components/schemas/Energieprestatievergoeding'
@@ -837,6 +2620,10 @@ components:
           type: string
           format: date
           description: De datum die aangeeft tot welk moment de energieprestatie geldig is. Indien de energieprestatie een officiële status heft (afgemeld bij de Rijksoverheid) dan is dit de 'Geldig tot'-datum van de registratie. Indien het een voorlopige energieprestatie is, dan kan de einddatum leeg zijn.
+        maximaleEPVBegindatum:
+          type: string
+          format: date
+          description: De datum waarop de maximale EPV ingaat.
         eenheid:
           type: string
           format: uri
@@ -850,6 +2637,146 @@ components:
           type: number
           format: float
           description: Maximale te vragen energieprestatievergoeding in Euro per maand.
+    Monitorintervalbericht:
+      allOf:    
+        - $ref: '#/components/schemas/Monitorinterval'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Monitorinterval:
+      type: object
+      properties:
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort monitorinterval. Bijv. variabel, uur, maand, dag, jaar etc. Referentiedatasoort MONITORINTERVAL.
+        startTijd:
+          type: integer
+          format: int32
+          description: Tijstip in POSIX.
+        eindTijd:
+          type: integer
+          format: int32
+          description: Tijstip in POSIX.
+    Monitorlogbericht:
+      allOf:    
+        - $ref: '#/components/schemas/Monitorlog'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Monitorlog:
+      type: object
+      properties:
+        id:
+          type: string
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        interval:
+          allOf:
+          - $ref: '#/components/schemas/Monitorinterval'
+          description: De interval waarvoor de meting geldt.
+        eenheid:
+          type: string
+          format: uri
+          description: Referentie naar Eenheid in informatiedomein Vastgoed
+        logregels:
+          description: De door een monitorsysteem gegenereerde logs.
+          type: array
+          items:
+            $ref: '#/components/schemas/Monitorlogregel'
+        monitorId:
+          type: string
+          description: Het monitorid van de gateway in de eenheid.
+    Monitorlogregelbericht:
+      allOf:    
+        - $ref: '#/components/schemas/Monitorlogregel'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Monitorlogregel:
+      type: object
+      properties:
+        id:
+          type: string
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort monitorregelsoort. Bijv. fout, waarschuwing, informatie. Referentiedatasoort MONITORLOGREGELSOORT.
+        naam:
+          type: string
+          description: De naam van de gelogde gebeurtenis.
+        tijdstip:
+          type: integer
+          format: int32
+          description: Het tijdstip van de gelogde gebeurtenis.
+        toelichting:
+          type: string
+          description: De toelichting op de gelogde gebeurtenis.
+    Monitormetingbericht:
+      allOf:    
+        - $ref: '#/components/schemas/Monitormeting'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Monitormeting:
+      type: object
+      properties:
+        id:
+          type: string
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        interval:
+          allOf:
+          - $ref: '#/components/schemas/Monitorinterval'
+          description: De interval waarvoor de meting geldt.
+        eenheid:
+          type: string
+          format: uri
+          description: Referentie naar Eenheid in informatiedomein Vastgoed
+        monitorId:
+          type: string
+          description: Het monitorid van de gateway in de eenheid.
+        waarden:
+          description: De door een monitorsysteem gemeten waarde.
+          type: array
+          items:
+            $ref: '#/components/schemas/Monitorwaarde'
     Bericht-basis:
       type: object
       properties:
@@ -859,7 +2786,7 @@ components:
           items:
             $ref: '#/components/schemas/ExtraAttribuut'
         informatieobjecten:
-          type: array
+          type: array  
           items:
             type: string
             format: uri

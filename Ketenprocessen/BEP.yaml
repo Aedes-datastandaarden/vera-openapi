@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  title: VERA-Beheer Relatiegegevens
-  description: API-specificatie van ketenproces 'Beheer Relatiegegevens'. Deze specificatie is gebaseerd op VERA versie 4.2.0+250117.7
+  title: VERA-Bepalen Energieprestatie
+  description: API-specificatie van ketenproces 'Bepalen Energieprestatie'. Deze specificatie is gebaseerd op VERA versie 4.2.0+250117.7
   contact:
     name: VERA
     url: https://www.coraveraonline.nl
@@ -9,9 +9,9 @@ info:
   license:
     name: "Copyright (c) Aedes vereniging van woningcorporaties"
     url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
-  version: '1.2.0+250117.7'
+  version: '1.0.0+250117.7'
 servers:
-  - url: https://brg.vera.io:{port}/{basePath}
+  - url: https://bep.vera.io:{port}/{basePath}
     description: Productieserver
     variables:
        port:
@@ -22,14 +22,14 @@ servers:
        basePath:
          default: v1
 tags:
-- name: Betaalgegevens
-  description: Operaties met betrekking tot een Betaalgegeven
-- name: Contactmomenten
-  description: Operaties met betrekking tot een Contactmoment
-- name: Relaties
-  description: Operaties met betrekking tot een Relatie
-- name: Signaleringen
-  description: Operaties met betrekking tot een Signalering
+- name: Energieprestatiemetingen
+  description: Operaties met betrekking tot een Energieprestatiemeting
+- name: Energieprestaties
+  description: Operaties met betrekking tot een Energieprestatie
+- name: Monitorlogs
+  description: Operaties met betrekking tot een Monitorlog
+- name: Monitormetingen
+  description: Operaties met betrekking tot een Monitormeting
 paths:
   /ping:
     get:
@@ -47,19 +47,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
-  /betaalgegevens:
+  /energieprestatiemetingen:
     get:
       tags:
-      - 'Betaalgegevens'
-      summary: Ophalen van Betaalgegevens
-      operationId: listBetaalgegevens
+      - 'Energieprestatiemetingen'
+      summary: Ophalen van Energieprestatiemetingen
+      operationId: listEnergieprestatiemetingen
       parameters:
       - name: params
         in: query
         style: form
         explode: true
         schema:
-          $ref: '#/components/schemas/Betaalgegevens-Betaalgegevenbericht'
+          $ref: '#/components/schemas/Energieprestatiemetingen-Energieprestatiemetingbericht'
       - $ref: '#/components/parameters/Cursor'
       - $ref: '#/components/parameters/Pagina'
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
@@ -76,7 +76,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Betaalgegevens-Betaalgegevenbericht'
+                  $ref: '#/components/schemas/Energieprestatiemetingen-Energieprestatiemetingbericht'
                 maxItems: 100
           headers:
             X-Parameters-Aantal:
@@ -97,24 +97,24 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
       security: 
         - OAuth2: 
-          - BRG.Betaalgegevens.Read
-          - BRG.Betaalgegevens.ReadWrite
+          - BEP.Energieprestatiemetingen.Read
+          - BEP.Energieprestatiemetingen.ReadWrite
     post:
       tags:
-      - 'Betaalgegevens'
-      summary: Voegt een nieuw(e) Betaalgegeven toe.
-      operationId: createBetaalgegeven
+      - 'Energieprestatiemetingen'
+      summary: Voegt een nieuw(e) Energieprestatiemeting toe.
+      operationId: createEnergieprestatiemeting
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Betaalgegeven
+        description: Energieprestatiemeting
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Betaalgegevens-Betaalgegevenbericht'
+              $ref: '#/components/schemas/Energieprestatiemetingen-Energieprestatiemetingbericht'
       responses:
         '201':
           description: Created
@@ -127,7 +127,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Betaalgegevens-Betaalgegevenbericht'
+                $ref: '#/components/schemas/Energieprestatiemetingen-Energieprestatiemetingbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -138,24 +138,24 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
       security: 
         - OAuth2: 
-          - BRG.Betaalgegevens.ReadWrite
+          - BEP.Energieprestatiemetingen.ReadWrite
     put:
       tags:
-      - 'Betaalgegevens'
+      - 'Energieprestatiemetingen'
       summary: |
-        Vervangen van een Betaalgegeven op basis van overeenkomstige sleutelvelden.
-      operationId: replaceBetaalgegeven
+        Vervangen van een Energieprestatiemeting op basis van overeenkomstige sleutelvelden.
+      operationId: replaceEnergieprestatiemeting
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Betaalgegeven
+        description: Entiteit Energieprestatiemeting
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Betaalgegevens-Betaalgegevenbericht'
+              $ref: '#/components/schemas/Energieprestatiemetingen-Energieprestatiemetingbericht'
       responses:
         '200':
           description: OK
@@ -173,25 +173,25 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
       security: 
         - OAuth2: 
-          - BRG.Betaalgegevens.ReadWrite
+          - BEP.Energieprestatiemetingen.ReadWrite
     patch:
       tags:
-      - 'Betaalgegevens'
+      - 'Energieprestatiemetingen'
       summary: |
-        Wijzigen van afzonderlijke attributen van een Betaalgegeven. In de meegestuurde entiteit moeten
+        Wijzigen van afzonderlijke attributen van een Energieprestatiemeting. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
-      operationId: updateBetaalgegeven
+      operationId: updateEnergieprestatiemeting
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Betaalgegeven
+        description: Entiteit Energieprestatiemeting
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Betaalgegevens-Betaalgegevenbericht'
+              $ref: '#/components/schemas/Energieprestatiemetingen-Energieprestatiemetingbericht'
       responses:
         '200':
           description: OK
@@ -209,17 +209,17 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
       security: 
         - OAuth2: 
-          - BRG.Betaalgegevens.ReadWrite
-  /betaalgegevens/{id}:
+          - BEP.Energieprestatiemetingen.ReadWrite
+  /energieprestatiemetingen/{id}:
     get:
       tags:
-      - 'Betaalgegevens'
-      summary: Retourneert een Betaalgegeven met de gegeven identifier
-      operationId: readBetaalgegevenById
+      - 'Energieprestatiemetingen'
+      summary: Retourneert een Energieprestatiemeting met de gegeven identifier
+      operationId: readEnergieprestatiemetingById
       parameters:
       - name: id
         in: path
-        description: Id van Betaalgegeven om op te halen
+        description: Id van Energieprestatiemeting om op te halen
         required: true
         schema:
           type: string
@@ -233,7 +233,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Betaalgegevens-Betaalgegevenbericht'
+                $ref: '#/components/schemas/Energieprestatiemetingen-Energieprestatiemetingbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
@@ -246,17 +246,17 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
       security: 
         - OAuth2: 
-          - BRG.Betaalgegevens.Read
-          - BRG.Betaalgegevens.ReadWrite
+          - BEP.Energieprestatiemetingen.Read
+          - BEP.Energieprestatiemetingen.ReadWrite
     put:
       tags:
-      - 'Betaalgegevens'
-      summary: Vervangen van een Betaalgegeven
-      operationId: replaceBetaalgegevenById
+      - 'Energieprestatiemetingen'
+      summary: Vervangen van een Energieprestatiemeting
+      operationId: replaceEnergieprestatiemetingById
       parameters:
       - name: 'id'
         in: 'path'
-        description: Id van Betaalgegeven om te vervangen
+        description: Id van Energieprestatiemeting om te vervangen
         required: true
         schema:
           type: string
@@ -265,14 +265,14 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Betaalgegeven
+        description: Entiteit Energieprestatiemeting
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Betaalgegevens-Betaalgegevenbericht'
+              $ref: '#/components/schemas/Energieprestatiemetingen-Energieprestatiemetingbericht'
       security: 
         - OAuth2: 
-          - BRG.Betaalgegevens.ReadWrite
+          - BEP.Energieprestatiemetingen.ReadWrite
       responses:
         '200':
           description: OK
@@ -288,13 +288,13 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     patch:
       tags:
-      - 'Betaalgegevens'
-      summary: Wijzigen van een Betaalgegeven
-      operationId: updateBetaalgegevenById
+      - 'Energieprestatiemetingen'
+      summary: Wijzigen van een Energieprestatiemeting
+      operationId: updateEnergieprestatiemetingById
       parameters:
       - name: 'id'
         in: 'path'
-        description: Id van Betaalgegeven om te wijzigen
+        description: Id van Energieprestatiemeting om te wijzigen
         required: true
         schema:
           type: integer
@@ -303,11 +303,11 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Betaalgegeven
+        description: Entiteit Energieprestatiemeting
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Betaalgegevens-Betaalgegevenbericht'
+              $ref: '#/components/schemas/Energieprestatiemetingen-Energieprestatiemetingbericht'
       responses:
         '200':
           description: OK
@@ -323,20 +323,20 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
       security: 
         - OAuth2: 
-          - BRG.Betaalgegevens.ReadWrite
-  /contactmomenten:
+          - BEP.Energieprestatiemetingen.ReadWrite
+  /energieprestaties:
     get:
       tags:
-      - 'Contactmomenten'
-      summary: Ophalen van Contactmomenten
-      operationId: listContactmomenten
+      - 'Energieprestaties'
+      summary: Ophalen van Energieprestaties
+      operationId: listEnergieprestaties
       parameters:
       - name: params
         in: query
         style: form
         explode: true
         schema:
-          $ref: '#/components/schemas/Contactmomenten-Contactmomentbericht'
+          $ref: '#/components/schemas/Energieprestaties-Energieprestatiebericht'
       - $ref: '#/components/parameters/Cursor'
       - $ref: '#/components/parameters/Pagina'
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
@@ -353,7 +353,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Contactmomenten-Contactmomentbericht'
+                  $ref: '#/components/schemas/Energieprestaties-Energieprestatiebericht'
                 maxItems: 100
           headers:
             X-Parameters-Aantal:
@@ -374,24 +374,24 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
       security: 
         - OAuth2: 
-          - BRG.Contactmomenten.Read
-          - BRG.Contactmomenten.ReadWrite
+          - BEP.Energieprestaties.Read
+          - BEP.Energieprestaties.ReadWrite
     post:
       tags:
-      - 'Contactmomenten'
-      summary: Voegt een nieuw(e) Contactmoment toe.
-      operationId: createContactmoment
+      - 'Energieprestaties'
+      summary: Voegt een nieuw(e) Energieprestatie toe.
+      operationId: createEnergieprestatie
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Contactmoment
+        description: Energieprestatie
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Contactmomenten-Contactmomentbericht'
+              $ref: '#/components/schemas/Energieprestaties-Energieprestatiebericht'
       responses:
         '201':
           description: Created
@@ -404,7 +404,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Contactmomenten-Contactmomentbericht'
+                $ref: '#/components/schemas/Energieprestaties-Energieprestatiebericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -415,24 +415,24 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
       security: 
         - OAuth2: 
-          - BRG.Contactmomenten.ReadWrite
+          - BEP.Energieprestaties.ReadWrite
     put:
       tags:
-      - 'Contactmomenten'
+      - 'Energieprestaties'
       summary: |
-        Vervangen van een Contactmoment op basis van overeenkomstige sleutelvelden.
-      operationId: replaceContactmoment
+        Vervangen van een Energieprestatie op basis van overeenkomstige sleutelvelden.
+      operationId: replaceEnergieprestatie
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Contactmoment
+        description: Entiteit Energieprestatie
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Contactmomenten-Contactmomentbericht'
+              $ref: '#/components/schemas/Energieprestaties-Energieprestatiebericht'
       responses:
         '200':
           description: OK
@@ -450,25 +450,25 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
       security: 
         - OAuth2: 
-          - BRG.Contactmomenten.ReadWrite
+          - BEP.Energieprestaties.ReadWrite
     patch:
       tags:
-      - 'Contactmomenten'
+      - 'Energieprestaties'
       summary: |
-        Wijzigen van afzonderlijke attributen van een Contactmoment. In de meegestuurde entiteit moeten
+        Wijzigen van afzonderlijke attributen van een Energieprestatie. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
-      operationId: updateContactmoment
+      operationId: updateEnergieprestatie
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Contactmoment
+        description: Entiteit Energieprestatie
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Contactmomenten-Contactmomentbericht'
+              $ref: '#/components/schemas/Energieprestaties-Energieprestatiebericht'
       responses:
         '200':
           description: OK
@@ -486,17 +486,17 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
       security: 
         - OAuth2: 
-          - BRG.Contactmomenten.ReadWrite
-  /contactmomenten/{id}:
+          - BEP.Energieprestaties.ReadWrite
+  /energieprestaties/{id}:
     get:
       tags:
-      - 'Contactmomenten'
-      summary: Retourneert een Contactmoment met de gegeven identifier
-      operationId: readContactmomentById
+      - 'Energieprestaties'
+      summary: Retourneert een Energieprestatie met de gegeven identifier
+      operationId: readEnergieprestatieById
       parameters:
       - name: id
         in: path
-        description: Id van Contactmoment om op te halen
+        description: Id van Energieprestatie om op te halen
         required: true
         schema:
           type: string
@@ -510,7 +510,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Contactmomenten-Contactmomentbericht'
+                $ref: '#/components/schemas/Energieprestaties-Energieprestatiebericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
@@ -523,17 +523,17 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
       security: 
         - OAuth2: 
-          - BRG.Contactmomenten.Read
-          - BRG.Contactmomenten.ReadWrite
+          - BEP.Energieprestaties.Read
+          - BEP.Energieprestaties.ReadWrite
     put:
       tags:
-      - 'Contactmomenten'
-      summary: Vervangen van een Contactmoment
-      operationId: replaceContactmomentById
+      - 'Energieprestaties'
+      summary: Vervangen van een Energieprestatie
+      operationId: replaceEnergieprestatieById
       parameters:
       - name: 'id'
         in: 'path'
-        description: Id van Contactmoment om te vervangen
+        description: Id van Energieprestatie om te vervangen
         required: true
         schema:
           type: string
@@ -542,14 +542,14 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Contactmoment
+        description: Entiteit Energieprestatie
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Contactmomenten-Contactmomentbericht'
+              $ref: '#/components/schemas/Energieprestaties-Energieprestatiebericht'
       security: 
         - OAuth2: 
-          - BRG.Contactmomenten.ReadWrite
+          - BEP.Energieprestaties.ReadWrite
       responses:
         '200':
           description: OK
@@ -565,13 +565,13 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     patch:
       tags:
-      - 'Contactmomenten'
-      summary: Wijzigen van een Contactmoment
-      operationId: updateContactmomentById
+      - 'Energieprestaties'
+      summary: Wijzigen van een Energieprestatie
+      operationId: updateEnergieprestatieById
       parameters:
       - name: 'id'
         in: 'path'
-        description: Id van Contactmoment om te wijzigen
+        description: Id van Energieprestatie om te wijzigen
         required: true
         schema:
           type: integer
@@ -580,11 +580,11 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Contactmoment
+        description: Entiteit Energieprestatie
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Contactmomenten-Contactmomentbericht'
+              $ref: '#/components/schemas/Energieprestaties-Energieprestatiebericht'
       responses:
         '200':
           description: OK
@@ -600,20 +600,20 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
       security: 
         - OAuth2: 
-          - BRG.Contactmomenten.ReadWrite
-  /relaties:
+          - BEP.Energieprestaties.ReadWrite
+  /monitorlogs:
     get:
       tags:
-      - 'Relaties'
-      summary: Ophalen van Relaties
-      operationId: listRelaties
+      - 'Monitorlogs'
+      summary: Ophalen van Monitorlogs
+      operationId: listMonitorlogs
       parameters:
       - name: params
         in: query
         style: form
         explode: true
         schema:
-          $ref: '#/components/schemas/Relaties-Relatiebericht'
+          $ref: '#/components/schemas/Monitorlogs-Monitorlogbericht'
       - $ref: '#/components/parameters/Cursor'
       - $ref: '#/components/parameters/Pagina'
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
@@ -630,7 +630,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Relaties-Relatiebericht'
+                  $ref: '#/components/schemas/Monitorlogs-Monitorlogbericht'
                 maxItems: 100
           headers:
             X-Parameters-Aantal:
@@ -651,24 +651,24 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
       security: 
         - OAuth2: 
-          - BRG.Relaties.Read
-          - BRG.Relaties.ReadWrite
+          - BEP.Monitorlogs.Read
+          - BEP.Monitorlogs.ReadWrite
     post:
       tags:
-      - 'Relaties'
-      summary: Voegt een nieuw(e) Relatie toe.
-      operationId: createRelatie
+      - 'Monitorlogs'
+      summary: Voegt een nieuw(e) Monitorlog toe.
+      operationId: createMonitorlog
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Relatie
+        description: Monitorlog
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Relaties-Relatiebericht'
+              $ref: '#/components/schemas/Monitorlogs-Monitorlogbericht'
       responses:
         '201':
           description: Created
@@ -681,7 +681,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Relaties-Relatiebericht'
+                $ref: '#/components/schemas/Monitorlogs-Monitorlogbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -692,24 +692,24 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
       security: 
         - OAuth2: 
-          - BRG.Relaties.ReadWrite
+          - BEP.Monitorlogs.ReadWrite
     put:
       tags:
-      - 'Relaties'
+      - 'Monitorlogs'
       summary: |
-        Vervangen van een Relatie op basis van overeenkomstige sleutelvelden.
-      operationId: replaceRelatie
+        Vervangen van een Monitorlog op basis van overeenkomstige sleutelvelden.
+      operationId: replaceMonitorlog
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Relatie
+        description: Entiteit Monitorlog
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Relaties-Relatiebericht'
+              $ref: '#/components/schemas/Monitorlogs-Monitorlogbericht'
       responses:
         '200':
           description: OK
@@ -727,25 +727,25 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
       security: 
         - OAuth2: 
-          - BRG.Relaties.ReadWrite
+          - BEP.Monitorlogs.ReadWrite
     patch:
       tags:
-      - 'Relaties'
+      - 'Monitorlogs'
       summary: |
-        Wijzigen van afzonderlijke attributen van een Relatie. In de meegestuurde entiteit moeten
+        Wijzigen van afzonderlijke attributen van een Monitorlog. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
-      operationId: updateRelatie
+      operationId: updateMonitorlog
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Relatie
+        description: Entiteit Monitorlog
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Relaties-Relatiebericht'
+              $ref: '#/components/schemas/Monitorlogs-Monitorlogbericht'
       responses:
         '200':
           description: OK
@@ -763,17 +763,17 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
       security: 
         - OAuth2: 
-          - BRG.Relaties.ReadWrite
-  /relaties/{id}:
+          - BEP.Monitorlogs.ReadWrite
+  /monitorlogs/{id}:
     get:
       tags:
-      - 'Relaties'
-      summary: Retourneert een Relatie met de gegeven identifier
-      operationId: readRelatieById
+      - 'Monitorlogs'
+      summary: Retourneert een Monitorlog met de gegeven identifier
+      operationId: readMonitorlogById
       parameters:
       - name: id
         in: path
-        description: Id van Relatie om op te halen
+        description: Id van Monitorlog om op te halen
         required: true
         schema:
           type: string
@@ -787,7 +787,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Relaties-Relatiebericht'
+                $ref: '#/components/schemas/Monitorlogs-Monitorlogbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
@@ -800,17 +800,17 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
       security: 
         - OAuth2: 
-          - BRG.Relaties.Read
-          - BRG.Relaties.ReadWrite
+          - BEP.Monitorlogs.Read
+          - BEP.Monitorlogs.ReadWrite
     put:
       tags:
-      - 'Relaties'
-      summary: Vervangen van een Relatie
-      operationId: replaceRelatieById
+      - 'Monitorlogs'
+      summary: Vervangen van een Monitorlog
+      operationId: replaceMonitorlogById
       parameters:
       - name: 'id'
         in: 'path'
-        description: Id van Relatie om te vervangen
+        description: Id van Monitorlog om te vervangen
         required: true
         schema:
           type: string
@@ -819,14 +819,14 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Relatie
+        description: Entiteit Monitorlog
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Relaties-Relatiebericht'
+              $ref: '#/components/schemas/Monitorlogs-Monitorlogbericht'
       security: 
         - OAuth2: 
-          - BRG.Relaties.ReadWrite
+          - BEP.Monitorlogs.ReadWrite
       responses:
         '200':
           description: OK
@@ -842,13 +842,13 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     patch:
       tags:
-      - 'Relaties'
-      summary: Wijzigen van een Relatie
-      operationId: updateRelatieById
+      - 'Monitorlogs'
+      summary: Wijzigen van een Monitorlog
+      operationId: updateMonitorlogById
       parameters:
       - name: 'id'
         in: 'path'
-        description: Id van Relatie om te wijzigen
+        description: Id van Monitorlog om te wijzigen
         required: true
         schema:
           type: integer
@@ -857,11 +857,11 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Relatie
+        description: Entiteit Monitorlog
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Relaties-Relatiebericht'
+              $ref: '#/components/schemas/Monitorlogs-Monitorlogbericht'
       responses:
         '200':
           description: OK
@@ -877,20 +877,20 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
       security: 
         - OAuth2: 
-          - BRG.Relaties.ReadWrite
-  /signaleringen:
+          - BEP.Monitorlogs.ReadWrite
+  /monitormetingen:
     get:
       tags:
-      - 'Signaleringen'
-      summary: Ophalen van Signaleringen
-      operationId: listSignaleringen
+      - 'Monitormetingen'
+      summary: Ophalen van Monitormetingen
+      operationId: listMonitormetingen
       parameters:
       - name: params
         in: query
         style: form
         explode: true
         schema:
-          $ref: '#/components/schemas/Signaleringen-Signaleringbericht'
+          $ref: '#/components/schemas/Monitormetingen-Monitormetingbericht'
       - $ref: '#/components/parameters/Cursor'
       - $ref: '#/components/parameters/Pagina'
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
@@ -907,7 +907,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Signaleringen-Signaleringbericht'
+                  $ref: '#/components/schemas/Monitormetingen-Monitormetingbericht'
                 maxItems: 100
           headers:
             X-Parameters-Aantal:
@@ -928,24 +928,24 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
       security: 
         - OAuth2: 
-          - BRG.Signaleringen.Read
-          - BRG.Signaleringen.ReadWrite
+          - BEP.Monitormetingen.Read
+          - BEP.Monitormetingen.ReadWrite
     post:
       tags:
-      - 'Signaleringen'
-      summary: Voegt een nieuw(e) Signalering toe.
-      operationId: createSignalering
+      - 'Monitormetingen'
+      summary: Voegt een nieuw(e) Monitormeting toe.
+      operationId: createMonitormeting
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Signalering
+        description: Monitormeting
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Signaleringen-Signaleringbericht'
+              $ref: '#/components/schemas/Monitormetingen-Monitormetingbericht'
       responses:
         '201':
           description: Created
@@ -958,7 +958,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Signaleringen-Signaleringbericht'
+                $ref: '#/components/schemas/Monitormetingen-Monitormetingbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         default:
@@ -969,24 +969,24 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
       security: 
         - OAuth2: 
-          - BRG.Signaleringen.ReadWrite
+          - BEP.Monitormetingen.ReadWrite
     put:
       tags:
-      - 'Signaleringen'
+      - 'Monitormetingen'
       summary: |
-        Vervangen van een Signalering op basis van overeenkomstige sleutelvelden.
-      operationId: replaceSignalering
+        Vervangen van een Monitormeting op basis van overeenkomstige sleutelvelden.
+      operationId: replaceMonitormeting
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Signalering
+        description: Entiteit Monitormeting
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Signaleringen-Signaleringbericht'
+              $ref: '#/components/schemas/Monitormetingen-Monitormetingbericht'
       responses:
         '200':
           description: OK
@@ -1004,25 +1004,25 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
       security: 
         - OAuth2: 
-          - BRG.Signaleringen.ReadWrite
+          - BEP.Monitormetingen.ReadWrite
     patch:
       tags:
-      - 'Signaleringen'
+      - 'Monitormetingen'
       summary: |
-        Wijzigen van afzonderlijke attributen van een Signalering. In de meegestuurde entiteit moeten
+        Wijzigen van afzonderlijke attributen van een Monitormeting. In de meegestuurde entiteit moeten
         sleutelvelden aanwezig zijn.
-      operationId: updateSignalering
+      operationId: updateMonitormeting
       parameters:
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Signalering
+        description: Entiteit Monitormeting
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Signaleringen-Signaleringbericht'
+              $ref: '#/components/schemas/Monitormetingen-Monitormetingbericht'
       responses:
         '200':
           description: OK
@@ -1040,17 +1040,17 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
       security: 
         - OAuth2: 
-          - BRG.Signaleringen.ReadWrite
-  /signaleringen/{id}:
+          - BEP.Monitormetingen.ReadWrite
+  /monitormetingen/{id}:
     get:
       tags:
-      - 'Signaleringen'
-      summary: Retourneert een Signalering met de gegeven identifier
-      operationId: readSignaleringById
+      - 'Monitormetingen'
+      summary: Retourneert een Monitormeting met de gegeven identifier
+      operationId: readMonitormetingById
       parameters:
       - name: id
         in: path
-        description: Id van Signalering om op te halen
+        description: Id van Monitormeting om op te halen
         required: true
         schema:
           type: string
@@ -1064,7 +1064,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Signaleringen-Signaleringbericht'
+                $ref: '#/components/schemas/Monitormetingen-Monitormetingbericht'
         '401':
           $ref: '#/components/responses/NietGeautoriseerd'
         '404':
@@ -1077,17 +1077,17 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
       security: 
         - OAuth2: 
-          - BRG.Signaleringen.Read
-          - BRG.Signaleringen.ReadWrite
+          - BEP.Monitormetingen.Read
+          - BEP.Monitormetingen.ReadWrite
     put:
       tags:
-      - 'Signaleringen'
-      summary: Vervangen van een Signalering
-      operationId: replaceSignaleringById
+      - 'Monitormetingen'
+      summary: Vervangen van een Monitormeting
+      operationId: replaceMonitormetingById
       parameters:
       - name: 'id'
         in: 'path'
-        description: Id van Signalering om te vervangen
+        description: Id van Monitormeting om te vervangen
         required: true
         schema:
           type: string
@@ -1096,14 +1096,14 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Signalering
+        description: Entiteit Monitormeting
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Signaleringen-Signaleringbericht'
+              $ref: '#/components/schemas/Monitormetingen-Monitormetingbericht'
       security: 
         - OAuth2: 
-          - BRG.Signaleringen.ReadWrite
+          - BEP.Monitormetingen.ReadWrite
       responses:
         '200':
           description: OK
@@ -1119,13 +1119,13 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
     patch:
       tags:
-      - 'Signaleringen'
-      summary: Wijzigen van een Signalering
-      operationId: updateSignaleringById
+      - 'Monitormetingen'
+      summary: Wijzigen van een Monitormeting
+      operationId: updateMonitormetingById
       parameters:
       - name: 'id'
         in: 'path'
-        description: Id van Signalering om te wijzigen
+        description: Id van Monitormeting om te wijzigen
         required: true
         schema:
           type: integer
@@ -1134,11 +1134,11 @@ paths:
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
       - $ref: '#/components/parameters/StuurgegevensReferentienummer'
       requestBody:
-        description: Entiteit Signalering
+        description: Entiteit Monitormeting
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Signaleringen-Signaleringbericht'
+              $ref: '#/components/schemas/Monitormetingen-Monitormetingbericht'
       responses:
         '200':
           description: OK
@@ -1154,12 +1154,12 @@ paths:
                 $ref: '#/components/schemas/Foutbericht'
       security: 
         - OAuth2: 
-          - BRG.Signaleringen.ReadWrite
+          - BEP.Monitormetingen.ReadWrite
 security:
   - ApiKeyAuth: []
   - OAuth2: 
-    - BRG.All.Read
-    - BRG.All.ReadWrite
+    - BEP.All.Read
+    - BEP.All.ReadWrite
 
 components:
   headers:
@@ -1198,29 +1198,29 @@ components:
           authorizationUrl: /oauth/authorize
           tokenUrl: /oauth/token
           scopes:
-            BRG.All.Read: alleen lezen van alle resources
-            BRG.All.ReadWrite: lezen en schrijven van alle resources
-            BRG.Betaalgegevens.Read: alleen lezen van Betaalgegevens
-            BRG.Betaalgegevens.ReadWrite: lezen en schrijven van Betaalgegevens
-            BRG.Contactmomenten.Read: alleen lezen van Contactmomenten
-            BRG.Contactmomenten.ReadWrite: lezen en schrijven van Contactmomenten
-            BRG.Relaties.Read: alleen lezen van Relaties
-            BRG.Relaties.ReadWrite: lezen en schrijven van Relaties
-            BRG.Signaleringen.Read: alleen lezen van Signaleringen
-            BRG.Signaleringen.ReadWrite: lezen en schrijven van Signaleringen
+            BEP.All.Read: alleen lezen van alle resources
+            BEP.All.ReadWrite: lezen en schrijven van alle resources
+            BEP.Energieprestatiemetingen.Read: alleen lezen van Energieprestatiemetingen
+            BEP.Energieprestatiemetingen.ReadWrite: lezen en schrijven van Energieprestatiemetingen
+            BEP.Energieprestaties.Read: alleen lezen van Energieprestaties
+            BEP.Energieprestaties.ReadWrite: lezen en schrijven van Energieprestaties
+            BEP.Monitorlogs.Read: alleen lezen van Monitorlogs
+            BEP.Monitorlogs.ReadWrite: lezen en schrijven van Monitorlogs
+            BEP.Monitormetingen.Read: alleen lezen van Monitormetingen
+            BEP.Monitormetingen.ReadWrite: lezen en schrijven van Monitormetingen
         clientCredentials:
           tokenUrl: /oauth/token
           scopes:
-            BRG.All.Read: alleen lezen van alle resources
-            BRG.All.ReadWrite: lezen en schrijven van alle resources
-            BRG.Betaalgegevens.Read: alleen lezen van Betaalgegevens
-            BRG.Betaalgegevens.ReadWrite: lezen en schrijven van Betaalgegevens
-            BRG.Contactmomenten.Read: alleen lezen van Contactmomenten
-            BRG.Contactmomenten.ReadWrite: lezen en schrijven van Contactmomenten
-            BRG.Relaties.Read: alleen lezen van Relaties
-            BRG.Relaties.ReadWrite: lezen en schrijven van Relaties
-            BRG.Signaleringen.Read: alleen lezen van Signaleringen
-            BRG.Signaleringen.ReadWrite: lezen en schrijven van Signaleringen
+            BEP.All.Read: alleen lezen van alle resources
+            BEP.All.ReadWrite: lezen en schrijven van alle resources
+            BEP.Energieprestatiemetingen.Read: alleen lezen van Energieprestatiemetingen
+            BEP.Energieprestatiemetingen.ReadWrite: lezen en schrijven van Energieprestatiemetingen
+            BEP.Energieprestaties.Read: alleen lezen van Energieprestaties
+            BEP.Energieprestaties.ReadWrite: lezen en schrijven van Energieprestaties
+            BEP.Monitorlogs.Read: alleen lezen van Monitorlogs
+            BEP.Monitorlogs.ReadWrite: lezen en schrijven van Monitorlogs
+            BEP.Monitormetingen.Read: alleen lezen van Monitormetingen
+            BEP.Monitormetingen.ReadWrite: lezen en schrijven van Monitormetingen
   responses:
     NietGeautoriseerd:
       description: Unauthorized
@@ -1229,11 +1229,11 @@ components:
           schema:
             type: string
   schemas:
-    Betaalgegevens-Betaalgegevenbericht:
+    Energieprestatiemetingen-Energieprestatiemetingbericht:
       allOf:    
-        - $ref: '#/components/schemas/Betaalgegevens-Betaalgegeven'
+        - $ref: '#/components/schemas/Energieprestatiemetingen-Energieprestatiemeting'
         - $ref: '#/components/schemas/Bericht-basis'
-    Betaalgegevens-Betaalgegeven:
+    Energieprestatiemetingen-Energieprestatiemeting:
       type: object
       properties:
         id:
@@ -1254,190 +1254,27 @@ components:
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort betaalgegeven (bijvoorbeeld een bankrekening, paypal, creditcard, G-rekening etc.). Referentiedatasoort BETAALGEGEVENSOORT.
-        rekeningnummer:
-          type: string
-          description: Het rekeningnummer.
         begindatum:
           type: string
-          format: date
-          description: De begindatum van het betaalgegeven.
+          format: date-time
+          description: De begindatum van de periode waarover een meting is vastgelegd.
         einddatum:
           type: string
-          format: date
-          description: De einddatum van het betaalgegeven.
-        bic:
-          type: string
-          description: Bank Identifier Code. Hierdoor komen internationale betalingsoverdrachten bij de juiste bank terecht. De BIC wordt ook wel SWIFT-adres of SWIFT-code genoemd.
-        iban:
-          type: string
-          description: Het International Bank Account Number. Identificeert elke rekeninghouder, inclusief bank en vestigingsland.
-        incassomachtigingen:
-          description: Met de uitwerking van de klasse Betaalwijze is de incassomachtiging verplaatst naar Betaalwijze (waar een link is naar Betaalrekening en het doel van de machtiging, een overeenkomst of een betalingsregeling). OBSOLETE
+          format: date-time
+          description: De einddatum van de periode waarover een meting is vastgelegd.
+        eenheid:
+          allOf:
+          - $ref: '#/components/schemas/Eenheid-sleutels'
+          description: De eenheid waarop de energielabel van toepassing is.
+        monitorwaarden:
+          description: De gemeten waarden van de energrieprestatiemeting.
           type: array
           items:
-            $ref: '#/components/schemas/Betaalgegevens-Incassomachtiging'
-          deprecated: true
-        incassowijze:
+            $ref: '#/components/schemas/Energieprestatiemetingen-Monitorwaarde'
+        project:
           allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: OBSOLETE Referentiedatasoort INCASSOWIJZE.
-          deprecated: true
-        overeenkomst:
-          allOf:
-          - $ref: '#/components/schemas/Betaalgegevens-Overeenkomst'
-          description: De overeenkomst behorende bij het betaalgegeven.
-        primair:
-          type: boolean
-          description: De aanduiding dat het betaalgegeven het primaire betaalgegeven betreft.
-        rekeninghouder:
-          type: string
-          description: De naam van de rekeninghouder.
-        rekeningPlaats:
-          allOf:
-          - $ref: '#/components/schemas/Betaalgegevens-Woonplaats'
-          description: De woonplaats van de rekeninghouder.
-        relatie:
-          allOf:
-          - $ref: '#/components/schemas/Betaalgegevens-Relatie'
-          description: De relatie behorend bij het betaalgegeven.
-    Referentiedata:
-      type: object
-      properties:
-        code:
-          type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.
-        naam:
-          type: string
-          description: De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.
-    Betaalgegevens-Incassomachtiging:
-      type: object
-      properties:
-        id:
-          type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        idOrganisatie:
-          type: string
-          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
-        idAdministratie:
-          type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
-        code:
-          type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Soort machtiging: doorlopend/eenmalig. Referentiedatasoort MACHTIGINGSOORT.'
-        afgiftedatum:
-          type: string
-          format: date
-          description: De afgiftedatum van de machtiging
-        machtigingsnummer:
-          type: string
-          description: Het nummer van de machtiging
-    Betaalgegevens-Overeenkomst:
-      type: object
-      properties:
-        id:
-          type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        idOrganisatie:
-          type: string
-          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
-        idAdministratie:
-          type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
-        code:
-          type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn. Referentiedatasoort OVEREENKOMSTSOORT.
-        detailSoort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Het detail soort overeenkomst. Bijvoorbeeld BOG (Bedrijfs Onroerend Goed). Referentiedatasoort OVEREENKOMSTDETAILSOORT.
-        bovenliggendeOvereenkomst:
-          allOf:
-          - $ref: '#/components/schemas/Overeenkomst-sleutels'
-          description: De gerelateerde overeenkomst, bijvoorbeeld indien dit een betaalovereenkomst betreft voor een bovenliggende huurovereenkomst.
-        betaalwijze:
-          allOf:
-          - $ref: '#/components/schemas/Betaalwijze-sleutels'
-          description: De afgesproken betaalwijze voor de overeenkomst. OBSOLETE
-          deprecated: true
-        betaalwijzen:
-          description: De afgesproken betaalwijzen voor de overeenkomst. Met een collectie betaalwijzen kunnen meerdere betalers gekoppeld worden aan de overeenkomst
-          type: array
-          items:
-            $ref: '#/components/schemas/Betaalwijze-sleutels'
-        eenheden:
-          type: array
-          items:
-            $ref: '#/components/schemas/Eenheid-sleutels'
-    Overeenkomst-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        idOrganisatie:
-          type: string
-          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
-        idAdministratie:
-          type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
-        code:
-          type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn. Referentiedatasoort OVEREENKOMSTSOORT.
-    Betaalwijze-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        idOrganisatie:
-          type: string
-          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
-        idAdministratie:
-          type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
-        code:
-          type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+          - $ref: '#/components/schemas/Project-sleutels'
+          description: Het project waarmee de monitoring van de eenheid wordt gedaan.
     Eenheid-sleutels:
       type: object
       properties:
@@ -1459,7 +1296,28 @@ components:
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-    Betaalgegevens-Relatie:
+    Project-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+    Energieprestatiemetingen-Monitorwaarde:
       type: object
       properties:
         id:
@@ -1483,58 +1341,25 @@ components:
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedatasoort RELATIESOORT.'
-        detailSoort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedatasoort RELATIEDETAILSOORT.'
-        rollen:
-          description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
-          type: array
-          items:
-            $ref: '#/components/schemas/Betaalgegevens-Relatierol'
-    Betaalgegevens-Relatierol:
-      type: object
-      properties:
-        id:
-          type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        idOrganisatie:
-          type: string
-          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
-        idAdministratie:
-          type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
-        code:
-          type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort rol van de relatie. Bijvoorbeeld Klant, Prospect, Leverancier, Medewerker, Team etc. Referentiedatasoort RELATIEROLSOORT.
-        naam:
-          type: string
-          description: De naam van de relatie rol.
-    Betaalgegevens-Woonplaats:
+          description: Het soort monitorwaarde. Bijv. Energie vraag tapwater, Verbruik ruimteverwarming, Energieverbruik Laag etc. Referentiedatasoort MONITORWAARDESOORT.
+        waarde:
+          type: number
+          format: float
+          description: De door een monitorsysteem gemeten waarde.
+    Referentiedata:
       type: object
       properties:
         code:
           type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.
         naam:
           type: string
-          description: De naam van de woonplaats.
-    Contactmomenten-Contactmomentbericht:
+          description: De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.
+    Energieprestaties-Energieprestatiebericht:
       allOf:    
-        - $ref: '#/components/schemas/Contactmomenten-Contactmoment'
+        - $ref: '#/components/schemas/Energieprestaties-Energieprestatie'
         - $ref: '#/components/schemas/Bericht-basis'
-    Contactmomenten-Contactmoment:
+    Energieprestaties-Energieprestatie:
       type: object
       properties:
         id:
@@ -1555,561 +1380,46 @@ components:
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        omschrijving:
-          type: string
-          description: De omschrijving van het contactmoment
-        onderwerp:
-          type: string
-          description: Het onderwerp van het contactmoment
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort of onderwerp van het contactmoment. VERA zal hiervoor geen lijst leveren. Referentiedatasoort CONTACTMOMENTSOORT.
-        detailSoort:
+          description: Het soort energieprestatie. Bijv. Voorloping Energielabel, Energieprestatieindex,  etc.. Referentiedatasoort ENERGIEPRESTATIESOORT.
+        status:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort detail van het contactmoment. VERA zal hiervoor geen lijst leveren. Referentiedatasoort CONTACTMOMENTDETAILSOORT.
-        datum:
+          description: 'Geeft de status van de energieprestatie aan: Voorlopig of Definitief. Een voorlopige energieprestatie wordt ook wel "pré-label" genoemd. Een definitieve energieprestatie is afgemeld bij de Rijksoverheid. Referentiedatasoort ENERGIEPRESTATIESTATUS.'
+        begindatum:
+          type: string
+          format: date
+          description: De datum die aangeeft vanaf welk moment de energieprestatie geldt. Indien de energieprestatie is vastgesteld door een adviseur dan is deze datum gelijk aan de opnamedatum. Indien het een voorlopige energieprestatie (pré-label) is dan is de begindatum de datum waarop de energieprestatie is berekend op basis van de beschikbare woningkenmerken. De combinatie van start en einddatum geven een sluitende periode waarin een bepaald energielabel.
+        einddatum:
+          type: string
+          format: date
+          description: De datum die aangeeft tot welk moment de energieprestatie geldig is. Indien de energieprestatie een officiële status heft (afgemeld bij de Rijksoverheid) dan is dit de 'Geldig tot'-datum van de registratie. Indien het een voorlopige energieprestatie is, dan kan de einddatum leeg zijn.
+        registratiedatum:
           type: string
           format: date-time
-          description: De datum en tijd waarop contact is geweest.
-        dossier:
+          description: De datum waarop de energieprestatie is geregistreerd bij de Rijksoverheid. Als sprake is van een voorlopige energieprestatie is geen registratiedatum bekend.
+        eenheid:
           allOf:
-          - $ref: '#/components/schemas/Dossier-sleutels'
-          description: Het dossier waarbinnen het contactmoment is vastgelegd.
-        kanaal:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het kanaal via welke het contact heeft gelopen. Bijvoorbeeld: Telefoon, email, balie, internet. Referentiedatasoort COMMUNICATIEKANAAL.'
-        relaties:
-          description: De relatie waarmee contact is geweest. Bijv. een huurder, mederwerker etc.
-          type: array
-          items:
-            $ref: '#/components/schemas/Contactmomenten-Relatie'
-        richting:
+          - $ref: '#/components/schemas/Eenheid-sleutels'
+          description: De eenheid waarop de energielabel van toepassing is.
+        index:
+          type: number
+          format: float
+          description: De energieprestatie index van de eenheid. OBSOLETE
+          deprecated: true
+        label:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'De communicatierichting behorend bij het contact. Bijvoorbeeld: Uitgaand of ingaand. Referentiedatasoort COMMUNICATIERICHTING.'
-        zaak:
+          description: Het energielabel voor woningen geeft met klassen (A**** tot en met G) en kleuren (groen tot en met rood) aan hoe energiezuinig een huis is ten opzichte van andere soortgelijke woningen. Energielabel A (donkergroen) is zuinig, energielabel G (rood) is onzuinig. Het energielabel is meestal een afgeleide van de waarde van de energieprestatie. Referentiedatasoort ENERGIELABEL.
+        relatie:
           allOf:
-          - $ref: '#/components/schemas/Zaak-sleutels'
-          description: De zaak waarvoor het contactmoment heeft plaatsgevonden.
-    Dossier-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        idOrganisatie:
-          type: string
-          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
-        idAdministratie:
-          type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
-        code:
-          type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-    Zaak-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        idOrganisatie:
-          type: string
-          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
-        idAdministratie:
-          type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
-        code:
-          type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-    Contactmomenten-Relatie:
-      type: object
-      properties:
-        id:
-          type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        idOrganisatie:
-          type: string
-          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
-        idAdministratie:
-          type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
-        code:
-          type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedatasoort RELATIESOORT.'
-        detailSoort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedatasoort RELATIEDETAILSOORT.'
-        rollen:
-          description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
-          type: array
-          items:
-            $ref: '#/components/schemas/Contactmomenten-Relatierol'
-    Contactmomenten-Relatierol:
-      type: object
-      properties:
-        id:
-          type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        idOrganisatie:
-          type: string
-          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
-        idAdministratie:
-          type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
-        code:
-          type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort rol van de relatie. Bijvoorbeeld Klant, Prospect, Leverancier, Medewerker, Team etc. Referentiedatasoort RELATIEROLSOORT.
-        naam:
-          type: string
-          description: De naam van de relatie rol.
-    Relaties-Account:
-      type: object
-      properties:
-        id:
-          type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        idOrganisatie:
-          type: string
-          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
-        idAdministratie:
-          type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
-        gebruikersnaam:
-          type: string
-          description: De gebruikersnaam van het account.
-        status:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: De status van het account. Bijv. Geregistreerd, Geactiveerd, Beëindigd etc. Referentiedatasoort ACCOUNTSTATUS.
-    Relaties-Adres-basis:
-      type: object
-      properties:
-        id:
-          type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        idOrganisatie:
-          type: string
-          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
-        idAdministratie:
-          type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
-        code:
-          type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort adres. Bijv. eenheidadres, postadres of buitenlands adres. Referentiedatasoort ADRESSOORT.
-        adres:
-          type: string
-          description: 'De samenstelling van de attributen: straatnaam, huisnummer, huisletter en huisnummerToevoeging.'
-        huisletter:
-          type: string
-          description: De huisletter door of namens het gemeentebestuur ten aanzien van een adresseerbaar object toegekende toevoeging aan een huisnummer in de vorm van een alfanumeriek teken.
-        huisnummer:
-          type: string
-          description: Het huisnummer dat door of namens het gemeentebestuur ten aanzien van een adresseerbaar object toegekende nummering.
-        huisnummerToevoeging:
-          type: string
-          description: De huisnummer toevoeging van het adres.
-        land:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Het land waarin het adres zich bevindt. Referentiedatasoort LAND.
-        postcode:
-          type: string
-          description: De postcode van het adres.
-        straatnaam:
-          type: string
-          description: De straatnaam behorend bij het adres.
-    Relaties-Adres:
-      oneOf:
-        - $ref: '#/components/schemas/Relaties-BuitenlandsAdres'
-        - $ref: '#/components/schemas/Relaties-Eenheidadres'
-        - $ref: '#/components/schemas/Relaties-Postadres'
-        - $ref: '#/components/schemas/Relaties-Adres-basis'
-    Relaties-BuitenlandsAdres:
-      allOf:
-      - $ref: '#/components/schemas/Relaties-Adres-basis'
-      - type: object
-        properties:
-          adresregel1:
-            type: string
-            description: Adresregel in verband met een buitenlands adres.
-          adresregel2:
-            type: string
-            description: Adresregel in verband met een buitenlands adres.
-          postbusnummer:
-            type: string
-            description: Het postbusnummer behorende bij het adres
-          provincie:
-            type: string
-            description: De provincie behorend bij het adres.
-          woonplaats:
-            type: string
-            description: De woonplaats waarin het adres zich bevindt.
-    Relaties-Communicatievoorkeur:
-      type: object
-      properties:
-        id:
-          type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        code:
-          type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort communicatievoorkeur. bijv. nieuwbrief of magazine Referentiedatasoort COMMUNICATIEVOORKEURSOORT.
-        begindatum:
-          type: string
-          format: date
-          description: De begindatum waarop de relatie benaderd kan worden.
-        einddatum:
-          type: string
-          format: date
-          description: De einddatum waarop relatie niet meer benaderd mag worden.
-        contactgegevens:
-          description: Het contactgegeven van de relatie die gebruikt kan worden voor de communicatievoorkeur soort.
-          type: array
-          items:
-            $ref: '#/components/schemas/Contactgegeven-sleutels'
-    Contactgegeven-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        idOrganisatie:
-          type: string
-          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
-        idAdministratie:
-          type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
-        code:
-          type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort communicatie. Bijvoorbeeld: Telefoon, E-mail, .Social media etc. Referentiedatasoort CONTACTGEGEVENSOORT.'
-        status:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: De status van het contactgegeven. Bijv. Aangemaakt, Gevalideerd, Ongeldig etc. Referentiedatasoort CONTACTGEGEVENSTATUS.
-    Relaties-Contactgegeven:
-      type: object
-      properties:
-        id:
-          type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        idOrganisatie:
-          type: string
-          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
-        idAdministratie:
-          type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
-        code:
-          type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort communicatie. Bijvoorbeeld: Telefoon, E-mail, .Social media etc. Referentiedatasoort CONTACTGEGEVENSOORT.'
-        detailSoort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort detail communicatie. Bijvoorbeeld: Mobiel, privé, werk. Referentiedatasoort CONTACTGEGEVENDETAILSOORT.'
-        omschrijving:
-          type: string
-          description: Korte omschrijving van het contactgegeven. Bijv. Telefoonnummer partner.
-        status:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: De status van het contactgegeven. Bijv. Aangemaakt, Gevalideerd, Ongeldig etc. Referentiedatasoort CONTACTGEGEVENSTATUS.
-        vertrouwelijkheid:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: De classificatie van het vertrouwelijkheidsniveau. Referentiedatasoort VERTROUWELIJKHEID.
-        voorkeur:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Voorkeur binnen hetzelfde soort contactgegeven. Bij meerdere emailadressen kan bijvoorbeeld aangegeven worden welk emailadres primair gebruikt moet worden. Bijvoorbeeld: 1e voorkeur, 2e voorkeur. Referentiedatasoort CONTACTGEGEVENVOORKEUR.'
+          - $ref: '#/components/schemas/Relatie-sleutels'
+          description: De adviseur die het label heeft gegeven.
         waarde:
           type: string
-          description: 'De aard van het contactgegeven. Dit kan de waarde zijn van een telefoonnummer, emailadres, of twitteradres. Bijvoorbeeld: 020-1234563'
-    Relaties-Eenheidadres:
-      allOf:
-      - $ref: '#/components/schemas/Relaties-Adres-basis'
-      - type: object
-        properties:
-          provincie:
-            allOf:
-            - $ref: '#/components/schemas/Referentiedata'
-            description: De provincie behorend bij het adres. Referentiedatasoort PROVINCIE.
-          woonplaats:
-            allOf:
-            - $ref: '#/components/schemas/Relaties-Woonplaats'
-            description: De woonplaats waarin het adres zich bevindt.
-    Relaties-NatuurlijkPersoon:
-      allOf:
-      - $ref: '#/components/schemas/Relaties-Relatie-basis'
-      - type: object
-        properties:
-          voornaam:
-            type: string
-            description: De voornaam van de natuurlijk persoon.
-          initialen:
-            type: string
-            description: De initialen van de natuurlijk persoon.
-          aanhef:
-            type: string
-            description: De aanhef of aanspreking is een (meestal vriendelijke) introducerende zin van een brief of e-mail. Het gaat doorgaans om standaardformuleringen waarmee de schrijver zich tot de geadresseerde richt.
-          aanschrijfnaam:
-            type: string
-            description: De achternaam van de natuurlijk persoon zoals deze wenst te worden aangeschreven.
-          account:
-            allOf:
-            - $ref: '#/components/schemas/Relaties-Account'
-            description: Het account van de natuurlijke persoon om gebruik te maken van digitale diensten van de corporatie.
-          achternaam:
-            type: string
-            description: De achternaam van de natuurlijk persoon.
-          bsn:
-            type: string
-            description: Het BSN (Burger Service Nummer) van de natuurlijk persoon.
-          burgerlijkeStaat:
-            allOf:
-            - $ref: '#/components/schemas/Referentiedata'
-            description: De burgerlijke staat van de natuurlijk persoon. Referentiedatasoort BURGERLIJKESTAAT.
-          geboortedatum:
-            type: string
-            format: date
-            description: De geboortedatum van de natuurlijk persoon.
-          geslacht:
-            allOf:
-            - $ref: '#/components/schemas/Referentiedata'
-            description: Het geslacht van de natuurlijk persoon. Referentiedatasoort GESLACHT.
-          geslachtsnaam:
-            type: string
-            description: De geboortenaam van de natuurlijke persoon zoals deze is overgenomen van de ouders.
-          nationaliteit:
-            allOf:
-            - $ref: '#/components/schemas/Referentiedata'
-            description: De nationaliteit van de natuurlijk persoon. Referentiedatasoort NATIONALITEIT.
-          opleiding:
-            allOf:
-            - $ref: '#/components/schemas/Relaties-Opleiding'
-            description: Het opleidingsgegeven van de natuurlijk persoon. OBSOLETE
-            deprecated: true
-          opleidingen:
-            description: De opleidingsgegevens van de natuurlijk persoon.
-            type: array
-            items:
-              $ref: '#/components/schemas/Relaties-Opleiding'
-          overlijdensdatum:
-            type: string
-            format: date
-            description: De datum van overlijden van de natuurlijk persoon.
-          roepnaam:
-            type: string
-            description: De roepnaam van de natuurlijk persoon.
-          tussenvoegsels:
-            type: string
-            description: De tussenvoegsels behorende bij de naam.
-          voorkeurstaal:
-            allOf:
-            - $ref: '#/components/schemas/Referentiedata'
-            description: De voorkeurstaal die de natuurlijk persoon voert. Gebruik ISO-639-1 Referentiedatasoort TAAL.
-          voorletters:
-            type: string
-            description: Een voorletter is een afkorting van een voornaam, die in adressering veel wordt gebruikt. De voorletters geven in combinatie met de achternaam meestal een duidelijk onderscheid tussen leden van hetzelfde gezin of dezelfde familie. Indien iemand meerdere voornamen heeft dan worden de voorletters door een punt gescheiden.
-    Relaties-Opleiding:
-      type: object
-      properties:
-        instelling:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: De opleidingsinstelling die aangeeft waar de relatie de studie volgt. We hanteren hiervoor de BRIN. Referentiedatasoort OPLEIDINGSINSTELLING.
-        begindatum:
-          type: string
-          format: date
-          description: De begindatum waarop de studie is begonnen.
-        einddatum:
-          type: string
-          format: date
-          description: De einddatum waarop de studie is beëindigd.
-        plaats:
-          type: string
-          description: De plaats waar de relatie de studie volgt.
-        studentnummer:
-          type: string
-          description: Het studentnummer van de relatie
-    Relaties-Postadres:
-      allOf:
-      - $ref: '#/components/schemas/Relaties-Adres-basis'
-      - type: object
-        properties:
-          antwoordnummer:
-            type: string
-            description: Het antwoordnummer behorende bij het adres.
-          postbusnummer:
-            type: string
-            description: Het postbusnummer behorende bij het adres.
-          woonplaats:
-            allOf:
-            - $ref: '#/components/schemas/Relaties-Woonplaats'
-            description: De woonplaats waarin het adres zich bevindt.
-    Relaties-Rechtspersoon:
-      allOf:
-      - $ref: '#/components/schemas/Relaties-Relatie-basis'
-      - type: object
-        properties:
-          naam:
-            type: string
-            description: De naam de rechtspersoon.
-          btwNummer:
-            type: string
-            description: Het BTW nummer van de rechtspersoon.
-          globaalLocatienummer:
-            type: string
-            description: Een wereldwijd nummer ter identificatie van een partij of locatie. Het dertiencijferige nummer (GLN) wordt uitgegeven door GS1.
-          kvkNummer:
-            type: string
-            description: Het KVK nummer van de rechtspersoon.
-          organisatievorm:
-            allOf:
-            - $ref: '#/components/schemas/Referentiedata'
-            description: 'De organisatievorm van de rechtspersoon. Bijvoorbeeld: BV, NV, stichting of vereniging. Ook wel rechtsvorm genoemd. Referentiedatasoort ORGANISATIEVORM.'
-    Relaties-Relatie-basis:
-      type: object
-      properties:
-        id:
-          type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        idOrganisatie:
-          type: string
-          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
-        idAdministratie:
-          type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
-        code:
-          type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedatasoort RELATIESOORT.'
-        detailSoort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedatasoort RELATIEDETAILSOORT.'
-        adressen:
-          description: De adressen behorend bij de relatie.
-          type: array
-          items:
-            $ref: '#/components/schemas/Relaties-RelatieAdres'
-        communicatievoorkeur:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het communicatiekanaal waarop de relatie bij voorkeur benaderd wil worden. Bijvoorbeeld: Telefoon, E-mail, Social media etc. Referentiedatasoort CONTACTGEGEVENSOORT.'
-        communicatievoorkeuren:
-          description: De verschillende communicatievoorkeuren van een relatie met bijbehorende contactgegeven waarvoor de voorkeur geldt. Bijv. nieuwsbrief en e-mail. Communicatie omtrent de dienstverlening hoeft geen toestemming voor uitgevraagd te worden.
-          type: array
-          items:
-            $ref: '#/components/schemas/Relaties-Communicatievoorkeur'
-        contactgegevens:
-          description: De contactgegevens van de relatie.
-          type: array
-          items:
-            $ref: '#/components/schemas/Relaties-Contactgegeven'
-        groepen:
-          description: De relatiegroepen waar de relatie toe behoort.
-          type: array
-          items:
-            $ref: '#/components/schemas/Relaties-Relatiegroep'
-        relaties:
-          description: De gerelateerde relaties. Bijv. contactpersonen, huishoudleden etc.
-          type: array
-          items:
-            $ref: '#/components/schemas/Relatie-sleutels'
-        rollen:
-          description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
-          type: array
-          items:
-            $ref: '#/components/schemas/Relaties-Relatierol'
+          description: 'De door een adviseur gemeten waarde die hoort bij de energieprestatie. De energieprestatiesoort bepaalt wat deze waarde representeert. Bijvoorbeeld: Energie-index of EP2 (het energielabel  is daarvan dan afgeleid), compactheid of opgewekte duurzame energie. Bij een voorlopig energielabel is geen waarde van toepassing.'
     Relatie-sleutels:
       type: object
       properties:
@@ -2165,16 +1475,26 @@ components:
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-    Relaties-Relatiebericht:
+    Monitorlogs-Monitorinterval:
+      type: object
+      properties:
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort monitorinterval. Bijv. variabel, uur, maand, dag, jaar etc. Referentiedatasoort MONITORINTERVAL.
+        startTijd:
+          type: integer
+          format: int32
+          description: Tijstip in POSIX.
+        eindTijd:
+          type: integer
+          format: int32
+          description: Tijstip in POSIX.
+    Monitorlogs-Monitorlogbericht:
       allOf:    
-        - $ref: '#/components/schemas/Relaties-Relatie'
+        - $ref: '#/components/schemas/Monitorlogs-Monitorlog'
         - $ref: '#/components/schemas/Bericht-basis'
-    Relaties-Relatie:
-      oneOf:
-        - $ref: '#/components/schemas/Relaties-NatuurlijkPersoon'
-        - $ref: '#/components/schemas/Relaties-Rechtspersoon'
-        - $ref: '#/components/schemas/Relaties-Relatiegroep'
-    Relaties-RelatieAdres:
+    Monitorlogs-Monitorlog:
       type: object
       properties:
         id:
@@ -2195,126 +1515,114 @@ components:
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
+        interval:
           allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort adres van de relatie. Bijvoorbeeld: Woonadres, postadres, bezoekadres en factuuradres. Referentiedatasoort RELATIEADRESSOORT.'
-        begindatum:
-          type: string
-          format: date
-          description: De begindatum waarop de relatie bij het adres hoort.
-        einddatum:
-          type: string
-          format: date
-          description: De einddatum waarop de relatie niet meer bij het adres hoort.
-        adres:
+          - $ref: '#/components/schemas/Monitorlogs-Monitorinterval'
+          description: De interval waarvoor de meting geldt.
+        eenheid:
           allOf:
-          - $ref: '#/components/schemas/Relaties-Adres'
-          description: Het adres behorend bij de relatie.
-    Relaties-Relatiegroep:
-      allOf:
-      - $ref: '#/components/schemas/Relaties-Relatie-basis'
-      - type: object
-        properties:
-          naam:
-            type: string
-            description: De naam van de relatiegroep.
-    Relaties-Relatierol:
-      type: object
-      properties:
-        id:
-          type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        idOrganisatie:
-          type: string
-          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
-        idAdministratie:
-          type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
-        code:
-          type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort rol van de relatie. Bijvoorbeeld Klant, Prospect, Leverancier, Medewerker, Team etc. Referentiedatasoort RELATIEROLSOORT.
-        naam:
-          type: string
-          description: De naam van de relatie rol.
-        omschrijving:
-          type: string
-          description: De omschrijving van de relatie rol.
-        begindatum:
-          type: string
-          format: date
-          description: begindatum van de rol
-        einddatum:
-          type: string
-          format: date
-          description: einddatum van de rol
-        contactgegevens:
-          description: De contactgegevens van een relatie in een bepaalde rol.
+          - $ref: '#/components/schemas/Eenheid-sleutels'
+          description: De eenheid waarop de monitormeting van toepassing is.
+        logregels:
+          description: De door een monitorsysteem gegenereerde logs.
           type: array
           items:
-            $ref: '#/components/schemas/Relaties-Contactgegeven'
-        relatieAdressen:
-          description: De adresssen van de relatie die voor de rol van toepassing zijn
-          type: array
-          items:
-            $ref: '#/components/schemas/Relaties-RelatieAdres'
-        rolRelatie:
-          allOf:
-          - $ref: '#/components/schemas/Relatie-sleutels'
-          description: De relatie die aangeeft waar de relatie en rol koppeling van toepassing is. Dit attribuut geeft aan dat de aangegeven relatie de rol binnen bijvoorbeeld een relatiegroep heeft. Het attribuut relatie is dan bijvoorbeeld een persoon uit een huishouden en de rolRelatie is dan bijvoorbeeld de relatiegroep die het huishouden voorstelt.
-    Relaties-Woonplaats:
+            $ref: '#/components/schemas/Monitorlogs-Monitorlogregel'
+        monitorId:
+          type: string
+          description: Het monitorid van de gateway in de eenheid.
+    Monitorlogs-Monitorlogregel:
       type: object
       properties:
+        id:
+          type: string
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: Het soort monitorregelsoort. Bijv. fout, waarschuwing, informatie. Referentiedatasoort MONITORLOGREGELSOORT.
         naam:
           type: string
-          description: De naam van de woonplaats.
-    Signaleringen-Relatie:
+          description: De naam van de gelogde gebeurtenis.
+        tijdstip:
+          type: integer
+          format: int32
+          description: Het tijdstip van de gelogde gebeurtenis.
+        toelichting:
+          type: string
+          description: De toelichting op de gelogde gebeurtenis.
+    Monitormetingen-Monitorinterval:
       type: object
       properties:
-        id:
-          type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        idOrganisatie:
-          type: string
-          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
-        idAdministratie:
-          type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
-        code:
-          type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedatasoort RELATIESOORT.'
-        detailSoort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedatasoort RELATIEDETAILSOORT.'
-    Signaleringen-Signaleringbericht:
+          description: Het soort monitorinterval. Bijv. variabel, uur, maand, dag, jaar etc. Referentiedatasoort MONITORINTERVAL.
+        startTijd:
+          type: integer
+          format: int32
+          description: Tijstip in POSIX.
+        eindTijd:
+          type: integer
+          format: int32
+          description: Tijstip in POSIX.
+    Monitormetingen-Monitormetingbericht:
       allOf:    
-        - $ref: '#/components/schemas/Signaleringen-Signalering'
+        - $ref: '#/components/schemas/Monitormetingen-Monitormeting'
         - $ref: '#/components/schemas/Bericht-basis'
-    Signaleringen-Signalering:
+    Monitormetingen-Monitormeting:
+      type: object
+      properties:
+        id:
+          type: string
+          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+        idExtern:
+          type: string
+          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+        idGegevensbeheerder:
+          type: string
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        interval:
+          allOf:
+          - $ref: '#/components/schemas/Monitormetingen-Monitorinterval'
+          description: De interval waarvoor de meting geldt.
+        eenheid:
+          allOf:
+          - $ref: '#/components/schemas/Eenheid-sleutels'
+          description: De eenheid waarop de monitormeting van toepassing is.
+        monitorId:
+          type: string
+          description: Het monitorid van de gateway in de eenheid.
+        waarden:
+          description: De door een monitorsysteem gemeten waarde.
+          type: array
+          items:
+            $ref: '#/components/schemas/Monitormetingen-Monitorwaarde'
+    Monitormetingen-Monitorwaarde:
       type: object
       properties:
         id:
@@ -2338,31 +1646,15 @@ components:
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort signaal. Bijvoorbeeld: Huurschuld, overlast of wietplantage. Referentiedatasoort SIGNALERINGSOORT.'
-        detailSoort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Het reden van het signaal. Referentiedatasoort SIGNALERINGDETAILSOORT.
-        status:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van de signalering. Bijvoorbeeld: Actief, vervallen of passief. Referentiedatasoort SIGNALERINGSTATUS.'
-        detailStatus:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: 'De detailstatus van de signalering. Bijvoorbeeld: Ontruiming, vertrokken. Referentiedatasoort SIGNALERINGDETAILSTATUS.'
-        begindatum:
-          type: string
-          format: date-time
-          description: De begindatum van de signalering
-        einddatum:
-          type: string
-          format: date-time
-          description: De einddatum van de signalering
-        relatie:
-          allOf:
-          - $ref: '#/components/schemas/Signaleringen-Relatie'
-          description: De relatie behorend bij de signalering.
+          description: Het soort monitorwaarde. Bijv. Energie vraag tapwater, Verbruik ruimteverwarming, Energieverbruik Laag etc. Referentiedatasoort MONITORWAARDESOORT.
+        tijdstip:
+          type: integer
+          format: int32
+          description: Het tijdstip van de gemeten waarde in POSIX.
+        waarde:
+          type: number
+          format: float
+          description: De door een monitorsysteem gemeten waarde.
     Bericht-basis:
       type: object
       properties:
