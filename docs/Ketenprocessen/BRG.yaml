@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Beheer Relatiegegevens
-  description: API-specificatie van ketenproces 'Beheer Relatiegegevens'. Deze specificatie is gebaseerd op VERA versie 4.2.0+250117.7
+  description: API-specificatie van ketenproces 'Beheer Relatiegegevens'. Deze specificatie is gebaseerd op VERA versie 4.2.1+250418.40
   contact:
     name: VERA
     url: https://www.coraveraonline.nl
@@ -9,7 +9,7 @@ info:
   license:
     name: "Copyright (c) Aedes vereniging van woningcorporaties"
     url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
-  version: '1.2.0+250117.7'
+  version: '1.2.1+250418.40'
 servers:
   - url: https://brg.vera.io:{port}/{basePath}
     description: Productieserver
@@ -1238,10 +1238,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -1250,14 +1250,14 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort betaalgegeven (bijvoorbeeld een bankrekening, paypal, creditcard, G-rekening etc.). Referentiedatasoort BETAALGEGEVENSOORT.
+          description: 'Het soort betaalgegeven (bijvoorbeeld een bankrekening, paypal, creditcard, G-rekening etc.). Referentiedata: BETAALGEGEVENSOORT.'
         rekeningnummer:
           type: string
           description: Het rekeningnummer.
@@ -1276,7 +1276,7 @@ components:
           type: string
           description: Het International Bank Account Number. Identificeert elke rekeninghouder, inclusief bank en vestigingsland.
         incassomachtigingen:
-          description: Met de uitwerking van de klasse Betaalwijze is de incassomachtiging verplaatst naar Betaalwijze (waar een link is naar Betaalrekening en het doel van de machtiging, een overeenkomst of een betalingsregeling). OBSOLETE
+          description: De incassomachtigingen van de relatie. OBSOLETE Incassomachtigingen worden gekoppeld via een Betaalwijze aan overeenkomsten en betalingsregelingen.
           type: array
           items:
             $ref: '#/components/schemas/Betaalgegevens-Incassomachtiging'
@@ -1284,7 +1284,7 @@ components:
         incassowijze:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: OBSOLETE Referentiedatasoort INCASSOWIJZE.
+          description: 'De standaard incassowijze voor het betaalgegeven. OBSOLETE Referentiedata: INCASSOWIJZE.'
           deprecated: true
         overeenkomst:
           allOf:
@@ -1318,10 +1318,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -1330,102 +1330,30 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken). In dit geval logisch om het mandaatid hier te gebruiken.
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Soort machtiging: doorlopend/eenmalig. Referentiedatasoort MACHTIGINGSOORT.'
+          description: 'Soort machtiging: doorlopend/eenmalig. Referentiedata: MACHTIGINGSOORT.'
         afgiftedatum:
           type: string
           format: date
-          description: De afgiftedatum van de machtiging
+          description: De afgiftedatum van de machtiging.
         machtigingsnummer:
           type: string
-          description: Het nummer van de machtiging
+          description: Het nummer van de machtiging.
     Betaalgegevens-Overeenkomst:
       type: object
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        idOrganisatie:
-          type: string
-          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
-        idAdministratie:
-          type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
-        code:
-          type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn. Referentiedatasoort OVEREENKOMSTSOORT.
-        detailSoort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Het detail soort overeenkomst. Bijvoorbeeld BOG (Bedrijfs Onroerend Goed). Referentiedatasoort OVEREENKOMSTDETAILSOORT.
-        bovenliggendeOvereenkomst:
-          allOf:
-          - $ref: '#/components/schemas/Overeenkomst-sleutels'
-          description: De gerelateerde overeenkomst, bijvoorbeeld indien dit een betaalovereenkomst betreft voor een bovenliggende huurovereenkomst.
-        betaalwijze:
-          allOf:
-          - $ref: '#/components/schemas/Betaalwijze-sleutels'
-          description: De afgesproken betaalwijze voor de overeenkomst. OBSOLETE
-          deprecated: true
-        betaalwijzen:
-          description: De afgesproken betaalwijzen voor de overeenkomst. Met een collectie betaalwijzen kunnen meerdere betalers gekoppeld worden aan de overeenkomst
-          type: array
-          items:
-            $ref: '#/components/schemas/Betaalwijze-sleutels'
-        eenheden:
-          type: array
-          items:
-            $ref: '#/components/schemas/Eenheid-sleutels'
-    Overeenkomst-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
-        idGegevensbeheerder:
-          type: string
-          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
-        idOrganisatie:
-          type: string
-          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
-        idAdministratie:
-          type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
-        code:
-          type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
-        soort:
-          allOf:
-          - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn. Referentiedatasoort OVEREENKOMSTSOORT.
-    Betaalwijze-sleutels:
-      type: object
-      properties:
-        id:
-          type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
-        idExtern:
-          type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-trut.
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -1438,15 +1366,88 @@ components:
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn. Referentiedata: OVEREENKOMSTSOORT. Dit attribuut is verplicht wanneer een specialisatie van overeenkomst wordt doorgegeven.'
+        detailSoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het detail soort overeenkomst. Bijvoorbeeld BOG (Bedrijfs Onroerend Goed). Referentiedata: OVEREENKOMSTDETAILSOORT.'
+        bovenliggendeOvereenkomst:
+          allOf:
+          - $ref: '#/components/schemas/Overeenkomst-sleutels'
+          description: De gerelateerde overeenkomst, bijvoorbeeld indien dit een betaalovereenkomst betreft voor een bovenliggende huurovereenkomst.
+        betaalwijze:
+          allOf:
+          - $ref: '#/components/schemas/Betaalwijze-sleutels'
+          description: De afgesproken betaalwijze voor de overeenkomst. OBSOLETE
+          deprecated: true
+        betaalwijzen:
+          description: De afgesproken betaalwijzen voor de overeenkomst. Met een collectie betaalwijzen kunnen meerdere betalers gekoppeld worden aan de overeenkomst.
+          type: array
+          items:
+            $ref: '#/components/schemas/Betaalwijze-sleutels'
+        eenheden:
+          description: De eenheden waar deze overeenkomst betrekking op heeft
+          type: array
+          items:
+            $ref: '#/components/schemas/Eenheid-sleutels'
+    Overeenkomst-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
+        idExtern:
+          type: string
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-trut.
+        idGegevensbeheerder:
+          type: string
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort overeenkomst. Dit kan bijvoorbeeld arbeidsovereenkomst of koopovereenkomst zijn. Referentiedata: OVEREENKOMSTSOORT. Dit attribuut is verplicht wanneer een specialisatie van overeenkomst wordt doorgegeven.'
+    Betaalwijze-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
+        idExtern:
+          type: string
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
+        idGegevensbeheerder:
+          type: string
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
+        code:
+          type: string
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
     Eenheid-sleutels:
       type: object
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth.
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -1458,16 +1459,16 @@ components:
           description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
     Betaalgegevens-Relatie:
       type: object
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-trut.
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -1479,15 +1480,15 @@ components:
           description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedatasoort RELATIESOORT.'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedata: RELATIESOORT. Dit attribuut is verplicht en mag niet leeg zijn.'
         detailSoort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedatasoort RELATIEDETAILSOORT.'
+          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedata: RELATIEDETAILSOORT.'
         rollen:
           description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
           type: array
@@ -1498,10 +1499,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -1510,14 +1511,14 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort rol van de relatie. Bijvoorbeeld Klant, Prospect, Leverancier, Medewerker, Team etc. Referentiedatasoort RELATIEROLSOORT.
+          description: 'Het soort rol van de relatie. Bijvoorbeeld Klant, Prospect, Leverancier, Medewerker, Team etc. Referentiedata: RELATIEROLSOORT.'
         naam:
           type: string
           description: De naam van de relatie rol.
@@ -1539,10 +1540,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -1551,28 +1552,28 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         omschrijving:
           type: string
-          description: De omschrijving van het contactmoment
+          description: De omschrijving van het contactmoment.
         onderwerp:
           type: string
-          description: Het onderwerp van het contactmoment
+          description: Het onderwerp van het contactmoment.
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort of onderwerp van het contactmoment. VERA zal hiervoor geen lijst leveren. Referentiedatasoort CONTACTMOMENTSOORT.
+          description: 'Het soort of onderwerp van het contactmoment. VERA zal hiervoor geen lijst leveren. Referentiedata: CONTACTMOMENTSOORT.'
         detailSoort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort detail van het contactmoment. VERA zal hiervoor geen lijst leveren. Referentiedatasoort CONTACTMOMENTDETAILSOORT.
+          description: 'Het soort detail van het contactmoment. VERA zal hiervoor geen lijst leveren. Referentiedata: CONTACTMOMENTDETAILSOORT.'
         datum:
           type: string
           format: date-time
-          description: De datum en tijd waarop contact is geweest.
+          description: 'De datum en tijd waarop contact is geweest. Validatie-regex: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$'
         dossier:
           allOf:
           - $ref: '#/components/schemas/Dossier-sleutels'
@@ -1580,16 +1581,16 @@ components:
         kanaal:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het kanaal via welke het contact heeft gelopen. Bijvoorbeeld: Telefoon, email, balie, internet. Referentiedatasoort COMMUNICATIEKANAAL.'
+          description: 'Het kanaal via welke het contact heeft gelopen. Bijvoorbeeld: Telefoon, email, balie, internet. Referentiedata: COMMUNICATIEKANAAL.'
         relaties:
-          description: De relatie waarmee contact is geweest. Bijv. een huurder, mederwerker etc.
+          description: De relatie waarmee contact is geweest. Bijv. een huurder, medewerker etc.
           type: array
           items:
             $ref: '#/components/schemas/Contactmomenten-Relatie'
         richting:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'De communicatierichting behorend bij het contact. Bijvoorbeeld: Uitgaand of ingaand. Referentiedatasoort COMMUNICATIERICHTING.'
+          description: 'De communicatierichting behorend bij het contact. Bijvoorbeeld: Uitgaand of ingaand. Referentiedata: COMMUNICATIERICHTING.'
         zaak:
           allOf:
           - $ref: '#/components/schemas/Zaak-sleutels'
@@ -1599,10 +1600,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -1611,7 +1612,7 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
@@ -1620,10 +1621,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -1632,7 +1633,7 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
@@ -1641,10 +1642,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-trut.
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -1656,15 +1657,15 @@ components:
           description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedatasoort RELATIESOORT.'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedata: RELATIESOORT. Dit attribuut is verplicht en mag niet leeg zijn.'
         detailSoort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedatasoort RELATIEDETAILSOORT.'
+          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedata: RELATIEDETAILSOORT.'
         rollen:
           description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
           type: array
@@ -1675,10 +1676,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -1687,14 +1688,14 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort rol van de relatie. Bijvoorbeeld Klant, Prospect, Leverancier, Medewerker, Team etc. Referentiedatasoort RELATIEROLSOORT.
+          description: 'Het soort rol van de relatie. Bijvoorbeeld Klant, Prospect, Leverancier, Medewerker, Team etc. Referentiedata: RELATIEROLSOORT.'
         naam:
           type: string
           description: De naam van de relatie rol.
@@ -1703,10 +1704,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -1715,20 +1716,20 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         gebruikersnaam:
           type: string
           description: De gebruikersnaam van het account.
         status:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De status van het account. Bijv. Geregistreerd, Geactiveerd, Beëindigd etc. Referentiedatasoort ACCOUNTSTATUS.
+          description: 'De status van de registratie.Bijv. Geregistreerd, Geactiveerd, Beëindigd etc. Referentiedata: ACCOUNTSTATUS.'
     Relaties-Adres-basis:
       type: object
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
           description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
@@ -1743,11 +1744,11 @@ components:
           description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort adres. Bijv. eenheidadres, postadres of buitenlands adres. Referentiedatasoort ADRESSOORT.
+          description: 'Het soort adres. Bijv. eenheidadres, postadres of buitenlands adres. Referentiedata: ADRESSOORT.'
         adres:
           type: string
           description: 'De samenstelling van de attributen: straatnaam, huisnummer, huisletter en huisnummerToevoeging.'
@@ -1763,13 +1764,13 @@ components:
         land:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het land waarin het adres zich bevindt. Referentiedatasoort LAND.
+          description: 'Het land waarin het adres zich bevindt. Referentiedata: LAND.'
         postcode:
           type: string
           description: De postcode van het adres.
         straatnaam:
           type: string
-          description: De straatnaam behorend bij het adres.
+          description: 'De straatnaam behorend bij het adres. Straatnaam moet minimaal 1 karakter zijn en maximaal 80 karakters. Validatie-regex: ^.{1,80}$'
     Relaties-Adres:
       oneOf:
         - $ref: '#/components/schemas/Relaties-BuitenlandsAdres'
@@ -1789,7 +1790,7 @@ components:
             description: Adresregel in verband met een buitenlands adres.
           postbusnummer:
             type: string
-            description: Het postbusnummer behorende bij het adres
+            description: Het postbusnummer behorende bij het adre.
           provincie:
             type: string
             description: De provincie behorend bij het adres.
@@ -1801,10 +1802,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -1814,7 +1815,7 @@ components:
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort communicatievoorkeur. bijv. nieuwbrief of magazine Referentiedatasoort COMMUNICATIEVOORKEURSOORT.
+          description: 'Het soort communicatievoorkeur. bijv. nieuwbrief of magazine Referentiedata: COMMUNICATIEVOORKEURSOORT.'
         begindatum:
           type: string
           format: date
@@ -1833,10 +1834,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -1845,27 +1846,27 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort communicatie. Bijvoorbeeld: Telefoon, E-mail, .Social media etc. Referentiedatasoort CONTACTGEGEVENSOORT.'
+          description: 'Het soort communicatie. Bijvoorbeeld: Telefoon, E-mail, .Social media etc. Referentiedata: CONTACTGEGEVENSOORT.'
         status:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De status van het contactgegeven. Bijv. Aangemaakt, Gevalideerd, Ongeldig etc. Referentiedatasoort CONTACTGEGEVENSTATUS.
+          description: 'De status van het contactgegeven. Bijv. Aangemaakt, Gevalideerd, Ongeldig etc. Referentiedata: CONTACTGEGEVENSTATUS.'
     Relaties-Contactgegeven:
       type: object
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -1874,36 +1875,36 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort communicatie. Bijvoorbeeld: Telefoon, E-mail, .Social media etc. Referentiedatasoort CONTACTGEGEVENSOORT.'
+          description: 'Het soort communicatie. Bijvoorbeeld: Telefoon, E-mail, .Social media etc. Referentiedata: CONTACTGEGEVENSOORT.'
         detailSoort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort detail communicatie. Bijvoorbeeld: Mobiel, privé, werk. Referentiedatasoort CONTACTGEGEVENDETAILSOORT.'
+          description: 'Het soort detail communicatie. Bijvoorbeeld: Mobiel, privé, werk. Referentiedata: CONTACTGEGEVENDETAILSOORT.'
         omschrijving:
           type: string
           description: Korte omschrijving van het contactgegeven. Bijv. Telefoonnummer partner.
         status:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De status van het contactgegeven. Bijv. Aangemaakt, Gevalideerd, Ongeldig etc. Referentiedatasoort CONTACTGEGEVENSTATUS.
+          description: 'De status van het contactgegeven. Bijv. Aangemaakt, Gevalideerd, Ongeldig etc. Referentiedata: CONTACTGEGEVENSTATUS.'
         vertrouwelijkheid:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De classificatie van het vertrouwelijkheidsniveau. Referentiedatasoort VERTROUWELIJKHEID.
+          description: 'De classificatie van het vertrouwelijkheidsniveau. Referentiedata: VERTROUWELIJKHEID.'
         voorkeur:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Voorkeur binnen hetzelfde soort contactgegeven. Bij meerdere emailadressen kan bijvoorbeeld aangegeven worden welk emailadres primair gebruikt moet worden. Bijvoorbeeld: 1e voorkeur, 2e voorkeur. Referentiedatasoort CONTACTGEGEVENVOORKEUR.'
+          description: 'Voorkeur binnen hetzelfde soort contactgegeven. Bij meerdere emailadressen kan bijvoorbeeld aangegeven worden welk emailadres primair gebruikt moet worden. Bijvoorbeeld: 1e voorkeur, 2e voorkeur. Referentiedata: CONTACTGEGEVENVOORKEUR.'
         waarde:
           type: string
-          description: 'De aard van het contactgegeven. Dit kan de waarde zijn van een telefoonnummer, emailadres, of twitteradres. Bijvoorbeeld: 020-1234563'
+          description: 'De aard van het contactgegeven. Dit kan de waarde zijn van een telefoonnummer, emailadres, of twitteradres. Bijvoorbeeld: 020-123456.'
     Relaties-Eenheidadres:
       allOf:
       - $ref: '#/components/schemas/Relaties-Adres-basis'
@@ -1912,7 +1913,7 @@ components:
           provincie:
             allOf:
             - $ref: '#/components/schemas/Referentiedata'
-            description: De provincie behorend bij het adres. Referentiedatasoort PROVINCIE.
+            description: 'De provincie behorend bij het adres. Referentiedata: PROVINCIE.'
           woonplaats:
             allOf:
             - $ref: '#/components/schemas/Relaties-Woonplaats'
@@ -1947,7 +1948,7 @@ components:
           burgerlijkeStaat:
             allOf:
             - $ref: '#/components/schemas/Referentiedata'
-            description: De burgerlijke staat van de natuurlijk persoon. Referentiedatasoort BURGERLIJKESTAAT.
+            description: 'De burgerlijke staat van de natuurlijk persoon. Referentiedata: BURGERLIJKESTAAT.'
           geboortedatum:
             type: string
             format: date
@@ -1955,14 +1956,14 @@ components:
           geslacht:
             allOf:
             - $ref: '#/components/schemas/Referentiedata'
-            description: Het geslacht van de natuurlijk persoon. Referentiedatasoort GESLACHT.
+            description: 'Het geslacht van de natuurlijk persoon. Referentiedata: GESLACHT.'
           geslachtsnaam:
             type: string
             description: De geboortenaam van de natuurlijke persoon zoals deze is overgenomen van de ouders.
           nationaliteit:
             allOf:
             - $ref: '#/components/schemas/Referentiedata'
-            description: De nationaliteit van de natuurlijk persoon. Referentiedatasoort NATIONALITEIT.
+            description: 'De nationaliteit van de natuurlijk persoon. Referentiedata: NATIONALITEIT.'
           opleiding:
             allOf:
             - $ref: '#/components/schemas/Relaties-Opleiding'
@@ -1986,7 +1987,7 @@ components:
           voorkeurstaal:
             allOf:
             - $ref: '#/components/schemas/Referentiedata'
-            description: De voorkeurstaal die de natuurlijk persoon voert. Gebruik ISO-639-1 Referentiedatasoort TAAL.
+            description: 'De voorkeurstaal die de natuurlijk persoon voert. Gebruik ISO-639-3. Referentiedata: TAAL.'
           voorletters:
             type: string
             description: Een voorletter is een afkorting van een voornaam, die in adressering veel wordt gebruikt. De voorletters geven in combinatie met de achternaam meestal een duidelijk onderscheid tussen leden van hetzelfde gezin of dezelfde familie. Indien iemand meerdere voornamen heeft dan worden de voorletters door een punt gescheiden.
@@ -1996,7 +1997,7 @@ components:
         instelling:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De opleidingsinstelling die aangeeft waar de relatie de studie volgt. We hanteren hiervoor de BRIN. Referentiedatasoort OPLEIDINGSINSTELLING.
+          description: 'De opleidingsinstelling die aangeeft waar de relatie de studie volgt. We hanteren hiervoor de BRIN. Referentiedata: OPLEIDINGSINSTELLING.'
         begindatum:
           type: string
           format: date
@@ -2046,16 +2047,16 @@ components:
           organisatievorm:
             allOf:
             - $ref: '#/components/schemas/Referentiedata'
-            description: 'De organisatievorm van de rechtspersoon. Bijvoorbeeld: BV, NV, stichting of vereniging. Ook wel rechtsvorm genoemd. Referentiedatasoort ORGANISATIEVORM.'
+            description: 'De organisatievorm van de rechtspersoon. Bijvoorbeeld: BV, NV, stichting of vereniging. Ook wel rechtsvorm genoemd. Referentiedata: ORGANISATIEVORM.'
     Relaties-Relatie-basis:
       type: object
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-trut.
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -2067,15 +2068,15 @@ components:
           description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedatasoort RELATIESOORT.'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedata: RELATIESOORT. Dit attribuut is verplicht en mag niet leeg zijn.'
         detailSoort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedatasoort RELATIEDETAILSOORT.'
+          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedata: RELATIEDETAILSOORT.'
         adressen:
           description: De adressen behorend bij de relatie.
           type: array
@@ -2084,7 +2085,7 @@ components:
         communicatievoorkeur:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het communicatiekanaal waarop de relatie bij voorkeur benaderd wil worden. Bijvoorbeeld: Telefoon, E-mail, Social media etc. Referentiedatasoort CONTACTGEGEVENSOORT.'
+          description: 'Het communicatiekanaal waarop de relatie bij voorkeur benaderd wil worden. Bijvoorbeeld: Telefoon, E-mail, Social media etc. Referentiedata: CONTACTGEGEVENSOORT.'
         communicatievoorkeuren:
           description: De verschillende communicatievoorkeuren van een relatie met bijbehorende contactgegeven waarvoor de voorkeur geldt. Bijv. nieuwsbrief en e-mail. Communicatie omtrent de dienstverlening hoeft geen toestemming voor uitgevraagd te worden.
           type: array
@@ -2115,10 +2116,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-trut.
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -2130,15 +2131,15 @@ components:
           description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedatasoort RELATIESOORT.'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedata: RELATIESOORT. Dit attribuut is verplicht en mag niet leeg zijn.'
         detailSoort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedatasoort RELATIEDETAILSOORT.'
+          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedata: RELATIEDETAILSOORT.'
         rollen:
           description: 'De rollen behorend bij de relatie. Bijvoorbeeld: Prospect, bewoner.'
           type: array
@@ -2149,10 +2150,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -2161,7 +2162,7 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
@@ -2179,10 +2180,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-trut.
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -2194,19 +2195,19 @@ components:
           description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort adres van de relatie. Bijvoorbeeld: Woonadres, postadres, bezoekadres en factuuradres. Referentiedatasoort RELATIEADRESSOORT.'
+          description: 'Het soort adres van de relatie. Bijvoorbeeld: Woonadres, postadres, bezoekadres en factuuradres. Referentiedata: RELATIEADRESSOORT.'
         begindatum:
           type: string
           format: date
-          description: De begindatum waarop de relatie bij het adres hoort.
+          description: De begindatum waarop de relatie bij het adres hoort. Indien gevuld moet de begindatum kleiner of gelijk zijn aan de einddatum.
         einddatum:
           type: string
           format: date
-          description: De einddatum waarop de relatie niet meer bij het adres hoort.
+          description: De einddatum waarop de relatie niet meer bij het adres hoort. Indien gevuld moet de einddatum groter of gelijk zijn aan de begindatum.
         adres:
           allOf:
           - $ref: '#/components/schemas/Relaties-Adres'
@@ -2224,10 +2225,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -2236,14 +2237,14 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort rol van de relatie. Bijvoorbeeld Klant, Prospect, Leverancier, Medewerker, Team etc. Referentiedatasoort RELATIEROLSOORT.
+          description: 'Het soort rol van de relatie. Bijvoorbeeld Klant, Prospect, Leverancier, Medewerker, Team etc. Referentiedata: RELATIEROLSOORT.'
         naam:
           type: string
           description: De naam van de relatie rol.
@@ -2253,18 +2254,18 @@ components:
         begindatum:
           type: string
           format: date
-          description: begindatum van de rol
+          description: begindatum van de rol.
         einddatum:
           type: string
           format: date
-          description: einddatum van de rol
+          description: einddatum van de rol.
         contactgegevens:
           description: De contactgegevens van een relatie in een bepaalde rol.
           type: array
           items:
             $ref: '#/components/schemas/Relaties-Contactgegeven'
         relatieAdressen:
-          description: De adresssen van de relatie die voor de rol van toepassing zijn
+          description: De adresssen van de relatie die voor de rol van toepassing zijn.
           type: array
           items:
             $ref: '#/components/schemas/Relaties-RelatieAdres'
@@ -2286,10 +2287,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-trut.
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -2301,15 +2302,15 @@ components:
           description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
         code:
           type: string
-          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedatasoort RELATIESOORT.'
+          description: 'Het soort relatie: NatuurlijkPersoon, Relatiegroep of Rechtspersoon. Referentiedata: RELATIESOORT. Dit attribuut is verplicht en mag niet leeg zijn.'
         detailSoort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedatasoort RELATIEDETAILSOORT.'
+          description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedata: RELATIEDETAILSOORT.'
     Signaleringen-Signaleringbericht:
       allOf:    
         - $ref: '#/components/schemas/Signaleringen-Signalering'
@@ -2319,10 +2320,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -2331,34 +2332,34 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort signaal. Bijvoorbeeld: Huurschuld, overlast of wietplantage. Referentiedatasoort SIGNALERINGSOORT.'
+          description: 'Het soort signaal. Bijvoorbeeld: Huurschuld, overlast of wietplantage. Referentiedata: SIGNALERINGSOORT.'
         detailSoort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het reden van het signaal. Referentiedatasoort SIGNALERINGDETAILSOORT.
+          description: 'Het reden van het signaal. Referentiedata: SIGNALERINGDETAILSOORT.'
         status:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van de signalering. Bijvoorbeeld: Actief, vervallen of passief. Referentiedatasoort SIGNALERINGSTATUS.'
+          description: 'De status van de signalering. Bijvoorbeeld: Actief, vervallen of passief. Referentiedata: SIGNALERINGSTATUS.'
         detailStatus:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'De detailstatus van de signalering. Bijvoorbeeld: Ontruiming, vertrokken. Referentiedatasoort SIGNALERINGDETAILSTATUS.'
+          description: 'De detailstatus van de signalering. Bijvoorbeeld: Ontruiming, vertrokken. Referentiedata: SIGNALERINGDETAILSTATUS.'
         begindatum:
           type: string
           format: date-time
-          description: De begindatum van de signalering
+          description: 'De begindatum van de signalering. Validatie-regex: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$'
         einddatum:
           type: string
           format: date-time
-          description: De einddatum van de signalering
+          description: 'De einddatum van de signalering. Validatie-regex: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$'
         relatie:
           allOf:
           - $ref: '#/components/schemas/Signaleringen-Relatie'
@@ -2395,10 +2396,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -2407,26 +2408,26 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Specificatie van het documenttype. Bijvoorbeeld verslag, rapport etc. Referentiedatasoort INFORMATIEOBJECTSOORT.
+          description: 'Specificatie van het documenttype. Bijvoorbeeld verslag, rapport etc. Referentiedata: INFORMATIEOBJECTSOORT.'
         detailSoort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Detail specificatie van het documenttype. Bijvoorbeeld notulen, adviesrapport etc. Referentiedatasoort INFORMATIEOBJECTDETAILSOORT.
+          description: 'Detail specificatie van het documenttype. Bijvoorbeeld notulen, adviesrapport etc. Referentiedata: INFORMATIEOBJECTDETAILSOORT.'
         onderwerp:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Onderwerp van het informatieobject. Referentiedatasoort INFORMATIEOBJECTONDERWERP.
+          description: 'Onderwerp van het informatieobject. Referentiedata: INFORMATIEOBJECTONDERWERP.'
         subonderwerp:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Subonderwerp van het informatieobject. Referentiedatasoort INFORMATIEOBJECTSUBONDERWERP.
+          description: 'Subonderwerp van het informatieobject. Referentiedata: INFORMATIEOBJECTSUBONDERWERP.'
         titel:
           type: string
           description: Titel van het informatieobject.
@@ -2436,31 +2437,31 @@ components:
         status:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De fase waarin het informatieobject zich vanuit het perspectief van archivering bevindt. Referentiedatasoort INFORMATIEOBJECTSTATUS.
+          description: 'De fase waarin het informatieobject zich vanuit het perspectief van archivering bevindt. Referentiedata: INFORMATIEOBJECTSTATUS.'
         detailStatus:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Detaillering van de fase waarin het informatieobject zich vanuit het perspectief van archivering bevindt. Referentiedatasoort INFORMATIEOBJECTDETAILSTATUS.
+          description: 'Detaillering van de fase waarin het informatieobject zich vanuit het perspectief van archivering bevindt. Referentiedata: INFORMATIEOBJECTDETAILSTATUS.'
         registratiedatum:
           type: string
           format: date-time
-          description: Registratiedatum van het informatieobject.
+          description: 'Registratiedatum van het informatieobject. Validatie-regex: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$'
         ontvangstdatum:
           type: string
           format: date-time
-          description: Ontvangstdatum van het informatieobject.
+          description: 'Ontvangstdatum van het informatieobject. Validatie-regex: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$'
         publicatiedatum:
           type: string
           format: date-time
-          description: Publicatiedatum of verzenddatum van het informatieobject.
+          description: 'Publicatiedatum of verzenddatum van het informatieobject. Validatie-regex: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$'
         archiefActiedatum:
           type: string
           format: date-time
-          description: De datum waarop het gearchiveerde informatieobject vernietigd moet worden dan wel overgebracht moet worden naar een archiefbewaarplaats.
+          description: 'De datum waarop het gearchiveerde informatieobject vernietigd moet worden dan wel overgebracht moet worden naar een archiefbewaarplaats. Validatie-regex: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$'
         archiefnominatie:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Aanduiding of het informatieobject blijvend bewaard of na een bepaalde termijn vernietigd moet worden. Referentiedatasoort ARCHIEFNOMINATIE.
+          description: 'Aanduiding of het informatieobject blijvend bewaard of na een bepaalde termijn vernietigd moet worden. Referentiedata: ARCHIEFNOMINATIE.'
         auteur:
           type: string
           description: De persoon of organisatie die in de eerste plaats verantwoordelijk is voor het creëren van de inhoud van het informatieobject.
@@ -2475,7 +2476,7 @@ components:
         bestandslocatie:
           type: string
           format: uri
-          description: Een link (URI) naar de binaire representatie van het informatieobject.
+          description: 'Een link (URI) naar de binaire representatie van het informatieobject. Validatie-regex: ^https?:\/\/[^\s/$.?#].[^\s]*$'
         bestandsnaam:
           type: string
           description: De naam van het fysieke bestand waarin de inhoud van het informatieobject is vastgelegd.
@@ -2493,7 +2494,7 @@ components:
         formaat:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het digitale formaat (IANA media type) van het informatieobject.  Bijv. code:png naam:image/png. Referentiedatasoort INFORMATIEOBJECTFORMAAT.'
+          description: 'Het digitale formaat (IANA media type) van het informatieobject. Bijv. code:png naam:image/png. Referentiedata: INFORMATIEOBJECTFORMAAT.'
         gebruiksrechten:
           type: string
           description: Informatie omtrent rechten die geassocieerd zijn met het informatieobject zoals intellectueel eigendom.
@@ -2514,7 +2515,7 @@ components:
         taal:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De taal waarin het informatieobject is opgesteld. Referentiedatasoort TAAL.
+          description: 'De taal waarin het informatieobject is opgesteld. Referentiedata: TAAL.'
         verantwoordelijkeOrganisatie:
           type: string
           description: Het RSIN (Rechtspersonen en Samenwerkingsverbanden Informatienummer) van de organisatie die verantwoordelijk is voor het informatieobject.
@@ -2525,16 +2526,16 @@ components:
         vertrouwelijkheid:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De classificatie van het vertrouwelijkheidsniveau van het informatieobject. Referentiedatasoort VERTROUWELIJKHEID.
+          description: 'De classificatie van het vertrouwelijkheidsniveau van het informatieobject. Referentiedata: VERTROUWELIJKHEID.'
     Informatieobject-sleutels:
       type: object
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -2543,7 +2544,7 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
@@ -2552,13 +2553,19 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
+        idExtern:
+          type: string
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
+        idGegevensbeheerder:
+          type: string
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
         idOrganisatie:
           type: string
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
@@ -2568,19 +2575,20 @@ components:
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De categorie of groepering van het label. Bijv. dVI samenstelling bezit etc. Referentiedatasoort STURINGSLABELSOORT.
+          description: 'De categorie of groepering van het label. Bijv. dVI samenstelling bezit etc. Referentiedata: STURINGSLABELSOORT.'
         label:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het label dat is bepaald op basis van de bijbehorende definitie. Bijv. Zelfstandige huurwoning. Referentiedatasoort STURINGSLABEL.
+          description: 'Het label dat is bepaald op basis van de bijbehorende definitie. Bijv. Zelfstandige huurwoning. Referentiedata: STURINGSLABEL.'
         datum:
           type: string
           format: date
-          description: Datum en tijdstip waarop het label is bepaald.
+          description: Datum en tijdstip waarop het label is bepaald. OBSOLETE
+          deprecated: true
         bron:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De bron van de definitie van het label. Bijv. dVI 2014, CORA etc. Referentiedatasoort STURINGSLABELBRON.
+          description: 'De bron van de definitie van het label. Bijv. dVI 2014, CORA etc. Referentiedata: STURINGSLABELBRON.'
     Foutbericht:
       type: object
       properties:

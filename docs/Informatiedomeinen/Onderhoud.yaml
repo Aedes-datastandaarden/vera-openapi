@@ -9,7 +9,7 @@ info:
   license:
     name: "Copyright (c) Aedes vereniging van woningcorporaties"
     url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
-  version: '4.2.0+250117.7'
+  version: '4.2.1+250418.40'
 servers:
   - url: https://onderhoud.vera.io:{port}/{basePath}
     description: Productieserver
@@ -2653,10 +2653,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen.
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -2665,21 +2665,21 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Typering van het soort defect. Bijvoorbeeld lekt, klemt, gebroken etc. Referentiedatasoort DEFECTSOORT.
+          description: 'Typering van het soort defect. Bijvoorbeeld lekt, klemt, gebroken etc. Referentiedata: DEFECTSOORT.'
         omschrijving:
           type: string
           description: 'De korte omschrijving van het defect. Bijvoorbeeld: Keuken: kraan lekt. Meestal wordt deze omschrijving automatisch samengesteld uit de LEDO.'
         status:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De status van een defect. Bijvoorbeeld een huurder heeft een defect gemeld en een inspecteur heeft het defect geïnspecteerd. Referentiedatasoort DEFECTSTATUS.
+          description: 'De status van een defect. Bijvoorbeeld een huurder heeft een defect gemeld en een inspecteur heeft het defect geïnspecteerd. Referentiedata: DEFECTSTATUS.'
         melddatum:
           type: string
           format: date-time
@@ -2687,23 +2687,23 @@ components:
         aangetroffenOorzaak:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'De achteraf vastgestelde oorzaak. Een voorbeeld is: de voetafdruk van een huurder tegen de deur die nu "opeens" klemt. De oorzaak was door de huurder als normale slijtage opgegeven maar de vakman heeft vastgesteld dat het bewonersgedrag is. Referentiedatasoort DEFECTOORZAAK.'
+          description: 'De achteraf vastgestelde oorzaak. Een voorbeeld is: de voetafdruk van een huurder tegen de deur die nu ""opeens"" klemt. De oorzaak was door de huurder als normale slijtage opgegeven maar de vakman heeft vastgesteld dat het bewonersgedrag is. Referentiedata: DEFECTOORZAAK.'
         bouwkundigElement:
           type: string
           format: uri
-          description: Referentie naar BouwkundigElement in informatiedomein Vastgoed
+          description: URI naar BouwkundigElement in domeinsysteem Vastgoed.
         cluster:
           type: string
           format: uri
-          description: Referentie naar Cluster in informatiedomein Vastgoed
+          description: URI naar Cluster in domeinsysteem Vastgoed.
         collectiefObject:
           type: string
           format: uri
-          description: Referentie naar CollectiefObject in informatiedomein Vastgoed
+          description: URI naar CollectiefObject in domeinsysteem Vastgoed.
         eenheid:
           type: string
           format: uri
-          description: Referentie naar Eenheid in informatiedomein Vastgoed
+          description: URI naar Eenheid in domeinsysteem Vastgoed.
         inspectierapport:
           allOf:
           - $ref: '#/components/schemas/Inspectierapport-sleutels'
@@ -2711,7 +2711,7 @@ components:
         locatie:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De locatie waar het onderhoud moet plaatsvinden. Bijvoorbeeld huiskamer of toilet. Referentiedatasoort DEFECTLOCATIE.
+          description: 'De locatie waar het onderhoud moet plaatsvinden. Bijvoorbeeld huiskamer of toilet. Referentiedata: DEFECTLOCATIE.'
         onderhoudsverzoeken:
           description: De onderhoudsverzoeken waarmee het defect is gemeld.
           type: array
@@ -2720,13 +2720,13 @@ components:
         oorzaak:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De oorzaak van het defect zoals initieel bij het melden van het defect is vastgelegd. Dit is vaak de oorzaak die de huurder aangeeft bij de melding. Referentiedatasoort DEFECTOORZAAK.
+          description: 'De oorzaak van het defect zoals initieel bij het melden van het defect is vastgelegd. Dit is vaak de oorzaak die de huurder aangeeft bij de melding. Referentiedata: DEFECTOORZAAK.'
         relaties:
           type: array  
           items:
             type: string
             format: uri
-          description: Referenties naar Relatie in informatiedomein Relaties
+          description: URI's naar Relaties in domeinsysteem Relaties.
     Referentiedatabericht:
       allOf:    
         - $ref: '#/components/schemas/Referentiedata'
@@ -2736,10 +2736,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -2748,7 +2748,7 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.
@@ -2782,10 +2782,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -2794,7 +2794,7 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld NL.
@@ -2806,10 +2806,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen.
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -2818,7 +2818,7 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
@@ -2827,10 +2827,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -2839,7 +2839,7 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
@@ -2852,10 +2852,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen.
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -2864,21 +2864,21 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Bijvoorbeeld: Voorinspectierapport, eindinspectierapport. Referentiedatasoort INSPECTIERAPPORTSOORT.'
+          description: 'Bijvoorbeeld: Voorinspectierapport, eindinspectierapport. Referentiedata: INSPECTIERAPPORTSOORT.'
         omschrijving:
           type: string
           description: 'De korte omschrijving van de uitgevoerde inspectie. Bijvoorbeeld: Voorinspectie ten behoeve van mutatieonderhoud'
         status:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De status van het inspectierapport. Bijvoorbeeld Concept, Definitief, Getekend etc. Referentiedatasoort INSPECTIERAPPORTSTATUS.
+          description: 'De status van het inspectierapport. Bijvoorbeeld Concept, Definitief, Getekend etc. Referentiedata: INSPECTIERAPPORTSTATUS.'
         geconstateerdeDefecten:
           description: De defecten die zijn geconstateerd tijdens de inspectie.
           type: array
@@ -2893,7 +2893,7 @@ components:
           items:
             type: string
             format: uri
-          description: Referenties naar Relatie in informatiedomein Relaties
+          description: URI's naar Relaties in domeinsysteem Relaties.
         voorgesteldeOnderhoudstaken:
           description: In de situatie dat de inspecteur ook uit te voeren onderhoudstaken vaststelt tijdens de inspectie kunnen deze als voorgestelde onderhoudstaken opgenomen worden bij het inspectierapport
           type: array
@@ -2904,10 +2904,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen.
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -2916,7 +2916,7 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
@@ -2925,10 +2925,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen.
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -2937,7 +2937,7 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
@@ -2946,10 +2946,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen.
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -2958,7 +2958,7 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
@@ -2971,10 +2971,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen.
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -2983,14 +2983,14 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort besteding voor de onderhoudstaak. Afhankelijk van de afrekenwijze kunnen hier verschillende bestedingsoorten gebruikt worden zoals vaste taakprijs bij nacalculatie eenheidsprijzen en werktijd bij nacalculatie Referentiedatasoort ONDERHOUDSBESTEDINGSOORT.
+          description: 'Het soort besteding voor de onderhoudstaak. Afhankelijk van de afrekenwijze kunnen hier verschillende bestedingsoorten gebruikt worden zoals vaste taakprijs bij nacalculatie eenheidsprijzen en werktijd bij nacalculatie Referentiedata: ONDERHOUDSBESTEDINGSOORT.'
         omschrijving:
           type: string
           description: De korte omschrijving van de onderhoudsbesteding.
@@ -3017,11 +3017,11 @@ components:
         grootboekmutatie:
           type: string
           format: uri
-          description: Referentie naar Grootboekmutatie in informatiedomein Financien
+          description: URI naar Grootboekmutatie in domeinsysteem Financien.
         meeteenheid:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De meeteenheid waarin de besteding wordt gemeten. Bijv. uur, liter etc. Referentiedatasoort MEETEENHEID.
+          description: 'De meeteenheid waarin de besteding wordt gemeten. Bijv. uur, liter etc. Referentiedata: MEETEENHEID.'
         onderhoudstaak:
           allOf:
           - $ref: '#/components/schemas/Onderhoudstaak-sleutels'
@@ -3040,10 +3040,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen.
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -3052,18 +3052,18 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         onderhoudSoort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Typering van de onderhoudsorder zoals bijvoorbeeld inspectie, mutatiewerkzaamheden, reparatiewerkzaamheden, etc. Referentiedatasoort ONDERHOUDSOORT.
+          description: 'Typering van de onderhoudsorder zoals bijvoorbeeld inspectie, mutatiewerkzaamheden, reparatiewerkzaamheden, etc. Referentiedata: ONDERHOUDSOORT.'
         onderhoudDetailSoort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Detaillering van de onderhoudsorder soort zoals gewenst bij inspecties: Voorinspectie, Eindinspectie, Steekproef, … Referentiedatasoort ONDERHOUDDETAILSOORT.'
+          description: 'Detaillering van de onderhoudsorder soort zoals gewenst bij inspecties: Voorinspectie, Eindinspectie, Steekproef, … Referentiedata: ONDERHOUDDETAILSOORT.'
         omschrijving:
           type: string
           description: 'De korte omschrijving van de onderhoudsorder. Bijvoorbeeld: Herstel de lekkende kraan in de keuken.'
@@ -3074,7 +3074,7 @@ components:
         status:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van de order. Bijvoorbeeld: Order zit in de steekproef of de order is technisch gereed. Referentiedatasoort ONDERHOUDSORDERSTATUS.'
+          description: 'De status van de order. Bijvoorbeeld: Order zit in de steekproef of de order is technisch gereed. Referentiedata: ONDERHOUDSORDERSTATUS.'
         begindatum:
           type: string
           format: date-time
@@ -3098,28 +3098,28 @@ components:
         afrekenwijze:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'De wijze waarop de onderhoudsorder wordt afgerekend (of niet). Bijvoorbeeld: Nacalculatie regie, Nacalculatie eenheidsprijzen, Vaste prijs, Afkoop, Garantie. De afrekenwijze bepaalt ook welke soorten onderhoudsbestedingen gebruikt moeten worden (Bij eenheidsprijzen gebruik je bijvoorbeeld bestedingsoort Vaste taakprijs) Referentiedatasoort AFREKENWIJZESOORT.'
+          description: 'De wijze waarop de onderhoudsorder wordt afgerekend (of niet). Bijvoorbeeld: Nacalculatie regie, Nacalculatie eenheidsprijzen, Vaste prijs, Afkoop, Garantie. De afrekenwijze bepaalt ook welke soorten onderhoudsbestedingen gebruikt moeten worden (Bij eenheidsprijzen gebruik je bijvoorbeeld bestedingsoort Vaste taakprijs) Referentiedata: AFREKENWIJZESOORT.'
         afspraken:
           type: array  
           items:
             type: string
             format: uri
-          description: Referenties naar Afspraak in informatiedomein Relaties
+          description: URI's naar Afspraken in domeinsysteem Relaties.
         btwVerlegd:
           type: boolean
           description: Uiteindelijke beslissing of de btw is verlegd ja/nee. Mag afwijken van de instelling op de crediteur.
         cluster:
           type: string
           format: uri
-          description: Referentie naar Cluster in informatiedomein Vastgoed
+          description: URI naar Cluster in domeinsysteem Vastgoed.
         collectiefObject:
           type: string
           format: uri
-          description: Referentie naar CollectiefObject in informatiedomein Vastgoed
+          description: URI naar CollectiefObject in domeinsysteem Vastgoed.
         debiteur:
           type: string
           format: uri
-          description: Referentie naar Debiteur in informatiedomein Financien
+          description: URI naar Debiteur in domeinsysteem Financien.
         defecten:
           description: De defecten die via het verzoek of het inspectierapport zijn gemeld.
           type: array
@@ -3128,7 +3128,7 @@ components:
         eenheid:
           type: string
           format: uri
-          description: Referentie naar Eenheid in informatiedomein Vastgoed
+          description: URI naar Eenheid in domeinsysteem Vastgoed.
         financieelGereeddatum:
           type: string
           format: date-time
@@ -3138,7 +3138,7 @@ components:
           items:
             type: string
             format: uri
-          description: Referenties naar Offerte in informatiedomein Financien
+          description: URI's naar Offertes in domeinsysteem Financien.
         onderhoudstaken:
           description: De onderhoudstaken behorend bij de onderhoudsorder.
           type: array
@@ -3152,13 +3152,13 @@ components:
         overeenkomst:
           type: string
           format: uri
-          description: Referentie naar Overeenkomst in informatiedomein Overeenkomsten
+          description: URI naar Overeenkomst in domeinsysteem Overeenkomsten.
         relaties:
           type: array  
           items:
             type: string
             format: uri
-          description: Referenties naar Relatie in informatiedomein Relaties
+          description: URI's naar Relaties in domeinsysteem Relaties.
         technischGereeddatum:
           type: string
           format: date-time
@@ -3166,7 +3166,7 @@ components:
         uitvoerendeSoort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'De waarde die het soort uitvoerende aangeeft die de taak uitvoert. Bijvoorbeeld: vakgroep/leverancier of intern/extern. Referentiedatasoort UITVOERENDESOORT.'
+          description: 'De waarde die het soort uitvoerende aangeeft die de taak uitvoert. Bijvoorbeeld: vakgroep/leverancier of intern/extern. Referentiedata: UITVOERENDESOORT.'
     Onderhoudstaakbericht:
       allOf:    
         - $ref: '#/components/schemas/Onderhoudstaak'
@@ -3176,10 +3176,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen.
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -3188,7 +3188,7 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
@@ -3198,17 +3198,17 @@ components:
         status:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De status van de onderhoudstaak. Bijvoorbeeld;aangemaakt, ingepland, in uitvoer, afgerond, Referentiedatasoort ONDERHOUDSTAAKSTATUS.
+          description: 'De status van de onderhoudstaak. Bijvoorbeeld: aangemaakt, ingepland, in uitvoer, afgerond. Referentiedata: ONDERHOUDSTAAKSTATUS.'
         detailStatus:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'De detail status van de onderhoudstaak. Bijvoorbeeld: Klant niet aanwezig Referentiedatasoort ONDERHOUDSTAAKDETAILSTATUS.'
+          description: 'De detail status van de onderhoudstaak. Bijvoorbeeld: Klant niet aanwezig Referentiedata: ONDERHOUDSTAAKDETAILSTATUS.'
         afspraken:
           type: array  
           items:
             type: string
             format: uri
-          description: Referenties naar Afspraak in informatiedomein Relaties
+          description: URI's naar Afspraken in domeinsysteem Relaties.
         defecten:
           description: De geconstateerde defecten die met de onderhoudstaak worden verholpen
           type: array
@@ -3232,11 +3232,11 @@ components:
           items:
             type: string
             format: uri
-          description: Referenties naar Relatie in informatiedomein Relaties
+          description: URI's naar Relaties in domeinsysteem Relaties.
         specialisme:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het specialisme dat nodig is om de taak uit te voeren. Voorbeelden zijn Timmerman, Loodgieter, etc. Referentiedatasoort ONDERHOUDSPECIALISME.
+          description: 'Het specialisme dat nodig is om de taak uit te voeren. Voorbeelden zijn Timmerman, Loodgieter, etc. Referentiedata: ONDERHOUDSPECIALISME.'
         voorcalculaties:
           description: De onderhoudstaakvoorcalculaties behorende bij de onderhoudstaak.
           type: array
@@ -3247,10 +3247,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen.
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -3259,7 +3259,7 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
@@ -3268,10 +3268,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen.
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -3280,7 +3280,7 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
@@ -3293,10 +3293,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen.
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -3305,14 +3305,14 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         bestedingsoort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het soort besteding voor de voorcalculatie. Referentiedatasoort ONDERHOUDSBESTEDINGSOORT.
+          description: 'Het soort besteding voor de voorcalculatie. Referentiedata: ONDERHOUDSBESTEDINGSOORT.'
         omschrijving:
           type: string
           description: De omschrijving van de voorcalculatie.
@@ -3327,7 +3327,7 @@ components:
         meeteenheid:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De meeteenheid waarin de voorcalculatie wordt gemeten. Bijv. uur, liter etc. Referentiedatasoort MEETEENHEID.
+          description: 'De meeteenheid waarin de voorcalculatie wordt gemeten. Bijv. uur, liter etc. Referentiedata: MEETEENHEID.'
         onderhoudstaak:
           allOf:
           - $ref: '#/components/schemas/Onderhoudstaak-sleutels'
@@ -3341,10 +3341,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen.
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -3353,7 +3353,7 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
@@ -3366,10 +3366,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -3378,25 +3378,25 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         onderhoudSoort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het soort onderhoud dat wordt verzocht. Bijvoorbeeld: reparatie, mutatieonderhoud etc. Referentiedatasoort ONDERHOUDSOORT.'
+          description: 'Het soort onderhoud dat wordt verzocht. Bijvoorbeeld: reparatie, mutatieonderhoud etc. Referentiedata: ONDERHOUDSOORT.'
         omschrijving:
           type: string
           description: 'De korte omschrijving van het verzoek. Bijvoorbeeld: Keuken: kraan lekt.'
         status:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'De status van het verzoek. Bijvoorbeeld: Geregistreerd, In behandeling, Geannuleerd, Afgehandeld Referentiedatasoort ONDERHOUDSVERZOEKSTATUS.'
+          description: 'De status van het verzoek. Bijvoorbeeld: Geregistreerd, In behandeling, Geannuleerd, Afgehandeld Referentiedata: ONDERHOUDSVERZOEKSTATUS.'
         melddatum:
           type: string
           format: date-time
-          description: De datum waarop het onderhoudsverzoek is gemeld.
+          description: 'De datum waarop het onderhoudsverzoek is gemeld. Validatie-regex: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$'
         alternatiefContactgegeven:
           type: string
           description: Tekstveld waarin contactgegevens van een alternatieve contactpersoon opgenomen kunnen worden. Voorbeeld is het verzoek van een huurder (student) waarbij hij aangeeft contact op te nemen met zijn ouders voor de afhandeling van het verzoek.
@@ -3405,7 +3405,7 @@ components:
           items:
             type: string
             format: uri
-          description: Referenties naar Contactmoment in informatiedomein Relaties
+          description: URI's naar Contactmomenten in domeinsysteem Relaties.
         defecten:
           description: De defecten die via zijn gemeld en gekoppeld aan het onderhoudsverzoek.
           type: array
@@ -3431,9 +3431,9 @@ components:
           items:
             type: string
             format: uri
-          description: Referenties naar Relatie in informatiedomein Relaties
+          description: URI's naar Relaties in domeinsysteem Relaties.
         verrekeningen:
-          description: De verrekeningen van het onderhoudsverzoek met de melder
+          description: De verrekeningen van het onderhoudsverzoek met de melder.
           type: array
           items:
             $ref: '#/components/schemas/Onderhoudsverzoekverrekening-sleutels'
@@ -3442,16 +3442,16 @@ components:
           items:
             type: string
             format: uri
-          description: Referenties naar Afspraak in informatiedomein Relaties
+          description: URI's naar Afspraken in domeinsysteem Relaties.
     Onderhoudsverzoekverrekening-sleutels:
       type: object
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen.
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -3460,7 +3460,7 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
@@ -3473,10 +3473,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen.
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -3485,14 +3485,14 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Typering van het soort verrekening: te verhalen, te activeren. Referentiedatasoort VERREKENINGSOORT.'
+          description: 'Typering van het soort verrekening: te verhalen, te activeren. Referentiedata: VERREKENINGSOORT.'
         bedrag:
           type: number
           format: float
@@ -3510,10 +3510,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen.
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -3522,7 +3522,7 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
@@ -3540,7 +3540,7 @@ components:
         meeteenheid:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De meeteenheid waarin de eenheden wordt gemeten. Bijv. uur, liter, stuks, etc. Referentiedatasoort MEETEENHEID.
+          description: 'De meeteenheid waarin de eenheden wordt gemeten. Bijv. uur, liter, stuks, etc. Referentiedata: MEETEENHEID.'
         onderhoudstaakvoorcalculaties:
           description: De onderhoudstaakvoorcalculatie(s) die behoort (behoren) bij de standaardprijs.
           type: array
@@ -3559,7 +3559,7 @@ components:
           items:
             type: string
             format: uri
-          description: Referenties naar Informatieobject in informatiedomein Dossier
+          description: URI's naar Informatieobjecten in domeinsysteem Dossier.
         sturingslabels:
           description: Mogelijkheid om het bericht uit te breiden met sturingslabels
           type: array
@@ -3587,10 +3587,10 @@ components:
       properties:
         id:
           type: string
-          description: De primaire sleutel van het gegeven in het bronsysteem. Je verstuurt een entiteit altijd met het eigen id. Id kan leeg zijn.
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
         idExtern:
           type: string
-          description: De primaire sleutel van het gegeven in het doelsysteem. Deze idExtern wisselt om met id afhankelijk van de richting van de gegevensuitwisseling.
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth
         idGegevensbeheerder:
           type: string
           description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
@@ -3599,18 +3599,18 @@ components:
           description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
         idAdministratie:
           type: string
-          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
         code:
           type: string
           description: De unieke code (Bijvoorbeeld om te tonen of te zoeken) Bijvoorbeeld DVI2014.
         soort:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De categorie of groepering van het label. Bijv. dVI samenstelling bezit etc. Referentiedatasoort STURINGSLABELSOORT.
+          description: 'De categorie of groepering van het label. Bijv. dVI samenstelling bezit etc. Referentiedata: STURINGSLABELSOORT.'
         label:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: Het label dat is bepaald op basis van de bijbehorende definitie. Bijv. Zelfstandige huurwoning. Referentiedatasoort STURINGSLABEL.
+          description: 'Het label dat is bepaald op basis van de bijbehorende definitie. Bijv. Zelfstandige huurwoning. Referentiedata: STURINGSLABEL.'
         datum:
           type: string
           format: date
@@ -3627,7 +3627,7 @@ components:
         bron:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: De bron van de definitie van het label. Bijv. dVI 2014, CORA etc. Referentiedatasoort STURINGSLABELBRON.
+          description: 'De bron van de definitie van het label. Bijv. dVI 2014, CORA etc. Referentiedata: STURINGSLABELBRON.'
     Foutbericht:
       type: object
       properties:
