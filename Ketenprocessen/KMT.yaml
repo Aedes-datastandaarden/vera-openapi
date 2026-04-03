@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Kwaliteitsmeting
-  description: API-specificatie van ketenproces 'Kwaliteitsmeting'. Deze specificatie is gebaseerd op VERA versie 4.3.0+260116.26
+  description: API-specificatie van ketenproces 'Kwaliteitsmeting'. Deze specificatie is gebaseerd op VERA versie 4.3.4.3.1+260403.12
   contact:
     name: VERA
     url: https://www.coraveraonline.nl
@@ -9,7 +9,7 @@ info:
   license:
     name: "Copyright (c) Aedes vereniging van woningcorporaties"
     url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
-  version: '4.3.0+260116.26'
+  version: '4.3.4.3.1+260403.12'
 servers:
   - url: https://kmt.vera.io:{port}/{basePath}
     description: Productieserver
@@ -297,7 +297,7 @@ paths:
         description: Id van Kwaliteitsmetingsresultaat om te wijzigen
         required: true
         schema:
-          type: integer
+          type: string
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
@@ -574,7 +574,7 @@ paths:
         description: Id van Kwaliteitsmetingsverzoek om te wijzigen
         required: true
         schema:
-          type: integer
+          type: string
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
@@ -851,7 +851,7 @@ paths:
         description: Id van Onderzoeksopdracht om te wijzigen
         required: true
         schema:
-          type: integer
+          type: string
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
@@ -1128,7 +1128,7 @@ paths:
         description: Id van Onderzoeksresultaat om te wijzigen
         required: true
         schema:
-          type: integer
+          type: string
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
@@ -1349,7 +1349,7 @@ components:
         land:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het land waarin het adres zich bevindt. Referentiedata: LAND.'
+          description: 'Het land waarin het adres zich bevindt. Bron: ISO3166-1. Men mag Alpha 2, 3 of numeriek als code gebruiken. Bij verwerking moet men daar rekening mee houden. Referentiedata: LAND.'
         postcode:
           type: string
           description: De postcode van het adres.
@@ -1500,10 +1500,11 @@ components:
           - $ref: '#/components/schemas/Referentiedata'
           description: 'Het kanaal via welke het contact heeft gelopen. Bijvoorbeeld: Telefoon, email, balie, internet. Referentiedata: COMMUNICATIEKANAAL.'
         relaties:
-          description: De relatie waarmee contact is geweest. Bijv. een huurder, medewerker etc.
+          description: OBSOLETE
           type: array
           items:
             $ref: '#/components/schemas/Relatie-sleutels'
+          deprecated: true
         richting:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
@@ -1617,10 +1618,11 @@ components:
           items:
             $ref: '#/components/schemas/Cluster-sleutels'
         relaties:
-          description: Bijv. de eigenaar, beheerder, etc. van de eenheid, bijvoorbeeld de corporatie, een collega-corporatie, een eigenaar/bewoner of een collega-corporatie die de eenheid in exploitatie heeft.
+          description: OBSOLETE
           type: array
           items:
             $ref: '#/components/schemas/Relatie-sleutels'
+          deprecated: true
     Cluster-sleutels:
       type: object
       properties:
@@ -1678,6 +1680,11 @@ components:
       - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Overeenkomst-basis'
       - type: object
         properties:
+          looptijden:
+            description: De looptijden behorende bij de huurovereenkomst.
+            type: array
+            items:
+              $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Looptijd'
           status:
             allOf:
             - $ref: '#/components/schemas/Referentiedata'
@@ -1747,14 +1754,49 @@ components:
           - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Overeenkomst'
           description: De overeenkomst die betrekking heeft op het kwaliteitsmetingsverzoek.
         relaties:
-          description: De relaties met een rol die betrekking hebben op het kwaliteitsmetingsverzoek.
+          description: OBSOLETE
           type: array
           items:
             $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Relatie'
+          deprecated: true
         teEnqueterenRelatie:
           allOf:
           - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Relatie'
           description: De relatie waar de kwaliteitsmeting moet worden uitgevoerd.
+    Kwaliteitsmetingsverzoeken-Looptijd:
+      type: object
+      properties:
+        id:
+          type: string
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
+        idExtern:
+          type: string
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth.
+        idGegevensbeheerder:
+          type: string
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Geeft aan om welk soort looptijd het betreft. Referentiedata: LOOPTIJDSOORT.'
+        expiratieDatum:
+          type: string
+          format: date
+          description: 'De datum waarop de betreffende looptijd afloopt of eindigt. Dit veld is verplicht bij een POST Validatie-regex: ^\d{4}-\d{2}-\d{2}$'
+        datumVordering:
+          type: string
+          format: date
+          description: De datum waarop het recht of de mogelijkheid die samenhangt met de looptijd kan worden uitgeoefend.
+        datumHuurprijsHerziening:
+          type: string
+          format: date
+          description: De datum waarop de huurprijsherziening van kracht wordt.
     Kwaliteitsmetingsverzoeken-NatuurlijkPersoon:
       allOf:
       - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Relatie-basis'
@@ -1826,10 +1868,11 @@ components:
           format: date-time
           description: 'De datum waarop het onderhoudsverzoek is gemeld. Validatie-regex: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$'
         relaties:
-          description: Bijv. De melder die het onderhoudsverzoek heeft gemeld.
+          description: OBSOLETE
           type: array
           items:
             $ref: '#/components/schemas/Relatie-sleutels'
+          deprecated: true
     Kwaliteitsmetingsverzoeken-Overeenkomst-basis:
       type: object
       properties:
@@ -1940,6 +1983,11 @@ components:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: 'Het detail van soort relatie: Bijvoorbeeld Huishouden bij een relatiegroep, of de standaard bedrijfsindeling volgens SBI bij een rechtspersoon. Referentiedata: RELATIEDETAILSOORT.'
+        adressen:
+          description: De adressen behorend bij de relatie.
+          type: array
+          items:
+            $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-RelatieAdres'
         communicatievoorkeur:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
@@ -1963,6 +2011,43 @@ components:
       oneOf:
         - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-NatuurlijkPersoon'
         - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Rechtspersoon'
+    Kwaliteitsmetingsverzoeken-RelatieAdres:
+      type: object
+      properties:
+        id:
+          type: string
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
+        idExtern:
+          type: string
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth.
+        idGegevensbeheerder:
+          type: string
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          description: Dit verwijst naar de administratie waar het gegeven onderdeel van is. Horende bij de idExtern.
+        code:
+          type: string
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Het soort adres van de relatie. Bijvoorbeeld: Woonadres, postadres, bezoekadres en factuuradres. Referentiedata: RELATIEADRESSOORT.'
+        begindatum:
+          type: string
+          format: date
+          description: De begindatum waarop de relatie bij het adres hoort. Indien gevuld moet de begindatum kleiner of gelijk zijn aan de einddatum.
+        einddatum:
+          type: string
+          format: date
+          description: De einddatum waarop de relatie niet meer bij het adres hoort. Indien gevuld moet de einddatum groter of gelijk zijn aan de begindatum.
+        adres:
+          allOf:
+          - $ref: '#/components/schemas/Kwaliteitsmetingsverzoeken-Adres'
+          description: Het adres behorend bij de relatie.
     Kwaliteitsmetingsverzoeken-Relatierol:
       type: object
       properties:
@@ -2150,7 +2235,7 @@ components:
         land:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het land waarin het adres zich bevindt. Referentiedata: LAND.'
+          description: 'Het land waarin het adres zich bevindt. Bron: ISO3166-1. Men mag Alpha 2, 3 of numeriek als code gebruiken. Bij verwerking moet men daar rekening mee houden. Referentiedata: LAND.'
         postcode:
           type: string
           description: De postcode van het adres.

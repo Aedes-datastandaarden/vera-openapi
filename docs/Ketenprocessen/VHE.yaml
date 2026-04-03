@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Verhuren Eenheden
-  description: API-specificatie van ketenproces 'Verhuren Eenheden'. Deze specificatie is gebaseerd op VERA versie 4.3.0+260116.26
+  description: API-specificatie van ketenproces 'Verhuren Eenheden'. Deze specificatie is gebaseerd op VERA versie 4.3.4.3.1+260403.12
   contact:
     name: VERA
     url: https://www.coraveraonline.nl
@@ -9,7 +9,7 @@ info:
   license:
     name: "Copyright (c) Aedes vereniging van woningcorporaties"
     url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
-  version: '4.3.0+260116.26'
+  version: '4.3.4.3.1+260403.12'
 servers:
   - url: https://vhe.vera.io:{port}/{basePath}
     description: Productieserver
@@ -295,7 +295,7 @@ paths:
         description: Id van Cluster om te wijzigen
         required: true
         schema:
-          type: integer
+          type: string
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
@@ -572,7 +572,7 @@ paths:
         description: Id van Eenheid om te wijzigen
         required: true
         schema:
-          type: integer
+          type: string
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
@@ -849,7 +849,7 @@ paths:
         description: Id van Huuropzegging om te wijzigen
         required: true
         schema:
-          type: integer
+          type: string
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
@@ -1225,7 +1225,7 @@ components:
         land:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het land waarin het adres zich bevindt. Referentiedata: LAND.'
+          description: 'Het land waarin het adres zich bevindt. Bron: ISO3166-1. Men mag Alpha 2, 3 of numeriek als code gebruiken. Bij verwerking moet men daar rekening mee houden. Referentiedata: LAND.'
         postcode:
           type: string
           description: De postcode van het adres.
@@ -1554,6 +1554,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Eenheden-Oppervlakte'
+        overeenkomstDetailSoort:
+          description: 'Het type van de overeenkomst die afgesloten kunnen worden bij deze eenheid. Bijvoorbeeld: onbepaalde tijd contract, tijdelijk contract, jongerencontract etc. Referentiedata: OVERKOMSTDETAILSOORT.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Referentiedata'
         overigeVertrekkenTotaalOppervlakte:
           type: number
           format: float
@@ -2139,7 +2144,13 @@ components:
         oppervlakte:
           type: number
           format: float
-          description: De oppervlakte van de ruimte.
+          description: De oppervlakte van de ruimte. OBSOLETE
+          deprecated: true
+        oppervlakten:
+          description: De verschillende oppervlakten die gedefinieerd zijn (bijv. vanuit de NEN) voor een eenheid. Bijv. het gebruiksoppervlak (GO) of functioneel nuttig oppervlak (FNO).
+          type: array
+          items:
+            $ref: '#/components/schemas/Eenheden-Oppervlakte'
     BouwkundigElement-sleutels:
       type: object
       properties:
@@ -2317,7 +2328,7 @@ components:
         land:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
-          description: 'Het land waarin het adres zich bevindt. Referentiedata: LAND.'
+          description: 'Het land waarin het adres zich bevindt. Bron: ISO3166-1. Men mag Alpha 2, 3 of numeriek als code gebruiken. Bij verwerking moet men daar rekening mee houden. Referentiedata: LAND.'
         postcode:
           type: string
           description: De postcode van het adres.

@@ -9,7 +9,7 @@ info:
   license:
     name: "Copyright (c) Aedes vereniging van woningcorporaties"
     url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
-  version: '4.3.0+260116.26'
+  version: '4.3.4.3.1+260403.12'
 servers:
   - url: https://overeenkomsten.vera.io:{port}/{basePath}
     description: Productieserver
@@ -42,6 +42,8 @@ tags:
   description: Operaties met betrekking tot een Inspectie
 - name: Koopovereenkomsten
   description: Operaties met betrekking tot een Koopovereenkomst
+- name: Looptijden
+  description: Operaties met betrekking tot een Looptijd
 - name: Monitoringovereenkomsten
   description: Operaties met betrekking tot een Monitoringovereenkomst
 - name: Onderhoudsovereenkomsten
@@ -321,7 +323,7 @@ paths:
         description: Id van Arbeidsovereenkomst om te wijzigen
         required: true
         schema:
-          type: integer
+          type: string
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
@@ -598,7 +600,7 @@ paths:
         description: Id van Huurgeschil om te wijzigen
         required: true
         schema:
-          type: integer
+          type: string
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
@@ -875,7 +877,7 @@ paths:
         description: Id van HuurgeschilActie om te wijzigen
         required: true
         schema:
-          type: integer
+          type: string
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
@@ -1152,7 +1154,7 @@ paths:
         description: Id van HuurgeschilUitspraak om te wijzigen
         required: true
         schema:
-          type: integer
+          type: string
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
@@ -1429,7 +1431,7 @@ paths:
         description: Id van Huuropzegging om te wijzigen
         required: true
         schema:
-          type: integer
+          type: string
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
@@ -1706,7 +1708,7 @@ paths:
         description: Id van Huurovereenkomst om te wijzigen
         required: true
         schema:
-          type: integer
+          type: string
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
@@ -1983,7 +1985,7 @@ paths:
         description: Id van Huurtoeslag om te wijzigen
         required: true
         schema:
-          type: integer
+          type: string
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
@@ -2260,7 +2262,7 @@ paths:
         description: Id van Inschrijving om te wijzigen
         required: true
         schema:
-          type: integer
+          type: string
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
@@ -2537,7 +2539,7 @@ paths:
         description: Id van Inspectie om te wijzigen
         required: true
         schema:
-          type: integer
+          type: string
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
@@ -2814,7 +2816,7 @@ paths:
         description: Id van Koopovereenkomst om te wijzigen
         required: true
         schema:
-          type: integer
+          type: string
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
@@ -2841,6 +2843,283 @@ paths:
       security: 
         - OAuth2: 
           - Overeenkomsten.Koopovereenkomsten.ReadWrite
+  /looptijden:
+    get:
+      tags:
+      - 'Looptijden'
+      summary: Ophalen van Looptijden
+      operationId: listLooptijden
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Looptijdbericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Looptijdbericht'
+                maxItems: 100
+          headers:
+            X-Parameters-Aantal:
+              $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+              $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+              $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Overeenkomsten.Looptijden.Read
+          - Overeenkomsten.Looptijden.ReadWrite
+    post:
+      tags:
+      - 'Looptijden'
+      summary: Voegt een nieuw(e) Looptijd toe.
+      operationId: createLooptijd
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Looptijd
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Looptijdbericht'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Looptijdbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Overeenkomsten.Looptijden.ReadWrite
+    put:
+      tags:
+      - 'Looptijden'
+      summary: |
+        Vervangen van een Looptijd op basis van overeenkomstige sleutelvelden.
+      operationId: replaceLooptijd
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Looptijd
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Looptijdbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Overeenkomsten.Looptijden.ReadWrite
+    patch:
+      tags:
+      - 'Looptijden'
+      summary: |
+        Wijzigen van afzonderlijke attributen van een Looptijd. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateLooptijd
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Looptijd
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Looptijdbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Overeenkomsten.Looptijden.ReadWrite
+  /looptijden/{id}:
+    get:
+      tags:
+      - 'Looptijden'
+      summary: Retourneert een Looptijd met de gegeven identifier
+      operationId: readLooptijdById
+      parameters:
+      - name: id
+        in: path
+        description: Id van Looptijd om op te halen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Looptijdbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Overeenkomsten.Looptijden.Read
+          - Overeenkomsten.Looptijden.ReadWrite
+    put:
+      tags:
+      - 'Looptijden'
+      summary: Vervangen van een Looptijd
+      operationId: replaceLooptijdById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Looptijd om te vervangen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Looptijd
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Looptijdbericht'
+      security: 
+        - OAuth2: 
+          - Overeenkomsten.Looptijden.ReadWrite
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Looptijden'
+      summary: Wijzigen van een Looptijd
+      operationId: updateLooptijdById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Looptijd om te wijzigen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Looptijd
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Looptijdbericht'
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Overeenkomsten.Looptijden.ReadWrite
   /monitoringovereenkomsten:
     get:
       tags:
@@ -3091,7 +3370,7 @@ paths:
         description: Id van Monitoringovereenkomst om te wijzigen
         required: true
         schema:
-          type: integer
+          type: string
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
@@ -3368,7 +3647,7 @@ paths:
         description: Id van Onderhoudsovereenkomst om te wijzigen
         required: true
         schema:
-          type: integer
+          type: string
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
@@ -3645,7 +3924,7 @@ paths:
         description: Id van Overeenkomst om te wijzigen
         required: true
         schema:
-          type: integer
+          type: string
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
@@ -3922,7 +4201,7 @@ paths:
         description: Id van Overeenkomstkoppeling om te wijzigen
         required: true
         schema:
-          type: integer
+          type: string
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
@@ -4199,7 +4478,7 @@ paths:
         description: Id van Prijscomponent om te wijzigen
         required: true
         schema:
-          type: integer
+          type: string
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
@@ -4476,7 +4755,7 @@ paths:
         description: Id van Serviceovereenkomst om te wijzigen
         required: true
         schema:
-          type: integer
+          type: string
       - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
       - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
       - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
@@ -4568,6 +4847,8 @@ components:
             Overeenkomsten.Inspecties.ReadWrite: lezen en schrijven van Inspecties
             Overeenkomsten.Koopovereenkomsten.Read: alleen lezen van Koopovereenkomsten
             Overeenkomsten.Koopovereenkomsten.ReadWrite: lezen en schrijven van Koopovereenkomsten
+            Overeenkomsten.Looptijden.Read: alleen lezen van Looptijden
+            Overeenkomsten.Looptijden.ReadWrite: lezen en schrijven van Looptijden
             Overeenkomsten.Monitoringovereenkomsten.Read: alleen lezen van Monitoringovereenkomsten
             Overeenkomsten.Monitoringovereenkomsten.ReadWrite: lezen en schrijven van Monitoringovereenkomsten
             Overeenkomsten.Onderhoudsovereenkomsten.Read: alleen lezen van Onderhoudsovereenkomsten
@@ -4605,6 +4886,8 @@ components:
             Overeenkomsten.Inspecties.ReadWrite: lezen en schrijven van Inspecties
             Overeenkomsten.Koopovereenkomsten.Read: alleen lezen van Koopovereenkomsten
             Overeenkomsten.Koopovereenkomsten.ReadWrite: lezen en schrijven van Koopovereenkomsten
+            Overeenkomsten.Looptijden.Read: alleen lezen van Looptijden
+            Overeenkomsten.Looptijden.ReadWrite: lezen en schrijven van Looptijden
             Overeenkomsten.Monitoringovereenkomsten.Read: alleen lezen van Monitoringovereenkomsten
             Overeenkomsten.Monitoringovereenkomsten.ReadWrite: lezen en schrijven van Monitoringovereenkomsten
             Overeenkomsten.Onderhoudsovereenkomsten.Read: alleen lezen van Onderhoudsovereenkomsten
@@ -5089,6 +5372,11 @@ components:
             type: string
             format: date
             description: De datum dat de huurprijs van de huurovereenkomst is aangepast.
+          looptijden:
+            description: De looptijden behorende bij de huurovereenkomst.
+            type: array
+            items:
+              $ref: '#/components/schemas/Looptijd-sleutels'
           afwijkendeBetaler:
             type: string
             format: uri
@@ -5163,6 +5451,31 @@ components:
             type: number
             format: float
             description: De rente van de waarborgsom op de overeenkomst. Deze waarde wordt in Euro's aangegeven en is cumulatief over de volledige looptijd van de huurovereenkomst.
+    Looptijd-sleutels:
+      type: object
+      properties:
+        id:
+          type: string
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
+        idExtern:
+          type: string
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth.
+        idGegevensbeheerder:
+          type: string
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
+        code:
+          type: string
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        expiratieDatum:
+          type: string
+          format: date
+          description: 'De datum waarop de betreffende looptijd afloopt of eindigt. Dit veld is verplicht bij een POST Validatie-regex: ^\d{4}-\d{2}-\d{2}$'
     Huurtoeslag-sleutels:
       type: object
       properties:
@@ -5342,6 +5655,47 @@ components:
             type: number
             format: float
             description: Het bedrag dat de koper betaald aan VVE inclusief BTW. De koper heeft geen recht op VVE als er geen bedrag is ingevuld.
+    Looptijdbericht:
+      allOf:    
+        - $ref: '#/components/schemas/Looptijd'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Looptijd:
+      type: object
+      properties:
+        id:
+          type: string
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
+        idExtern:
+          type: string
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth.
+        idGegevensbeheerder:
+          type: string
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
+        code:
+          type: string
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken)
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Geeft aan om welk soort looptijd het betreft. Referentiedata: LOOPTIJDSOORT.'
+        expiratieDatum:
+          type: string
+          format: date
+          description: 'De datum waarop de betreffende looptijd afloopt of eindigt. Dit veld is verplicht bij een POST Validatie-regex: ^\d{4}-\d{2}-\d{2}$'
+        datumVordering:
+          type: string
+          format: date
+          description: De datum waarop het recht of de mogelijkheid die samenhangt met de looptijd kan worden uitgeoefend.
+        datumHuurprijsHerziening:
+          type: string
+          format: date
+          description: De datum waarop de huurprijsherziening van kracht wordt.
     Monitoringovereenkomstbericht:
       allOf:    
         - $ref: '#/components/schemas/Monitoringovereenkomst'
