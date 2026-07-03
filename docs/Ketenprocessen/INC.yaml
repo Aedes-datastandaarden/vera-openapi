@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: VERA-Incasso
-  description: API-specificatie van ketenproces 'Incasso'. Deze specificatie is gebaseerd op VERA versie 4.3.1+260404.5
+  description: API-specificatie van ketenproces 'Incasso'. Deze specificatie is gebaseerd op VERA versie 4.3.2+260703.12
   contact:
     name: VERA
     url: https://www.coraveraonline.nl
@@ -9,7 +9,7 @@ info:
   license:
     name: "Copyright (c) Aedes vereniging van woningcorporaties"
     url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
-  version: '4.3.1+260404.5'
+  version: '4.3.2+260703.12'
 servers:
   - url: https://inc.vera.io:{port}/{basePath}
     description: Productieserver
@@ -1141,6 +1141,69 @@ components:
           type: number
           format: float
           description: Het maximale bedrag dat per incasso geincasseerd mag worden.
+    ExterneIncassos-Boeking:
+      type: object
+      properties:
+        id:
+          type: string
+          description: De unieke, primaire sleutel van het gegeven binnen het systeem waarin het is vastgelegd, die wordt gebruikt om associaties met andere entiteiten binnen hetzelfde systeem te leggen. Dit veld is verplicht, behalve bij een POST
+        idExtern:
+          type: string
+          description: De unieke, primaire sleutel van het gegeven in het bronsysteem waarin het wordt beheerd. Het bronsysteem verwijst naar het systeem waarin de entiteit wordt beheerd binnen het ICT-landschap van een organisatie. Dit bronsysteem fungeert als de single-source-of-truth.
+        idGegevensbeheerder:
+          type: string
+          description: De primaire sleutel van het gegeven van de gegevensbeheerder. Bijv. de overheid of andere standaarden.
+        idOrganisatie:
+          type: string
+          description: Dit verwijst naar de organisatie die verantwoordelijk is voor het gegeven. Horende bij de idExtern.
+        idAdministratie:
+          type: string
+          description: De verwijzing naar de administratie binnen de specifieke organisatie die verantwoordelijk is voor de bron van het gegeven. Dit hoort bij idExtern.
+        code:
+          type: string
+          description: De unieke code (Bijvoorbeeld om te tonen of te zoeken).
+        soort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Soort boeking. Bijvoorbeeld: vordering, ontvangst of uitbetaling. Boekingsoorten en boekingdetailsoorten kunnen in allerlei combinaties voorkomen. Er is geen vaste hiërarchie. Referentiedata: BOEKINGSOORT.'
+        detailSoort:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Detaillering van het soort boeking. Bijvoorbeeld: storno, kasbetaling, acceptgiro, enzovoort. Boekingsoorten en boekingdetailsoorten kunnen in allerlei combinaties voorkomen. Er is geen vaste hiërarchie. Referentiedata: BOEKINGDETAILSOORT.'
+        omschrijving:
+          type: string
+          description: Omschrijving van de boeking.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Status van de boeking. Bijvoorbeeld voorlopig, gefiatteerd, historisch. Referentiedata: BOEKINGSTATUS.'
+        boekdatum:
+          type: string
+          format: date
+          description: De datum waarmee de mutatie in de boekhouding wordt ingeboekt.
+        factuurdatum:
+          type: string
+          format: date
+          description: Boekstuk- of factuurdatum van de boeking.
+        vervaldatum:
+          type: string
+          format: date
+          description: Vervaldatum van de boeking.
+        afletterstatus:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'De status van de afletteringen op de boeking. Bijv. Deels afgeletterd, volledig afgeletterd. Referentiedata: AFLETTERSTATUS.'
+        bedrag:
+          type: number
+          format: float
+          description: Het initiele bedrag van de boeking (inclusief btw).
+        betalingskenmerk:
+          type: string
+          description: Betalingskenmerk van bijvoorbeeld acceptgiro of kwitantienummer.
+        saldo:
+          type: number
+          format: float
+          description: Het saldo of openstaande bedrag van de boeking.
     ExterneIncassos-Debiteur:
       type: object
       properties:
@@ -1206,10 +1269,18 @@ components:
           type: string
           format: date
           description: Datum waarop het is gestart.
+        redenGestart:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Reden waarom de externe incasso is gestart. Referentiedata: EXTERNEINCASSOSTARTREDEN.'
         einddatum:
           type: string
           format: date
           description: Datum waarop het is afgesloten.
+        redenBeeindigd:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Reden waarom de externe incasso is beëindigd. Referentiedata: EXTERNEINCASSOEINDEREDEN.'
         overdrachtsdatum:
           type: string
           format: date
@@ -1222,7 +1293,7 @@ components:
           description: De boekingen behorende bij de externe incasso.
           type: array
           items:
-            $ref: '#/components/schemas/Boeking-sleutels'
+            $ref: '#/components/schemas/ExterneIncassos-Boeking'
         debiteur:
           allOf:
           - $ref: '#/components/schemas/ExterneIncassos-Debiteur'
@@ -1312,6 +1383,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Sturingslabel'
+        archivering:
+          allOf:
+          - $ref: '#/components/schemas/Archivering'
+          description: Mogelijkheid om het bericht uit te breiden met archiveringsinformatie
     ExtraAttribuut:
       type: object
       properties:
@@ -1519,6 +1594,21 @@ components:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: 'De bron van de definitie van het label. Bijv. dVI 2014, CORA etc. Referentiedata: STURINGSLABELBRON.'
+    Archivering:
+      type: object
+      properties:
+        archiefactiedatum:
+          type: string
+          format: date
+          description: De datum waarop het gearchiveerde object vernietigd moet worden dan wel overgebracht moet worden naar een archiefbewaarplaats
+        archiefnominatie:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Aanduiding of het object blijvend bewaard of na een bepaalde termijn vernietigd moet worden Referentiedata: ARCHIEFNOMINATIE.'
+        archiefstatus:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'De fase waarin het object zich qua archivering bevindt Referentiedata: ARCHIEFSTATUS.'
     Foutbericht:
       type: object
       properties:

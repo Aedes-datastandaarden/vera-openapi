@@ -9,7 +9,7 @@ info:
   license:
     name: "Copyright (c) Aedes vereniging van woningcorporaties"
     url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
-  version: '4.3.1+260404.5'
+  version: '4.3.2+260703.12'
 servers:
   - url: https://woonruimteverdeling.vera.io:{port}/{basePath}
     description: Productieserver
@@ -5474,12 +5474,27 @@ components:
           type: string
           format: date-time
           description: 'De datum en tijd waarop de begeleider namens de woningzoekende een reactie heeft geplaatst. Validatie-regex: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$'
+        aanvullendeDoelgroep:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'De eventuele aanvullende doelgroep (een verbijzondering van doelgroep) waartoe het huishouden waaraan de eenheid is toegewezen behoort. Bijv. Ouderen, Geestelijk gehandicapten, Lichamelijk gehandicapten, GGZ-Patiënten etc. Onderdeel van de reden van de toewijzing. Referentiedata: AANVULLENDEDOELGROEP.'
         contactmomenten:
           type: array  
           items:
             type: string
             format: uri
           description: URI's naar Contactmomenten in domeinsysteem Relaties.
+        doelgroep:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'De eventuele doelgroep waartoe het huishouden waaraan de eenheid is toegewezen behoort. Deze doelgroep kan afwijken van de doelgroep waarvoor de eenheid bij publicatie was gelabeld. Eventueel te gebruiken in combinatie met aanvullendeDoelgroep. Referentiedata: DOELGROEP.'
+        huishoudgrootte:
+          type: integer
+          format: int32
+          description: Aantal personen waaruit het huishouden bestaat waaraan de woning is toegewezen.
+        isOuderenhuishouden:
+          type: boolean
+          description: Geeft aan of de kandidaat, of één van diens medebewoners, op 1 januari van het jaar van toewijzen de pensioengerechtigde leeftijd bereikt.
         overeenkomst:
           type: string
           format: uri
@@ -5492,6 +5507,14 @@ components:
           allOf:
           - $ref: '#/components/schemas/Publicatie-sleutels'
           description: De publicatie behorend bij de reactie.
+        rekeninkomen:
+          type: number
+          format: float
+          description: Het huishoudinkomen dat gebruikt is als toetsinkomen bij de toewijzing. (Bij sociale huur het rekeninkomen conform de wet op de huurtoeslag).
+        rekenvermogen:
+          type: number
+          format: float
+          description: Het vermogen dat is toegepast bij het afwijken van passend toewijzen bij ouderen met een hoog vermogen.
         relaties:
           type: array  
           items:
@@ -5756,11 +5779,11 @@ components:
         rekenhuur:
           type: number
           format: float
-          description: De huurprijs ten tijde van de toewijzing. (Bij sociale huur de rekenhuur conform de wet op de huurtoeslag..
+          description: De huurprijs ten tijde van de toewijzing. (Bij sociale huur de rekenhuur conform de wet op de huurtoeslag.
         rekeninkomen:
           type: number
           format: float
-          description: Het huishoudinkomen dat gebruikt is als toets inkomen bij de toewijzing. (Bij sociale huur het rekeninkomen conform de wet op de huurtoeslag..
+          description: Het huishoudinkomen dat gebruikt is als toetsinkomen bij de toewijzing. (Bij sociale huur het rekeninkomen conform de wet op de huurtoeslag).
         rekenvermogen:
           type: number
           format: float
@@ -6102,6 +6125,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Sturingslabel'
+        archivering:
+          allOf:
+          - $ref: '#/components/schemas/Archivering'
+          description: Mogelijkheid om het bericht uit te breiden met archiveringsinformatie
     ExtraAttribuutbericht:
       allOf:    
         - $ref: '#/components/schemas/ExtraAttribuut'
@@ -6165,6 +6192,25 @@ components:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: 'De bron van de definitie van het label. Bijv. dVI 2014, CORA etc. Referentiedata: STURINGSLABELBRON.'
+    Archiveringbericht:
+      allOf:    
+        - $ref: '#/components/schemas/Archivering'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Archivering:
+      type: object
+      properties:
+        archiefactiedatum:
+          type: string
+          format: date
+          description: De datum waarop het gearchiveerde object vernietigd moet worden dan wel overgebracht moet worden naar een archiefbewaarplaats
+        archiefnominatie:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Aanduiding of het object blijvend bewaard of na een bepaalde termijn vernietigd moet worden Referentiedata: ARCHIEFNOMINATIE.'
+        archiefstatus:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'De fase waarin het object zich qua archivering bevindt Referentiedata: ARCHIEFSTATUS.'
     Foutbericht:
       type: object
       properties:

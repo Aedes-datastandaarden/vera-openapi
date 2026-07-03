@@ -9,7 +9,7 @@ info:
   license:
     name: "Copyright (c) Aedes vereniging van woningcorporaties"
     url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
-  version: '4.3.1+260404.5'
+  version: '4.3.2+260703.12'
 servers:
   - url: https://financien.vera.io:{port}/{basePath}
     description: Productieserver
@@ -12165,6 +12165,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Betalingsregeling-sleutels'
+        bewakingsstatus:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'De bewakingsstatus bij de boeking die wordt gebruikt in verband met incasso. Hiermee kan per boeking een afzonderlijk bewakings- en aanmaningstraject worden gevolgd, zodat bijvoorbeeld een incidentele vordering los staat van een huurachterstand waarvoor een betalingsregeling geldt en niet automatisch leidt tot escalatie. Referentiedata: BEWAKINGSSTATUS.'
         boekingdetails:
           description: De boekingdetails behorende bij de boeking.
           type: array
@@ -13072,6 +13076,10 @@ components:
           allOf:
           - $ref: '#/components/schemas/FinancieelBedrijf-sleutels'
           description: Bedrijf gekoppeld aan de debiteur.
+        bewakingsstatus:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'De bewakingsstatus bij de debiteur die wordt gebruikt in verband met incasso. Referentiedata: BEWAKINGSSTATUS.'
         boekingen:
           description: De boekingen van de debiteur.
           type: array
@@ -13147,10 +13155,18 @@ components:
           type: string
           format: date
           description: Datum waarop het is gestart.
+        redenGestart:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Reden waarom de externe incasso is gestart. Referentiedata: EXTERNEINCASSOSTARTREDEN.'
         einddatum:
           type: string
           format: date
           description: Datum waarop het is afgesloten.
+        redenBeeindigd:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Reden waarom de externe incasso is beëindigd. Referentiedata: EXTERNEINCASSOEINDEREDEN.'
         overdrachtsdatum:
           type: string
           format: date
@@ -14335,6 +14351,10 @@ components:
         borgingWSW:
           type: boolean
           description: Is de lening door het WSW geborgd of gevrijwaard.
+        conversieoptie:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Geeft aan op welke wijze de lening kan worden geconverteerd naar een ander financieel instrument. Referentiedata: CONVERSIEOPTIE.'
         coupondatum1:
           type: string
           format: date
@@ -14381,6 +14401,10 @@ components:
           type: number
           format: float
           description: Het totale bedrag waarvoor de lening is aangegaan.
+        verlengingsoptie:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Geeft aan op welke wijze de looptijd van de lening kan worden verlengd. Referentiedata: VERLENGINGSOPTIE.'
     Offertebericht:
       allOf:    
         - $ref: '#/components/schemas/Offerte'
@@ -14768,6 +14792,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Sturingslabel'
+        archivering:
+          allOf:
+          - $ref: '#/components/schemas/Archivering'
+          description: Mogelijkheid om het bericht uit te breiden met archiveringsinformatie
     ExtraAttribuutbericht:
       allOf:    
         - $ref: '#/components/schemas/ExtraAttribuut'
@@ -14831,6 +14859,25 @@ components:
           allOf:
           - $ref: '#/components/schemas/Referentiedata'
           description: 'De bron van de definitie van het label. Bijv. dVI 2014, CORA etc. Referentiedata: STURINGSLABELBRON.'
+    Archiveringbericht:
+      allOf:    
+        - $ref: '#/components/schemas/Archivering'
+        - $ref: '#/components/schemas/Bericht-basis'
+    Archivering:
+      type: object
+      properties:
+        archiefactiedatum:
+          type: string
+          format: date
+          description: De datum waarop het gearchiveerde object vernietigd moet worden dan wel overgebracht moet worden naar een archiefbewaarplaats
+        archiefnominatie:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Aanduiding of het object blijvend bewaard of na een bepaalde termijn vernietigd moet worden Referentiedata: ARCHIEFNOMINATIE.'
+        archiefstatus:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'De fase waarin het object zich qua archivering bevindt Referentiedata: ARCHIEFSTATUS.'
     Foutbericht:
       type: object
       properties:

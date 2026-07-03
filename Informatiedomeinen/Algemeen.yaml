@@ -9,7 +9,7 @@ info:
   license:
     name: "Copyright (c) Aedes vereniging van woningcorporaties"
     url: https://raw.githubusercontent.com/Aedes-datastandaarden/vera-openapi/main/LICENSE
-  version: '4.3.1+260404.5'
+  version: '4.3.2+260703.12'
 servers:
   - url: https://algemeen.vera.io:{port}/{basePath}
     description: Productieserver
@@ -22,6 +22,8 @@ servers:
        basePath:
          default: v4
 tags:
+- name: Archiveringen
+  description: Operaties met betrekking tot een Archivering
 - name: ExtraAttributen
   description: Operaties met betrekking tot een ExtraAttribuut
 - name: Referentiedata
@@ -45,6 +47,283 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Foutbericht'
+  /archiveringen:
+    get:
+      tags:
+      - 'Archiveringen'
+      summary: Ophalen van Archiveringen
+      operationId: listArchiveringen
+      parameters:
+      - name: params
+        in: query
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Archiveringbericht'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/Pagina'
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      - $ref: '#/components/parameters/ParametersPeiltijdstipMaterieel'
+      - $ref: '#/components/parameters/ParametersAantalPerPagina'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Archiveringbericht'
+                maxItems: 100
+          headers:
+            X-Parameters-Aantal:
+              $ref: '#/components/headers/X-Parameters-Aantal'
+            X-Parameters-AantalPerPagina:
+              $ref: '#/components/headers/X-Parameters-AantalPerPagina'
+            X-Parameters-Pagina:
+              $ref: '#/components/headers/X-Parameters-Pagina'
+            X-Parameters-Cursor:
+              $ref: '#/components/headers/X-Parameters-Cursor'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Algemeen.Archiveringen.Read
+          - Algemeen.Archiveringen.ReadWrite
+    post:
+      tags:
+      - 'Archiveringen'
+      summary: Voegt een nieuw(e) Archivering toe.
+      operationId: createArchivering
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Archivering
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Archiveringbericht'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL waar de resource leeft.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Archiveringbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Algemeen.Archiveringen.ReadWrite
+    put:
+      tags:
+      - 'Archiveringen'
+      summary: |
+        Vervangen van een Archivering op basis van overeenkomstige sleutelvelden.
+      operationId: replaceArchivering
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Archivering
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Archiveringbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Algemeen.Archiveringen.ReadWrite
+    patch:
+      tags:
+      - 'Archiveringen'
+      summary: |
+        Wijzigen van afzonderlijke attributen van een Archivering. In de meegestuurde entiteit moeten
+        sleutelvelden aanwezig zijn.
+      operationId: updateArchivering
+      parameters:
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Archivering
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Archiveringbericht'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+           $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+           description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Algemeen.Archiveringen.ReadWrite
+  /archiveringen/{id}:
+    get:
+      tags:
+      - 'Archiveringen'
+      summary: Retourneert een Archivering met de gegeven identifier
+      operationId: readArchiveringById
+      parameters:
+      - name: id
+        in: path
+        description: Id van Archivering om op te halen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Archiveringbericht'
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Algemeen.Archiveringen.Read
+          - Algemeen.Archiveringen.ReadWrite
+    put:
+      tags:
+      - 'Archiveringen'
+      summary: Vervangen van een Archivering
+      operationId: replaceArchiveringById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Archivering om te vervangen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Archivering
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Archiveringbericht'
+      security: 
+        - OAuth2: 
+          - Algemeen.Archiveringen.ReadWrite
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+    patch:
+      tags:
+      - 'Archiveringen'
+      summary: Wijzigen van een Archivering
+      operationId: updateArchiveringById
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: Id van Archivering om te wijzigen
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/StuurgegevensZenderOrganisatie'
+      - $ref: '#/components/parameters/StuurgegevensZenderAdministratie'
+      - $ref: '#/components/parameters/StuurgegevensTijdstipBericht'
+      - $ref: '#/components/parameters/StuurgegevensReferentienummer'
+      requestBody:
+        description: Entiteit Archivering
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Archiveringbericht'
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/NietGeautoriseerd'
+        '404':
+          description: Not Found
+        default:
+          description: Onverwachte fout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Foutbericht'
+      security: 
+        - OAuth2: 
+          - Algemeen.Archiveringen.ReadWrite
   /extra-attributen:
     get:
       tags:
@@ -921,6 +1200,8 @@ components:
           scopes:
             Algemeen.All.Read: alleen lezen van alle resources
             Algemeen.All.ReadWrite: lezen en schrijven van alle resources
+            Algemeen.Archiveringen.Read: alleen lezen van Archiveringen
+            Algemeen.Archiveringen.ReadWrite: lezen en schrijven van Archiveringen
             Algemeen.ExtraAttributen.Read: alleen lezen van ExtraAttributen
             Algemeen.ExtraAttributen.ReadWrite: lezen en schrijven van ExtraAttributen
             Algemeen.Referentiedata.Read: alleen lezen van Referentiedata
@@ -932,6 +1213,8 @@ components:
           scopes:
             Algemeen.All.Read: alleen lezen van alle resources
             Algemeen.All.ReadWrite: lezen en schrijven van alle resources
+            Algemeen.Archiveringen.Read: alleen lezen van Archiveringen
+            Algemeen.Archiveringen.ReadWrite: lezen en schrijven van Archiveringen
             Algemeen.ExtraAttributen.Read: alleen lezen van ExtraAttributen
             Algemeen.ExtraAttributen.ReadWrite: lezen en schrijven van ExtraAttributen
             Algemeen.Referentiedata.Read: alleen lezen van Referentiedata
@@ -946,19 +1229,25 @@ components:
           schema:
             type: string
   schemas:
-    ExtraAttribuutbericht:
+    Archiveringbericht:
       allOf:    
-        - $ref: '#/components/schemas/ExtraAttribuut'
+        - $ref: '#/components/schemas/Archivering'
         - $ref: '#/components/schemas/Bericht-basis'
-    ExtraAttribuut:
+    Archivering:
       type: object
       properties:
-        naam:
+        archiefactiedatum:
           type: string
-          description: De naam van het niet bestaande attribuut. Bijv. Huurprognose.
-        waarde:
-          type: string
-          description: De waarde van het niet bestaande attribuut. Bijv. €850,-.
+          format: date
+          description: De datum waarop het gearchiveerde object vernietigd moet worden dan wel overgebracht moet worden naar een archiefbewaarplaats
+        archiefnominatie:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'Aanduiding of het object blijvend bewaard of na een bepaalde termijn vernietigd moet worden Referentiedata: ARCHIEFNOMINATIE.'
+        archiefstatus:
+          allOf:
+          - $ref: '#/components/schemas/Referentiedata'
+          description: 'De fase waarin het object zich qua archivering bevindt Referentiedata: ARCHIEFSTATUS.'
     Referentiedatabericht:
       allOf:    
         - $ref: '#/components/schemas/Referentiedata'
@@ -1033,6 +1322,19 @@ components:
         naam:
           type: string
           description: De te tonen waarde van het referentiedata item. Bijvoorbeeld Nederlandse.
+    ExtraAttribuutbericht:
+      allOf:    
+        - $ref: '#/components/schemas/ExtraAttribuut'
+        - $ref: '#/components/schemas/Bericht-basis'
+    ExtraAttribuut:
+      type: object
+      properties:
+        naam:
+          type: string
+          description: De naam van het niet bestaande attribuut. Bijv. Huurprognose.
+        waarde:
+          type: string
+          description: De waarde van het niet bestaande attribuut. Bijv. €850,-.
     Sturingslabelbericht:
       allOf:    
         - $ref: '#/components/schemas/Sturingslabel'
@@ -1102,6 +1404,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Sturingslabel'
+        archivering:
+          allOf:
+          - $ref: '#/components/schemas/Archivering'
+          description: Mogelijkheid om het bericht uit te breiden met archiveringsinformatie
     Foutbericht:
       type: object
       properties:
